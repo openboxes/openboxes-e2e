@@ -1,0 +1,27 @@
+{
+  "name": "openboxes-e2e",
+  "version": "1.0.0",
+  "description": "End to end testing for OpenBoxes",
+  "main": "index.js",
+  "scripts": {
+    "test": "npx playwright test",
+    "test:ui": "npx playwright test --ui",
+    "test:debug": "npx playwright test --debug",
+    "test:headed": "npx playwright test --headed"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/openboxes/openboxes-e2e.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/openboxes/openboxes-e2e/issues"
+  },
+  "homepage": "https://github.com/openboxes/openboxes-e2e#readme",
+  "devDependencies": {
+    "@playwright/test": "1.42.1",
+    "@types/node": "20.11.30"
+  }
+}
