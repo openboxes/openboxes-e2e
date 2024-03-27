@@ -1,6 +1,6 @@
 import { expect } from "@playwright/test";
 
-import { test } from "../utils/fixtures";
+import { test } from "../fixtures/fixtures";
 
 test.describe("example test", () => {
     test("example", async ({ navigate }) => {

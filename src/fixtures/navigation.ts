@@ -1,15 +1,11 @@
 import { test as baseTest } from "@playwright/test";
 
-import Navigation from "./Navigation";
+import Navigation from "../utils/Navigation";
 
-type Fixtures = {
+export const test = baseTest.extend<{
     navigate: Navigation;
-};
-
-const test = baseTest.extend<Fixtures>({
+}>({
     navigate: async ({ page }, use) => {
         await use(new Navigation(page));
     },
 });
-
-export { test };
