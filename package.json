@@ -4,6 +4,8 @@
   "description": "End to end testing for OpenBoxes",
   "main": "index.js",
   "scripts": {
+    "lint": "eslint .",
+    "lint-fix": "eslint . --fix",
     "test": "npx playwright test",
     "test:ui": "npx playwright test --ui",
     "test:debug": "npx playwright test --debug",
@@ -22,7 +24,12 @@
   "homepage": "https://github.com/openboxes/openboxes-e2e#readme",
   "devDependencies": {
     "@playwright/test": "1.42.1",
-    "@types/node": "20.11.30"
+    "@types/node": "20.11.30",
+    "@typescript-eslint/eslint-plugin": "5.62.0",
+    "eslint": "8.57.0",
+    "eslint-config-standard-with-typescript": "37.0.0",
+    "eslint-plugin-playwright": "1.0.1",
+    "typescript": "5.1.6"
   },
   "dependencies": {
     "dotenv": "16.4.5",
