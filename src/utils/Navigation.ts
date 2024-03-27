@@ -14,7 +14,6 @@ class Navigation {
     async goToDashboard() {
         await this.page.goto("./dashboard");
     }
-    
 }
 
 export default Navigation;
