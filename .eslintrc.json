@@ -1,6 +1,6 @@
 {
     "parser": "@typescript-eslint/parser",
-    "plugins": ["@typescript-eslint"],
+    "plugins": ["@typescript-eslint", "simple-import-sort"],
     "extends": [
         "eslint:recommended",
         "plugin:@typescript-eslint/recommended",
@@ -12,6 +12,8 @@
         "sourceType": "module"
     },
     "rules": {
+        "simple-import-sort/imports": "error",
+        "simple-import-sort/exports": "error",
         "quotes": ["error", "double"],
         "@typescript-eslint/no-empty-function": [
             "error",

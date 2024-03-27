@@ -1,4 +1,5 @@
 import { test as baseTest } from "@playwright/test";
+
 import Navigation from "./Navigation";
 
 type Fixtures = {
