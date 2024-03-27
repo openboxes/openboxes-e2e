@@ -4,7 +4,8 @@
     "extends": [
         "eslint:recommended",
         "plugin:@typescript-eslint/recommended",
-        "plugin:playwright/recommended"
+        "plugin:playwright/recommended",
+        "prettier"
     ],
     "parserOptions": {
         "ecmaVersion": 2018,
@@ -12,6 +13,9 @@
     },
     "rules": {
         "quotes": ["error", "double"],
-        "@typescript-eslint/no-empty-function": ["error", { "allow": ["constructors"] }]
+        "@typescript-eslint/no-empty-function": [
+            "error",
+            { "allow": ["constructors"] }
+        ]
     }
 }

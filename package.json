@@ -6,6 +6,7 @@
   "scripts": {
     "lint": "eslint .",
     "lint-fix": "eslint . --fix",
+    "format": "npx prettier --write .",
     "test": "npx playwright test",
     "test:ui": "npx playwright test --ui",
     "test:debug": "npx playwright test --debug",
@@ -27,8 +28,10 @@
     "@types/node": "20.11.30",
     "@typescript-eslint/eslint-plugin": "5.62.0",
     "eslint": "8.57.0",
+    "eslint-config-prettier": "9.1.0",
     "eslint-config-standard-with-typescript": "37.0.0",
     "eslint-plugin-playwright": "1.0.1",
+    "prettier": "3.2.5",
     "typescript": "5.1.6"
   },
   "dependencies": {
