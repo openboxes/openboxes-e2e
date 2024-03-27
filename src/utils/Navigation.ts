@@ -2,7 +2,7 @@ import { Page } from "@playwright/test";
 
 class Navigation {
     private page: Page;
-    
+
     private URL_PREFIX = "/openboxes";
 
     constructor(page: Page) {
@@ -10,7 +10,7 @@ class Navigation {
     }
 
     private buildURL(path: string) {
-        return `${this.URL_PREFIX}${path}`
+        return `${this.URL_PREFIX}${path}`;
     }
 
     async goToHome() {
