@@ -1,25 +1,25 @@
-import { Page } from "@playwright/test";
+import { Page } from '@playwright/test';
 
 class Navigation {
-    private page: Page;
+  private page: Page;
 
-    private URL_PREFIX = "/openboxes";
+  private URL_PREFIX = '/openboxes';
 
-    constructor(page: Page) {
-        this.page = page;
-    }
+  constructor(page: Page) {
+    this.page = page;
+  }
 
-    private buildURL(path: string) {
-        return `${this.URL_PREFIX}${path}`;
-    }
+  private buildURL(path: string) {
+    return `${this.URL_PREFIX}${path}`;
+  }
 
-    async goToHome() {
-        await this.page.goto(this.buildURL("/"));
-    }
+  async goToHome() {
+    await this.page.goto(this.buildURL('/'));
+  }
 
-    async goToDashboard() {
-        await this.page.goto(this.buildURL("/dashboard"));
-    }
+  async goToDashboard() {
+    await this.page.goto(this.buildURL('/dashboard'));
+  }
 }
 
 export default Navigation;

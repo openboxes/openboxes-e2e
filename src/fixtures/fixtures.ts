@@ -1,5 +1,5 @@
-import { mergeTests } from "@playwright/test";
+import { mergeTests } from '@playwright/test';
 
-import { test as navigationTest } from "@/fixtures/navigation";
+import { test as navigationTest } from '@/fixtures/navigation';
 
 export const test = mergeTests(navigationTest);
