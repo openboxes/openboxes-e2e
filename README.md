@@ -10,6 +10,8 @@ End to end testing for OpenBoxes
 
 ```
 npm run install
+
+npx playwright install
 ```
 
 ## Environment Variables
