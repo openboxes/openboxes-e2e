@@ -1,11 +1,10 @@
-import { test as baseTest } from '@playwright/test';
-
+import { FixtureCallback } from '@/types';
 import Navigation from '@/utils/Navigation';
 
-export const test = baseTest.extend<{
+export type NavigationFixture = {
   navigate: Navigation;
-}>({
-  navigate: async ({ page }, use) => {
-    await use(new Navigation(page));
-  },
-});
+};
+
+export const navigate: FixtureCallback<NavigationFixture> = async ({ page }, use) => {
+  await use(new Navigation(page));
+};

@@ -1,5 +1,9 @@
-import { mergeTests } from '@playwright/test';
+import { test as baseTest } from '@playwright/test';
 
-import { test as navigationTest } from '@/fixtures/navigation';
+import { navigate, NavigationFixture } from './navigation';
 
-export const test = mergeTests(navigationTest);
+type Fixtures = NavigationFixture
+
+export const test = baseTest.extend<Fixtures>({
+  navigate: navigate,
+});
