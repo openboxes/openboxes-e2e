@@ -1,8 +1,11 @@
+import path from 'node:path';
+
 import env from 'env-var';
 
 type UserCredentials = {
   username: string;
   password: string;
+  storagePath: string;
 };
 
 /**
@@ -45,6 +48,7 @@ class AppConfig {
     this.user = {
       username: env.get('USER_USERNAME').required().asString(),
       password: env.get('USER_PASSWORD').required().asString(),
+      storagePath: path.join(process.cwd(), 'userAuthStorage/.auth-storage.json'),
     };
   }
 }
