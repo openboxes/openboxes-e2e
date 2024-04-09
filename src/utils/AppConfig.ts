@@ -2,10 +2,13 @@ import path from 'node:path';
 
 import env from 'env-var';
 
+import RoleType from '@/constants/RoleTypes';
+
 type UserCredentials = {
   username: string;
   password: string;
   storagePath: string;
+  requiredRoles: Set<RoleType>
 };
 
 /**
@@ -16,6 +19,9 @@ class AppConfig {
 
   // Base URL to use in actions like `await page.goto('./dashboard')`.
   public appURL!: string;
+
+    // Base API URL to use for separate requests to the server
+    public apiURL!: string;
 
   // Flag indicating whether tests are running in Continuous Integration.
   public isCI!: boolean;
@@ -44,11 +50,16 @@ class AppConfig {
    */
   public initialize() {
     this.appURL = env.get('APP_BASE_URL').required().asString();
+    
+    this.apiURL = env.get('API_BASE_URL').required().asString();
+    
     this.isCI = env.get('CI').default('false').asBool();
+    
     this.user = {
       username: env.get('USER_USERNAME').required().asString(),
       password: env.get('USER_PASSWORD').required().asString(),
       storagePath: path.join(process.cwd(), 'userAuthStorage/.auth-storage.json'),
+      requiredRoles: new Set([RoleType.ROLE_SUPERUSER, RoleType.ROLE_FINANCE, RoleType.ROLE_PRODUCT_MANAGER, RoleType.ROLE_INVOICE]),
     };
   }
 }
