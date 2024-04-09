@@ -12,6 +12,11 @@ class Navbar {
     return this.page.getByRole('navigation');
   }
 
+  get profileButton () {
+    // FIXME add labels or testIds
+    return this.navbar.getByRole('img').last();
+  }
+
   async isLoaded() {
     await expect(this.navbar).toBeVisible();
   }
