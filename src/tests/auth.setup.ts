@@ -1,6 +1,5 @@
 import { test } from '@/fixtures/fixtures';
 import AppConfig from '@/utils/AppConfig';
-import { assertAllRequiredRoles } from '@/utils/roleUtils';
 
 for (const [name, user] of Object.entries(AppConfig.instance.users)) {
   test(`authenticate ${name}`, async ({
