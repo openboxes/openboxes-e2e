@@ -29,6 +29,9 @@ class AppConfig {
   // main user used for most of the tests
   public user!: UserCredentials;
 
+  // requestor user used for requestor specific tests
+  public requestor!: UserCredentials;
+
   // Private constructor to enforce singleton pattern.
   private constructor() {}
 
@@ -56,10 +59,17 @@ class AppConfig {
     this.isCI = env.get('CI').default('false').asBool();
     
     this.user = {
-      username: env.get('USER_USERNAME').required().asString(),
-      password: env.get('USER_PASSWORD').required().asString(),
+      username: env.get('USER_MAIN_USERNAME').required().asString(),
+      password: env.get('USER_MAIN_PASSWORD').required().asString(),
       storagePath: path.join(process.cwd(), 'userAuthStorage/.auth-storage.json'),
       requiredRoles: new Set([RoleType.ROLE_SUPERUSER, RoleType.ROLE_FINANCE, RoleType.ROLE_PRODUCT_MANAGER, RoleType.ROLE_INVOICE]),
+    };
+
+    this.requestor = {
+      username: env.get('USER_REQUESTOR_USERNAME').required().asString(),
+      password: env.get('USER_REQUESTOR_PASSWORD').required().asString(),
+      storagePath: path.join(process.cwd(), 'userAuthStorage/.auth-requestor-storage.json'),
+      requiredRoles: new Set([RoleType.ROLE_REQUESTOR, RoleType.ROLE_MANAGER]),
     };
   }
 }
