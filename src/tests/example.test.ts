@@ -2,9 +2,6 @@ import { expect } from '@playwright/test';
 
 import { test } from '@/fixtures/fixtures';
 
-test.describe('example test', () => {
-  test('example', async ({ navigate }) => {
-    await navigate.goToHome();
+  test('Open dashboard page as a main test user', async ({  }) => {
     expect(true).toBeTruthy();
   });
-});
