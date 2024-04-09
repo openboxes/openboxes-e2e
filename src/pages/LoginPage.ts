@@ -1,12 +1,6 @@
-import { Page } from '@playwright/test';
+import BasePageModel from '@/pages/BasePageModel';
 
-class LoginPage {
-  private page: Page;
-
-  constructor(page: Page) {
-    this.page = page;
-  }
-
+class LoginPage extends BasePageModel{
   get emailOrUsernameField() {
     return this.page.getByRole('textbox', { name: 'email or username' });
   }

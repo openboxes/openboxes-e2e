@@ -1,12 +1,8 @@
-import { expect, Page } from '@playwright/test';
+import { expect } from '@playwright/test';
 
-class Navbar {
-  private page: Page;
+import BasePageModel from '@/pages/BasePageModel';
 
-  constructor(page: Page) {
-    this.page = page;
-  }
-
+class Navbar extends BasePageModel {
   get navbar() {
     // FIXME add a testId or a label to make sure we are targetting a propper navbar
     return this.page.getByRole('navigation');
