@@ -1,6 +1,5 @@
 import { test } from '@/fixtures/fixtures';
 import AppConfig from '@/utils/AppConfig';
-import { assertAllRequiredRoles } from '@/utils/roleUtils';
 
 const authUsers = [
   { name: 'main user', user: AppConfig.instance.user },
@@ -28,6 +27,6 @@ for (const { name, user } of authUsers) {
     const userGlobalRoles = data?.user?.roles || [];
     const currentLocationRoles = data?.currentLocationRoles || [];
     const allUserRoles = new Set([...userGlobalRoles, ...currentLocationRoles]);
-    assertAllRequiredRoles(allUserRoles, user.requiredRoles);
+    user.assertAllRequiredRoles(allUserRoles);
   });
 }
