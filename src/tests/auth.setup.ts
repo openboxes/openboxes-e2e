@@ -8,9 +8,9 @@ const authUsers = [
 ];
 
 for (const { name, user } of authUsers) {
-  // eslint-disable-next-line playwright/expect-expect
   test(`authenticate ${name}`, async ({
     page,
+    navbar,
     loginPage,
     genericService,
   }) => {
@@ -18,6 +18,8 @@ for (const { name, user } of authUsers) {
 
     await loginPage.fillLoginForm(user.username, user.password);
     await loginPage.loginButton.click();
+
+    await navbar.isLoaded();
 
     await page.context().storageState({ path: user.storagePath });
 
