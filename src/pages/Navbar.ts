@@ -8,7 +8,7 @@ class Navbar extends BasePageModel {
     return this.page.getByRole('navigation');
   }
 
-  get profileButton () {
+  get profileButton() {
     // FIXME add labels or testIds
     return this.navbar.getByRole('img').last();
   }
@@ -16,7 +16,6 @@ class Navbar extends BasePageModel {
   async isLoaded() {
     await expect(this.navbar).toBeVisible();
   }
-
 }
 
 export default Navbar;

@@ -2,8 +2,7 @@ import path from 'node:path';
 
 import RoleType from '@/constants/RoleTypes';
 import { setDifference } from '@/utils';
-
-import AppConfig from './AppConfig';
+import AppConfig from '@/utils/AppConfig';
 
 class TestUser {
   username: string;

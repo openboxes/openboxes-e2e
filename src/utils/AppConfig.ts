@@ -68,12 +68,8 @@ class AppConfig {
       env.get('USER_REQUESTOR_USERNAME').required().asString(),
       env.get('USER_REQUESTOR_PASSWORD').required().asString(),
       path.join(process.cwd(), '.auth-storage-REQUESTOR-USER.json'),
-      new Set([
-        RoleType.ROLE_REQUESTOR,
-        RoleType.ROLE_MANAGER,
-      ])
+      new Set([RoleType.ROLE_REQUESTOR, RoleType.ROLE_MANAGER])
     );
-
   }
 }
 

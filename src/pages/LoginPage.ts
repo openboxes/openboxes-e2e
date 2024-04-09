@@ -1,6 +1,6 @@
 import BasePageModel from '@/pages/BasePageModel';
 
-class LoginPage extends BasePageModel{
+class LoginPage extends BasePageModel {
   get emailOrUsernameField() {
     return this.page.getByRole('textbox', { name: 'email or username' });
   }
