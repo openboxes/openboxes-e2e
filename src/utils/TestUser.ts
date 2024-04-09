@@ -32,14 +32,14 @@ class TestUser {
     // throw an exception if user doe snot have certain roles that are specified as requiredRoles
     if (absentRequiredRoles.size > 0) {
       throw new Error(
-        `User is missing required roles: ${[...absentRequiredRoles].join(', ')}`
+        `User "${this.username}" is missing required roles: ${[...absentRequiredRoles].join(', ')}`
       );
     }
 
     // throwan exeption if user has roles that were not specified as requiredRoles
     if (unexpectedRoles.size > 0) {
       throw new Error(
-        `User has unexpected roles: ${[...unexpectedRoles].join(', ')}`
+        `User "${this.username}" has unexpected roles: ${[...unexpectedRoles].join(', ')}`
       );
     }
   }
