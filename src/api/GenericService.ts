@@ -1,7 +1,5 @@
 import { APIRequestContext } from '@playwright/test';
 
-import AppConfig from '@/utils/AppConfig';
-
 class GenericService {
   private request: APIRequestContext;
 
@@ -10,9 +8,7 @@ class GenericService {
   }
 
   async getAppContext() {
-    const apiRepsonse = await this.request.get(
-      `${AppConfig.instance.apiURL}/getAppContext`
-    );
+    const apiRepsonse = await this.request.get('./api/getAppContext');
     return await apiRepsonse.json();
   }
 }

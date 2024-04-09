@@ -19,9 +19,6 @@ class AppConfig {
   // Base URL to use in actions like `await page.goto('./dashboard')`.
   public appURL!: string;
 
-  // Base API URL to use for separate requests to the server
-  public apiURL!: string;
-
   // Flag indicating whether tests are running in Continuous Integration.
   public isCI!: boolean;
 
@@ -52,8 +49,6 @@ class AppConfig {
    */
   public initialize() {
     this.appURL = env.get('APP_BASE_URL').required().asString();
-
-    this.apiURL = env.get('API_BASE_URL').required().asString();
 
     this.isCI = env.get('CI').default('false').asBool();
 
