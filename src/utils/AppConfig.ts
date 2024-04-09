@@ -19,6 +19,9 @@ class AppConfig {
   // Base URL to use in actions like `await page.goto('./dashboard')`.
   public appURL!: string;
 
+    // Base API URL to use for separate requests to the server
+    public apiURL!: string;
+
   // Flag indicating whether tests are running in Continuous Integration.
   public isCI!: boolean;
 
