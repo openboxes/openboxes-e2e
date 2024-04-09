@@ -24,4 +24,3 @@ test.describe('example test for requestor testing user', () => {
       { ignoreCase: true }
     );
   });
-});
