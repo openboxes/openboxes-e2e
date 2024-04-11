@@ -8,8 +8,8 @@ class GenericService {
   }
 
   async getAppContext() {
-    const apiRepsonse = await this.request.get('./api/getAppContext');
-    return await apiRepsonse.json();
+    const apiResponse = await this.request.get('./api/getAppContext');
+    return await apiResponse.json();
   }
 }
 

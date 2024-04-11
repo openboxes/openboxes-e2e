@@ -1,7 +1,8 @@
 import path from 'node:path';
 
+import _ from 'lodash';
+
 import RoleType from '@/constants/RoleTypes';
-import { setDifference } from '@/utils';
 import AppConfig from '@/utils/AppConfig';
 
 class TestUser {
@@ -26,18 +27,19 @@ class TestUser {
   }
 
   assertAllRequiredRoles(userRoles: Set<string>) {
-    const unexpectedRoles = setDifference(userRoles, this.requiredRoles);
-    const absentRequiredRoles = setDifference(this.requiredRoles, userRoles);
+    const unexpectedRoles = _.difference([...userRoles], [...this.requiredRoles]);
+    const absentRequiredRoles = _.difference([...this.requiredRoles], [...userRoles]);
+
 
     // throw an exception if user doe snot have certain roles that are specified as requiredRoles
-    if (absentRequiredRoles.size > 0) {
+    if (absentRequiredRoles.length > 0) {
       throw new Error(
         `User "${this.username}" is missing required roles: ${[...absentRequiredRoles].join(', ')}`
       );
     }
 
     // throwan exeption if user has roles that were not specified as requiredRoles
-    if (unexpectedRoles.size > 0) {
+    if (unexpectedRoles.length > 0) {
       throw new Error(
         `User "${this.username}" has unexpected roles: ${[...unexpectedRoles].join(', ')}`
       );
