@@ -22,11 +22,8 @@ class AppConfig {
   // Flag indicating whether tests are running in Continuous Integration.
   public isCI!: boolean;
 
-  // main user used for most of the tests
-  public user!: TestUser;
-
-  // requestor user used for requestor specific tests
-  public requestor!: TestUser;
+  // test users used in all of the tests
+  public users!: Record<'main' | 'requestor', TestUser>;
 
   // Private constructor to enforce singleton pattern.
   private constructor() {}
@@ -52,24 +49,25 @@ class AppConfig {
 
     this.isCI = env.get('CI').default('false').asBool();
 
-    this.user = new TestUser(
-      env.get('USER_MAIN_USERNAME').required().asString(),
-      env.get('USER_MAIN_PASSWORD').required().asString(),
-      path.join(process.cwd(), '.auth-storage-MAIN-USER.json'),
-      new Set([
-        RoleType.ROLE_SUPERUSER,
-        RoleType.ROLE_FINANCE,
-        RoleType.ROLE_PRODUCT_MANAGER,
-        RoleType.ROLE_INVOICE,
-      ])
-    );
-
-    this.requestor = new TestUser(
-      env.get('USER_REQUESTOR_USERNAME').required().asString(),
-      env.get('USER_REQUESTOR_PASSWORD').required().asString(),
-      path.join(process.cwd(), '.auth-storage-REQUESTOR-USER.json'),
-      new Set([RoleType.ROLE_REQUESTOR, RoleType.ROLE_MANAGER])
-    );
+    this.users = {
+      main: new TestUser(
+        env.get('USER_MAIN_USERNAME').required().asString(),
+        env.get('USER_MAIN_PASSWORD').required().asString(),
+        path.join(process.cwd(), '.auth-storage-MAIN-USER.json'),
+        new Set([
+          RoleType.ROLE_SUPERUSER,
+          RoleType.ROLE_FINANCE,
+          RoleType.ROLE_PRODUCT_MANAGER,
+          RoleType.ROLE_INVOICE,
+        ])
+      ),
+      requestor: new TestUser(
+        env.get('USER_REQUESTOR_USERNAME').required().asString(),
+        env.get('USER_REQUESTOR_PASSWORD').required().asString(),
+        path.join(process.cwd(), '.auth-storage-REQUESTOR-USER.json'),
+        new Set([RoleType.ROLE_REQUESTOR, RoleType.ROLE_MANAGER])
+      )
+    }
   }
 }
 

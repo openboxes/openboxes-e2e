@@ -1,12 +1,7 @@
 import { test } from '@/fixtures/fixtures';
 import AppConfig from '@/utils/AppConfig';
 
-const authUsers = [
-  { name: 'main user', user: AppConfig.instance.user },
-  { name: 'requestor user', user: AppConfig.instance.requestor },
-];
-
-for (const { name, user } of authUsers) {
+for (const [name, user] of Object.entries(AppConfig.instance.users)) {
   test(`authenticate ${name}`, async ({
     page,
     navbar,
