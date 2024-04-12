@@ -2,7 +2,9 @@ import path from 'node:path';
 
 import env from 'env-var';
 
+import { ActivityCode } from '@/constants/ActivityCodes';
 import RoleType from '@/constants/RoleTypes';
+import Location from '@/utils/Location';
 import TestUser from '@/utils/TestUser';
 
 /**
@@ -24,6 +26,9 @@ class AppConfig {
 
   // test users used in all of the tests
   public users!: Record<'main' | 'requestor', TestUser>;
+
+  // test users used in all of the tests
+  public locations!: Record<'main', Location>;
 
   // Private constructor to enforce singleton pattern.
   private constructor() {}
@@ -66,8 +71,19 @@ class AppConfig {
         env.get('USER_REQUESTOR_PASSWORD').required().asString(),
         path.join(process.cwd(), '.auth-storage-REQUESTOR-USER.json'),
         new Set([RoleType.ROLE_REQUESTOR, RoleType.ROLE_MANAGER])
-      )
-    }
+      ),
+    };
+
+    this.locations = {
+      main: new Location(
+        env.get('LOCATION_MAIN').required().asString(),
+        new Set([
+          ActivityCode.MANAGE_INVENTORY,
+          ActivityCode.DYNAMIC_CREATION,
+          ActivityCode.AUTOSAVE,
+        ])
+      ),
+    };
   }
 }
 
