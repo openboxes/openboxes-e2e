@@ -6,10 +6,10 @@ class LocationChooser extends BasePageModel {
     await expect(this.page.getByText('Choose Location')).toBeVisible();
   }
 
-  getOrganization(name: string) {
+  getOrganization(name = 'No organization') {
     return this.page
       .getByTestId('location-organization-list')
-      .getByRole('listitem')
+      .getByRole('tab')
       .filter({ hasText: name });
   }
 

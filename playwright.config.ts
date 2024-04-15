@@ -20,7 +20,7 @@ export default defineConfig({
   /* Retry on CI only */
   retries: appConfig.isCI ? 2 : 0,
   /* Opt out of parallel tests on CI. */
-  workers: appConfig.isCI ? 1 : undefined,
+  workers: 1,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: 'html',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
@@ -38,7 +38,8 @@ export default defineConfig({
 
   /* Configure projects for major browsers */
   projects: [
-    { name: 'setup', testMatch: /.*\.setup\.ts/ },
+    { name: 'data-setup', testMatch: 'data.setup.ts' },
+    { name: 'auth-setup', testMatch: 'auth.setup.ts', dependencies: ['data-setup'], },
     {
       name: 'chromium',
       use: {
@@ -46,7 +47,7 @@ export default defineConfig({
         viewport: { width: 1366, height: 768 },
         storageState: appConfig.users['main'].storagePath,
       },
-      dependencies: ['setup'],
+      dependencies: ['auth-setup'],
     },
   ],
 });

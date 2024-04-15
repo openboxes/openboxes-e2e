@@ -27,11 +27,16 @@ class TestUser {
   }
 
   assertAllRequiredRoles(userRoles: Set<string>) {
-    const unexpectedRoles = _.difference([...userRoles], [...this.requiredRoles]);
-    const absentRequiredRoles = _.difference([...this.requiredRoles], [...userRoles]);
+    const unexpectedRoles = _.difference(
+      [...userRoles],
+      [...this.requiredRoles]
+    );
+    const absentRequiredRoles = _.difference(
+      [...this.requiredRoles],
+      [...userRoles]
+    );
 
-
-    // throw an exception if user doe snot have certain roles that are specified as requiredRoles
+    // throw an exception if user does not have certain roles that are specified as requiredRoles
     if (absentRequiredRoles.length > 0) {
       throw new Error(
         `User "${this.username}" is missing required roles: ${[...absentRequiredRoles].join(', ')}`
