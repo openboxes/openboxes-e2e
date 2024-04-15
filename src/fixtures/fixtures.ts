@@ -11,7 +11,7 @@ import {
 import {
   locationChooser,
   LocationChooserFixture,
-} from '@/fixtures/LocationChooserFixture';
+} from '@/fixtures/locationChooserFixture';
 import {
   LocationDataFixture,
   mainLocation,
@@ -22,7 +22,7 @@ import {
   LocationServiceFixture,
 } from '@/fixtures/locationServiceFixture';
 import { loginPage, LoginPageFixture } from '@/fixtures/loginPageFixture';
-import { navbar, NavbarFixture } from '@/fixtures/NavbarFixture';
+import { navbar, NavbarFixture } from '@/fixtures/navbarFixture';
 
 type Fixtures = LoginPageFixture &
   GenericServiceFixture &
