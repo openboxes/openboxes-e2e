@@ -27,7 +27,7 @@ test.describe('example test for requestor testing user', () => {
     page,
     navbar,
     wardLocation,
-    mainLocation
+    mainLocation,
   }) => {
     await wardLocation.switchLocation();
     const location = await wardLocation.getLocation();
@@ -39,7 +39,7 @@ test.describe('example test for requestor testing user', () => {
       AppConfig.instance.users['requestor'].username,
       { ignoreCase: true }
     );
-    await expect(navbar.locationChooserButton).toContainText(location.name)
+    await expect(navbar.locationChooserButton).toContainText(location.name);
 
     // cleanup, switch back to mainLocation
     await mainLocation.switchLocation();
@@ -48,7 +48,7 @@ test.describe('example test for requestor testing user', () => {
   test('Open dashboard page as a requestor test user in main location', async ({
     page,
     navbar,
-    mainLocation
+    mainLocation,
   }) => {
     const location = await mainLocation.getLocation();
 
@@ -59,8 +59,7 @@ test.describe('example test for requestor testing user', () => {
       AppConfig.instance.users['requestor'].username,
       { ignoreCase: true }
     );
-    await expect(navbar.locationChooserButton).toContainText(location.name)
-
+    await expect(navbar.locationChooserButton).toContainText(location.name);
   });
 });
 

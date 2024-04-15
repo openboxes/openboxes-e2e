@@ -18,5 +18,4 @@ export const wardLocation: FixtureCallback<LocationDataFixture> = async (
   use
 ) => {
   await use(new LocationData('ward', page.request));
-
 };
