@@ -3,7 +3,7 @@ import _ from 'lodash';
 import { ActivityCode } from '@/constants/ActivityCodes';
 import { LocationTypeCode } from '@/constants/LocationTypeCode';
 
-class Location {
+class LocationConfig {
   id: string;
   requiredActivityCodes: Set<ActivityCode>;
   requiredType: LocationTypeCode;
@@ -52,4 +52,4 @@ class Location {
   }
 }
 
-export default Location;
+export default LocationConfig;

@@ -5,7 +5,7 @@ import _ from 'lodash';
 import RoleType from '@/constants/RoleTypes';
 import AppConfig from '@/utils/AppConfig';
 
-class TestUser {
+class TestUserConfig {
   username: string;
   password: string;
   storagePath: string;
@@ -52,4 +52,4 @@ class TestUser {
   }
 }
 
-export default TestUser;
+export default TestUserConfig;
