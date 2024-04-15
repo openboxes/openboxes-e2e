@@ -3,6 +3,7 @@ import path from 'node:path';
 import env from 'env-var';
 
 import { ActivityCode } from '@/constants/ActivityCodes';
+import { LocationTypeCode } from '@/constants/LocationTypeCode';
 import RoleType from '@/constants/RoleTypes';
 import Location from '@/utils/Location';
 import TestUser from '@/utils/TestUser';
@@ -28,7 +29,7 @@ class AppConfig {
   public users!: Record<'main' | 'requestor', TestUser>;
 
   // test users used in all of the tests
-  public locations!: Record<'main', Location>;
+  public locations!: Record<'main' | 'ward', Location>;
 
   // Private constructor to enforce singleton pattern.
   private constructor() {}
@@ -81,7 +82,14 @@ class AppConfig {
           ActivityCode.MANAGE_INVENTORY,
           ActivityCode.DYNAMIC_CREATION,
           ActivityCode.AUTOSAVE,
-        ])
+          ActivityCode.SUBMIT_REQUEST,
+        ]),
+        LocationTypeCode.DEPOT
+      ),
+      ward: new Location(
+        env.get('LOCATION_WARD').required().asString(),
+        new Set([ActivityCode.RECEIVE_STOCK, ActivityCode.SUBMIT_REQUEST]),
+        LocationTypeCode.WARD
       ),
     };
   }
