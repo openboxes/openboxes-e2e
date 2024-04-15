@@ -19,7 +19,8 @@ class LocationData {
   }
 
   async getLocation() {
-    return await this.locationService.getLocation(this.locationConfig.id);
+    const { data } = await this.locationService.getLocation(this.locationConfig.id);
+    return data;
   }
 
   async switchLocation() {

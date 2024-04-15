@@ -23,32 +23,35 @@ test.describe('example test for requestor testing user', () => {
     );
   });
 
-  test('Open dashboard page as a main test user in ward location', async ({
+  test('Open dashboard page as a reqestor user in ward location', async ({
     page,
     navbar,
-    locationChooser,
     wardLocation,
+    mainLocation
   }) => {
+    await wardLocation.switchLocation();
+    const location = await wardLocation.getLocation();
+
     await page.goto('./dashboard');
-
-    await navbar.locationChooserButton.click();
-
-    await locationChooser
-      .getOrganization(wardLocation.organization?.name)
-      .click();
-    await locationChooser.getLocation(wardLocation.name).click();
 
     await navbar.profileButton.click();
     await expect(navbar.navbar).toContainText(
       AppConfig.instance.users['requestor'].username,
       { ignoreCase: true }
     );
+    await expect(navbar.locationChooserButton).toContainText(location.name)
+
+    // cleanup, switch back to mainLocation
+    await mainLocation.switchLocation();
   });
 
-  test('Open dashboard page as a main test user in ward location 2', async ({
+  test('Open dashboard page as a requestor test user in main location', async ({
     page,
     navbar,
+    mainLocation
   }) => {
+    const location = await mainLocation.getLocation();
+
     await page.goto('./dashboard');
 
     await navbar.profileButton.click();
@@ -56,6 +59,8 @@ test.describe('example test for requestor testing user', () => {
       AppConfig.instance.users['requestor'].username,
       { ignoreCase: true }
     );
+    await expect(navbar.locationChooserButton).toContainText(location.name)
+
   });
 });
 
