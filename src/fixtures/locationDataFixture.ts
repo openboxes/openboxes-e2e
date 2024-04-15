@@ -1,32 +1,22 @@
-import LocationService from '@/api/LocationService';
-import { FixtureCallback, LocationResponse } from '@/types';
-import AppConfig from '@/utils/AppConfig';
+import { FixtureCallback } from '@/types';
+import LocationData from '@/utils/LocationData';
 
 export type LocationDataFixture = {
-  mainLocation: LocationResponse;
-  wardLocation: LocationResponse;
+  mainLocation: LocationData;
+  wardLocation: LocationData;
 };
 
 export const mainLocation: FixtureCallback<LocationDataFixture> = async (
   { page },
   use
 ) => {
-  const locationService = new LocationService(page.request);
-  const { data } = await locationService.getLocation(
-    AppConfig.instance.locations['main'].id
-  );
-
-  await use(data);
+  await use(new LocationData('main', page.request));
 };
 
 export const wardLocation: FixtureCallback<LocationDataFixture> = async (
   { page },
   use
 ) => {
-  const locationService = new LocationService(page.request);
-  const { data } = await locationService.getLocation(
-    AppConfig.instance.locations['ward'].id
-  );
+  await use(new LocationData('ward', page.request));
 
-  await use(data);
 };
