@@ -13,6 +13,11 @@ import {
   LocationChooserFixture,
 } from '@/fixtures/LocationChooserFixture';
 import {
+  LocationDataFixture,
+  mainLocation,
+  wardLocation,
+} from '@/fixtures/locationDataFixture';
+import {
   locationService,
   LocationServiceFixture,
 } from '@/fixtures/locationServiceFixture';
@@ -24,7 +29,8 @@ type Fixtures = LoginPageFixture &
   NavbarFixture &
   LocationServiceFixture &
   AuthServiceFixture &
-  LocationChooserFixture;
+  LocationChooserFixture &
+  LocationDataFixture;
 
 export const test = baseTest.extend<Fixtures>({
   loginPage,
@@ -33,6 +39,8 @@ export const test = baseTest.extend<Fixtures>({
   authService,
   navbar,
   locationChooser,
+  mainLocation,
+  wardLocation,
 });
 
 export { expect } from '@playwright/test';
