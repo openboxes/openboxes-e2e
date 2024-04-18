@@ -1,12 +1,6 @@
-import { APIRequestContext } from '@playwright/test';
+import BaseServiceModel from '@/api/BaseServiceModel';
 
-class GenericService {
-  private request: APIRequestContext;
-
-  constructor(request: APIRequestContext) {
-    this.request = request;
-  }
-
+class GenericService extends BaseServiceModel {
   async getAppContext() {
     const apiResponse = await this.request.get('./api/getAppContext');
     return await apiResponse.json();

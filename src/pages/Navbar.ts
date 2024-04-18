@@ -4,13 +4,15 @@ import BasePageModel from '@/pages/BasePageModel';
 
 class Navbar extends BasePageModel {
   get navbar() {
-    // FIXME add a testId or a label to make sure we are targetting a propper navbar
-    return this.page.getByRole('navigation');
+    return this.page.getByRole('navigation', { name: 'main' });
+  }
+
+  get locationChooserButton() {
+    return this.navbar.getByLabel('location-chooser');
   }
 
   get profileButton() {
-    // FIXME add labels or testIds
-    return this.navbar.getByRole('img').last();
+    return this.navbar.getByLabel('profile');
   }
 
   async isLoaded() {

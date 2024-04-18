@@ -2,8 +2,11 @@ import path from 'node:path';
 
 import env from 'env-var';
 
+import { ActivityCode } from '@/constants/ActivityCodes';
+import { LocationTypeCode } from '@/constants/LocationTypeCode';
 import RoleType from '@/constants/RoleTypes';
-import TestUser from '@/utils/TestUser';
+import LocationConfig from '@/utils/LocationConfig';
+import TestUserConfig from '@/utils/TestUserConfig';
 
 /**
  * class representing the application configuration for end-to-end tests.
@@ -23,7 +26,10 @@ class AppConfig {
   public isCI!: boolean;
 
   // test users used in all of the tests
-  public users!: Record<'main' | 'requestor', TestUser>;
+  public users!: Record<'main' | 'requestor', TestUserConfig>;
+
+  // test users used in all of the tests
+  public locations!: Record<'main' | 'ward', LocationConfig>;
 
   // Private constructor to enforce singleton pattern.
   private constructor() {}
@@ -50,10 +56,10 @@ class AppConfig {
     this.isCI = env.get('CI').default('false').asBool();
 
     this.users = {
-      main: new TestUser(
+      main: new TestUserConfig(
         env.get('USER_MAIN_USERNAME').required().asString(),
         env.get('USER_MAIN_PASSWORD').required().asString(),
-        path.join(process.cwd(), '.auth-storage-MAIN-USER.json'),
+        '.auth-storage-MAIN-USER.json',
         new Set([
           RoleType.ROLE_SUPERUSER,
           RoleType.ROLE_FINANCE,
@@ -61,13 +67,31 @@ class AppConfig {
           RoleType.ROLE_INVOICE,
         ])
       ),
-      requestor: new TestUser(
+      requestor: new TestUserConfig(
         env.get('USER_REQUESTOR_USERNAME').required().asString(),
         env.get('USER_REQUESTOR_PASSWORD').required().asString(),
-        path.join(process.cwd(), '.auth-storage-REQUESTOR-USER.json'),
+        '.auth-storage-REQUESTOR-USER.json',
         new Set([RoleType.ROLE_REQUESTOR, RoleType.ROLE_MANAGER])
-      )
-    }
+      ),
+    };
+
+    this.locations = {
+      main: new LocationConfig(
+        env.get('LOCATION_MAIN').required().asString(),
+        new Set([
+          ActivityCode.MANAGE_INVENTORY,
+          ActivityCode.DYNAMIC_CREATION,
+          ActivityCode.AUTOSAVE,
+          ActivityCode.SUBMIT_REQUEST,
+        ]),
+        LocationTypeCode.DEPOT
+      ),
+      ward: new LocationConfig(
+        env.get('LOCATION_WARD').required().asString(),
+        new Set([ActivityCode.RECEIVE_STOCK, ActivityCode.SUBMIT_REQUEST]),
+        LocationTypeCode.WARD
+      ),
+    };
   }
 }
 

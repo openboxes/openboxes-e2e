@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "End to end testing for OpenBoxes",
   "main": "index.js",
-  "type": "module",
   "scripts": {
     "lint": "eslint .",
     "lint-fix": "eslint . --fix",

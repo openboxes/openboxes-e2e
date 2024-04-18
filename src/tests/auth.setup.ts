@@ -6,22 +6,22 @@ for (const [name, user] of Object.entries(AppConfig.instance.users)) {
     page,
     navbar,
     loginPage,
-    genericService,
+    locationService,
+    locationChooser,
   }) => {
     await loginPage.goToPage();
 
     await loginPage.fillLoginForm(user.username, user.password);
     await loginPage.loginButton.click();
 
+    const { data } = await locationService.getLocation(
+      AppConfig.instance.locations['main'].id
+    );
+    await locationChooser.getOrganization(data.organization?.name).click();
+    await locationChooser.getLocation(data.name).click();
+
     await navbar.isLoaded();
 
     await page.context().storageState({ path: user.storagePath });
-
-    const { data } = await genericService.getAppContext();
-
-    const userGlobalRoles = data?.user?.roles || [];
-    const currentLocationRoles = data?.currentLocationRoles || [];
-    const allUserRoles = new Set([...userGlobalRoles, ...currentLocationRoles]);
-    user.assertAllRequiredRoles(allUserRoles);
   });
 }

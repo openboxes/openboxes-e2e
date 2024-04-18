@@ -23,3 +23,27 @@ type FixtureCallback<T> = (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   use: (arg: any) => Promise<void>
 ) => Promise<void>;
+
+type ApiResponse<T> = { data: T };
+
+type LocationResponse = {
+  id: string;
+  name: string;
+  locationNumber: string;
+  locationGroup: {
+    id: string;
+    name: string;
+  };
+  locationType: {
+    id: string;
+    name: string;
+    description: string;
+    locationTypeCode: string;
+  };
+  supportedActivities: string[];
+  organization?: {
+    id: string;
+    name: string;
+    code: string;
+  };
+};
