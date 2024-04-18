@@ -59,7 +59,7 @@ class AppConfig {
       main: new TestUserConfig(
         env.get('USER_MAIN_USERNAME').required().asString(),
         env.get('USER_MAIN_PASSWORD').required().asString(),
-        path.join(process.cwd(), '.auth-storage-MAIN-USER.json'),
+        '.auth-storage-MAIN-USER.json',
         new Set([
           RoleType.ROLE_SUPERUSER,
           RoleType.ROLE_FINANCE,
@@ -70,7 +70,7 @@ class AppConfig {
       requestor: new TestUserConfig(
         env.get('USER_REQUESTOR_USERNAME').required().asString(),
         env.get('USER_REQUESTOR_PASSWORD').required().asString(),
-        path.join(process.cwd(), '.auth-storage-REQUESTOR-USER.json'),
+        '.auth-storage-REQUESTOR-USER.json',
         new Set([RoleType.ROLE_REQUESTOR, RoleType.ROLE_MANAGER])
       ),
     };
