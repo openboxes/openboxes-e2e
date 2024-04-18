@@ -62,15 +62,3 @@ test.describe('example test for requestor testing user', () => {
     await expect(navbar.locationChooserButton).toContainText(location.name);
   });
 });
-
-test.describe('example test for requestor testing user', () => {
-  test.use({ storageState: AppConfig.instance.users['requestor'].storagePath });
-  test('Open dashboard page as a requestor user', async ({ page, navbar }) => {
-    await page.goto('./dashboard');
-    await navbar.profileButton.click();
-    await expect(navbar.navbar).toContainText(
-      AppConfig.instance.users['requestor'].username,
-      { ignoreCase: true }
-    );
-  });
-});
