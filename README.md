@@ -23,6 +23,12 @@ Environment variables facilitate the configuration of our testing project by all
 **CI** [optional]
 <br>`true` or `false` flag indicating whether tests are running in Continuous Integration.
 
+**USER_MAIN_USERNAME** <br> **USER_MAIN_PASSWORD** 
+<br>login credentials of the test user that will be used for most of the tests 
+
+**USER_REQUESTOR_USERNAME** <br> **USER_REQUESTOR_PASSWORD** 
+<br>login credentials of the test requestor user that will be used for tests related to requests
+
 ## Scripts
 
 ### Running tests
