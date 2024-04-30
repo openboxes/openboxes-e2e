@@ -29,7 +29,10 @@ class AppConfig {
   public users!: Record<'main' | 'requestor', TestUserConfig>;
 
   // test users used in all of the tests
-  public locations!: Record<'main' | 'ward' | 'nomanageinventorydepot', LocationConfig>;
+  public locations!: Record<
+    'main' | 'ward' | 'noManageInventoryDepot',
+    LocationConfig
+  >;
 
   // Private constructor to enforce singleton pattern.
   private constructor() {}
@@ -87,7 +90,7 @@ class AppConfig {
           ActivityCode.PLACE_REQUEST,
           ActivityCode.FULFILL_REQUEST,
           ActivityCode.EXTERNAL,
-          ActivityCode.RECEIVE_STOCK
+          ActivityCode.RECEIVE_STOCK,
         ]),
         LocationTypeCode.DEPOT
       ),
@@ -96,8 +99,8 @@ class AppConfig {
         new Set([ActivityCode.RECEIVE_STOCK, ActivityCode.SUBMIT_REQUEST]),
         LocationTypeCode.WARD
       ),
-      nomanageinventorydepot: new LocationConfig(
-        env.get('LOCATION_NOMANAGEINVENOTRYDEPOT').required().asString(),
+      noManageInventoryDepot: new LocationConfig(
+        env.get('LOCATION_NO_MANAGE_INVENOTRY_DEPOT').required().asString(),
         new Set([
           ActivityCode.DYNAMIC_CREATION,
           ActivityCode.AUTOSAVE,
@@ -106,7 +109,7 @@ class AppConfig {
           ActivityCode.PLACE_REQUEST,
           ActivityCode.FULFILL_REQUEST,
           ActivityCode.EXTERNAL,
-          ActivityCode.RECEIVE_STOCK
+          ActivityCode.RECEIVE_STOCK,
         ]),
         LocationTypeCode.DEPOT
       ),
