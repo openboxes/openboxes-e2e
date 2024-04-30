@@ -17,14 +17,13 @@ class LocationChooser extends BasePageModel {
     return this.page.getByTestId('location-list').getByText(name);
   }
 
-  get locationChooserLogoutButton () {
-    return this.page.getByRole('link', { name: 'Logout' })
+  get locationChooserLogoutButton() {
+    return this.page.getByRole('link', { name: 'Logout' });
   }
 
   get emptyLocationChooser() {
     return this.page.getByText('No locations available');
   }
-
 }
 
 export default LocationChooser;
