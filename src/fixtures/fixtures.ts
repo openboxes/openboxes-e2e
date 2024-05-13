@@ -5,6 +5,7 @@ import GenericService from '@/api/GenericService';
 import LocationService from '@/api/LocationService';
 import CreateUserPage from '@/pages/CreateUserPage';
 import EditUserPage from '@/pages/EditUserPage';
+import ImpersonateBanner from '@/pages/ImpersonateBanner';
 import LocationChooser from '@/pages/LocationChooser';
 import LoginPage from '@/pages/LoginPage';
 import Navbar from '@/pages/Navbar';
@@ -24,6 +25,7 @@ type Fixtures = {
   userListPage: UserListPage;
   createUserPage: CreateUserPage;
   editUserPage: EditUserPage;
+  impersonateBanner: ImpersonateBanner;
 };
 
 export const test = baseTest.extend<Fixtures>({
@@ -44,6 +46,7 @@ export const test = baseTest.extend<Fixtures>({
   userListPage: async ({ page }, use) => use(new UserListPage(page)),
   createUserPage: async ({ page }, use) => use(new CreateUserPage(page)),
   editUserPage: async ({ page }, use) => use(new EditUserPage(page)),
+  impersonateBanner: async ({ page }, use) => use(new ImpersonateBanner(page)),
 });
 
 export { expect } from '@playwright/test';
