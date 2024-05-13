@@ -1,25 +1,37 @@
+import { Page } from '@playwright/test';
+
 import { expect } from '@/fixtures/fixtures';
 import BasePageModel from '@/pages/BasePageModel';
+import LocationRoleDialog from '@/pages/LocationRoleDialog';
 
 class EditUserPage extends BasePageModel {
+  locationRoleDialog: LocationRoleDialog;
+  constructor(page: Page) {
+    super(page);
+    this.locationRoleDialog = new LocationRoleDialog(page);
+  }
   async isLoaded() {
     await expect(this.page.locator('title')).toBeVisible();
   }
 
-  get userTitle() {
-    return this.page.locator('.summary .title');
+  get summary() {
+    return this.page.getByRole('region', { name: 'summary' });
   }
 
   get actionButton() {
-    return this.page.locator('button.action-btn');
+    return this.page.getByRole('button', { name: 'action' });
   }
 
   get deleteUserButton() {
     return this.page.getByRole('menuitem').filter({ hasText: 'Delete User' });
   }
 
+  get userDetailsSection() {
+    return this.page.getByRole('region', { name: 'User Details' });
+  }
+
   get activateUser() {
-    return this.page.getByRole('checkbox').nth(0);
+    return this.userDetailsSection.getByRole('checkbox').nth(0);
   }
 
   get saveButton() {
@@ -48,36 +60,6 @@ class EditUserPage extends BasePageModel {
     return this.page.getByRole('button', { name: 'Add Location Roles' });
   }
 
-  get locationSelectClearButton() {
-    return this.locationForLocationRoleSelect.locator('.search-choice-close');
-  }
-
-  get locationForLocationRoleSelect() {
-    return this.page.getByTestId('location-select');
-  }
-
-  getLocationForLocationRole(name: string) {
-    return this.locationForLocationRoleSelect
-      .getByRole('listitem')
-      .getByText(name, { exact: true });
-  }
-
-  get locationRoleSelect() {
-    return this.page.getByTestId('role-select');
-  }
-
-  getUserLocationRole(role: string) {
-    return this.locationRoleSelect
-      .getByRole('list')
-      .getByText(role, { exact: true });
-  }
-
-  get saveButtonOnLocationRoleDialog() {
-    return this.page
-      .getByRole('dialog', { name: 'Add Location Roles' })
-      .getByRole('button', { name: 'Save' });
-  }
-
   get defaultLocation() {
     return this.page.getByTestId('default-location-select');
   }
@@ -87,7 +69,7 @@ class EditUserPage extends BasePageModel {
   }
 
   get autoLogin() {
-    return this.page.locator('#rememberLastLocation');
+    return this.page.getByRole('checkbox', { name: 'Auto-login location' });
   }
 }
 
