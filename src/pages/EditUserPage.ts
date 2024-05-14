@@ -31,7 +31,7 @@ class EditUserPage extends BasePageModel {
   }
 
   get activateUser() {
-    return this.userDetailsSection.getByRole('checkbox').nth(0);
+    return this.userDetailsSection.getByRole('checkbox', { name: 'Active' });
   }
 
   get saveButton() {
@@ -60,7 +60,7 @@ class EditUserPage extends BasePageModel {
     return this.page.getByRole('button', { name: 'Add Location Roles' });
   }
 
-  get defaultLocation() {
+  get defaultLocationSelect() {
     return this.page.getByTestId('default-location-select');
   }
 
