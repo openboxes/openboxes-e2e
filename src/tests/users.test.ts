@@ -12,6 +12,7 @@ const formData: UserType = {
 };
 
 test.beforeEach(
+  //create and activate user
   async ({ page, navbar, userListPage, createUserPage, editUserPage }) => {
     await page.goto('./dashboard');
     await navbar.configurationButton.click();
@@ -28,6 +29,7 @@ test.beforeEach(
 );
 
 test.afterEach(
+  //delete created user
   async ({
     page,
     navbar,
@@ -45,6 +47,7 @@ test.afterEach(
     );
     await loginPage.loginButton.click();
     const location = await mainLocation.getLocation();
+    await locationChooser.getOrganization(location.organization?.name).click();
     await locationChooser.getLocation(location.name).click();
     await navbar.configurationButton.click();
     await navbar.getNavItem('Users').click();
@@ -61,17 +64,18 @@ test.afterEach(
 );
 
 //tests are covering all steps from test case OBPIH-4622 Users
-test('Create user, add default location and auto-login and delete user', async ({
+test('Add default location for user and auto-login to location', async ({
   navbar,
   editUserPage,
   page,
   loginPage,
   mainLocation,
 }) => {
+  test.setTimeout(3 * 60 * 1000);
   await editUserPage.authorizationTab.click();
   await editUserPage.defaultRoleSelect.click();
   await editUserPage.getUserRole('Manager').click();
-  await editUserPage.defaultLocation.click();
+  await editUserPage.defaultLocationSelect.click();
   const location = await mainLocation.getLocation();
   await editUserPage.getDefaultLocation(location.name).click();
   await editUserPage.autoLogin.click();
@@ -83,7 +87,8 @@ test('Create user, add default location and auto-login and delete user', async (
   await expect(page.getByText('My Dashboard')).toBeVisible();
 });
 
-test('Create and impersonate user', async ({ editUserPage, page }) => {
+test('Impersonate created user', async ({ editUserPage, page }) => {
+  test.setTimeout(3 * 60 * 1000);
   await editUserPage.authorizationTab.click();
   await editUserPage.defaultRoleSelect.click();
   await editUserPage.getUserRole('Manager').click();
@@ -121,7 +126,7 @@ test('Create and impersonate user', async ({ editUserPage, page }) => {
   await newPage.close();
 });
 
-test('Create user with no access global permissions', async ({
+test('Add no access global permissions, edit user and add location role', async ({
   navbar,
   userListPage,
   editUserPage,
@@ -146,6 +151,7 @@ test('Create user with no access global permissions', async ({
   );
   await loginPage.loginButton.click();
   const location = await mainLocation.getLocation();
+  await locationChooser.getOrganization(location.organization?.name).click();
   await locationChooser.getLocation(location.name).click();
   await navbar.configurationButton.click();
   await navbar.getNavItem('Users').click();
@@ -166,11 +172,12 @@ test('Create user with no access global permissions', async ({
   await navbar.logoutButton.click();
   await loginPage.fillLoginForm(formData.username, formData.password);
   await loginPage.loginButton.click();
+  await locationChooser.getOrganization(location.organization?.name).click();
   await expect(locationChooser.getLocation(location.name)).toBeVisible();
   await locationChooser.getLocation(location.name).click();
 });
 
-test('Create user with requestor permission in non manage inventory depot', async ({
+test('Add requestor permission to non manage inventory depot', async ({
   navbar,
   editUserPage,
   loginPage,
@@ -198,6 +205,7 @@ test('Create user with requestor permission in non manage inventory depot', asyn
   await navbar.logoutButton.click();
   await loginPage.fillLoginForm(formData.username, formData.password);
   await loginPage.loginButton.click();
+  await locationChooser.getOrganization(location.organization?.name).click();
   await expect(locationChooser.getLocation(location.name)).toBeVisible();
   await locationChooser.getLocation(location.name).click();
 });
