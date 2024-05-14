@@ -30,14 +30,6 @@ class Navbar extends BasePageModel {
   get logoutButton() {
     return this.navbar.getByRole('menuitem', { name: 'Logout' });
   }
-
-  get impersonateBar() {
-    return this.page.getByRole('alert');
-  }
-
-  get impersonateLogoutButton() {
-    return this.impersonateBar.getByRole('button', { name: 'Logout' });
-  }
 }
 
 export default Navbar;
