@@ -6,6 +6,10 @@ class UserListPage extends BasePageModel {
     await expect(this.page.getByText('Users')).toBeVisible();
   }
 
+  async goToPage() {
+    await this.page.goto('./user/list');
+  }
+
   get createUserButton() {
     return this.page.getByText('Create User');
   }

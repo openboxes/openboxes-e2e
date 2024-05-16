@@ -1,18 +1,19 @@
 import { expect, test } from '@/fixtures/fixtures';
 import ImpersonateBanner from '@/pages/ImpersonateBanner';
+import LocationChooser from '@/pages/LocationChooser';
+import LoginPage from '@/pages/LoginPage';
 import Navbar from '@/pages/Navbar';
 import { UserType } from '@/types';
-import AppConfig from '@/utils/AppConfig';
 
 const formData: UserType = {
-  username: 'test1',
-  firstName: 'test1',
-  lastName: 'test1',
-  password: 'test1',
+  username: 'user_user_testcases',
+  firstName: 'user_firstanme',
+  lastName: 'user_lastname',
+  password: 'testpassword123',
 };
 
+//create and activate user
 test.beforeEach(
-  //create and activate user
   async ({ page, navbar, userListPage, createUserPage, editUserPage }) => {
     await page.goto('./dashboard');
     await navbar.configurationButton.click();
@@ -23,106 +24,77 @@ test.beforeEach(
     await expect(editUserPage.summary).toContainText(
       `${formData.firstName} ${formData.lastName}`
     );
-    await editUserPage.activateUser.click();
-    await editUserPage.saveButton.click();
+    await editUserPage.userDetailsTabSection.activateUserCheckBox.click();
+    await editUserPage.userDetailsTabSection.saveButton.click();
   }
 );
 
-test.afterEach(
-  //delete created user
-  async ({
-    page,
-    navbar,
-    loginPage,
-    locationChooser,
-    editUserPage,
-    userListPage,
-    mainLocation,
-  }) => {
-    await navbar.profileButton.click();
-    await navbar.logoutButton.click();
-    await loginPage.fillLoginForm(
-      AppConfig.instance.users.main.username,
-      AppConfig.instance.users.main.password
-    );
-    await loginPage.loginButton.click();
-    const location = await mainLocation.getLocation();
-    await locationChooser.getOrganization(location.organization?.name).click();
-    await locationChooser.getLocation(location.name).click();
-    await navbar.configurationButton.click();
-    await navbar.getNavItem('Users').click();
-    await userListPage.searchByNameField.fill(formData.username);
-    await userListPage.findButton.click();
-    await userListPage.getUserToEdit(formData.username).click();
-    await editUserPage.actionButton.click();
-    page.on('dialog', (dialog) => dialog.accept());
-    await editUserPage.deleteUserButton.click();
-    await userListPage.searchByNameField.fill(formData.username);
-    await userListPage.findButton.click();
-    await expect(userListPage.userListTable).toContainText('No users returned');
-  }
-);
+//delete created user
+test.afterEach(async ({ editUserPage, userListPage }) => {
+  await userListPage.goToPage();
+  await userListPage.searchByNameField.fill(formData.username);
+  await userListPage.findButton.click();
+  await userListPage.getUserToEdit(formData.username).click();
+  await editUserPage.actionButton.click();
+  await editUserPage.clickDeleteUser();
+  await userListPage.searchByNameField.fill(formData.username);
+  await userListPage.findButton.click();
+  await expect(userListPage.userListTable).toContainText('No users returned');
+});
 
 //tests are covering all steps from test case OBPIH-4622 Users
 test('Add default location for user and auto-login to location', async ({
-  navbar,
   editUserPage,
-  page,
-  loginPage,
   mainLocation,
+  browser,
 }) => {
-  test.setTimeout(3 * 60 * 1000);
   await editUserPage.authorizationTab.click();
-  await editUserPage.defaultRoleSelect.click();
-  await editUserPage.getUserRole('Manager').click();
-  await editUserPage.defaultLocationSelect.click();
+  await editUserPage.authorizationTabSection.defaultRoleSelect.click();
+  await editUserPage.authorizationTabSection.getUserRole('Manager').click();
+  await editUserPage.authorizationTabSection.defaultLocationSelect.click();
   const location = await mainLocation.getLocation();
-  await editUserPage.getDefaultLocation(location.name).click();
-  await editUserPage.autoLogin.click();
-  await editUserPage.saveButton.click();
-  await navbar.profileButton.click();
-  await navbar.logoutButton.click();
-  await loginPage.fillLoginForm(formData.username, formData.password);
-  await loginPage.loginButton.click();
-  await expect(page.getByText('My Dashboard')).toBeVisible();
+  await editUserPage.authorizationTabSection
+    .getDefaultLocation(location.name)
+    .click();
+  await editUserPage.authorizationTabSection.autoLoginCheckbox.click();
+  await editUserPage.authorizationTabSection.saveButton.click();
+
+  const newUserCtx = await browser.newContext({
+    storageState: { cookies: [], origins: [] },
+  });
+  const newUserPage = await newUserCtx.newPage();
+  const newUserLoginPage = new LoginPage(newUserPage);
+  await newUserLoginPage.goToPage();
+  await newUserLoginPage.fillLoginForm(formData.username, formData.password);
+  await newUserLoginPage.loginButton.click();
+
+  await expect(newUserPage.getByText('My Dashboard')).toBeVisible();
+  await newUserCtx.close();
 });
 
-test('Impersonate created user', async ({ editUserPage, page }) => {
-  test.setTimeout(3 * 60 * 1000);
+test('Impersonate created user', async ({ editUserPage }) => {
   await editUserPage.authorizationTab.click();
-  await editUserPage.defaultRoleSelect.click();
-  await editUserPage.getUserRole('Manager').click();
-  await editUserPage.saveButton.click();
-  await editUserPage.impersonateButton.click();
-  const newPage = await page.waitForEvent('popup');
+  await editUserPage.authorizationTabSection.defaultRoleSelect.click();
+  await editUserPage.authorizationTabSection.getUserRole('Manager').click();
+  await editUserPage.authorizationTabSection.saveButton.click();
+
+  const newPage = await editUserPage.clickImpersonateButton();
   const impersonateBanner = new ImpersonateBanner(newPage);
   await impersonateBanner.isLoaded(formData.username);
   const newPageNavbar = new Navbar(newPage);
   await expect(newPageNavbar.configurationButton).toBeHidden();
   await impersonateBanner.isLoaded(formData.username);
-  await newPageNavbar.navbar
-    .getByRole('link', { name: 'Purchasing', exact: true })
-    .click();
-  await newPageNavbar.navbar
-    .getByRole('link', { name: 'List Purchase Orders', exact: true })
-    .click();
+  await newPageNavbar.getNavItem('Purchasing').click();
+  await newPageNavbar.getNavItem('List Purchase Orders').click();
   await impersonateBanner.isLoaded(formData.username);
-  await newPageNavbar.navbar
-    .getByRole('link', { name: 'Outbound', exact: true })
-    .click();
-  await newPageNavbar.navbar
-    .getByRole('link', { name: 'Create Outbound Movement', exact: true })
-    .click();
+  await newPageNavbar.getNavItem('Outbound').click();
+  await newPageNavbar.getNavItem('Create Outbound Movement').click();
   await impersonateBanner.isLoaded(formData.username);
-  await newPageNavbar.navbar
-    .getByRole('link', { name: 'Products', exact: true })
-    .click();
-  await newPageNavbar.navbar
-    .getByRole('link', { name: 'List Products', exact: true })
-    .click();
+  await newPageNavbar.getNavItem('Products').click();
+  await newPageNavbar.getNavItem('List Products').click();
   await impersonateBanner.isLoaded(formData.username);
-  await newPage.getByRole('button', { name: 'Logout' }).click();
-  await expect(newPage.getByRole('alert')).toBeHidden();
+  await impersonateBanner.logoutButton.click();
+  expect(impersonateBanner.isLoaded(formData.username)).rejects.toThrow();
   await newPage.close();
 });
 
@@ -130,82 +102,107 @@ test('Add no access global permissions, edit user and add location role', async 
   navbar,
   userListPage,
   editUserPage,
-  loginPage,
-  locationChooser,
   mainLocation,
+  browser,
 }) => {
-  test.setTimeout(3 * 60 * 1000);
   await editUserPage.authorizationTab.click();
-  await editUserPage.defaultRoleSelect.click();
-  await editUserPage.getUserRole('No access').click();
-  await editUserPage.saveButton.click();
-  await navbar.profileButton.click();
-  await navbar.logoutButton.click();
-  await loginPage.fillLoginForm(formData.username, formData.password);
-  await loginPage.loginButton.click();
-  await expect(locationChooser.emptyLocationChooser).toBeVisible();
-  await locationChooser.locationChooserLogoutButton.click();
-  await loginPage.fillLoginForm(
-    AppConfig.instance.users.main.username,
-    AppConfig.instance.users.main.password
+  await editUserPage.authorizationTabSection.defaultRoleSelect.click();
+  await editUserPage.authorizationTabSection.getUserRole('No access').click();
+  await editUserPage.authorizationTabSection.saveButton.click();
+
+  const useNoAccessRoleCxt = await browser.newContext({
+    storageState: { cookies: [], origins: [] },
+  });
+  const useNoAccessRolePage = await useNoAccessRoleCxt.newPage();
+  const useNoAccessLoginPage = new LoginPage(useNoAccessRolePage);
+  const userNoAccessLocationChooser = new LocationChooser(useNoAccessRolePage);
+  await useNoAccessLoginPage.goToPage();
+  await useNoAccessLoginPage.fillLoginForm(
+    formData.username,
+    formData.password
   );
-  await loginPage.loginButton.click();
-  const location = await mainLocation.getLocation();
-  await locationChooser.getOrganization(location.organization?.name).click();
-  await locationChooser.getLocation(location.name).click();
+  await useNoAccessLoginPage.loginButton.click();
+  await expect(userNoAccessLocationChooser.emptyLocationChooser).toBeVisible();
+  await useNoAccessRolePage.close();
+
   await navbar.configurationButton.click();
   await navbar.getNavItem('Users').click();
+
   await userListPage.searchByNameField.fill(formData.username);
   await userListPage.findButton.click();
   await userListPage.getUserToEdit(formData.username).click();
   await editUserPage.authorizationTab.click();
-  await editUserPage.addLocationRolesButton.click();
-  await editUserPage.locationRoleDialog.locationSelectClearButton.click();
-  await editUserPage.locationRoleDialog.locationForLocationRoleSelect.click();
-  await editUserPage.locationRoleDialog
+  await editUserPage.authorizationTabSection.addLocationRolesButton.click();
+  await editUserPage.authorizationTabSection.locationRoleDialog.locationSelectClearButton.click();
+  await editUserPage.authorizationTabSection.locationRoleDialog.locationForLocationRoleSelect.click();
+
+  const location = await mainLocation.getLocation();
+  await editUserPage.authorizationTabSection.locationRoleDialog
     .getLocationForLocationRole(location.name)
     .click();
-  await editUserPage.locationRoleDialog.locationRoleSelect.click();
-  await editUserPage.locationRoleDialog.getUserLocationRole('Manager').click();
-  await editUserPage.locationRoleDialog.saveButtonOnLocationRoleDialog.click();
-  await navbar.profileButton.click();
-  await navbar.logoutButton.click();
-  await loginPage.fillLoginForm(formData.username, formData.password);
-  await loginPage.loginButton.click();
-  await locationChooser.getOrganization(location.organization?.name).click();
-  await expect(locationChooser.getLocation(location.name)).toBeVisible();
-  await locationChooser.getLocation(location.name).click();
+  await editUserPage.authorizationTabSection.locationRoleDialog.locationRoleSelect.click();
+  await editUserPage.authorizationTabSection.locationRoleDialog
+    .getUserLocationRole('Manager')
+    .click();
+  await editUserPage.authorizationTabSection.locationRoleDialog.saveButtonOnLocationRoleDialog.click();
+
+  const userManagerCtx = await browser.newContext({
+    storageState: { cookies: [], origins: [] },
+  });
+  const userManagerPage = await userManagerCtx.newPage();
+  const userManagerLoginPage = new LoginPage(userManagerPage);
+  const userManagerLocationChooser = new LocationChooser(userManagerPage);
+  await userManagerLoginPage.goToPage();
+  await userManagerLoginPage.fillLoginForm(
+    formData.username,
+    formData.password
+  );
+  await userManagerLoginPage.loginButton.click();
+
+  await userManagerLocationChooser
+    .getOrganization(location.organization?.name)
+    .click();
+
+  await userManagerLocationChooser.getLocation(location.name).click();
+  await userManagerCtx.close();
 });
 
 test('Add requestor permission to non manage inventory depot', async ({
-  navbar,
   editUserPage,
-  loginPage,
-  locationChooser,
   noManageInventoryDepot,
+  browser,
 }) => {
-  test.setTimeout(3 * 60 * 1000);
   await editUserPage.authorizationTab.click();
-  await editUserPage.defaultRoleSelect.click();
-  await editUserPage.getUserRole('Admin').click();
-  await editUserPage.saveButton.click();
-  await editUserPage.addLocationRolesButton.click();
-  await editUserPage.locationRoleDialog.locationSelectClearButton.click();
-  await editUserPage.locationRoleDialog.locationForLocationRoleSelect.click();
+  await editUserPage.authorizationTabSection.defaultRoleSelect.click();
+  await editUserPage.authorizationTabSection.getUserRole('Admin').click();
+  await editUserPage.authorizationTabSection.saveButton.click();
+  await editUserPage.authorizationTabSection.addLocationRolesButton.click();
+  await editUserPage.authorizationTabSection.locationRoleDialog.locationSelectClearButton.click();
+  await editUserPage.authorizationTabSection.locationRoleDialog.locationForLocationRoleSelect.click();
   const location = await noManageInventoryDepot.getLocation();
-  await editUserPage.locationRoleDialog
+  await editUserPage.authorizationTabSection.locationRoleDialog
     .getLocationForLocationRole(location.name)
     .click();
-  await editUserPage.locationRoleDialog.locationRoleSelect.click();
-  await editUserPage.locationRoleDialog
+  await editUserPage.authorizationTabSection.locationRoleDialog.locationRoleSelect.click();
+  await editUserPage.authorizationTabSection.locationRoleDialog
     .getUserLocationRole('Requestor')
     .click();
-  await editUserPage.locationRoleDialog.saveButtonOnLocationRoleDialog.click();
-  await navbar.profileButton.click();
-  await navbar.logoutButton.click();
-  await loginPage.fillLoginForm(formData.username, formData.password);
-  await loginPage.loginButton.click();
-  await locationChooser.getOrganization(location.organization?.name).click();
-  await expect(locationChooser.getLocation(location.name)).toBeVisible();
-  await locationChooser.getLocation(location.name).click();
+  await editUserPage.authorizationTabSection.locationRoleDialog.saveButtonOnLocationRoleDialog.click();
+
+  const newUserCtx = await browser.newContext({
+    storageState: { cookies: [], origins: [] },
+  });
+  const newUserPage = await newUserCtx.newPage();
+  const newUserLoginPage = new LoginPage(newUserPage);
+  const newUserLocationChooser = new LocationChooser(newUserPage);
+  await newUserLoginPage.goToPage();
+  await newUserLoginPage.fillLoginForm(formData.username, formData.password);
+  await newUserLoginPage.loginButton.click();
+
+  await newUserLocationChooser
+    .getOrganization(location.organization?.name)
+    .click();
+  await expect(newUserLocationChooser.getLocation(location.name)).toBeVisible();
+  await newUserLocationChooser.getLocation(location.name).click();
+  await newUserCtx.close();
 });

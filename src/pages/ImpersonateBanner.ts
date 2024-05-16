@@ -6,6 +6,10 @@ class ImpersonateBanner extends BasePageModel {
     return this.page.getByRole('alert', { name: 'impersonate' });
   }
 
+  get logoutButton() {
+    return this.banner.getByRole('button', { name: 'Logout' });
+  }
+
   async isLoaded(username: string) {
     await expect(this.banner).toContainText(username);
   }

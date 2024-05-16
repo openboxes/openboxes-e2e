@@ -24,7 +24,7 @@ class Navbar extends BasePageModel {
   }
 
   getNavItem(name: string) {
-    return this.navbar.getByText(name, { exact: true });
+    return this.navbar.getByRole('link', { name: name, exact: true });
   }
 
   get logoutButton() {
