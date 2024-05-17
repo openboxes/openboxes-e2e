@@ -27,7 +27,10 @@ class UserListPage extends BasePageModel {
   }
 
   getUserToEdit(username: string) {
-    return this.page.getByRole('link').getByText(username);
+    return this.userListTable.getByRole('link', {
+      name: username,
+      exact: true,
+    });
   }
 }
 

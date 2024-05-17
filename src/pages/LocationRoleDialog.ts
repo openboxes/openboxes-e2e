@@ -25,7 +25,7 @@ class LocationRoleDialog extends BasePageModel {
       .getByText(role, { exact: true });
   }
 
-  get saveButtonOnLocationRoleDialog() {
+  get saveButton() {
     return this.page
       .getByRole('dialog', { name: 'Add Location Roles' })
       .getByRole('button', { name: 'Save' });
