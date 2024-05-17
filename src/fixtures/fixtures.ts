@@ -20,7 +20,6 @@ type Fixtures = {
   navbar: Navbar;
   locationChooser: LocationChooser;
   mainLocation: LocationData;
-  wardLocation: LocationData;
   noManageInventoryDepot: LocationData;
   userListPage: UserListPage;
   createUserPage: CreateUserPage;
@@ -39,8 +38,6 @@ export const test = baseTest.extend<Fixtures>({
   locationChooser: async ({ page }, use) => use(new LocationChooser(page)),
   mainLocation: async ({ page }, use) =>
     use(new LocationData('main', page.request)),
-  wardLocation: async ({ page }, use) =>
-    use(new LocationData('ward', page.request)),
   noManageInventoryDepot: async ({ page }, use) =>
     use(new LocationData('noManageInventoryDepot', page.request)),
   userListPage: async ({ page }, use) => use(new UserListPage(page)),

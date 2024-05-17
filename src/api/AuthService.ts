@@ -3,7 +3,9 @@ import BaseServiceModel from '@/api/BaseServiceModel';
 class AuthService extends BaseServiceModel {
   async login(data: { username: string; password: string; location?: string }) {
     const apiResponse = await this.request.get('./api/login', { data });
-    return await apiResponse.body();
+    if (apiResponse.status() !== 200) {
+      throw new Error(`Authentication for user "${data.username}" failed`);
+    }
   }
 
   async changeLocation(locationId: string) {
