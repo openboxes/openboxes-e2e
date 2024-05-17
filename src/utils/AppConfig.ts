@@ -26,13 +26,10 @@ class AppConfig {
   public isCI!: boolean;
 
   // test users used in all of the tests
-  public users!: Record<'main' | 'requestor', TestUserConfig>;
+  public users!: Record<'main', TestUserConfig>;
 
   // test users used in all of the tests
-  public locations!: Record<
-    'main' | 'ward' | 'noManageInventoryDepot',
-    LocationConfig
-  >;
+  public locations!: Record<'main' | 'noManageInventoryDepot', LocationConfig>;
 
   // Private constructor to enforce singleton pattern.
   private constructor() {}
@@ -70,12 +67,6 @@ class AppConfig {
           RoleType.ROLE_INVOICE,
         ])
       ),
-      requestor: new TestUserConfig(
-        env.get('USER_REQUESTOR_USERNAME').required().asString(),
-        env.get('USER_REQUESTOR_PASSWORD').required().asString(),
-        '.auth-storage-REQUESTOR-USER.json',
-        new Set([RoleType.ROLE_REQUESTOR, RoleType.ROLE_MANAGER])
-      ),
     };
 
     this.locations = {
@@ -93,11 +84,6 @@ class AppConfig {
           ActivityCode.RECEIVE_STOCK,
         ]),
         LocationTypeCode.DEPOT
-      ),
-      ward: new LocationConfig(
-        env.get('LOCATION_WARD').required().asString(),
-        new Set([ActivityCode.RECEIVE_STOCK, ActivityCode.SUBMIT_REQUEST]),
-        LocationTypeCode.WARD
       ),
       noManageInventoryDepot: new LocationConfig(
         env.get('LOCATION_NO_MANAGE_INVENOTRY_DEPOT').required().asString(),

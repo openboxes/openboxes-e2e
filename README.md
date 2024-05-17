@@ -26,14 +26,11 @@ Environment variables facilitate the configuration of our testing project by all
 **USER_MAIN_USERNAME** <br> **USER_MAIN_PASSWORD** 
 <br>login credentials of the test user that will be used for most of the tests 
 
-**USER_REQUESTOR_USERNAME** <br> **USER_REQUESTOR_PASSWORD** 
-<br>login credentials of the test requestor user that will be used for tests related to requests
-
 **LOCATION_MAIN**
 <br> `locationId` of the default location that will be used in most of the tests
 
-**LOCATION_WARD**
-<br> `locationId` of the location of type WARD that will be used in requestor tests
+**LOCATION_NO_MANAGE_INVENOTRY_DEPOT**
+<br> `locationId` of the location with no manage inventory activity code
 
 ## Scripts
 

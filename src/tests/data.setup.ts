@@ -40,7 +40,9 @@ test('validate data', async ({
     });
     const { data } = await genericService.getAppContext();
 
+    // eslint-disable-next-line playwright/no-conditional-in-test
     const userGlobalRoles = data?.user?.roles || [];
+    // eslint-disable-next-line playwright/no-conditional-in-test
     const currentLocationRoles = data?.currentLocationRoles || [];
     const allUserRoles = new Set([...userGlobalRoles, ...currentLocationRoles]);
     user.assertAllRequiredRoles(allUserRoles);
