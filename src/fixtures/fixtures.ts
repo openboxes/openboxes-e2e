@@ -3,9 +3,13 @@ import { test as baseTest } from '@playwright/test';
 import AuthService from '@/api/AuthService';
 import GenericService from '@/api/GenericService';
 import LocationService from '@/api/LocationService';
+import CreateUserPage from '@/pages/CreateUserPage';
+import EditUserPage from '@/pages/EditUserPage';
+import ImpersonateBanner from '@/pages/ImpersonateBanner';
 import LocationChooser from '@/pages/LocationChooser';
 import LoginPage from '@/pages/LoginPage';
 import Navbar from '@/pages/Navbar';
+import UserListPage from '@/pages/UserListPage';
 import LocationData from '@/utils/LocationData';
 
 type Fixtures = {
@@ -17,6 +21,11 @@ type Fixtures = {
   locationChooser: LocationChooser;
   mainLocation: LocationData;
   wardLocation: LocationData;
+  noManageInventoryDepot: LocationData;
+  userListPage: UserListPage;
+  createUserPage: CreateUserPage;
+  editUserPage: EditUserPage;
+  impersonateBanner: ImpersonateBanner;
 };
 
 export const test = baseTest.extend<Fixtures>({
@@ -32,6 +41,12 @@ export const test = baseTest.extend<Fixtures>({
     use(new LocationData('main', page.request)),
   wardLocation: async ({ page }, use) =>
     use(new LocationData('ward', page.request)),
+  noManageInventoryDepot: async ({ page }, use) =>
+    use(new LocationData('noManageInventoryDepot', page.request)),
+  userListPage: async ({ page }, use) => use(new UserListPage(page)),
+  createUserPage: async ({ page }, use) => use(new CreateUserPage(page)),
+  editUserPage: async ({ page }, use) => use(new EditUserPage(page)),
+  impersonateBanner: async ({ page }, use) => use(new ImpersonateBanner(page)),
 });
 
 export { expect } from '@playwright/test';

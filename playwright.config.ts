@@ -24,6 +24,8 @@ export default defineConfig({
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: 'html',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
+  /* test timeout */
+  timeout: 3 * 60 * 1000,
   use: {
     /* Base URL to use in actions like `await page.goto("/")`. */
     baseURL: appConfig.appURL,
@@ -32,7 +34,7 @@ export default defineConfig({
     trace: 'on-first-retry',
     
     launchOptions: {
-      // slowMo: 1000,
+    // slowMo: 1000,
     },
   },
 
