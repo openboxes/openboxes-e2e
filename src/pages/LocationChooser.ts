@@ -24,6 +24,21 @@ class LocationChooser extends BasePageModel {
   get emptyLocationChooser() {
     return this.page.getByText('No locations available');
   }
+
+  getLocationGroup(name: string) {
+    return this.page
+      .getByTestId('location-list')
+      .getByRole('heading')
+      .getByText(name);
+  }
+
+  get closeLocationChooserButton() {
+    return this.page.getByRole('button', { name: 'close' });
+  }
+
+  get yourLastSingInInfo() {
+    return this.page.getByText('Your last sign-in occurred');
+  }
 }
 
 export default LocationChooser;

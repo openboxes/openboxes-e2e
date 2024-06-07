@@ -47,6 +47,13 @@ class AuthorizationTabSection extends BasePageModel {
   get autoLoginCheckbox() {
     return this.section.getByRole('checkbox', { name: 'Auto-login location' });
   }
+
+  deleteLocationRole(locationName: string) {
+    return this.section
+      .getByRole('row')
+      .filter({ hasText: locationName })
+      .getByRole('link', { name: 'Delete' });
+  }
 }
 
 export default AuthorizationTabSection;
