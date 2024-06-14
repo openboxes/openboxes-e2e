@@ -6,7 +6,7 @@ class LocationDetailsTabSection extends BasePageModel {
   }
 
   get locationName() {
-    return this.page.locator('#name');
+    return this.section.locator('#name');
   }
 
   get organizationSelect() {
