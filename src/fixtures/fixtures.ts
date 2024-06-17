@@ -6,6 +6,7 @@ import LocationService from '@/api/LocationService';
 import ImpersonateBanner from '@/components/ImpersonateBanner';
 import LocationChooser from '@/components/LocationChooser';
 import Navbar from '@/components/Navbar';
+import CreateInbound from '@/pages/CreateInbound';
 import CreateLocationPage from '@/pages/location/createLocation/CreateLocationPage';
 import LocationListPage from '@/pages/location/LocationListPage';
 import CreateLocationGroupPage from '@/pages/locationGroup/CreateLocationGroupPage';
@@ -41,6 +42,7 @@ type Fixtures = {
   locationGroupsListPage: LocationGroupsListPage;
   createLocationGroupPage: CreateLocationGroupPage;
   editLocationGroupPage: EditLocationGroupPage;
+  createInboundPage: CreateInbound;
 };
 
 export const test = baseTest.extend<Fixtures>({
@@ -75,6 +77,7 @@ export const test = baseTest.extend<Fixtures>({
     use(new CreateLocationGroupPage(page)),
   editLocationGroupPage: async ({ page }, use) =>
     use(new EditLocationGroupPage(page)),
+  createInboundPage: async ({ page }, use) => use(new CreateInbound(page)),
 });
 
 export { expect } from '@playwright/test';

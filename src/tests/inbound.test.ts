@@ -1,30 +1,23 @@
-import { expect, test } from '@/fixtures/fixtures';
+import { test } from '@/fixtures/fixtures';
 
 test('create step', async ({ createInboundPage }) => {
-  const description = 'some description';
+  const ORIGIN = 'Imres (OG)';
+  const REQUESTOR = 'dare';
+  const DESCRIPTION = 'some description';
+
   await createInboundPage.goToPage();
-  // input descripton
-  await createInboundPage.createStep.descriptionField.fill(description);
-  // input origin
-  await createInboundPage.createStep.originSelect.click();
-  await createInboundPage.createStep.originSelect
-    .getByRole('textbox')
-    .fill('imres');
-  await createInboundPage.createStep.originSelect
-    .getByText('Imres (OG) [Supplier]', { exact: true })
-    .click({ timeout: 3000 });
 
-    // input requested by
+  await test.step('Create step', async () => {
+    await createInboundPage.createStep.isLoaded();
+    await createInboundPage.wizzardSteps.assertStepStatus('Create', true);
 
-  await createInboundPage.createStep.requestedBySelect.click();
-  await createInboundPage.createStep.requestedBySelect
-    .getByRole('textbox')
-    .fill('dare');
-  await createInboundPage.createStep.requestedBySelect
-    .getByRole('list')
-    .getByText('dare')
-    .click();
-  // date requested
-  // click next
-  expect(true).toBeTruthy();
+    await createInboundPage.createStep.descriptionField.fill(DESCRIPTION);
+    await createInboundPage.createStep.originSelect.findAndSelectOption(ORIGIN);
+    await createInboundPage.createStep.requestedBySelect.findAndSelectOption(
+      REQUESTOR
+    );
+    await createInboundPage.createStep.dateRequestedDatePicker.fill(new Date());
+
+    await createInboundPage.nextButton.click();
+  });
 });
