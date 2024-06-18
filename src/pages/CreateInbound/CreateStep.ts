@@ -19,7 +19,7 @@ class CreateStep extends BasePageModel {
     this.stocklistSelect = new SelectComponent(page, 'Stocklist');
     this.dateRequestedDatePicker = new DatePickerComponent(
       page,
-      'Date Requested'
+      'Date requested'
     );
   }
 

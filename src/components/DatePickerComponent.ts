@@ -16,8 +16,7 @@ class DatePickerComponent extends BasePageModel {
 
   get dateInputField() {
     return this.page
-      .getByTestId('form-field')
-      .filter({ hasText: this.fieldName })
+      .locator(`[data-testid="form-field"][aria-label="${this.fieldName}"]`)
       .getByRole('textbox')
   }
 

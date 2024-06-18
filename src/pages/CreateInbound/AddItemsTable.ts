@@ -32,7 +32,7 @@ class Row extends BasePageModel {
     this.productSelect = new SelectComponent(page, 'Product', row);
     this.recipientSelect = new SelectComponent(page, 'Recipient', row);
   }
-
+  
   get packLevel1Field() {
     return this.row
       .locator('[data-testid="form-field"][aria-label="Pack level 1"]')
