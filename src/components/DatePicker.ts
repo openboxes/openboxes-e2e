@@ -1,4 +1,5 @@
 import FormField from '@/components/FormField';
+import { formatDate } from '@/utils/DateUtils';
 
 class DatePicker extends FormField {
   get datePickerPopup() {
@@ -10,8 +11,7 @@ class DatePicker extends FormField {
   }
 
   async fill(date: Date) {
-    const formatedDate = new Intl.DateTimeFormat('en-US').format(date);
-    await this.textbox.fill(formatedDate);
+    await this.textbox.fill(formatDate(date));
     await this.page.keyboard.press('Enter');
   }
 }

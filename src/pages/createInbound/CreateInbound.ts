@@ -1,4 +1,4 @@
-import { Page } from '@playwright/test';
+import { expect, Page } from '@playwright/test';
 
 import WizzardSteps from '@/components/WizzardSteps';
 import BasePageModel from '@/pages/BasePageModel';
@@ -33,6 +33,23 @@ class CreateInbound extends BasePageModel {
 
   get nextButton() {
     return this.page.getByRole('button', { name: 'Next' });
+  }
+
+  async assertHeaderIsVisible({
+    origin,
+    destination,
+    description,
+    date,
+  }: {
+    origin: string;
+    destination: string;
+    date: string;
+    description: string;
+  }) {
+    const regexPattern = new RegExp(
+      `Stock Movement | * ${origin} to ${destination}, ${date}, ${description}`
+    );
+    await expect(this.page.getByText(regexPattern)).toBeVisible();
   }
 }
 

@@ -1,4 +1,5 @@
 import { expect, test } from '@/fixtures/fixtures';
+import { formatDate } from '@/utils/DateUtils';
 
 test('create step', async ({ createInboundPage, mainLocation }) => {
   const ORIGIN = 'Imres (OG)';
@@ -6,6 +7,12 @@ test('create step', async ({ createInboundPage, mainLocation }) => {
   const DESCRIPTION = 'some description';
   const TODAY = new Date();
   const currentLocation = await mainLocation.getLocation();
+  const ROW =    {
+    productCode: '10001',
+    quantity: '12',
+    lotNumber: 'test123',
+    recipient: 'dare',
+  };
 
   await createInboundPage.goToPage();
 
@@ -31,8 +38,12 @@ test('create step', async ({ createInboundPage, mainLocation }) => {
 
   await test.step('Add items step', async () => {
     await createInboundPage.wizzardSteps.assertStepStatus('Add items', true);
-    // assert header Stock Movement | 736KDG - Donation Imres to Lisungwi Warehouse, 06/18/2024, fef
-    await createInboundPage.addItemsStep.waitForData();
+    await createInboundPage.assertHeaderIsVisible({
+      origin: ORIGIN,
+      destination: currentLocation.name,
+      description: DESCRIPTION,
+      date: formatDate(TODAY),
+    })
     expect(await createInboundPage.addItemsStep.table.rows.count()).toBe(1);
 
     // table with empty values shuld have disabled next button
@@ -41,8 +52,8 @@ test('create step', async ({ createInboundPage, mainLocation }) => {
 
     const row = createInboundPage.addItemsStep.table.row(0);
 
-    await row.productSelect.findAndSelectOption('10001');
-    await row.quantityField.fill('12');
+    await row.productSelect.findAndSelectOption(ROW.productCode);
+    await row.quantityField.fill(ROW.quantity);
     // next button should be enabled after filling all required fields
     await expect(createInboundPage.previousButton).toBeEnabled();
     await expect(createInboundPage.nextButton).toBeEnabled();
@@ -52,8 +63,8 @@ test('create step', async ({ createInboundPage, mainLocation }) => {
     ).toBeEnabled();
     await expect(createInboundPage.addItemsStep.deleteAllButton).toBeEnabled();
 
-    await row.lotField.fill('test123');
-    await row.recipientSelect.findAndSelectOption('dare');
+    await row.lotField.fill(ROW.lotNumber);
+    await row.recipientSelect.findAndSelectOption(ROW.recipient);
 
     await createInboundPage.addItemsStep.addLineButton.click();
     expect(await createInboundPage.addItemsStep.table.rows.count()).toBe(2);
@@ -62,14 +73,6 @@ test('create step', async ({ createInboundPage, mainLocation }) => {
     expect(await createInboundPage.addItemsStep.table.rows.count()).toBe(1);
   });
 
-  // save and exit
-  // confirmation modal
-  // redirected to view page
-  // status Pending should be visible
-  // Date shipped in auditing should be empty
-
-  // click edit on show page
-  // check items in the table should not change
 
   // on send page check origin, destination, description field are same as on create step
   // Once shipment is send, Date Shipped in auditing should be filled with user who shipped it and the date
@@ -152,7 +155,6 @@ test('go back', async ({ createInboundPage, mainLocation }) => {
     await expect(
       createInboundPage.sendStep.destinationSelect.selectField
     ).toContainText(currentLocation.name);
-    // await expect(createInboundPage.sendStep.shipDateDatePicker.dateInputField).toHaveValue(TODAY);
 
     for (let i = 0; i < ROWS.length; i++) {
       const data = ROWS[i];
@@ -206,7 +208,7 @@ test('go back', async ({ createInboundPage, mainLocation }) => {
     await expect(
       createInboundPage.createStep.requestedBySelect.selectField
     ).toContainText(REQUESTOR);
-    // await expect(createInboundPage.createStep.dateRequestedDatePicker.dateInputField).toHaveValue(new Intl.DateTimeFormat('en-029').format(TODAY));
+    await expect(createInboundPage.createStep.dateRequestedDatePicker.textbox).toHaveValue(formatDate(TODAY));
   });
 });
 
@@ -414,3 +416,13 @@ test('arrows', async ({ page, createInboundPage }) => {
     });
   });
 });
+
+
+  // save and exit
+  // confirmation modal
+  // redirected to view page
+  // status Pending should be visible
+  // Date shipped in auditing should be empty
+
+  // click edit on show page
+  // check items in the table should not change
