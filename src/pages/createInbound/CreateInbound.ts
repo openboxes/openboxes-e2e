@@ -2,9 +2,9 @@ import { Page } from '@playwright/test';
 
 import WizzardStepsComponent from '@/components/WizzardStepsComponent';
 import BasePageModel from '@/pages/BasePageModel';
-import AddItemsStep from '@/pages/CreateInbound/AddItemsStep';
-import CreateStep from '@/pages/CreateInbound/CreateStep';
-import SendStep from '@/pages/CreateInbound/SendStep';
+import AddItemsStep from '@/pages/createInbound/steps/AddItemsStep';
+import CreateStep from '@/pages/createInbound/steps/CreateStep';
+import SendStep from '@/pages/createInbound/steps/SendStep';
 
 class CreateInbound extends BasePageModel {
   createStep: CreateStep;

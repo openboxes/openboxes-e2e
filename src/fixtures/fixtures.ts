@@ -6,7 +6,7 @@ import LocationService from '@/api/LocationService';
 import ImpersonateBanner from '@/components/ImpersonateBanner';
 import LocationChooser from '@/components/LocationChooser';
 import Navbar from '@/components/Navbar';
-import CreateInbound from '@/pages/CreateInbound';
+import CreateInbound from '@/pages/createInbound/CreateInbound';
 import CreateLocationPage from '@/pages/location/createLocation/CreateLocationPage';
 import LocationListPage from '@/pages/location/LocationListPage';
 import CreateLocationGroupPage from '@/pages/locationGroup/CreateLocationGroupPage';

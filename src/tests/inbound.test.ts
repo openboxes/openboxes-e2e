@@ -331,8 +331,8 @@ test('arrows', async ({ page, createInboundPage }) => {
     await createInboundPage.nextButton.click();
 
     await test.step('Add additional rows', async () => {
-      await createInboundPage.addItemsStep.addLineButton.click();
-      await createInboundPage.addItemsStep.addLineButton.click();
+      await createInboundPage.addItemsStep.addLineButton.click({ delay: 300 });
+      await createInboundPage.addItemsStep.addLineButton.click({ delay: 300 });
     });
 
     await test.step('assert pack level 1 copy cells ctrl+down', async () => {

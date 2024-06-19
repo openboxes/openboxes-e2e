@@ -4,8 +4,7 @@ import AlertPopup from '@/components/AlertPopup';
 import DatePickerComponent from '@/components/DatePickerComponent';
 import SelectComponent from '@/components/SelectComponent';
 import BasePageModel from '@/pages/BasePageModel';
-
-import SendPageTable from './SendPageTable';
+import SendPageTable from '@/pages/createInbound/components/SendPageTable';
 
 class SendStep extends BasePageModel {
   table: SendPageTable;

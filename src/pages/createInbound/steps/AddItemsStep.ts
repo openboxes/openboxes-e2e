@@ -1,8 +1,7 @@
 import {  expect, Page } from '@playwright/test';
 
 import BasePageModel from '@/pages/BasePageModel';
-
-import AddItemsTable from './AddItemsTable';
+import AddItemsTable from '@/pages/createInbound/components/AddItemsTable';
 
 
 class AddItemsStep extends BasePageModel {
