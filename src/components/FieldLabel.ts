@@ -2,7 +2,7 @@ import { Locator, Page } from '@playwright/test';
 
 import BasePageModel from '@/pages/BasePageModel';
 
-class FormField extends BasePageModel {
+class FieldLabel extends BasePageModel {
   private fieldName: string;
   private root: Locator;
 
@@ -14,9 +14,9 @@ class FormField extends BasePageModel {
 
   get field() {
     return this.root.locator(
-      `[data-testid="form-field"][aria-label="${this.fieldName}"]`
+      `[data-testid="label-field"][aria-label="${this.fieldName}"]`
     );
   }
 }
 
-export default FormField;
+export default FieldLabel;

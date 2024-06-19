@@ -7,7 +7,7 @@ test('create step', async ({ createInboundPage, mainLocation }) => {
   const DESCRIPTION = 'some description';
   const TODAY = new Date();
   const currentLocation = await mainLocation.getLocation();
-  const ROW =    {
+  const ROW = {
     productCode: '10001',
     quantity: '12',
     lotNumber: 'test123',
@@ -43,7 +43,7 @@ test('create step', async ({ createInboundPage, mainLocation }) => {
       destination: currentLocation.name,
       description: DESCRIPTION,
       date: formatDate(TODAY),
-    })
+    });
     expect(await createInboundPage.addItemsStep.table.rows.count()).toBe(1);
 
     // table with empty values shuld have disabled next button
@@ -53,7 +53,7 @@ test('create step', async ({ createInboundPage, mainLocation }) => {
     const row = createInboundPage.addItemsStep.table.row(0);
 
     await row.productSelect.findAndSelectOption(ROW.productCode);
-    await row.quantityField.fill(ROW.quantity);
+    await row.quantityField.textbox.fill(ROW.quantity);
     // next button should be enabled after filling all required fields
     await expect(createInboundPage.previousButton).toBeEnabled();
     await expect(createInboundPage.nextButton).toBeEnabled();
@@ -63,7 +63,7 @@ test('create step', async ({ createInboundPage, mainLocation }) => {
     ).toBeEnabled();
     await expect(createInboundPage.addItemsStep.deleteAllButton).toBeEnabled();
 
-    await row.lotField.fill(ROW.lotNumber);
+    await row.lotField.textbox.fill(ROW.lotNumber);
     await row.recipientSelect.findAndSelectOption(ROW.recipient);
 
     await createInboundPage.addItemsStep.addLineButton.click();
@@ -72,7 +72,6 @@ test('create step', async ({ createInboundPage, mainLocation }) => {
     await createInboundPage.addItemsStep.table.row(1).deleteButton.click();
     expect(await createInboundPage.addItemsStep.table.rows.count()).toBe(1);
   });
-
 
   // on send page check origin, destination, description field are same as on create step
   // Once shipment is send, Date Shipped in auditing should be filled with user who shipped it and the date
@@ -132,8 +131,8 @@ test('go back', async ({ createInboundPage, mainLocation }) => {
       const data = ROWS[i];
       const row = createInboundPage.addItemsStep.table.row(i);
       await row.productSelect.findAndSelectOption(data.productCode);
-      await row.quantityField.fill(data.quantity);
-      await row.lotField.fill(data.lotNumber);
+      await row.quantityField.numberbox.fill(data.quantity);
+      await row.lotField.textbox.fill(data.lotNumber);
       await row.recipientSelect.findAndSelectOption(data.recipient);
 
       await createInboundPage.addItemsStep.addLineButton.click();
@@ -151,7 +150,9 @@ test('go back', async ({ createInboundPage, mainLocation }) => {
   });
 
   await test.step('assert data on send step', async () => {
-    await expect(createInboundPage.sendStep.originField.textbox).toHaveValue(ORIGIN);
+    await expect(createInboundPage.sendStep.originField.textbox).toHaveValue(
+      ORIGIN
+    );
     await expect(
       createInboundPage.sendStep.destinationSelect.selectField
     ).toContainText(currentLocation.name);
@@ -159,10 +160,10 @@ test('go back', async ({ createInboundPage, mainLocation }) => {
     for (let i = 0; i < ROWS.length; i++) {
       const data = ROWS[i];
       const row = createInboundPage.sendStep.table.row(i);
-      await expect(row.productCode).toContainText(data.productCode);
-      await expect(row.lotNumber).toContainText(data.lotNumber);
-      await expect(row.quantityPicked).toContainText(data.quantity);
-      await expect(row.recipient).toContainText(data.recipient);
+      await expect(row.productCode.field).toContainText(data.productCode);
+      await expect(row.lotNumber.field).toContainText(data.lotNumber);
+      await expect(row.quantityPicked.field).toContainText(data.quantity);
+      await expect(row.recipient.field).toContainText(data.recipient);
     }
   });
 
@@ -185,8 +186,8 @@ test('go back', async ({ createInboundPage, mainLocation }) => {
       await expect(row.productSelect.selectField).toContainText(
         data.productCode
       );
-      await expect(row.lotField).toHaveValue(data.lotNumber);
-      await expect(row.quantityField).toHaveValue(data.quantity);
+      await expect(row.lotField.textbox).toHaveValue(data.lotNumber);
+      await expect(row.quantityField.numberbox).toHaveValue(data.quantity);
       await expect(row.recipientSelect.selectField).toContainText(
         data.recipient
       );
@@ -208,7 +209,9 @@ test('go back', async ({ createInboundPage, mainLocation }) => {
     await expect(
       createInboundPage.createStep.requestedBySelect.selectField
     ).toContainText(REQUESTOR);
-    await expect(createInboundPage.createStep.dateRequestedDatePicker.textbox).toHaveValue(formatDate(TODAY));
+    await expect(
+      createInboundPage.createStep.dateRequestedDatePicker.textbox
+    ).toHaveValue(formatDate(TODAY));
   });
 });
 
@@ -245,7 +248,7 @@ test('pack levels visiblity', async ({ createInboundPage }) => {
     await test.step('Fill in add items fields', async () => {
       const row = createInboundPage.addItemsStep.table.row(0);
       await row.productSelect.findAndSelectOption(ROW.productCode);
-      await row.quantityField.fill(ROW.quantity);
+      await row.quantityField.numberbox.fill(ROW.quantity);
     });
   });
 
@@ -254,10 +257,10 @@ test('pack levels visiblity', async ({ createInboundPage }) => {
 
     await test.step('Assert data on send step', async () => {
       const row = createInboundPage.sendStep.table.row(0);
-      await expect(row.productCode).toContainText(ROW.productCode);
-      await expect(row.quantityPicked).toContainText(ROW.quantity);
-      await expect(row.packLevel1).toBeHidden();
-      await expect(row.packLevel2).toBeHidden();
+      await expect(row.productCode.field).toContainText(ROW.productCode);
+      await expect(row.quantityPicked.field).toContainText(ROW.quantity);
+      await expect(row.packLevel1.field).toBeHidden();
+      await expect(row.packLevel2.field).toBeHidden();
     });
 
     await test.step('Go back to add items step', async () => {
@@ -271,17 +274,17 @@ test('pack levels visiblity', async ({ createInboundPage }) => {
     await test.step('Fill in pack level 1', async () => {
       await createInboundPage.addItemsStep.table
         .row(0)
-        .packLevel1Field.fill(PACK_LEVEL_1);
+        .packLevel1Field.textbox.fill(PACK_LEVEL_1);
     });
 
     await createInboundPage.nextButton.click();
 
     await test.step('Assert data on send step', async () => {
       const row = createInboundPage.sendStep.table.row(0);
-      await expect(row.productCode).toContainText(ROW.productCode);
-      await expect(row.quantityPicked).toContainText(ROW.quantity);
-      await expect(row.packLevel1).toContainText(PACK_LEVEL_1);
-      await expect(row.packLevel2).toBeHidden();
+      await expect(row.productCode.field).toContainText(ROW.productCode);
+      await expect(row.quantityPicked.field).toContainText(ROW.quantity);
+      await expect(row.packLevel1.field).toContainText(PACK_LEVEL_1);
+      await expect(row.packLevel2.field).toBeHidden();
     });
 
     await test.step('Go back to add items step', async () => {
@@ -295,17 +298,17 @@ test('pack levels visiblity', async ({ createInboundPage }) => {
     await test.step('Fill in pack level 2', async () => {
       await createInboundPage.addItemsStep.table
         .row(0)
-        .packLevel2Field.fill(PACK_LEVEL_2);
+        .packLevel2Field.textbox.fill(PACK_LEVEL_2);
     });
 
     await createInboundPage.nextButton.click();
 
     await test.step('Assert data on send step', async () => {
       const row = createInboundPage.sendStep.table.row(0);
-      await expect(row.productCode).toContainText(ROW.productCode);
-      await expect(row.quantityPicked).toContainText(ROW.quantity);
-      await expect(row.packLevel1).toContainText(PACK_LEVEL_1);
-      await expect(row.packLevel2).toContainText(PACK_LEVEL_2);
+      await expect(row.productCode.field).toContainText(ROW.productCode);
+      await expect(row.quantityPicked.field).toContainText(ROW.quantity);
+      await expect(row.packLevel1.field).toContainText(PACK_LEVEL_1);
+      await expect(row.packLevel2.field).toContainText(PACK_LEVEL_2);
     });
   });
 });
@@ -348,81 +351,81 @@ test('arrows', async ({ page, createInboundPage }) => {
     await test.step('assert pack level 1 copy cells ctrl+down', async () => {
       await createInboundPage.addItemsStep.table
         .row(0)
-        .packLevel1Field.fill(ROW.packLevel1);
+        .packLevel1Field.textbox.fill(ROW.packLevel1);
       await page.keyboard.press('Control+ArrowDown');
       await page.keyboard.press('Control+ArrowDown');
 
       await expect(
-        createInboundPage.addItemsStep.table.row(0).packLevel1Field
+        createInboundPage.addItemsStep.table.row(0).packLevel1Field.textbox
       ).toHaveValue(ROW.packLevel1);
       await expect(
-        createInboundPage.addItemsStep.table.row(1).packLevel1Field
+        createInboundPage.addItemsStep.table.row(1).packLevel1Field.textbox
       ).toHaveValue(ROW.packLevel1);
       await expect(
-        createInboundPage.addItemsStep.table.row(2).packLevel1Field
+        createInboundPage.addItemsStep.table.row(2).packLevel1Field.textbox
       ).toHaveValue(ROW.packLevel1);
     });
 
     await test.step('assert pack level 2 copy cells ctrl+down', async () => {
       await createInboundPage.addItemsStep.table
         .row(0)
-        .packLevel2Field.fill(ROW.packLevel2);
+        .packLevel2Field.textbox.fill(ROW.packLevel2);
       await page.keyboard.press('Control+ArrowDown');
       await page.keyboard.press('Control+ArrowDown');
 
       await expect(
-        createInboundPage.addItemsStep.table.row(0).packLevel2Field
+        createInboundPage.addItemsStep.table.row(0).packLevel2Field.textbox
       ).toHaveValue(ROW.packLevel2);
       await expect(
-        createInboundPage.addItemsStep.table.row(1).packLevel2Field
+        createInboundPage.addItemsStep.table.row(1).packLevel2Field.textbox
       ).toHaveValue(ROW.packLevel2);
       await expect(
-        createInboundPage.addItemsStep.table.row(2).packLevel2Field
+        createInboundPage.addItemsStep.table.row(2).packLevel2Field.textbox
       ).toHaveValue(ROW.packLevel2);
     });
 
     await test.step('assert lot copy cells ctrl+down', async () => {
-      await createInboundPage.addItemsStep.table.row(0).lotField.fill(ROW.lot);
+      await createInboundPage.addItemsStep.table.row(0).lotField.textbox.fill(ROW.lot);
       await page.keyboard.press('Control+ArrowDown');
       await page.keyboard.press('Control+ArrowDown');
 
       await expect(
-        createInboundPage.addItemsStep.table.row(0).lotField
+        createInboundPage.addItemsStep.table.row(0).lotField.textbox
       ).toHaveValue(ROW.lot);
       await expect(
-        createInboundPage.addItemsStep.table.row(1).lotField
+        createInboundPage.addItemsStep.table.row(1).lotField.textbox
       ).toHaveValue(ROW.lot);
       await expect(
-        createInboundPage.addItemsStep.table.row(2).lotField
+        createInboundPage.addItemsStep.table.row(2).lotField.textbox
       ).toHaveValue(ROW.lot);
     });
 
     await test.step('assert quantity copy cells ctrl+down', async () => {
       await createInboundPage.addItemsStep.table
         .row(0)
-        .quantityField.fill(ROW.quantity);
+        .quantityField.numberbox.fill(ROW.quantity);
       await page.keyboard.press('Control+ArrowDown');
       await page.keyboard.press('Control+ArrowDown');
 
       await expect(
-        createInboundPage.addItemsStep.table.row(0).quantityField
+        createInboundPage.addItemsStep.table.row(0).quantityField.numberbox
       ).toHaveValue(ROW.quantity);
       await expect(
-        createInboundPage.addItemsStep.table.row(1).quantityField
+        createInboundPage.addItemsStep.table.row(1).quantityField.numberbox
       ).toHaveValue(ROW.quantity);
       await expect(
-        createInboundPage.addItemsStep.table.row(2).quantityField
+        createInboundPage.addItemsStep.table.row(2).quantityField.numberbox
       ).toHaveValue(ROW.quantity);
     });
   });
 });
 
 
-  // save and exit
-  // confirmation modal
-  // redirected to view page
-  // status Pending should be visible
-  // Date shipped in auditing should be empty
+// save and exit
+// confirmation modal
+// redirected to view page
+// status Pending should be visible
+// Date shipped in auditing should be empty
 
-  // click edit on show page
-  // check items in the table should not change
+// click edit on show page
+// check items in the table should not change

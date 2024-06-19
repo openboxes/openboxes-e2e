@@ -1,8 +1,11 @@
 import { Locator, Page } from '@playwright/test';
 
+import FieldLabel from '@/components/FieldLabel';
 import BasePageModel from '@/pages/BasePageModel';
 
 class SendPageTable extends BasePageModel {
+
+
   constructor(page: Page) {
     super(page);
   }
@@ -23,51 +26,27 @@ class SendPageTable extends BasePageModel {
 class Row extends BasePageModel {
   row: Locator;
 
+  packLevel1: FieldLabel;
+  packLevel2: FieldLabel;
+  productCode: FieldLabel;
+  productName: FieldLabel;
+  lotNumber: FieldLabel;
+  expirationDate: FieldLabel;
+  quantityPicked: FieldLabel;
+  recipient: FieldLabel;
+
   constructor(page: Page, row: Locator) {
     super(page);
     this.row = row;
-  }
 
-  get packLevel1() {
-    return this.row.locator(
-      '[data-testid="label-field"][aria-label="Pack level 1"]'
-    );
-  }
-
-  get packLevel2() {
-    return this.row.locator(
-      '[data-testid="label-field"][aria-label="Pack level 2"]'
-    );
-  }
-
-  get productCode() {
-    return this.row.locator('[data-testid="label-field"][aria-label="Code"]');
-  }
-
-  get productName() {
-    return this.row.locator(
-      '[data-testid="label-field"][aria-label="Product"]'
-    );
-  }
-
-  get lotNumber() {
-    return this.row.locator('[data-testid="label-field"][aria-label="Lot"]');
-  }
-
-  get expirationDate() {
-    return this.row.locator('[data-testid="label-field"][aria-label="Expiry"]');
-  }
-
-  get quantityPicked() {
-    return this.row.locator(
-      '[data-testid="label-field"][aria-label="Qty Picked"]'
-    );
-  }
-
-  get recipient() {
-    return this.row.locator(
-      '[data-testid="label-field"][aria-label="Recipient"]'
-    );
+    this.packLevel1 = new FieldLabel(page, 'Pack level 1', row);
+    this.packLevel2 = new FieldLabel(page, 'Pack level 2', row);
+    this.productCode = new FieldLabel(page, 'Code', row);
+    this.productName = new FieldLabel(page, 'Product', row);
+    this.lotNumber = new FieldLabel(page, 'Lot', row);
+    this.expirationDate = new FieldLabel(page, 'Expiry', row);
+    this.quantityPicked = new FieldLabel(page, 'Qty Picked', row);
+    this.recipient = new FieldLabel(page, 'Recipient', row);
   }
 }
 

@@ -6,7 +6,7 @@ import AddItemsStep from '@/pages/createInbound/steps/AddItemsStep';
 import CreateStep from '@/pages/createInbound/steps/CreateStep';
 import SendStep from '@/pages/createInbound/steps/SendStep';
 
-class CreateInbound extends BasePageModel {
+class CreateInboundPage extends BasePageModel {
   createStep: CreateStep;
   addItemsStep: AddItemsStep;
   sendStep: SendStep;
@@ -53,4 +53,4 @@ class CreateInbound extends BasePageModel {
   }
 }
 
-export default CreateInbound;
+export default CreateInboundPage;

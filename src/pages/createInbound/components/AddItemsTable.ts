@@ -1,6 +1,7 @@
 import { Locator, Page } from '@playwright/test';
 
 import Select from '@/components/Select';
+import TextField from '@/components/TextField';
 import BasePageModel from '@/pages/BasePageModel';
 
 class AddItemsTable extends BasePageModel {
@@ -25,36 +26,20 @@ class Row extends BasePageModel {
   row: Locator;
   productSelect: Select;
   recipientSelect: Select;
+  packLevel1Field: TextField;
+  packLevel2Field: TextField;
+  lotField: TextField;
+  quantityField: TextField;
 
   constructor(page: Page, row: Locator) {
     super(page);
     this.row = row;
     this.productSelect = new Select(page, 'Product', row);
     this.recipientSelect = new Select(page, 'Recipient', row);
-  }
-
-  get packLevel1Field() {
-    return this.row
-      .locator('[data-testid="form-field"][aria-label="Pack level 1"]')
-      .getByRole('textbox');
-  }
-
-  get packLevel2Field() {
-    return this.row
-      .locator('[data-testid="form-field"][aria-label="Pack level 2"]')
-      .getByRole('textbox');
-  }
-
-  get lotField() {
-    return this.row
-      .locator('[data-testid="form-field"][aria-label="Lot"]')
-      .getByRole('textbox');
-  }
-
-  get quantityField() {
-    return this.row
-      .locator('[data-testid="form-field"][aria-label="Qty"]')
-      .getByRole('spinbutton');
+    this.packLevel1Field = new TextField(page, 'Pack level 1', row);
+    this.packLevel2Field = new TextField(page, 'Pack level 2', row);
+    this.lotField = new TextField(page, 'Lot', row);
+    this.quantityField = new TextField(page, 'Qty', row);
   }
 
   get deleteButton() {
