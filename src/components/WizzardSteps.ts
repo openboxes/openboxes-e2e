@@ -2,7 +2,7 @@ import { expect, Locator, Page } from '@playwright/test';
 
 import BasePageModel from '@/pages/BasePageModel';
 
-class WizzardStepsComponent extends BasePageModel {
+class WizzardSteps extends BasePageModel {
 
   steps: Map<string, Locator> = new Map();
 
@@ -27,4 +27,4 @@ class WizzardStepsComponent extends BasePageModel {
   }
 }
 
-export default WizzardStepsComponent;
+export default WizzardSteps;

@@ -1,18 +1,18 @@
 import { expect, Page } from '@playwright/test';
 
 import AlertPopup from '@/components/AlertPopup';
-import DatePickerComponent from '@/components/DatePickerComponent';
-import SelectComponent from '@/components/SelectComponent';
+import DatePicker from '@/components/DatePicker';
+import Select from '@/components/Select';
 import BasePageModel from '@/pages/BasePageModel';
 import SendPageTable from '@/pages/createInbound/components/SendPageTable';
 
 class SendStep extends BasePageModel {
   table: SendPageTable;
 
-  destinationSelect: SelectComponent;
-  shipmentTypeSelect: SelectComponent;
-  shipDateDatePicker: DatePickerComponent;
-  expectedDeliveryDatePicker: DatePickerComponent;
+  destinationSelect: Select;
+  shipmentTypeSelect: Select;
+  shipDateDatePicker: DatePicker;
+  expectedDeliveryDatePicker: DatePicker;
 
   validationPopup: AlertPopup;
 
@@ -20,10 +20,10 @@ class SendStep extends BasePageModel {
     super(page);
     this.table = new SendPageTable(page);
 
-    this.destinationSelect = new SelectComponent(page, 'Destination');
-    this.shipmentTypeSelect = new SelectComponent(page, 'Shipment type');
-    this.shipDateDatePicker = new DatePickerComponent(page, 'Shipment date');
-    this.expectedDeliveryDatePicker = new DatePickerComponent(
+    this.destinationSelect = new Select(page, 'Destination');
+    this.shipmentTypeSelect = new Select(page, 'Shipment type');
+    this.shipDateDatePicker = new DatePicker(page, 'Shipment date');
+    this.expectedDeliveryDatePicker = new DatePicker(
       page,
       'Expected receipt date'
     );

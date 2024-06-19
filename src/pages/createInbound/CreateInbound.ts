@@ -1,6 +1,6 @@
 import { Page } from '@playwright/test';
 
-import WizzardStepsComponent from '@/components/WizzardStepsComponent';
+import WizzardSteps from '@/components/WizzardSteps';
 import BasePageModel from '@/pages/BasePageModel';
 import AddItemsStep from '@/pages/createInbound/steps/AddItemsStep';
 import CreateStep from '@/pages/createInbound/steps/CreateStep';
@@ -11,7 +11,7 @@ class CreateInbound extends BasePageModel {
   addItemsStep: AddItemsStep;
   sendStep: SendStep;
 
-  wizzardSteps: WizzardStepsComponent;
+  wizzardSteps: WizzardSteps;
 
   constructor(page: Page) {
     super(page);
@@ -20,7 +20,7 @@ class CreateInbound extends BasePageModel {
     this.sendStep = new SendStep(page);
 
     const stepNames = ['Create', 'Add items', 'Send'];
-    this.wizzardSteps = new WizzardStepsComponent(page, stepNames)
+    this.wizzardSteps = new WizzardSteps(page, stepNames)
   }
 
   async goToPage() {

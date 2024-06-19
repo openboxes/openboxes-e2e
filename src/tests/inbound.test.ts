@@ -17,7 +17,7 @@ test('create step', async ({ createInboundPage, mainLocation }) => {
       createInboundPage.createStep.destinationSelect.selectField
     ).toContainText(currentLocation.name);
 
-    await createInboundPage.createStep.descriptionField.fill(DESCRIPTION);
+    await createInboundPage.createStep.descriptionField.field.fill(DESCRIPTION);
     await createInboundPage.createStep.originSelect.findAndSelectOption(ORIGIN);
     await createInboundPage.createStep.requestedBySelect.findAndSelectOption(
       REQUESTOR
@@ -103,7 +103,7 @@ test('go back', async ({ createInboundPage, mainLocation }) => {
   });
 
   await test.step('Fill in create step fields', async () => {
-    await createInboundPage.createStep.descriptionField.fill(DESCRIPTION);
+    await createInboundPage.createStep.descriptionField.field.fill(DESCRIPTION);
     await createInboundPage.createStep.originSelect.findAndSelectOption(ORIGIN);
     await createInboundPage.createStep.requestedBySelect.findAndSelectOption(
       REQUESTOR
@@ -190,7 +190,7 @@ test('go back', async ({ createInboundPage, mainLocation }) => {
   await test.step('go back to create step', async () => {
     await createInboundPage.previousButton.click();
 
-    await expect(createInboundPage.createStep.descriptionField).toHaveValue(
+    await expect(createInboundPage.createStep.descriptionField.field).toHaveValue(
       DESCRIPTION
     );
     await expect(
@@ -222,7 +222,7 @@ test('pack levels visiblity', async ({ createInboundPage }) => {
     await createInboundPage.goToPage();
 
     await test.step('Fill in create step fields', async () => {
-      await createInboundPage.createStep.descriptionField.fill(DESCRIPTION);
+      await createInboundPage.createStep.descriptionField.field.fill(DESCRIPTION);
       await createInboundPage.createStep.originSelect.findAndSelectOption(
         ORIGIN
       );
@@ -318,7 +318,7 @@ test('arrows', async ({ page, createInboundPage }) => {
     await createInboundPage.goToPage();
 
     await test.step('Fill in create step fields', async () => {
-      await createInboundPage.createStep.descriptionField.fill(DESCRIPTION);
+      await createInboundPage.createStep.descriptionField.field.fill(DESCRIPTION);
       await createInboundPage.createStep.originSelect.findAndSelectOption(
         ORIGIN
       );

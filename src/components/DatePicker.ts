@@ -2,7 +2,7 @@ import { Page } from '@playwright/test';
 
 import BasePageModel from '@/pages/BasePageModel';
 
-class DatePickerComponent extends BasePageModel {
+class DatePicker extends BasePageModel {
   private fieldName: string;
 
   constructor(page: Page, fieldName: string) {
@@ -27,4 +27,4 @@ class DatePickerComponent extends BasePageModel {
   }
 }
 
-export default DatePickerComponent;
+export default DatePicker;

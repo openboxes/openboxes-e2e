@@ -2,7 +2,7 @@ import { expect, Locator, Page } from '@playwright/test';
 
 import BasePageModel from '@/pages/BasePageModel';
 
-class SelectComponent extends BasePageModel {
+class Select extends BasePageModel {
   private fieldName: string;
   private root: Locator;
 
@@ -48,4 +48,4 @@ class SelectComponent extends BasePageModel {
   }
 }
 
-export default SelectComponent;
+export default Select;
