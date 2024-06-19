@@ -20,7 +20,7 @@ class CreateInbound extends BasePageModel {
     this.sendStep = new SendStep(page);
 
     const stepNames = ['Create', 'Add items', 'Send'];
-    this.wizzardSteps = new WizzardSteps(page, stepNames)
+    this.wizzardSteps = new WizzardSteps(page, stepNames);
   }
 
   async goToPage() {
@@ -34,7 +34,6 @@ class CreateInbound extends BasePageModel {
   get nextButton() {
     return this.page.getByRole('button', { name: 'Next' });
   }
-
 }
 
 export default CreateInbound;

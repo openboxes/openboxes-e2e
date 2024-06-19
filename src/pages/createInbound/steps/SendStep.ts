@@ -3,6 +3,7 @@ import { expect, Page } from '@playwright/test';
 import AlertPopup from '@/components/AlertPopup';
 import DatePicker from '@/components/DatePicker';
 import Select from '@/components/Select';
+import TextField from '@/components/TextField';
 import BasePageModel from '@/pages/BasePageModel';
 import SendPageTable from '@/pages/createInbound/components/SendPageTable';
 
@@ -13,6 +14,10 @@ class SendStep extends BasePageModel {
   shipmentTypeSelect: Select;
   shipDateDatePicker: DatePicker;
   expectedDeliveryDatePicker: DatePicker;
+  originField: TextField;
+  trackingNumberField: TextField;
+  driverNameField: TextField;
+  commentField: TextField;
 
   validationPopup: AlertPopup;
 
@@ -27,39 +32,31 @@ class SendStep extends BasePageModel {
       page,
       'Expected receipt date'
     );
+    this.originField = new TextField(page, 'Origin');
+    this.trackingNumberField = new TextField(page, 'Destination');
+    this.driverNameField = new TextField(page, 'Tracking number');
+    this.commentField = new TextField(page, 'Driver name');
 
-    this.validationPopup = new AlertPopup(page, 'Continue (lose unsaved work)', 'Correct error');
+    this.validationPopup = new AlertPopup(
+      page,
+      'Continue (lose unsaved work)',
+      'Correct error'
+    );
   }
 
   get sendShipmentButton() {
-    return this.page.getByRole('textbox', { name: 'Send shipment' });
-  }
-
-  get originField() {
-    return this.page.getByRole('textbox', { name: 'ORIGIN' });
-  }
-
-  get trackingNumberField() {
-    return this.page.getByRole('textbox', { name: 'TRACKING NUMBER' });
-  }
-
-  get driverNameField() {
-    return this.page.getByRole('textbox', { name: 'DRIVER NAME' });
-  }
-
-  get commentField() {
-    return this.page.getByRole('textbox', { name: 'COMMENT' });
+    return this.page.getByRole('button', { name: 'Send shipment' });
   }
 
   async isLoaded() {
-    await expect(this.originField).toBeVisible();
+    await expect(this.originField.textbox).toBeVisible();
     await expect(this.destinationSelect.selectField).toBeVisible();
     await expect(this.shipmentTypeSelect.selectField).toBeVisible();
-    await expect(this.shipDateDatePicker.dateInputField).toBeVisible();
-    await expect(this.expectedDeliveryDatePicker.dateInputField).toBeVisible();
-    await expect(this.trackingNumberField).toBeVisible();
-    await expect(this.driverNameField).toBeVisible();
-    await expect(this.commentField).toBeVisible();
+    await expect(this.shipDateDatePicker.textbox).toBeVisible();
+    await expect(this.expectedDeliveryDatePicker.textbox).toBeVisible();
+    await expect(this.trackingNumberField.textbox).toBeVisible();
+    await expect(this.driverNameField.textbox).toBeVisible();
+    await expect(this.commentField.textbox).toBeVisible();
   }
 }
 

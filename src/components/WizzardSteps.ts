@@ -3,13 +3,12 @@ import { expect, Locator, Page } from '@playwright/test';
 import BasePageModel from '@/pages/BasePageModel';
 
 class WizzardSteps extends BasePageModel {
-
   steps: Map<string, Locator> = new Map();
 
   constructor(page: Page, steps: string[]) {
     super(page);
-    for(const step of steps) {
-      this.steps.set(step, this.createStepLocator(step))
+    for (const step of steps) {
+      this.steps.set(step, this.createStepLocator(step));
     }
   }
 
@@ -21,7 +20,10 @@ class WizzardSteps extends BasePageModel {
     const stepLocator = this.steps.get(stepName);
     const statusName = status ? 'active' : 'inactive';
     if (!stepLocator) {
-      throw new Error('Step does not exist, available steps: ' + [...this.steps.keys()].join(','))
+      throw new Error(
+        'Step does not exist, available steps: ' +
+          [...this.steps.keys()].join(',')
+      );
     }
     await expect(stepLocator).toHaveAttribute('data-stepstate', statusName);
   }

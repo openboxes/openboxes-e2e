@@ -1,6 +1,6 @@
 import { Locator, Page } from '@playwright/test';
 
-import SelectComponent from '@/components/SelectComponent';
+import Select from '@/components/Select';
 import BasePageModel from '@/pages/BasePageModel';
 
 class AddItemsTable extends BasePageModel {
@@ -23,16 +23,16 @@ class AddItemsTable extends BasePageModel {
 
 class Row extends BasePageModel {
   row: Locator;
-  productSelect: SelectComponent;
-  recipientSelect: SelectComponent;
+  productSelect: Select;
+  recipientSelect: Select;
 
   constructor(page: Page, row: Locator) {
     super(page);
     this.row = row;
-    this.productSelect = new SelectComponent(page, 'Product', row);
-    this.recipientSelect = new SelectComponent(page, 'Recipient', row);
+    this.productSelect = new Select(page, 'Product', row);
+    this.recipientSelect = new Select(page, 'Recipient', row);
   }
-  
+
   get packLevel1Field() {
     return this.row
       .locator('[data-testid="form-field"][aria-label="Pack level 1"]')
@@ -58,8 +58,7 @@ class Row extends BasePageModel {
   }
 
   get deleteButton() {
-    return this.row
-      .getByRole('button', { name: 'Delete' });
+    return this.row.getByRole('button', { name: 'Delete' });
   }
 }
 

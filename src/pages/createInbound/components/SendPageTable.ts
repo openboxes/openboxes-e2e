@@ -33,13 +33,13 @@ class Row extends BasePageModel {
       '[data-testid="label-field"][aria-label="Pack level 1"]'
     );
   }
-  
+
   get packLevel2() {
     return this.row.locator(
       '[data-testid="label-field"][aria-label="Pack level 2"]'
     );
   }
-  
+
   get productCode() {
     return this.row.locator('[data-testid="label-field"][aria-label="Code"]');
   }

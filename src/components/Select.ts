@@ -1,17 +1,8 @@
-import { expect, Locator, Page } from '@playwright/test';
+import { expect } from '@playwright/test';
 
-import BasePageModel from '@/pages/BasePageModel';
+import FormField from '@/components/FormField';
 
-class Select extends BasePageModel {
-  private fieldName: string;
-  private root: Locator;
-
-  constructor(page: Page, fieldName: string, root?: Locator) {
-    super(page);
-    this.fieldName = fieldName;
-    this.root = root ?? this.page.locator('body')
-  }
-
+class Select extends FormField {
   get selectDropdown() {
     return this.page.getByTestId('custom-select-dropdown-menu');
   }
@@ -21,9 +12,7 @@ class Select extends BasePageModel {
   }
 
   get selectField() {
-    return this.root
-      .locator(`[data-testid="form-field"][aria-label="${this.fieldName}"]`)
-      .getByTestId('custom-select-element');
+    return this.field.getByTestId('custom-select-element');
   }
 
   async click() {

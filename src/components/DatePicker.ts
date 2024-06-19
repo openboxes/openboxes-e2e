@@ -1,28 +1,17 @@
-import { Page } from '@playwright/test';
+import FormField from '@/components/FormField';
 
-import BasePageModel from '@/pages/BasePageModel';
-
-class DatePicker extends BasePageModel {
-  private fieldName: string;
-
-  constructor(page: Page, fieldName: string) {
-    super(page);
-    this.fieldName = fieldName;
-  }
-
+class DatePicker extends FormField {
   get datePickerPopup() {
     return this.page.locator('.react-datepicker');
   }
 
-  get dateInputField() {
-    return this.page
-      .locator(`[data-testid="form-field"][aria-label="${this.fieldName}"]`)
-      .getByRole('textbox')
+  get textbox() {
+    return this.field.getByRole('textbox');
   }
 
   async fill(date: Date) {
-    const formatedDate = new Intl.DateTimeFormat('en-US').format(date)
-    await this.dateInputField.fill(formatedDate);
+    const formatedDate = new Intl.DateTimeFormat('en-US').format(date);
+    await this.textbox.fill(formatedDate);
     await this.page.keyboard.press('Enter');
   }
 }

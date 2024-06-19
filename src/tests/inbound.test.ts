@@ -17,7 +17,9 @@ test('create step', async ({ createInboundPage, mainLocation }) => {
       createInboundPage.createStep.destinationSelect.selectField
     ).toContainText(currentLocation.name);
 
-    await createInboundPage.createStep.descriptionField.field.fill(DESCRIPTION);
+    await createInboundPage.createStep.descriptionField.textbox.fill(
+      DESCRIPTION
+    );
     await createInboundPage.createStep.originSelect.findAndSelectOption(ORIGIN);
     await createInboundPage.createStep.requestedBySelect.findAndSelectOption(
       REQUESTOR
@@ -103,7 +105,9 @@ test('go back', async ({ createInboundPage, mainLocation }) => {
   });
 
   await test.step('Fill in create step fields', async () => {
-    await createInboundPage.createStep.descriptionField.field.fill(DESCRIPTION);
+    await createInboundPage.createStep.descriptionField.textbox.fill(
+      DESCRIPTION
+    );
     await createInboundPage.createStep.originSelect.findAndSelectOption(ORIGIN);
     await createInboundPage.createStep.requestedBySelect.findAndSelectOption(
       REQUESTOR
@@ -144,7 +148,7 @@ test('go back', async ({ createInboundPage, mainLocation }) => {
   });
 
   await test.step('assert data on send step', async () => {
-    await expect(createInboundPage.sendStep.originField).toHaveValue(ORIGIN);
+    await expect(createInboundPage.sendStep.originField.textbox).toHaveValue(ORIGIN);
     await expect(
       createInboundPage.sendStep.destinationSelect.selectField
     ).toContainText(currentLocation.name);
@@ -190,9 +194,9 @@ test('go back', async ({ createInboundPage, mainLocation }) => {
   await test.step('go back to create step', async () => {
     await createInboundPage.previousButton.click();
 
-    await expect(createInboundPage.createStep.descriptionField.field).toHaveValue(
-      DESCRIPTION
-    );
+    await expect(
+      createInboundPage.createStep.descriptionField.textbox
+    ).toHaveValue(DESCRIPTION);
     await expect(
       createInboundPage.createStep.originSelect.selectField
     ).toContainText(ORIGIN);
@@ -222,7 +226,9 @@ test('pack levels visiblity', async ({ createInboundPage }) => {
     await createInboundPage.goToPage();
 
     await test.step('Fill in create step fields', async () => {
-      await createInboundPage.createStep.descriptionField.field.fill(DESCRIPTION);
+      await createInboundPage.createStep.descriptionField.textbox.fill(
+        DESCRIPTION
+      );
       await createInboundPage.createStep.originSelect.findAndSelectOption(
         ORIGIN
       );
@@ -318,7 +324,9 @@ test('arrows', async ({ page, createInboundPage }) => {
     await createInboundPage.goToPage();
 
     await test.step('Fill in create step fields', async () => {
-      await createInboundPage.createStep.descriptionField.field.fill(DESCRIPTION);
+      await createInboundPage.createStep.descriptionField.textbox.fill(
+        DESCRIPTION
+      );
       await createInboundPage.createStep.originSelect.findAndSelectOption(
         ORIGIN
       );
@@ -372,9 +380,7 @@ test('arrows', async ({ page, createInboundPage }) => {
     });
 
     await test.step('assert lot copy cells ctrl+down', async () => {
-      await createInboundPage.addItemsStep.table
-        .row(0)
-        .lotField.fill(ROW.lot);
+      await createInboundPage.addItemsStep.table.row(0).lotField.fill(ROW.lot);
       await page.keyboard.press('Control+ArrowDown');
       await page.keyboard.press('Control+ArrowDown');
 

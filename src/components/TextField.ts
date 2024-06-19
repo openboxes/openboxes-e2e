@@ -1,21 +1,9 @@
-import { Page } from '@playwright/test';
+import FormField from '@/components/FormField';
 
-import BasePageModel from '@/pages/BasePageModel';
-
-class TextField extends BasePageModel {
-  private fieldName: string;
-
-  constructor(page: Page, fieldName: string) {
-    super(page);
-    this.fieldName = fieldName;
+class TextField extends FormField {
+  get textbox() {
+    return this.field.getByRole('textbox');
   }
-
-  get field() {
-    return this.page
-      .locator(`[data-testid="form-field"][aria-label="${this.fieldName}"]`)
-      .getByRole('textbox')
-  }
-
 }
 
 export default TextField;

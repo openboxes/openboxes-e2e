@@ -1,8 +1,7 @@
-import {  expect, Page } from '@playwright/test';
+import { expect, Page } from '@playwright/test';
 
 import BasePageModel from '@/pages/BasePageModel';
 import AddItemsTable from '@/pages/createInbound/components/AddItemsTable';
-
 
 class AddItemsStep extends BasePageModel {
   table: AddItemsTable;
@@ -11,13 +10,15 @@ class AddItemsStep extends BasePageModel {
     super(page);
     this.table = new AddItemsTable(page);
   }
-  
+
   async isLoaded() {
     await expect(this.table.table).toBeVisible();
   }
 
   async waitForData() {
-    await this.page.waitForResponse(/\/api\/stockMovements\/.*\/stockMovementItems/);
+    await this.page.waitForResponse(
+      /\/api\/stockMovements\/.*\/stockMovementItems/
+    );
   }
 
   get addLineButton() {
@@ -37,7 +38,9 @@ class AddItemsStep extends BasePageModel {
   }
 
   get saveButton() {
-    return this.page.getByRole('button', { name: 'Save' }).filter({ hasNotText: 'exit' });
+    return this.page
+      .getByRole('button', { name: 'Save' })
+      .filter({ hasNotText: 'exit' });
   }
 
   get saveAndExitButton() {
