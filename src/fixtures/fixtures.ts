@@ -6,7 +6,7 @@ import LocationService from '@/api/LocationService';
 import ImpersonateBanner from '@/components/ImpersonateBanner';
 import LocationChooser from '@/components/LocationChooser';
 import Navbar from '@/components/Navbar';
-import CreateInbound from '@/pages/createInbound/CreateInbound';
+import CreateInbound from '@/pages/createInbound/CreateInboundPage';
 import CreateLocationPage from '@/pages/location/createLocation/CreateLocationPage';
 import LocationListPage from '@/pages/location/LocationListPage';
 import CreateLocationGroupPage from '@/pages/locationGroup/CreateLocationGroupPage';
@@ -16,6 +16,7 @@ import LoginPage from '@/pages/LoginPage';
 import CreateOrganizationPage from '@/pages/oranization/CreateOrganizationPage';
 import EditOrganizationPage from '@/pages/oranization/EditOrganizationPage';
 import OrganizationListPage from '@/pages/oranization/OrganizationListPage';
+import StockMovementShowPage from '@/pages/stockMovementShow/StockMovementShowPage';
 import CreateUserPage from '@/pages/user/CreateUserPage';
 import EditUserPage from '@/pages/user/editUser/EditUserPage';
 import UserListPage from '@/pages/user/UserListPage';
@@ -43,6 +44,7 @@ type Fixtures = {
   createLocationGroupPage: CreateLocationGroupPage;
   editLocationGroupPage: EditLocationGroupPage;
   createInboundPage: CreateInbound;
+  stockMovementShowPage: StockMovementShowPage;
 };
 
 export const test = baseTest.extend<Fixtures>({
@@ -78,6 +80,7 @@ export const test = baseTest.extend<Fixtures>({
   editLocationGroupPage: async ({ page }, use) =>
     use(new EditLocationGroupPage(page)),
   createInboundPage: async ({ page }, use) => use(new CreateInbound(page)),
+  stockMovementShowPage: async ({ page }, use) => use(new StockMovementShowPage(page)),
 });
 
 export { expect } from '@playwright/test';

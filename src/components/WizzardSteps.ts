@@ -27,6 +27,13 @@ class WizzardSteps extends BasePageModel {
     }
     await expect(stepLocator).toHaveAttribute('data-stepstate', statusName);
   }
+
+  async assertActiveStep(step: string) {
+    for (const stepName of this.steps.keys()) {
+      const stepState = stepName === step;
+      this.assertStepStatus(stepName, stepState);
+    }
+  } 
 }
 
 export default WizzardSteps;
