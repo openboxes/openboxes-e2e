@@ -1,8 +1,17 @@
 import { expect, test } from '@/fixtures/fixtures';
+import ImpersonateBanner from '@/pages/ImpersonateBanner';
 import LocationChooser from '@/pages/LocationChooser';
 import LoginPage from '@/pages/LoginPage';
 import Navbar from '@/pages/Navbar';
+import { LocationResponse, UserType } from '@/types';
 import AppConfig from '@/utils/AppConfig';
+
+const formData: UserType = {
+  username: 'testUser_E2E',
+  firstName: 'user_firstanme',
+  lastName: 'user_lastname',
+  password: 'testpassword123',
+};
 
 //tests are covering all steps from test case OBPIH-4644 Location Chooser
 test.describe('Check if depot location is present in location chooser', () => {
@@ -13,9 +22,7 @@ test.describe('Check if depot location is present in location chooser', () => {
 
   test.beforeAll(
     async ({
-      page,
       navbar,
-      organizationListPage,
       createOrganizationPage,
       editOrganizationPage,
       locationGroupsListPage,
@@ -24,10 +31,7 @@ test.describe('Check if depot location is present in location chooser', () => {
       createLocationPage,
     }) => {
       await test.step('Go to create organization page', async () => {
-        await page.goto('./dashboard');
-        await navbar.configurationButton.click();
-        await navbar.getNavItem('Organizations').click();
-        await organizationListPage.createOrganizationButton.click();
+        await createOrganizationPage.goToPage();
       });
 
       await test.step('Create organization', async () => {
@@ -64,11 +68,11 @@ test.describe('Check if depot location is present in location chooser', () => {
           .click();
         await createLocationPage.locationDetailsTabSection.locationTypeSelect.click();
         await createLocationPage.locationDetailsTabSection
-          .getlocationType('Depot')
+          .getlocationTypeOption('Depot')
           .click();
         await createLocationPage.locationDetailsTabSection.locationGroupSelect.click();
         await createLocationPage.locationDetailsTabSection
-          .getLocationGroup(GROUP_NAME)
+          .getLocationGroupOption(GROUP_NAME)
           .click();
         await createLocationPage.locationDetailsTabSection.saveButton.click();
         await createLocationPage.locationConfigurationTab.click();
@@ -138,7 +142,7 @@ test.describe('Check if depot location is present in location chooser', () => {
       await test.step('Delete created location group', async () => {
         await navbar.configurationButton.click();
         await navbar.getNavItem('Location groups').click();
-        await locationGroupsListPage.getusePagination('3').click();
+        await locationGroupsListPage.getPaginationItem('3').click();
         await locationGroupsListPage
           .getLocationGroupnToEdit(GROUP_NAME)
           .click();
@@ -241,7 +245,7 @@ test.describe('Check if ward location is present in location chooser', () => {
         );
         await createLocationPage.locationDetailsTabSection.locationTypeSelect.click();
         await createLocationPage.locationDetailsTabSection
-          .getlocationType('Ward')
+          .getlocationTypeOption('Ward')
           .click();
         await createLocationPage.locationDetailsTabSection.saveButton.click();
         await createLocationPage.locationConfigurationTab.click();
@@ -298,7 +302,7 @@ test.describe('Check if ward location is present in location chooser', () => {
         await navbar.getNavItem('Locations').click();
         await locationListPage.searchByLocationNameField.fill(LOCATION_NAME);
         await locationListPage.locationTypeSelect.click();
-        await locationListPage.getSelectLocationType('Ward').click();
+        await locationListPage.getSelectLocationTypeOption('Ward').click();
         await locationListPage.findButton.click();
         await locationListPage.getLocationToEdit(LOCATION_NAME).click();
         await createLocationPage.actionButton.click();
@@ -308,7 +312,7 @@ test.describe('Check if ward location is present in location chooser', () => {
       await test.step('Assert that location does not exists in the list', async () => {
         await locationListPage.searchByLocationNameField.fill(LOCATION_NAME);
         await locationListPage.locationTypeSelect.click();
-        await locationListPage.getSelectLocationType('Ward').click();
+        await locationListPage.getSelectLocationTypeOption('Ward').click();
         await locationListPage.findButton.click();
         await expect(
           locationListPage.getLocationToEdit(LOCATION_NAME)
@@ -393,20 +397,14 @@ test.describe('Check if location is present in location chooser after editing', 
 
   test.beforeAll(
     async ({
-      page,
       navbar,
-      organizationListPage,
       createOrganizationPage,
       editOrganizationPage,
       locationListPage,
       createLocationPage,
     }) => {
-      await page.goto('./dashboard');
-
       await test.step('Go to create organization page', async () => {
-        await navbar.configurationButton.click();
-        await navbar.getNavItem('Organizations').click();
-        await organizationListPage.createOrganizationButton.click();
+        await createOrganizationPage.goToPage();
       });
 
       await test.step('Create organization', async () => {
@@ -446,7 +444,7 @@ test.describe('Check if location is present in location chooser after editing', 
           .click();
         await createLocationPage.locationDetailsTabSection.locationTypeSelect.click();
         await createLocationPage.locationDetailsTabSection
-          .getlocationType('Depot')
+          .getlocationTypeOption('Depot')
           .click();
         await createLocationPage.locationDetailsTabSection.saveButton.click();
       });
@@ -605,7 +603,7 @@ test.describe('Check if location is present in location chooser after editing', 
       await locationChooser.closeLocationChooserButton.click();
     });
 
-    test('Assert created Ward on location chooser, log in', async ({
+    test('Assert created Depot on location chooser, log in', async ({
       browser,
     }) => {
       const newCtx = await browser.newContext({
@@ -643,10 +641,17 @@ test.describe('Check if location is present in location chooser after editing', 
 
 test.describe('Check if non manage inventory location is present in location chooser', () => {
   const LOCATION_NAME = 'E2E-test-Depot';
-  const ORGANIZATION_NAME = '1000bulbs.com';
+  let location: LocationResponse;
 
   test.beforeAll(
-    async ({ page, navbar, locationListPage, createLocationPage }) => {
+    async ({
+      page,
+      navbar,
+      locationListPage,
+      createLocationPage,
+      mainLocation,
+    }) => {
+      location = await mainLocation.getLocation();
       await page.goto('./dashboard');
 
       await test.step('Go to create location page', async () => {
@@ -661,11 +666,11 @@ test.describe('Check if non manage inventory location is present in location cho
         );
         await createLocationPage.locationDetailsTabSection.organizationSelect.click();
         await createLocationPage.locationDetailsTabSection
-          .getOrganization(ORGANIZATION_NAME)
+          .getOrganization(location.organization?.name ?? '')
           .click();
         await createLocationPage.locationDetailsTabSection.locationTypeSelect.click();
         await createLocationPage.locationDetailsTabSection
-          .getlocationType('Depot')
+          .getlocationTypeOption('Depot')
           .click();
         await createLocationPage.locationDetailsTabSection.saveButton.click();
         await createLocationPage.locationConfigurationTab.click();
@@ -710,9 +715,11 @@ test.describe('Check if non manage inventory location is present in location cho
 
     await navbar.locationChooserButton.click();
     await expect(
-      locationChooser.getOrganization(ORGANIZATION_NAME)
+      locationChooser.getOrganization(location.organization?.name ?? '')
     ).toBeVisible();
-    await locationChooser.getOrganization(ORGANIZATION_NAME).click();
+    await locationChooser
+      .getOrganization(location.organization?.name ?? '')
+      .click();
     await expect(locationChooser.getLocation(LOCATION_NAME)).toBeHidden();
     await locationChooser.closeLocationChooserButton.click();
   });
@@ -727,10 +734,14 @@ test.describe('Check if non manage inventory location is present in location cho
     await navbar.getNavItem('Dashboard').click();
     await navbar.locationChooserButton.click();
     await expect(
-      locationChooser.getOrganization(ORGANIZATION_NAME)
+      locationChooser.getOrganization(location.organization?.name ?? '')
     ).toBeVisible();
-    await locationChooser.getOrganization(ORGANIZATION_NAME).click();
-    await expect(locationChooser.getLocation(LOCATION_NAME)).toBeHidden();
+    await locationChooser
+      .getOrganization(location.organization?.name ?? '')
+      .click();
+    await expect(
+      locationChooser.getLocation(location.organization?.name ?? '')
+    ).toBeHidden();
     await locationChooser.closeLocationChooserButton.click();
   });
 
@@ -754,10 +765,928 @@ test.describe('Check if non manage inventory location is present in location cho
     });
 
     await expect(
-      locationChooser.getOrganization(ORGANIZATION_NAME)
+      locationChooser.getOrganization(location.organization?.name ?? '')
     ).toBeVisible();
-    await locationChooser.getOrganization(ORGANIZATION_NAME).click();
+    await locationChooser
+      .getOrganization(location.organization?.name ?? '')
+      .click();
     await expect(locationChooser.getLocation(LOCATION_NAME)).toBeHidden();
     await newCtx.close();
+  });
+});
+
+test.describe('Check if ward location is present in location chooser based on users permissions, location specific permission', () => {
+  const LOCATION_NAME = 'E2E-test-Ward';
+
+  test.beforeAll(
+    async ({
+      page,
+      navbar,
+      locationListPage,
+      createLocationPage,
+      editUserPage,
+      userListPage,
+      createUserPage,
+    }) => {
+      await page.goto('./dashboard');
+
+      await test.step('Go to create location page', async () => {
+        await navbar.configurationButton.click();
+        await navbar.getNavItem('Locations').click();
+        await locationListPage.createLocationButton.click();
+      });
+
+      await test.step('Create Ward location', async () => {
+        await createLocationPage.locationDetailsTabSection.locationName.fill(
+          LOCATION_NAME
+        );
+        await createLocationPage.locationDetailsTabSection.locationTypeSelect.click();
+        await createLocationPage.locationDetailsTabSection
+          .getlocationTypeOption('Ward')
+          .click();
+        await createLocationPage.locationDetailsTabSection.saveButton.click();
+        await createLocationPage.locationConfigurationTab.click();
+        await createLocationPage.locationConfigurationTabSection.useDefaultSettingsCheckbox.uncheck();
+        await createLocationPage.locationConfigurationTabSection
+          .removeSupportedActivities('None')
+          .click();
+        await createLocationPage.locationConfigurationTabSection.supportedActivities.click();
+        await createLocationPage.locationConfigurationTabSection
+          .getSupportedActivities('Submit request')
+          .click();
+        await createLocationPage.locationConfigurationTabSection.saveButton.click();
+      });
+
+      await test.step('Go to create user page', async () => {
+        await page.goto('./dashboard');
+        await navbar.configurationButton.click();
+        await navbar.getNavItem('Users').click();
+        await userListPage.createUserButton.click();
+      });
+
+      await test.step('Create new test user', async () => {
+        await createUserPage.fillUserForm(formData);
+        await createUserPage.saveButton.click();
+        await expect(editUserPage.summary).toContainText(
+          `${formData.firstName} ${formData.lastName}`
+        );
+        await editUserPage.userDetailsTabSection.activateUserCheckBox.click();
+        await editUserPage.userDetailsTabSection.saveButton.click();
+      });
+
+      await test.step('Add user role for created Ward location', async () => {
+        await editUserPage.authorizationTab.click();
+        await editUserPage.authorizationTabSection.addLocationRolesButton.click();
+        await editUserPage.authorizationTabSection.locationRoleDialog.locationSelectClearButton.click();
+        await editUserPage.authorizationTabSection.locationRoleDialog.locationForLocationRoleSelect.click();
+        await editUserPage.authorizationTabSection.locationRoleDialog
+          .getLocationForLocationRole(LOCATION_NAME)
+          .click();
+        await editUserPage.authorizationTabSection.locationRoleDialog.locationRoleSelect.click();
+        await editUserPage.authorizationTabSection.locationRoleDialog
+          .getUserLocationRole('Requestor')
+          .click();
+        await editUserPage.authorizationTabSection.locationRoleDialog.saveButton.click();
+      });
+    }
+  );
+
+  test.afterAll(
+    async ({
+      page,
+      navbar,
+      editUserPage,
+      locationListPage,
+      createLocationPage,
+      userListPage,
+    }) => {
+      await page.goto('./dashboard');
+      await test.step('Go to edit user page', async () => {
+        await userListPage.goToPage();
+        await userListPage.searchByNameField.fill(formData.username);
+        await userListPage.findButton.click();
+        await userListPage.getUserToEdit(formData.username).click();
+      });
+
+      await test.step('Remove location role from user', async () => {
+        await editUserPage.authorizationTab.click();
+        await editUserPage.authorizationTabSection
+          .deleteLocationRole(LOCATION_NAME)
+          .click();
+      });
+
+      await test.step('Delete user', async () => {
+        await editUserPage.actionButton.click();
+        await editUserPage.clickDeleteUser();
+      });
+
+      await test.step('Assert that user does not exists in the list', async () => {
+        await userListPage.searchByNameField.fill(formData.username);
+        await userListPage.findButton.click();
+        await expect(
+          userListPage.getUserToEdit(formData.username)
+        ).toBeHidden();
+      });
+
+      await test.step('Delete created ward location', async () => {
+        await navbar.configurationButton.click();
+        await navbar.getNavItem('Locations').click();
+        await locationListPage.searchByLocationNameField.fill(LOCATION_NAME);
+        await locationListPage.locationTypeSelect.click();
+        await locationListPage.getSelectLocationTypeOption('Ward').click();
+        await locationListPage.findButton.click();
+        await locationListPage.getLocationToEdit(LOCATION_NAME).click();
+        await createLocationPage.actionButton.click();
+        await createLocationPage.clickDeleteLocation();
+      });
+
+      await test.step('Assert that location does not exists in the list', async () => {
+        await locationListPage.searchByLocationNameField.fill(LOCATION_NAME);
+        await locationListPage.locationTypeSelect.click();
+        await locationListPage.getSelectLocationTypeOption('Ward').click();
+        await locationListPage.findButton.click();
+        await expect(
+          locationListPage.getLocationToEdit(LOCATION_NAME)
+        ).toBeHidden();
+      });
+    }
+  );
+
+  test('Assert created Ward on location chooser, admin role', async ({
+    userListPage,
+    editUserPage,
+    browser,
+    mainLocation,
+  }) => {
+    await test.step('Go to edit user page', async () => {
+      await userListPage.goToPage();
+      await userListPage.searchByNameField.fill(formData.username);
+      await userListPage.findButton.click();
+      await userListPage.getUserToEdit(formData.username).click();
+    });
+
+    await test.step('Add "Admin" role', async () => {
+      await editUserPage.authorizationTab.click();
+      await editUserPage.authorizationTabSection.defaultRoleSelect.click();
+      await editUserPage.authorizationTabSection.getUserRole('Admin').click();
+      await editUserPage.authorizationTabSection.saveButton.click();
+    });
+
+    const newUserCtx = await browser.newContext({
+      storageState: { cookies: [], origins: [] },
+    });
+    const newUserPage = await newUserCtx.newPage();
+    const newUserLoginPage = new LoginPage(newUserPage);
+    const locationChooser = new LocationChooser(newUserPage);
+    const newPageNavbar = new Navbar(newUserPage);
+
+    await test.step('Login as new created user', async () => {
+      await newUserLoginPage.goToPage();
+      await newUserLoginPage.fillLoginForm(
+        formData.username,
+        formData.password
+      );
+      await newUserLoginPage.loginButton.click();
+    });
+
+    await test.step('Assert created ward on location chooser, log in, admin', async () => {
+      await expect(
+        locationChooser.getOrganization('No organization')
+      ).toBeVisible();
+      await locationChooser.getOrganization('No organization').click();
+      await expect(
+        locationChooser.getLocationGroup('No location Group')
+      ).toBeVisible();
+      await expect(locationChooser.getLocation(LOCATION_NAME)).toBeVisible();
+    });
+
+    await test.step('Select main location in location chooser', async () => {
+      const location = await mainLocation.getLocation();
+      await locationChooser
+        .getOrganization(location.organization?.name)
+        .click();
+      await locationChooser.getLocation(location.name).click();
+    });
+
+    await test.step('Assert created ward on location chooser, react, admin', async () => {
+      await newUserPage.goto('./dashboard');
+      await newPageNavbar.getNavItem('Dashboard').click();
+      await newPageNavbar.locationChooserButton.click();
+      await expect(
+        locationChooser.getOrganization('No organization')
+      ).toBeVisible();
+      await locationChooser.getOrganization('No organization').click();
+      await expect(
+        locationChooser.getLocationGroup('No location Group')
+      ).toBeVisible();
+      await expect(locationChooser.getLocation(LOCATION_NAME)).toBeVisible();
+      await locationChooser.closeLocationChooserButton.click();
+    });
+
+    await test.step('Assert created ward on location chooser, gsp, admin', async () => {
+      await newPageNavbar.configurationButton.click();
+      await newPageNavbar.getNavItem('Locations').click();
+      await newPageNavbar.locationChooserButton.click();
+      await expect(
+        locationChooser.getOrganization('No organization')
+      ).toBeVisible();
+      await locationChooser.getOrganization('No organization').click();
+      await expect(
+        locationChooser.getLocationGroup('No location Group')
+      ).toBeVisible();
+      await expect(locationChooser.getLocation(LOCATION_NAME)).toBeVisible();
+      await locationChooser.closeLocationChooserButton.click();
+    });
+
+    await newUserCtx.close();
+  });
+
+  test('Assert created Ward on location chooser, manager role', async ({
+    userListPage,
+    editUserPage,
+    browser,
+    mainLocation,
+  }) => {
+    await test.step('Go to edit user page', async () => {
+      await userListPage.goToPage();
+      await userListPage.searchByNameField.fill(formData.username);
+      await userListPage.findButton.click();
+      await userListPage.getUserToEdit(formData.username).click();
+    });
+
+    await test.step('Add "Manager" role', async () => {
+      await editUserPage.authorizationTab.click();
+      await editUserPage.authorizationTabSection
+        .deleteDefaultRole('Admin')
+        .click();
+      await editUserPage.authorizationTabSection.defaultRoleSelect.click();
+      await editUserPage.authorizationTabSection.getUserRole('Manager').click();
+      await editUserPage.authorizationTabSection.saveButton.click();
+    });
+
+    const newUserCtx = await browser.newContext({
+      storageState: { cookies: [], origins: [] },
+    });
+    const newUserPage = await newUserCtx.newPage();
+    const newUserLoginPage = new LoginPage(newUserPage);
+    const locationChooser = new LocationChooser(newUserPage);
+    const newPageNavbar = new Navbar(newUserPage);
+
+    await test.step('Login as new created user', async () => {
+      await newUserLoginPage.goToPage();
+      await newUserLoginPage.fillLoginForm(
+        formData.username,
+        formData.password
+      );
+      await newUserLoginPage.loginButton.click();
+    });
+
+    await test.step('Assert created ward on location chooser, log in, manager', async () => {
+      await expect(
+        locationChooser.getOrganization('No organization')
+      ).toBeVisible();
+      await locationChooser.getOrganization('No organization').click();
+      await expect(
+        locationChooser.getLocationGroup('No location Group')
+      ).toBeVisible();
+      await expect(locationChooser.getLocation(LOCATION_NAME)).toBeVisible();
+    });
+
+    await test.step('Select main location in location chooser', async () => {
+      const location = await mainLocation.getLocation();
+      await locationChooser
+        .getOrganization(location.organization?.name)
+        .click();
+      await locationChooser.getLocation(location.name).click();
+    });
+
+    await test.step('Assert created ward on location chooser, react, manager', async () => {
+      await newUserPage.goto('./dashboard');
+      await newPageNavbar.getNavItem('Dashboard').click();
+      await newPageNavbar.locationChooserButton.click();
+      await expect(
+        locationChooser.getOrganization('No organization')
+      ).toBeVisible();
+      await locationChooser.getOrganization('No organization').click();
+      await expect(
+        locationChooser.getLocationGroup('No location Group')
+      ).toBeVisible();
+      await expect(locationChooser.getLocation(LOCATION_NAME)).toBeVisible();
+      await locationChooser.closeLocationChooserButton.click();
+    });
+
+    await test.step('Assert created ward on location chooser, gsp, manager', async () => {
+      await newPageNavbar.profileButton.click();
+      await newPageNavbar.editProfileButton.click();
+      await newPageNavbar.locationChooserButton.click();
+      await expect(
+        locationChooser.getOrganization('No organization')
+      ).toBeVisible();
+      await locationChooser.getOrganization('No organization').click();
+      await expect(
+        locationChooser.getLocationGroup('No location Group')
+      ).toBeVisible();
+      await expect(locationChooser.getLocation(LOCATION_NAME)).toBeVisible();
+      await locationChooser.closeLocationChooserButton.click();
+    });
+
+    await newUserCtx.close();
+  });
+
+  test('Assert created Ward on location chooser, browser role', async ({
+    userListPage,
+    editUserPage,
+    browser,
+    mainLocation,
+  }) => {
+    await test.step('Go to edit user page', async () => {
+      await userListPage.goToPage();
+      await userListPage.searchByNameField.fill(formData.username);
+      await userListPage.findButton.click();
+      await userListPage.getUserToEdit(formData.username).click();
+    });
+
+    await test.step('Add "Browser" role', async () => {
+      await editUserPage.authorizationTab.click();
+      await editUserPage.authorizationTabSection
+        .deleteDefaultRole('Manager')
+        .click();
+      await editUserPage.authorizationTabSection.defaultRoleSelect.click();
+      await editUserPage.authorizationTabSection.getUserRole('Browser').click();
+      await editUserPage.authorizationTabSection.saveButton.click();
+    });
+
+    const newUserCtx = await browser.newContext({
+      storageState: { cookies: [], origins: [] },
+    });
+    const newUserPage = await newUserCtx.newPage();
+    const newUserLoginPage = new LoginPage(newUserPage);
+    const locationChooser = new LocationChooser(newUserPage);
+    const newPageNavbar = new Navbar(newUserPage);
+
+    await test.step('Login as new created user', async () => {
+      await newUserLoginPage.goToPage();
+      await newUserLoginPage.fillLoginForm(
+        formData.username,
+        formData.password
+      );
+      await newUserLoginPage.loginButton.click();
+    });
+
+    await test.step('Assert created ward on location chooser, log in, browser', async () => {
+      await expect(
+        locationChooser.getOrganization('No organization')
+      ).toBeVisible();
+      await locationChooser.getOrganization('No organization').click();
+      await expect(
+        locationChooser.getLocationGroup('No location Group')
+      ).toBeVisible();
+      await expect(locationChooser.getLocation(LOCATION_NAME)).toBeVisible();
+    });
+
+    await test.step('Select main location in location chooser', async () => {
+      const location = await mainLocation.getLocation();
+      await locationChooser
+        .getOrganization(location.organization?.name)
+        .click();
+      await locationChooser.getLocation(location.name).click();
+    });
+
+    await test.step('Assert created ward on location chooser, react, browser', async () => {
+      await newUserPage.goto('./dashboard');
+      await newPageNavbar.getNavItem('Dashboard').click();
+      await newPageNavbar.locationChooserButton.click();
+      await expect(
+        locationChooser.getOrganization('No organization')
+      ).toBeVisible();
+      await locationChooser.getOrganization('No organization').click();
+      await expect(
+        locationChooser.getLocationGroup('No location Group')
+      ).toBeVisible();
+      await expect(locationChooser.getLocation(LOCATION_NAME)).toBeVisible();
+      await locationChooser.closeLocationChooserButton.click();
+    });
+
+    await test.step('Assert created ward on location chooser, gsp, browser', async () => {
+      await newPageNavbar.profileButton.click();
+      await newPageNavbar.editProfileButton.click();
+      await newPageNavbar.locationChooserButton.click();
+      await expect(
+        locationChooser.getOrganization('No organization')
+      ).toBeVisible();
+      await locationChooser.getOrganization('No organization').click();
+      await expect(
+        locationChooser.getLocationGroup('No location Group')
+      ).toBeVisible();
+      await expect(locationChooser.getLocation(LOCATION_NAME)).toBeVisible();
+      await locationChooser.closeLocationChooserButton.click();
+    });
+
+    await newUserCtx.close();
+  });
+});
+
+test.describe('Check if ward location is present in location chooser based on users permissions, global requestor', () => {
+  const LOCATION_NAME = 'E2E-test-Ward';
+
+  test.beforeAll(
+    async ({
+      page,
+      navbar,
+      locationListPage,
+      createLocationPage,
+      editUserPage,
+      userListPage,
+      createUserPage,
+    }) => {
+      await page.goto('./dashboard');
+
+      await test.step('Go to create location page', async () => {
+        await navbar.configurationButton.click();
+        await navbar.getNavItem('Locations').click();
+        await locationListPage.createLocationButton.click();
+      });
+
+      await test.step('Create Ward location', async () => {
+        await createLocationPage.locationDetailsTabSection.locationName.fill(
+          LOCATION_NAME
+        );
+        await createLocationPage.locationDetailsTabSection.locationTypeSelect.click();
+        await createLocationPage.locationDetailsTabSection
+          .getlocationTypeOption('Ward')
+          .click();
+        await createLocationPage.locationDetailsTabSection.saveButton.click();
+        await createLocationPage.locationConfigurationTab.click();
+        await createLocationPage.locationConfigurationTabSection.useDefaultSettingsCheckbox.uncheck();
+        await createLocationPage.locationConfigurationTabSection
+          .removeSupportedActivities('None')
+          .click();
+        await createLocationPage.locationConfigurationTabSection.supportedActivities.click();
+        await createLocationPage.locationConfigurationTabSection
+          .getSupportedActivities('Submit request')
+          .click();
+        await createLocationPage.locationConfigurationTabSection.saveButton.click();
+      });
+
+      await test.step('Go to create user page', async () => {
+        await page.goto('./dashboard');
+        await navbar.configurationButton.click();
+        await navbar.getNavItem('Users').click();
+        await userListPage.createUserButton.click();
+      });
+
+      await test.step('Create new test user', async () => {
+        await createUserPage.fillUserForm(formData);
+        await createUserPage.saveButton.click();
+        await expect(editUserPage.summary).toContainText(
+          `${formData.firstName} ${formData.lastName}`
+        );
+        await editUserPage.userDetailsTabSection.activateUserCheckBox.click();
+        await editUserPage.userDetailsTabSection.saveButton.click();
+      });
+
+      await test.step('Add global requestor user role', async () => {
+        await editUserPage.authorizationTab.click();
+        await editUserPage.authorizationTabSection.defaultRoleSelect.click();
+        await editUserPage.authorizationTabSection
+          .getUserRole('Requestor')
+          .click();
+        await editUserPage.authorizationTabSection.saveButton.click();
+      });
+    }
+  );
+
+  test.afterAll(
+    async ({
+      page,
+      navbar,
+      editUserPage,
+      locationListPage,
+      createLocationPage,
+      userListPage,
+    }) => {
+      await page.goto('./dashboard');
+      await test.step('Go to edit user page', async () => {
+        await userListPage.goToPage();
+        await userListPage.searchByNameField.fill(formData.username);
+        await userListPage.findButton.click();
+        await userListPage.getUserToEdit(formData.username).click();
+      });
+
+      await test.step('Delete user', async () => {
+        await editUserPage.actionButton.click();
+        await editUserPage.clickDeleteUser();
+      });
+
+      await test.step('Assert that user does not exists in the list', async () => {
+        await userListPage.searchByNameField.fill(formData.username);
+        await userListPage.findButton.click();
+        await expect(
+          userListPage.getUserToEdit(formData.username)
+        ).toBeHidden();
+      });
+
+      await test.step('Delete created ward location', async () => {
+        await navbar.configurationButton.click();
+        await navbar.getNavItem('Locations').click();
+        await locationListPage.searchByLocationNameField.fill(LOCATION_NAME);
+        await locationListPage.locationTypeSelect.click();
+        await locationListPage.getSelectLocationTypeOption('Ward').click();
+        await locationListPage.findButton.click();
+        await locationListPage.getLocationToEdit(LOCATION_NAME).click();
+        await createLocationPage.actionButton.click();
+        await createLocationPage.clickDeleteLocation();
+      });
+
+      await test.step('Assert that location does not exists in the list', async () => {
+        await locationListPage.searchByLocationNameField.fill(LOCATION_NAME);
+        await locationListPage.locationTypeSelect.click();
+        await locationListPage.getSelectLocationTypeOption('Ward').click();
+        await locationListPage.findButton.click();
+        await expect(
+          locationListPage.getLocationToEdit(LOCATION_NAME)
+        ).toBeHidden();
+      });
+    }
+  );
+
+  test('Assert created Ward on location chooser, admin role', async ({
+    userListPage,
+    editUserPage,
+    browser,
+    mainLocation,
+  }) => {
+    await test.step('Go to edit user page', async () => {
+      await userListPage.goToPage();
+      await userListPage.searchByNameField.fill(formData.username);
+      await userListPage.findButton.click();
+      await userListPage.getUserToEdit(formData.username).click();
+    });
+
+    await test.step('Add "Admin" role', async () => {
+      await editUserPage.authorizationTab.click();
+      await editUserPage.authorizationTabSection.defaultRoleSelect.click();
+      await editUserPage.authorizationTabSection.getUserRole('Admin').click();
+      await editUserPage.authorizationTabSection.saveButton.click();
+    });
+
+    const newUserCtx = await browser.newContext({
+      storageState: { cookies: [], origins: [] },
+    });
+    const newUserPage = await newUserCtx.newPage();
+    const newUserLoginPage = new LoginPage(newUserPage);
+    const locationChooser = new LocationChooser(newUserPage);
+    const newPageNavbar = new Navbar(newUserPage);
+
+    await test.step('Login as new created user', async () => {
+      await newUserLoginPage.goToPage();
+      await newUserLoginPage.fillLoginForm(
+        formData.username,
+        formData.password
+      );
+      await newUserLoginPage.loginButton.click();
+    });
+
+    await test.step('Assert created ward on location chooser, log in, admin', async () => {
+      await expect(
+        locationChooser.getOrganization('No organization')
+      ).toBeVisible();
+      await locationChooser.getOrganization('No organization').click();
+      await expect(
+        locationChooser.getLocationGroup('No location Group')
+      ).toBeVisible();
+      await expect(locationChooser.getLocation(LOCATION_NAME)).toBeVisible();
+    });
+
+    await test.step('Select main location in location chooser', async () => {
+      const location = await mainLocation.getLocation();
+      await locationChooser
+        .getOrganization(location.organization?.name)
+        .click();
+      await locationChooser.getLocation(location.name).click();
+    });
+
+    await test.step('Assert created ward on location chooser, react, admin', async () => {
+      await newUserPage.goto('./dashboard');
+      await newPageNavbar.getNavItem('Dashboard').click();
+      await newPageNavbar.locationChooserButton.click();
+      await expect(
+        locationChooser.getOrganization('No organization')
+      ).toBeVisible();
+      await locationChooser.getOrganization('No organization').click();
+      await expect(
+        locationChooser.getLocationGroup('No location Group')
+      ).toBeVisible();
+      await expect(locationChooser.getLocation(LOCATION_NAME)).toBeVisible();
+      await locationChooser.closeLocationChooserButton.click();
+    });
+
+    await test.step('Assert created ward on location chooser, gsp, admin', async () => {
+      await newPageNavbar.configurationButton.click();
+      await newPageNavbar.getNavItem('Locations').click();
+      await newPageNavbar.locationChooserButton.click();
+      await expect(
+        locationChooser.getOrganization('No organization')
+      ).toBeVisible();
+      await locationChooser.getOrganization('No organization').click();
+      await expect(
+        locationChooser.getLocationGroup('No location Group')
+      ).toBeVisible();
+      await expect(locationChooser.getLocation(LOCATION_NAME)).toBeVisible();
+      await locationChooser.closeLocationChooserButton.click();
+    });
+
+    await newUserCtx.close();
+  });
+
+  test('Assert created Ward on location chooser, manager role', async ({
+    userListPage,
+    editUserPage,
+    browser,
+    mainLocation,
+  }) => {
+    await test.step('Go to edit user page', async () => {
+      await userListPage.goToPage();
+      await userListPage.searchByNameField.fill(formData.username);
+      await userListPage.findButton.click();
+      await userListPage.getUserToEdit(formData.username).click();
+    });
+
+    await test.step('Add "Manager" role', async () => {
+      await editUserPage.authorizationTab.click();
+      await editUserPage.authorizationTabSection
+        .deleteDefaultRole('Admin')
+        .click();
+      await editUserPage.authorizationTabSection.defaultRoleSelect.click();
+      await editUserPage.authorizationTabSection.getUserRole('Manager').click();
+      await editUserPage.authorizationTabSection.saveButton.click();
+    });
+
+    const newUserCtx = await browser.newContext({
+      storageState: { cookies: [], origins: [] },
+    });
+    const newUserPage = await newUserCtx.newPage();
+    const newUserLoginPage = new LoginPage(newUserPage);
+    const locationChooser = new LocationChooser(newUserPage);
+    const newPageNavbar = new Navbar(newUserPage);
+
+    await test.step('Login as new created user', async () => {
+      await newUserLoginPage.goToPage();
+      await newUserLoginPage.fillLoginForm(
+        formData.username,
+        formData.password
+      );
+      await newUserLoginPage.loginButton.click();
+    });
+
+    await test.step('Assert created ward on location chooser, log in, manager', async () => {
+      await expect(
+        locationChooser.getOrganization('No organization')
+      ).toBeVisible();
+      await locationChooser.getOrganization('No organization').click();
+      await expect(
+        locationChooser.getLocationGroup('No location Group')
+      ).toBeVisible();
+      await expect(locationChooser.getLocation(LOCATION_NAME)).toBeVisible();
+    });
+
+    await test.step('Select main location in location chooser', async () => {
+      const location = await mainLocation.getLocation();
+      await locationChooser
+        .getOrganization(location.organization?.name)
+        .click();
+      await locationChooser.getLocation(location.name).click();
+    });
+
+    await test.step('Assert created ward on location chooser, react, manager', async () => {
+      await newUserPage.goto('./dashboard');
+      await newPageNavbar.getNavItem('Dashboard').click();
+      await newPageNavbar.locationChooserButton.click();
+      await expect(
+        locationChooser.getOrganization('No organization')
+      ).toBeVisible();
+      await locationChooser.getOrganization('No organization').click();
+      await expect(
+        locationChooser.getLocationGroup('No location Group')
+      ).toBeVisible();
+      await expect(locationChooser.getLocation(LOCATION_NAME)).toBeVisible();
+      await locationChooser.closeLocationChooserButton.click();
+    });
+
+    await test.step('Assert created ward on location chooser, gsp, manager', async () => {
+      await newPageNavbar.profileButton.click();
+      await newPageNavbar.editProfileButton.click();
+      await newPageNavbar.locationChooserButton.click();
+      await expect(
+        locationChooser.getOrganization('No organization')
+      ).toBeVisible();
+      await locationChooser.getOrganization('No organization').click();
+      await expect(
+        locationChooser.getLocationGroup('No location Group')
+      ).toBeVisible();
+      await expect(locationChooser.getLocation(LOCATION_NAME)).toBeVisible();
+      await locationChooser.closeLocationChooserButton.click();
+    });
+
+    await newUserCtx.close();
+  });
+});
+
+test.describe('Check if ward location is present in location chooser based on users permissions, location specific permission, impersonate mode', () => {
+  const LOCATION_NAME = 'E2E-test-Ward';
+
+  test.beforeAll(
+    async ({
+      page,
+      navbar,
+      locationListPage,
+      createLocationPage,
+      editUserPage,
+      userListPage,
+      createUserPage,
+    }) => {
+      await page.goto('./dashboard');
+
+      await test.step('Go to create location page', async () => {
+        await navbar.configurationButton.click();
+        await navbar.getNavItem('Locations').click();
+        await locationListPage.createLocationButton.click();
+      });
+
+      await test.step('Create Ward location', async () => {
+        await createLocationPage.locationDetailsTabSection.locationName.fill(
+          LOCATION_NAME
+        );
+        await createLocationPage.locationDetailsTabSection.locationTypeSelect.click();
+        await createLocationPage.locationDetailsTabSection
+          .getlocationTypeOption('Ward')
+          .click();
+        await createLocationPage.locationDetailsTabSection.saveButton.click();
+        await createLocationPage.locationConfigurationTab.click();
+        await createLocationPage.locationConfigurationTabSection.useDefaultSettingsCheckbox.uncheck();
+        await createLocationPage.locationConfigurationTabSection
+          .removeSupportedActivities('None')
+          .click();
+        await createLocationPage.locationConfigurationTabSection.supportedActivities.click();
+        await createLocationPage.locationConfigurationTabSection
+          .getSupportedActivities('Submit request')
+          .click();
+        await createLocationPage.locationConfigurationTabSection.saveButton.click();
+      });
+
+      await test.step('Go to create user page', async () => {
+        await page.goto('./dashboard');
+        await navbar.configurationButton.click();
+        await navbar.getNavItem('Users').click();
+        await userListPage.createUserButton.click();
+      });
+
+      await test.step('Create new test user', async () => {
+        await createUserPage.fillUserForm(formData);
+        await createUserPage.saveButton.click();
+        await expect(editUserPage.summary).toContainText(
+          `${formData.firstName} ${formData.lastName}`
+        );
+        await editUserPage.userDetailsTabSection.activateUserCheckBox.click();
+        await editUserPage.userDetailsTabSection.saveButton.click();
+      });
+
+      await test.step('Add user role for created Ward location', async () => {
+        await editUserPage.authorizationTab.click();
+        await editUserPage.authorizationTabSection.addLocationRolesButton.click();
+        await editUserPage.authorizationTabSection.locationRoleDialog.locationSelectClearButton.click();
+        await editUserPage.authorizationTabSection.locationRoleDialog.locationForLocationRoleSelect.click();
+        await editUserPage.authorizationTabSection.locationRoleDialog
+          .getLocationForLocationRole(LOCATION_NAME)
+          .click();
+        await editUserPage.authorizationTabSection.locationRoleDialog.locationRoleSelect.click();
+        await editUserPage.authorizationTabSection.locationRoleDialog
+          .getUserLocationRole('Requestor')
+          .click();
+        await editUserPage.authorizationTabSection.locationRoleDialog.saveButton.click();
+      });
+    }
+  );
+
+  test.afterAll(
+    async ({
+      page,
+      navbar,
+      editUserPage,
+      locationListPage,
+      createLocationPage,
+      userListPage,
+    }) => {
+      await page.goto('./dashboard');
+      await test.step('Go to edit user page', async () => {
+        await userListPage.goToPage();
+        await userListPage.searchByNameField.fill(formData.username);
+        await userListPage.findButton.click();
+        await userListPage.getUserToEdit(formData.username).click();
+      });
+
+      await test.step('Remove location role from user', async () => {
+        await editUserPage.authorizationTab.click();
+        await editUserPage.authorizationTabSection
+          .deleteLocationRole(LOCATION_NAME)
+          .click();
+      });
+
+      await test.step('Delete user', async () => {
+        await editUserPage.actionButton.click();
+        await editUserPage.clickDeleteUser();
+      });
+
+      await test.step('Assert that user does not exists in the list', async () => {
+        await userListPage.searchByNameField.fill(formData.username);
+        await userListPage.findButton.click();
+        await expect(
+          userListPage.getUserToEdit(formData.username)
+        ).toBeHidden();
+      });
+
+      await test.step('Delete created ward location', async () => {
+        await navbar.configurationButton.click();
+        await navbar.getNavItem('Locations').click();
+        await locationListPage.searchByLocationNameField.fill(LOCATION_NAME);
+        await locationListPage.locationTypeSelect.click();
+        await locationListPage.getSelectLocationTypeOption('Ward').click();
+        await locationListPage.findButton.click();
+        await locationListPage.getLocationToEdit(LOCATION_NAME).click();
+        await createLocationPage.actionButton.click();
+        await createLocationPage.clickDeleteLocation();
+      });
+
+      await test.step('Assert that location does not exists in the list', async () => {
+        await locationListPage.searchByLocationNameField.fill(LOCATION_NAME);
+        await locationListPage.locationTypeSelect.click();
+        await locationListPage.getSelectLocationTypeOption('Ward').click();
+        await locationListPage.findButton.click();
+        await expect(
+          locationListPage.getLocationToEdit(LOCATION_NAME)
+        ).toBeHidden();
+      });
+    }
+  );
+
+  test('Assert created Ward on location chooser in impersonate mode', async ({
+    userListPage,
+    editUserPage,
+  }) => {
+    await test.step('Go to edit user page', async () => {
+      await userListPage.goToPage();
+      await userListPage.searchByNameField.fill(formData.username);
+      await userListPage.findButton.click();
+      await userListPage.getUserToEdit(formData.username).click();
+    });
+
+    await test.step('Add "Manager" role', async () => {
+      await editUserPage.authorizationTab.click();
+      await editUserPage.authorizationTabSection.defaultRoleSelect.click();
+      await editUserPage.authorizationTabSection.getUserRole('Manager').click();
+      await editUserPage.authorizationTabSection.saveButton.click();
+    });
+
+    const newPage = await editUserPage.clickImpersonateButton();
+    const impersonateBanner = new ImpersonateBanner(newPage);
+    const newPageNavbar = new Navbar(newPage);
+    const newPageLocationChooser = new LocationChooser(newPage);
+
+    await test.step('Assert created ward on location chooser in impersonate mode, react', async () => {
+      await newPage.goto('./dashboard');
+      await newPageNavbar.getNavItem('Dashboard').click();
+      await newPageNavbar.locationChooserButton.click();
+      await expect(
+        newPageLocationChooser.getOrganization('No organization')
+      ).toBeVisible();
+      await newPageLocationChooser.getOrganization('No organization').click();
+      await expect(
+        newPageLocationChooser.getLocationGroup('No location Group')
+      ).toBeVisible();
+      await expect(newPageLocationChooser.getLocation(LOCATION_NAME)).toBeVisible();
+      await newPageLocationChooser.closeLocationChooserButton.click();
+    });
+
+    await test.step('Assert created ward on location chooser in impersonate mode, gsp', async () => {
+      await newPageNavbar.getNavItem('Purchasing').click();
+      await newPageNavbar.getNavItem('List Suppliers').click();
+      await newPageNavbar.locationChooserButton.click();
+      await expect(
+        newPageLocationChooser.getOrganization('No organization')
+      ).toBeVisible();
+      await newPageLocationChooser.getOrganization('No organization').click();
+      await expect(
+        newPageLocationChooser.getLocationGroup('No location Group')
+      ).toBeVisible();
+      await expect(newPageLocationChooser.getLocation(LOCATION_NAME)).toBeVisible();
+      await newPageLocationChooser.closeLocationChooserButton.click();
+    });
+
+    await test.step('log out from impersonate mode', async () => {
+      await impersonateBanner.logoutButton.click();
+      expect(impersonateBanner.isLoaded(formData.username)).rejects.toThrow();
+    });
+
+    await newPage.close();
   });
 });
