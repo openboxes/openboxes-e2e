@@ -65,6 +65,7 @@ class AppConfig {
           RoleType.ROLE_FINANCE,
           RoleType.ROLE_PRODUCT_MANAGER,
           RoleType.ROLE_INVOICE,
+          RoleType.ROLE_PURCHASE_APPROVER,
         ])
       ),
     };
