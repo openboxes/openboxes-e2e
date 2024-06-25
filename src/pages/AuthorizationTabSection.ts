@@ -54,6 +54,13 @@ class AuthorizationTabSection extends BasePageModel {
       .filter({ hasText: locationName })
       .getByRole('link', { name: 'Delete' });
   }
+
+  deleteDefaultRole(defaultRole: string) {
+    return this.section
+      .getByRole('listitem')
+      .filter({ hasText: defaultRole })
+      .locator('.search-choice-close');
+  }
 }
 
 export default AuthorizationTabSection;
