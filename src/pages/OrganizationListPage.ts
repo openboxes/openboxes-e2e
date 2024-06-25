@@ -11,7 +11,7 @@ class OrganizationListPage extends BasePageModel {
   }
 
   get searchByOrganizationNameField() {
-    return this.page.locator('#q');
+    return this.page.getByRole('textbox', { name: 'Search' });
   }
 
   get searchButton() {

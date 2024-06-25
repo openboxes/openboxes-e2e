@@ -6,8 +6,12 @@ class CreateOrganizationPage extends BasePageModel {
     await expect(this.page.getByText('Create Organization')).toBeVisible();
   }
 
+  async goToPage() {
+    await this.page.goto('./organization/create');
+  }
+
   get organizationNameField() {
-    return this.page.locator('#name');
+    return this.page.getByRole('textbox', { name: 'Name' });
   }
 
   get createButton() {

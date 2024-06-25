@@ -7,7 +7,7 @@ class EditOrganizationPage extends BasePageModel {
   }
 
   get createOrganizationSuccessMessage() {
-    return this.page.locator('.message');
+    return this.page.getByRole('status', { name: 'message' });
   }
 
   get deleteOrganizationButton() {
@@ -16,7 +16,6 @@ class EditOrganizationPage extends BasePageModel {
 
   async clickDeleteOrganization() {
     await this.deleteOrganizationButton.click();
-    //this.page.on('dialog', (dialog) => dialog.accept());
   }
 
   get createOrganizationButton() {
