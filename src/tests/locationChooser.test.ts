@@ -18,7 +18,7 @@ test.describe('Check if depot location is present in location chooser', () => {
   const ORGANIZATION_NAME = 'E2E-test-Organization';
   const GROUP_NAME = 'E2E-test-Group';
   const LOCATION_NAME = 'E2E-test-Depot';
-  const LOCATION_COLOR = '#009dd1';
+  const LOCATION_COLOR = '#009DD1';
 
   test.beforeAll(
     async ({
@@ -164,7 +164,7 @@ test.describe('Check if depot location is present in location chooser', () => {
     await locationChooser.getOrganization(ORGANIZATION_NAME).click();
     await expect(locationChooser.getLocationGroup(GROUP_NAME)).toBeVisible();
     await expect(locationChooser.getLocation(LOCATION_NAME)).toBeVisible();
-    //await expect(locationChooser.getLocation(LOCATION_NAME)).toHaveCSS('location-color', 'rgb(0, 157, 209)');
+    await locationChooser.assertLocationColor(LOCATION_NAME, LOCATION_COLOR);
     await locationChooser.closeLocationChooserButton.click();
   });
 
@@ -182,7 +182,7 @@ test.describe('Check if depot location is present in location chooser', () => {
     await locationChooser.getOrganization(ORGANIZATION_NAME).click();
     await expect(locationChooser.getLocationGroup(GROUP_NAME)).toBeVisible();
     await expect(locationChooser.getLocation(LOCATION_NAME)).toBeVisible();
-    //await expect(locationChooser.getLocation(LOCATION_NAME)).toHaveCSS('location-color', 'rgb(0, 157, 209)');
+    await locationChooser.assertLocationColor(LOCATION_NAME, LOCATION_COLOR);
     await locationChooser.closeLocationChooserButton.click();
   });
 
@@ -213,7 +213,7 @@ test.describe('Check if depot location is present in location chooser', () => {
     await expect(locationChooser.getLocationGroup(GROUP_NAME)).toBeVisible();
     await expect(locationChooser.getLocation(LOCATION_NAME)).toBeVisible();
     await expect(locationChooser.yourLastSingInInfo).toBeVisible();
-    //await expect(locationChooser.getLocation(LOCATION_NAME)).toHaveCSS('location-color', 'rgb(0, 157, 209)');
+    await locationChooser.assertLocationColor(LOCATION_NAME, LOCATION_COLOR);
     await locationChooser.getLocation(LOCATION_NAME).click();
     await expect(navbar.locationChooserButton).toContainText(LOCATION_NAME);
     await newCtx.close();

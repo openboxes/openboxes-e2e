@@ -17,6 +17,10 @@ class LocationChooser extends BasePageModel {
     return this.page.getByTestId('location-list').getByText(name);
   }
 
+  async assertLocationColor(name: string, color: string) {
+    await expect(this.getLocation(name)).toHaveCSS('--location-color', color);
+  }
+
   get locationChooserLogoutButton() {
     return this.page.getByRole('link', { name: 'Logout' });
   }
