@@ -10,8 +10,10 @@ class LocationGroupsListPage extends BasePageModel {
     return this.page.getByText('Add Location group');
   }
 
-  getusePagination(pageNumber: string) {
-    return this.page.getByRole('link', { name: pageNumber, exact: true });
+  getPaginationItem(pageNumber: string) {
+    return this.page
+      .getByLabel('pagination')
+      .getByRole('link', { name: pageNumber, exact: true });
   }
 
   get locationGroupListTable() {

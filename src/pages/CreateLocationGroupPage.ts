@@ -7,7 +7,7 @@ class CreateLocationGroupPage extends BasePageModel {
   }
 
   get locationGroupNameField() {
-    return this.page.locator('#name');
+    return this.page.getByRole('textbox', { name: 'Name' });
   }
 
   get createButton() {
