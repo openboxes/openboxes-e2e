@@ -6,7 +6,7 @@ class LocationConfigurationTabSection extends BasePageModel {
   }
 
   get backgroundColorField() {
-    return this.page.locator('#bgColor');
+    return this.page.getByRole('textbox', { name: 'Background color' });
   }
 
   get useDefaultSettingsCheckbox() {

@@ -6,16 +6,15 @@ class LocationListPage extends BasePageModel {
   }
 
   get searchByLocationNameField() {
-    return this.page.locator('#q');
+    return this.page.getByRole('textbox', { name: 'Name' });
   }
 
   get locationTypeSelect() {
     return this.page.getByTestId('location-type-select');
   }
 
-  getSelectLocationType(locationType: string) {
-    return this.page
-      .getByTestId('location-type-select')
+  getSelectLocationTypeOption(locationType: string) {
+    return this.locationTypeSelect
       .getByRole('listitem')
       .getByText(locationType, { exact: true });
   }

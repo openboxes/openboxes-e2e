@@ -6,7 +6,7 @@ class LocationDetailsTabSection extends BasePageModel {
   }
 
   get locationName() {
-    return this.section.locator('#name');
+    return this.section.getByRole('textbox', { name: 'Name' });
   }
 
   get organizationSelect() {
@@ -24,9 +24,8 @@ class LocationDetailsTabSection extends BasePageModel {
     return this.section.getByTestId('location-type-select');
   }
 
-  getlocationType(locationType: string) {
-    return this.section
-      .getByTestId('location-type-select')
+  getlocationTypeOption(locationType: string) {
+    return this.locationTypeSelect
       .getByRole('list')
       .getByText(locationType, { exact: true });
   }
@@ -35,9 +34,8 @@ class LocationDetailsTabSection extends BasePageModel {
     return this.section.getByTestId('location-group-select');
   }
 
-  getLocationGroup(locationGroup: string) {
-    return this.section
-      .getByTestId('location-group-select')
+  getLocationGroupOption(locationGroup: string) {
+    return this.locationGroupSelect
       .getByRole('list')
       .getByText(locationGroup, { exact: true });
   }
