@@ -11,8 +11,8 @@ class EditLocationGroupPage extends BasePageModel {
   }
 
   async clickDeleteLocationGroup() {
+    this.page.once('dialog', (dialog) => dialog.accept());
     await this.deleteLocationGroupButton.click();
-    this.page.on('dialog', (dialog) => dialog.accept());
   }
 }
 

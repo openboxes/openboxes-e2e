@@ -5,19 +5,15 @@ import LoginPage from '@/pages/LoginPage';
 import Navbar from '@/pages/Navbar';
 import { LocationResponse, UserType } from '@/types';
 import AppConfig from '@/utils/AppConfig';
-
-const formData: UserType = {
-  username: 'testUser_E2E',
-  firstName: 'user_firstanme',
-  lastName: 'user_lastname',
-  password: 'testpassword123',
-};
+import UniqueIdentifier from '@/utils/UniqueIdentifier';
 
 //tests are covering all steps from test case OBPIH-4644 Location Chooser
 test.describe('Check if depot location is present in location chooser', () => {
-  const ORGANIZATION_NAME = 'E2E-test-Organization';
-  const GROUP_NAME = 'E2E-test-Group';
-  const LOCATION_NAME = 'E2E-test-Depot';
+  const uniqueIdentifier = new UniqueIdentifier();
+  const ORGANIZATION_NAME =
+    uniqueIdentifier.generateUniqueString('test-Organization');
+  const GROUP_NAME = uniqueIdentifier.generateUniqueString('test-Group');
+  const LOCATION_NAME = uniqueIdentifier.generateUniqueString('test-Depot');
   const LOCATION_COLOR = '#009DD1';
 
   test.beforeAll(
@@ -221,7 +217,8 @@ test.describe('Check if depot location is present in location chooser', () => {
 });
 
 test.describe('Check if ward location is present in location chooser', () => {
-  const LOCATION_NAME = 'E2E-test-Ward';
+  const uniqueIdentifier = new UniqueIdentifier();
+  const LOCATION_NAME = uniqueIdentifier.generateUniqueString('test-Ward');
 
   test.beforeAll(
     async ({
@@ -391,9 +388,13 @@ test.describe('Check if ward location is present in location chooser', () => {
 });
 
 test.describe('Check if location is present in location chooser after editing', () => {
-  const ORGANIZATION_NAME = 'E2E-test-Organization';
-  const ORGANIZATION_NAME_SECOND = 'E2E-test-Other-Organization';
-  const LOCATION_NAME = 'E2E-test-Depot';
+  const uniqueIdentifier = new UniqueIdentifier();
+  const ORGANIZATION_NAME =
+    uniqueIdentifier.generateUniqueString('Test-Organization');
+  const ORGANIZATION_NAME_SECOND = uniqueIdentifier.generateUniqueString(
+    'Test-Other-Organization'
+  );
+  const LOCATION_NAME = uniqueIdentifier.generateUniqueString('Test-Depot');
 
   test.beforeAll(
     async ({
@@ -640,7 +641,8 @@ test.describe('Check if location is present in location chooser after editing', 
 });
 
 test.describe('Check if non manage inventory location is present in location chooser', () => {
-  const LOCATION_NAME = 'E2E-test-Depot';
+  const uniqueIdentifier = new UniqueIdentifier();
+  const LOCATION_NAME = uniqueIdentifier.generateUniqueString('test-Depot');
   let location: LocationResponse;
 
   test.beforeAll(
@@ -776,7 +778,16 @@ test.describe('Check if non manage inventory location is present in location cho
 });
 
 test.describe('Check if ward location is present in location chooser based on users permissions, location specific permission', () => {
-  const LOCATION_NAME = 'E2E-test-Ward';
+  const uniqueIdentifier = new UniqueIdentifier();
+
+  const TEST_USER: UserType = {
+    username: uniqueIdentifier.generateUniqueString('user'),
+    firstName: 'user_firstanme',
+    lastName: 'user_lastname',
+    password: 'testpassword123',
+  };
+
+  const LOCATION_NAME = uniqueIdentifier.generateUniqueString('Test-Ward');
 
   test.beforeAll(
     async ({
@@ -825,10 +836,10 @@ test.describe('Check if ward location is present in location chooser based on us
       });
 
       await test.step('Create new test user', async () => {
-        await createUserPage.fillUserForm(formData);
+        await createUserPage.fillUserForm(TEST_USER);
         await createUserPage.saveButton.click();
         await expect(editUserPage.summary).toContainText(
-          `${formData.firstName} ${formData.lastName}`
+          `${TEST_USER.firstName} ${TEST_USER.lastName}`
         );
         await editUserPage.userDetailsTabSection.activateUserCheckBox.click();
         await editUserPage.userDetailsTabSection.saveButton.click();
@@ -863,9 +874,9 @@ test.describe('Check if ward location is present in location chooser based on us
       await page.goto('./dashboard');
       await test.step('Go to edit user page', async () => {
         await userListPage.goToPage();
-        await userListPage.searchByNameField.fill(formData.username);
+        await userListPage.searchByNameField.fill(TEST_USER.username);
         await userListPage.findButton.click();
-        await userListPage.getUserToEdit(formData.username).click();
+        await userListPage.getUserToEdit(TEST_USER.username).click();
       });
 
       await test.step('Remove location role from user', async () => {
@@ -881,10 +892,10 @@ test.describe('Check if ward location is present in location chooser based on us
       });
 
       await test.step('Assert that user does not exists in the list', async () => {
-        await userListPage.searchByNameField.fill(formData.username);
+        await userListPage.searchByNameField.fill(TEST_USER.username);
         await userListPage.findButton.click();
         await expect(
-          userListPage.getUserToEdit(formData.username)
+          userListPage.getUserToEdit(TEST_USER.username)
         ).toBeHidden();
       });
 
@@ -920,9 +931,9 @@ test.describe('Check if ward location is present in location chooser based on us
   }) => {
     await test.step('Go to edit user page', async () => {
       await userListPage.goToPage();
-      await userListPage.searchByNameField.fill(formData.username);
+      await userListPage.searchByNameField.fill(TEST_USER.username);
       await userListPage.findButton.click();
-      await userListPage.getUserToEdit(formData.username).click();
+      await userListPage.getUserToEdit(TEST_USER.username).click();
     });
 
     await test.step('Add "Admin" role', async () => {
@@ -943,8 +954,8 @@ test.describe('Check if ward location is present in location chooser based on us
     await test.step('Login as new created user', async () => {
       await newUserLoginPage.goToPage();
       await newUserLoginPage.fillLoginForm(
-        formData.username,
-        formData.password
+        TEST_USER.username,
+        TEST_USER.password
       );
       await newUserLoginPage.loginButton.click();
     });
@@ -1009,9 +1020,9 @@ test.describe('Check if ward location is present in location chooser based on us
   }) => {
     await test.step('Go to edit user page', async () => {
       await userListPage.goToPage();
-      await userListPage.searchByNameField.fill(formData.username);
+      await userListPage.searchByNameField.fill(TEST_USER.username);
       await userListPage.findButton.click();
-      await userListPage.getUserToEdit(formData.username).click();
+      await userListPage.getUserToEdit(TEST_USER.username).click();
     });
 
     await test.step('Add "Manager" role', async () => {
@@ -1035,8 +1046,8 @@ test.describe('Check if ward location is present in location chooser based on us
     await test.step('Login as new created user', async () => {
       await newUserLoginPage.goToPage();
       await newUserLoginPage.fillLoginForm(
-        formData.username,
-        formData.password
+        TEST_USER.username,
+        TEST_USER.password
       );
       await newUserLoginPage.loginButton.click();
     });
@@ -1101,9 +1112,9 @@ test.describe('Check if ward location is present in location chooser based on us
   }) => {
     await test.step('Go to edit user page', async () => {
       await userListPage.goToPage();
-      await userListPage.searchByNameField.fill(formData.username);
+      await userListPage.searchByNameField.fill(TEST_USER.username);
       await userListPage.findButton.click();
-      await userListPage.getUserToEdit(formData.username).click();
+      await userListPage.getUserToEdit(TEST_USER.username).click();
     });
 
     await test.step('Add "Browser" role', async () => {
@@ -1127,8 +1138,8 @@ test.describe('Check if ward location is present in location chooser based on us
     await test.step('Login as new created user', async () => {
       await newUserLoginPage.goToPage();
       await newUserLoginPage.fillLoginForm(
-        formData.username,
-        formData.password
+        TEST_USER.username,
+        TEST_USER.password
       );
       await newUserLoginPage.loginButton.click();
     });
@@ -1187,7 +1198,16 @@ test.describe('Check if ward location is present in location chooser based on us
 });
 
 test.describe('Check if ward location is present in location chooser based on users permissions, global requestor', () => {
-  const LOCATION_NAME = 'E2E-test-Ward';
+  const uniqueIdentifier = new UniqueIdentifier();
+
+  const TEST_USER: UserType = {
+    username: uniqueIdentifier.generateUniqueString('user'),
+    firstName: 'user_firstanme',
+    lastName: 'user_lastname',
+    password: 'testpassword123',
+  };
+
+  const LOCATION_NAME = uniqueIdentifier.generateUniqueString('Test-Ward');
 
   test.beforeAll(
     async ({
@@ -1236,10 +1256,10 @@ test.describe('Check if ward location is present in location chooser based on us
       });
 
       await test.step('Create new test user', async () => {
-        await createUserPage.fillUserForm(formData);
+        await createUserPage.fillUserForm(TEST_USER);
         await createUserPage.saveButton.click();
         await expect(editUserPage.summary).toContainText(
-          `${formData.firstName} ${formData.lastName}`
+          `${TEST_USER.firstName} ${TEST_USER.lastName}`
         );
         await editUserPage.userDetailsTabSection.activateUserCheckBox.click();
         await editUserPage.userDetailsTabSection.saveButton.click();
@@ -1268,9 +1288,9 @@ test.describe('Check if ward location is present in location chooser based on us
       await page.goto('./dashboard');
       await test.step('Go to edit user page', async () => {
         await userListPage.goToPage();
-        await userListPage.searchByNameField.fill(formData.username);
+        await userListPage.searchByNameField.fill(TEST_USER.username);
         await userListPage.findButton.click();
-        await userListPage.getUserToEdit(formData.username).click();
+        await userListPage.getUserToEdit(TEST_USER.username).click();
       });
 
       await test.step('Delete user', async () => {
@@ -1279,10 +1299,10 @@ test.describe('Check if ward location is present in location chooser based on us
       });
 
       await test.step('Assert that user does not exists in the list', async () => {
-        await userListPage.searchByNameField.fill(formData.username);
+        await userListPage.searchByNameField.fill(TEST_USER.username);
         await userListPage.findButton.click();
         await expect(
-          userListPage.getUserToEdit(formData.username)
+          userListPage.getUserToEdit(TEST_USER.username)
         ).toBeHidden();
       });
 
@@ -1318,9 +1338,9 @@ test.describe('Check if ward location is present in location chooser based on us
   }) => {
     await test.step('Go to edit user page', async () => {
       await userListPage.goToPage();
-      await userListPage.searchByNameField.fill(formData.username);
+      await userListPage.searchByNameField.fill(TEST_USER.username);
       await userListPage.findButton.click();
-      await userListPage.getUserToEdit(formData.username).click();
+      await userListPage.getUserToEdit(TEST_USER.username).click();
     });
 
     await test.step('Add "Admin" role', async () => {
@@ -1341,8 +1361,8 @@ test.describe('Check if ward location is present in location chooser based on us
     await test.step('Login as new created user', async () => {
       await newUserLoginPage.goToPage();
       await newUserLoginPage.fillLoginForm(
-        formData.username,
-        formData.password
+        TEST_USER.username,
+        TEST_USER.password
       );
       await newUserLoginPage.loginButton.click();
     });
@@ -1407,9 +1427,9 @@ test.describe('Check if ward location is present in location chooser based on us
   }) => {
     await test.step('Go to edit user page', async () => {
       await userListPage.goToPage();
-      await userListPage.searchByNameField.fill(formData.username);
+      await userListPage.searchByNameField.fill(TEST_USER.username);
       await userListPage.findButton.click();
-      await userListPage.getUserToEdit(formData.username).click();
+      await userListPage.getUserToEdit(TEST_USER.username).click();
     });
 
     await test.step('Add "Manager" role', async () => {
@@ -1433,8 +1453,8 @@ test.describe('Check if ward location is present in location chooser based on us
     await test.step('Login as new created user', async () => {
       await newUserLoginPage.goToPage();
       await newUserLoginPage.fillLoginForm(
-        formData.username,
-        formData.password
+        TEST_USER.username,
+        TEST_USER.password
       );
       await newUserLoginPage.loginButton.click();
     });
@@ -1493,7 +1513,16 @@ test.describe('Check if ward location is present in location chooser based on us
 });
 
 test.describe('Check if ward location is present in location chooser based on users permissions, location specific permission, impersonate mode', () => {
-  const LOCATION_NAME = 'E2E-test-Ward';
+  const uniqueIdentifier = new UniqueIdentifier();
+
+  const TEST_USER: UserType = {
+    username: uniqueIdentifier.generateUniqueString('user'),
+    firstName: 'user_firstanme',
+    lastName: 'user_lastname',
+    password: 'testpassword123',
+  };
+
+  const LOCATION_NAME = uniqueIdentifier.generateUniqueString('Test-Ward');
 
   test.beforeAll(
     async ({
@@ -1542,10 +1571,10 @@ test.describe('Check if ward location is present in location chooser based on us
       });
 
       await test.step('Create new test user', async () => {
-        await createUserPage.fillUserForm(formData);
+        await createUserPage.fillUserForm(TEST_USER);
         await createUserPage.saveButton.click();
         await expect(editUserPage.summary).toContainText(
-          `${formData.firstName} ${formData.lastName}`
+          `${TEST_USER.firstName} ${TEST_USER.lastName}`
         );
         await editUserPage.userDetailsTabSection.activateUserCheckBox.click();
         await editUserPage.userDetailsTabSection.saveButton.click();
@@ -1580,9 +1609,9 @@ test.describe('Check if ward location is present in location chooser based on us
       await page.goto('./dashboard');
       await test.step('Go to edit user page', async () => {
         await userListPage.goToPage();
-        await userListPage.searchByNameField.fill(formData.username);
+        await userListPage.searchByNameField.fill(TEST_USER.username);
         await userListPage.findButton.click();
-        await userListPage.getUserToEdit(formData.username).click();
+        await userListPage.getUserToEdit(TEST_USER.username).click();
       });
 
       await test.step('Remove location role from user', async () => {
@@ -1598,10 +1627,10 @@ test.describe('Check if ward location is present in location chooser based on us
       });
 
       await test.step('Assert that user does not exists in the list', async () => {
-        await userListPage.searchByNameField.fill(formData.username);
+        await userListPage.searchByNameField.fill(TEST_USER.username);
         await userListPage.findButton.click();
         await expect(
-          userListPage.getUserToEdit(formData.username)
+          userListPage.getUserToEdit(TEST_USER.username)
         ).toBeHidden();
       });
 
@@ -1635,9 +1664,9 @@ test.describe('Check if ward location is present in location chooser based on us
   }) => {
     await test.step('Go to edit user page', async () => {
       await userListPage.goToPage();
-      await userListPage.searchByNameField.fill(formData.username);
+      await userListPage.searchByNameField.fill(TEST_USER.username);
       await userListPage.findButton.click();
-      await userListPage.getUserToEdit(formData.username).click();
+      await userListPage.getUserToEdit(TEST_USER.username).click();
     });
 
     await test.step('Add "Manager" role', async () => {
@@ -1663,7 +1692,9 @@ test.describe('Check if ward location is present in location chooser based on us
       await expect(
         newPageLocationChooser.getLocationGroup('No location Group')
       ).toBeVisible();
-      await expect(newPageLocationChooser.getLocation(LOCATION_NAME)).toBeVisible();
+      await expect(
+        newPageLocationChooser.getLocation(LOCATION_NAME)
+      ).toBeVisible();
       await newPageLocationChooser.closeLocationChooserButton.click();
     });
 
@@ -1678,13 +1709,15 @@ test.describe('Check if ward location is present in location chooser based on us
       await expect(
         newPageLocationChooser.getLocationGroup('No location Group')
       ).toBeVisible();
-      await expect(newPageLocationChooser.getLocation(LOCATION_NAME)).toBeVisible();
+      await expect(
+        newPageLocationChooser.getLocation(LOCATION_NAME)
+      ).toBeVisible();
       await newPageLocationChooser.closeLocationChooserButton.click();
     });
 
     await test.step('log out from impersonate mode', async () => {
       await impersonateBanner.logoutButton.click();
-      expect(impersonateBanner.isLoaded(formData.username)).rejects.toThrow();
+      expect(impersonateBanner.isLoaded(TEST_USER.username)).rejects.toThrow();
     });
 
     await newPage.close();

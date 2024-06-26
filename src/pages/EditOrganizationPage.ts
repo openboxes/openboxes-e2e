@@ -15,6 +15,7 @@ class EditOrganizationPage extends BasePageModel {
   }
 
   async clickDeleteOrganization() {
+    this.page.once('dialog', (dialog) => dialog.accept());
     await this.deleteOrganizationButton.click();
   }
 

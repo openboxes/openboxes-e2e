@@ -36,7 +36,7 @@ class CreateLocationPage extends BasePageModel {
   }
 
   async clickDeleteLocation() {
-    this.page.on('dialog', (dialog) => dialog.accept());
+    this.page.once('dialog', (dialog) => dialog.accept());
     await this.deleteLocationButton.click();
   }
 }
