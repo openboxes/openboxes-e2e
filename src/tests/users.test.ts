@@ -1,8 +1,8 @@
+import ImpersonateBanner from '@/components/ImpersonateBanner';
+import LocationChooser from '@/components/LocationChooser';
+import Navbar from '@/components/Navbar';
 import { expect, test } from '@/fixtures/fixtures';
-import ImpersonateBanner from '@/pages/ImpersonateBanner';
-import LocationChooser from '@/pages/LocationChooser';
 import LoginPage from '@/pages/LoginPage';
-import Navbar from '@/pages/Navbar';
 import { UserType } from '@/types';
 
 const formData: UserType = {

@@ -2,8 +2,8 @@ import { APIRequestContext } from '@playwright/test';
 
 import AuthService from '@/api/AuthService';
 import LocationService from '@/api/LocationService';
-import AppConfig from '@/utils/AppConfig';
-import LocationConfig from '@/utils/LocationConfig';
+import AppConfig from '@/config/AppConfig';
+import LocationConfig from '@/config/LocationConfig';
 
 class LocationData {
   private locationService: LocationService;

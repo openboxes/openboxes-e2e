@@ -2,7 +2,7 @@ import 'dotenv/config';
 
 import { defineConfig, devices } from '@playwright/test';
 
-import AppConfig from './src/utils/AppConfig';
+import AppConfig from './src/config/AppConfig';
 
 const appConfig = AppConfig.instance;
 
