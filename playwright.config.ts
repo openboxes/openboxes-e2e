@@ -40,8 +40,8 @@ export default defineConfig({
 
   /* Configure projects for major browsers */
   projects: [
-    { name: 'data-setup', testMatch: 'data.setup.ts' },
-    { name: 'auth-setup', testMatch: 'auth.setup.ts', dependencies: ['data-setup'], },
+    { name: 'data-setup', testMatch: 'data.setup.ts', testDir: './src/setup' },
+    { name: 'auth-setup', testMatch: 'auth.setup.ts', testDir: './src/setup', dependencies: ['data-setup'], },
     {
       name: 'chromium',
       use: {
