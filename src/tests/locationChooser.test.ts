@@ -3,8 +3,20 @@ import LocationChooser from '@/components/LocationChooser';
 import Navbar from '@/components/Navbar';
 import AppConfig from '@/config/AppConfig';
 import { expect, test } from '@/fixtures/fixtures';
+import CreateLocationPage from '@/pages/location/createLocation/CreateLocationPage';
+import LocationListPage from '@/pages/location/LocationListPage';
+import CreateLocationGroupPage from '@/pages/locationGroup/CreateLocationGroupPage';
+import EditLocationGroupPage from '@/pages/locationGroup/EditLocationGroupPage';
+import LocationGroupsListPage from '@/pages/locationGroup/LocationGroupsListPage';
 import LoginPage from '@/pages/LoginPage';
+import CreateOrganizationPage from '@/pages/oranization/CreateOrganizationPage';
+import EditOrganizationPage from '@/pages/oranization/EditOrganizationPage';
+import OrganizationListPage from '@/pages/oranization/OrganizationListPage';
+import CreateUserPage from '@/pages/user/CreateUserPage';
+import EditUserPage from '@/pages/user/editUser/EditUserPage';
+import UserListPage from '@/pages/user/UserListPage';
 import { LocationResponse, UserType } from '@/types';
+import LocationData from '@/utils/LocationData';
 import UniqueIdentifier from '@/utils/UniqueIdentifier';
 
 //tests are covering all steps from test case OBPIH-4644 Location Chooser
@@ -16,136 +28,136 @@ test.describe('Check if depot location is present in location chooser', () => {
   const LOCATION_NAME = uniqueIdentifier.generateUniqueString('test-Depot');
   const LOCATION_COLOR = '#009DD1';
 
-  test.beforeAll(
-    async ({
-      navbar,
-      createOrganizationPage,
-      editOrganizationPage,
-      locationGroupsListPage,
-      createLocationGroupPage,
-      locationListPage,
-      createLocationPage,
-    }) => {
-      await test.step('Go to create organization page', async () => {
-        await createOrganizationPage.goToPage();
-      });
+  test.beforeAll(async ({ browser }) => {
+    const page = await browser.newPage();
 
-      await test.step('Create organization', async () => {
-        await createOrganizationPage.organizationNameField.fill(
-          ORGANIZATION_NAME
-        );
-        await createOrganizationPage.createButton.click();
-        await expect(
-          editOrganizationPage.createOrganizationSuccessMessage
-        ).toBeVisible();
-      });
+    const createOrganizationPage = new CreateOrganizationPage(page);
+    const editOrganizationPage = new EditOrganizationPage(page);
+    const navbar = new Navbar(page);
+    const locationGroupsListPage = new LocationGroupsListPage(page);
+    const createLocationGroupPage = new CreateLocationGroupPage(page);
+    const locationListPage = new LocationListPage(page);
+    const createLocationPage = new CreateLocationPage(page);
 
-      await test.step('Go to create location group page', async () => {
-        await navbar.configurationButton.click();
-        await navbar.getNavItem('Location groups').click();
-        await locationGroupsListPage.createLocationButton.click();
-        await createLocationGroupPage.locationGroupNameField.fill(GROUP_NAME);
-        await createLocationGroupPage.createButton.click();
-      });
+    await test.step('Go to create organization page', async () => {
+      await createOrganizationPage.goToPage();
+    });
 
-      await test.step('Go to create location page', async () => {
-        await navbar.configurationButton.click();
-        await navbar.getNavItem('Locations').click();
-        await locationListPage.createLocationButton.click();
-      });
+    await test.step('Create organization', async () => {
+      await createOrganizationPage.organizationNameField.fill(
+        ORGANIZATION_NAME
+      );
+      await createOrganizationPage.createButton.click();
+      await expect(
+        editOrganizationPage.createOrganizationSuccessMessage
+      ).toBeVisible();
+    });
 
-      await test.step('Create location, Depot with background color', async () => {
-        await createLocationPage.locationDetailsTabSection.locationNameField.fill(
-          LOCATION_NAME
-        );
-        await createLocationPage.locationDetailsTabSection.organizationSelect.click();
-        await createLocationPage.locationDetailsTabSection
-          .getOrganization(ORGANIZATION_NAME)
-          .click();
-        await createLocationPage.locationDetailsTabSection.locationTypeSelect.click();
-        await createLocationPage.locationDetailsTabSection
-          .getlocationTypeOption('Depot')
-          .click();
-        await createLocationPage.locationDetailsTabSection.locationGroupSelect.click();
-        await createLocationPage.locationDetailsTabSection
-          .getLocationGroupOption(GROUP_NAME)
-          .click();
-        await createLocationPage.locationDetailsTabSection.saveButton.click();
-        await createLocationPage.locationConfigurationTab.click();
-        await createLocationPage.locationConfigurationTabSection.backgroundColorField.click();
-        await createLocationPage.locationConfigurationTabSection.backgroundColorField.clear();
-        await createLocationPage.locationConfigurationTabSection.backgroundColorField.fill(
-          LOCATION_COLOR
-        );
-        await createLocationPage.locationConfigurationTabSection.saveButton.click();
-      });
-    }
-  );
+    await test.step('Go to create location group page', async () => {
+      await navbar.configurationButton.click();
+      await navbar.getNavItem('Location groups').click();
+      await locationGroupsListPage.createLocationButton.click();
+      await createLocationGroupPage.locationGroupNameField.fill(GROUP_NAME);
+      await createLocationGroupPage.createButton.click();
+    });
 
-  test.afterAll(
-    async ({
-      page,
-      navbar,
-      locationListPage,
-      organizationListPage,
-      editOrganizationPage,
-      locationGroupsListPage,
-      createLocationPage,
-      editLocationGroupPage,
-    }) => {
-      await test.step('Delete created location', async () => {
-        await page.goto('./dashboard');
-        await navbar.configurationButton.click();
-        await navbar.getNavItem('Locations').click();
-        await locationListPage.searchByLocationNameField.fill(LOCATION_NAME);
-        await locationListPage.findButton.click();
-        await locationListPage.getLocationEditButton(LOCATION_NAME).click();
-        await createLocationPage.actionButton.click();
-        await createLocationPage.clickDeleteLocation();
-      });
+    await test.step('Go to create location page', async () => {
+      await navbar.configurationButton.click();
+      await navbar.getNavItem('Locations').click();
+      await locationListPage.createLocationButton.click();
+    });
 
-      await test.step('Assert that location does not exists in the list', async () => {
-        await locationListPage.searchByLocationNameField.fill(LOCATION_NAME);
-        await locationListPage.findButton.click();
-        await expect(
-          locationListPage.getLocationEditButton(LOCATION_NAME)
-        ).toBeHidden();
-      });
+    await test.step('Create location, Depot with background color', async () => {
+      await createLocationPage.locationDetailsTabSection.locationNameField.fill(
+        LOCATION_NAME
+      );
+      await createLocationPage.locationDetailsTabSection.organizationSelect.click();
+      await createLocationPage.locationDetailsTabSection
+        .getOrganization(ORGANIZATION_NAME)
+        .click();
+      await createLocationPage.locationDetailsTabSection.locationTypeSelect.click();
+      await createLocationPage.locationDetailsTabSection
+        .getlocationTypeOption('Depot')
+        .click();
+      await createLocationPage.locationDetailsTabSection.locationGroupSelect.click();
+      await createLocationPage.locationDetailsTabSection
+        .getLocationGroupOption(GROUP_NAME)
+        .click();
+      await createLocationPage.locationDetailsTabSection.saveButton.click();
+      await createLocationPage.locationConfigurationTab.click();
+      await createLocationPage.locationConfigurationTabSection.backgroundColorField.click();
+      await createLocationPage.locationConfigurationTabSection.backgroundColorField.clear();
+      await createLocationPage.locationConfigurationTabSection.backgroundColorField.fill(
+        LOCATION_COLOR
+      );
+      await createLocationPage.locationConfigurationTabSection.saveButton.click();
+    });
+    await page.close();
+  });
 
-      await test.step('Delete created organization', async () => {
-        await navbar.configurationButton.click();
-        await navbar.getNavItem('Organizations').click();
-        await organizationListPage.searchByOrganizationNameField.fill(
-          ORGANIZATION_NAME
-        );
-        await organizationListPage.searchButton.click();
-        await organizationListPage
-          .getOrganizationToEdit(ORGANIZATION_NAME)
-          .click();
-        await editOrganizationPage.clickDeleteOrganization();
-      });
+  test.afterAll(async ({ browser }) => {
+    const page = await browser.newPage();
 
-      await test.step('Assert that organization does not exists in the list', async () => {
-        await organizationListPage.searchByOrganizationNameField.fill(
-          ORGANIZATION_NAME
-        );
-        await organizationListPage.searchButton.click();
-        await expect(
-          organizationListPage.getOrganizationToEdit(ORGANIZATION_NAME)
-        ).toBeHidden();
-      });
+    const editOrganizationPage = new EditOrganizationPage(page);
+    const navbar = new Navbar(page);
+    const locationGroupsListPage = new LocationGroupsListPage(page);
+    const locationListPage = new LocationListPage(page);
+    const createLocationPage = new CreateLocationPage(page);
+    const organizationListPage = new OrganizationListPage(page);
+    const editLocationGroupPage = new EditLocationGroupPage(page);
 
-      await test.step('Delete created location group', async () => {
-        await navbar.configurationButton.click();
-        await navbar.getNavItem('Location groups').click();
-        await locationGroupsListPage.getPaginationItem('3').click();
-        await locationGroupsListPage
-          .getLocationGroupnToEdit(GROUP_NAME)
-          .click();
-        await editLocationGroupPage.clickDeleteLocationGroup();
-      });
-    }
-  );
+    await test.step('Delete created location', async () => {
+      await page.goto('./dashboard');
+      await navbar.configurationButton.click();
+      await navbar.getNavItem('Locations').click();
+      await locationListPage.searchByLocationNameField.fill(LOCATION_NAME);
+      await locationListPage.findButton.click();
+      await locationListPage.getLocationEditButton(LOCATION_NAME).click();
+      await createLocationPage.actionButton.click();
+      await createLocationPage.clickDeleteLocation();
+    });
+
+    await test.step('Assert that location does not exists in the list', async () => {
+      await locationListPage.searchByLocationNameField.fill(LOCATION_NAME);
+      await locationListPage.findButton.click();
+      await expect(
+        locationListPage.getLocationEditButton(LOCATION_NAME)
+      ).toBeHidden();
+    });
+
+    await test.step('Delete created organization', async () => {
+      await navbar.configurationButton.click();
+      await navbar.getNavItem('Organizations').click();
+      await organizationListPage.searchByOrganizationNameField.fill(
+        ORGANIZATION_NAME
+      );
+      await organizationListPage.searchButton.click();
+      await organizationListPage
+        .getOrganizationToEdit(ORGANIZATION_NAME)
+        .click();
+      await editOrganizationPage.clickDeleteOrganization();
+    });
+
+    await test.step('Assert that organization does not exists in the list', async () => {
+      await organizationListPage.searchByOrganizationNameField.fill(
+        ORGANIZATION_NAME
+      );
+      await organizationListPage.searchButton.click();
+      await expect(
+        organizationListPage.getOrganizationToEdit(ORGANIZATION_NAME)
+      ).toBeHidden();
+    });
+
+    await test.step('Delete created location group', async () => {
+      await navbar.configurationButton.click();
+      await navbar.getNavItem('Location groups').click();
+      await locationGroupsListPage.getPaginationItem('3').click();
+      await locationGroupsListPage.getLocationGroupnToEdit(GROUP_NAME).click();
+      await editLocationGroupPage.clickDeleteLocationGroup();
+    });
+
+    await page.close();
+  });
 
   test('Assert created location on location chooser, gsp page', async ({
     page,
@@ -220,103 +232,103 @@ test.describe('Check if ward location is present in location chooser', () => {
   const uniqueIdentifier = new UniqueIdentifier();
   const LOCATION_NAME = uniqueIdentifier.generateUniqueString('test-Ward');
 
-  test.beforeAll(
-    async ({
-      page,
-      navbar,
-      locationListPage,
-      createLocationPage,
-      editUserPage,
-    }) => {
-      await page.goto('./dashboard');
+  test.beforeAll(async ({ browser }) => {
+    const page = await browser.newPage();
 
-      await test.step('Go to create location page', async () => {
-        await navbar.configurationButton.click();
-        await navbar.getNavItem('Locations').click();
-        await locationListPage.createLocationButton.click();
-      });
+    const editUserPage = new EditUserPage(page);
+    const navbar = new Navbar(page);
+    const locationListPage = new LocationListPage(page);
+    const createLocationPage = new CreateLocationPage(page);
 
-      await test.step('Create Ward location', async () => {
-        await createLocationPage.locationDetailsTabSection.locationNameField.fill(
-          LOCATION_NAME
-        );
-        await createLocationPage.locationDetailsTabSection.locationTypeSelect.click();
-        await createLocationPage.locationDetailsTabSection
-          .getlocationTypeOption('Ward')
-          .click();
-        await createLocationPage.locationDetailsTabSection.saveButton.click();
-        await createLocationPage.locationConfigurationTab.click();
-        await createLocationPage.locationConfigurationTabSection.useDefaultSettingsCheckbox.uncheck();
-        await createLocationPage.locationConfigurationTabSection
-          .removeSupportedActivitiesButton('None')
-          .click();
-        await createLocationPage.locationConfigurationTabSection.supportedActivitiesSelect.click();
-        await createLocationPage.locationConfigurationTabSection
-          .getSupportedActivitiesOption('Submit request')
-          .click();
-        await createLocationPage.locationConfigurationTabSection.saveButton.click();
-      });
+    await page.goto('./dashboard');
 
-      await test.step('Add user role for created Ward location', async () => {
-        await navbar.profileButton.click();
-        await navbar.editProfileButton.click();
-        await editUserPage.authorizationTab.click();
-        await editUserPage.authorizationTabSection.addLocationRolesButton.click();
-        await editUserPage.authorizationTabSection.locationRoleDialog.locationSelectClearButton.click();
-        await editUserPage.authorizationTabSection.locationRoleDialog.locationForLocationRoleSelect.click();
-        await editUserPage.authorizationTabSection.locationRoleDialog
-          .getLocationForLocationRole(LOCATION_NAME)
-          .click();
-        await editUserPage.authorizationTabSection.locationRoleDialog.locationRoleSelect.click();
-        await editUserPage.authorizationTabSection.locationRoleDialog
-          .getUserLocationRole('Requestor')
-          .click();
-        await editUserPage.authorizationTabSection.locationRoleDialog.saveButton.click();
-      });
-    }
-  );
+    await test.step('Go to create location page', async () => {
+      await navbar.configurationButton.click();
+      await navbar.getNavItem('Locations').click();
+      await locationListPage.createLocationButton.click();
+    });
 
-  test.afterAll(
-    async ({
-      page,
-      navbar,
-      editUserPage,
-      locationListPage,
-      createLocationPage,
-    }) => {
-      await page.goto('./dashboard');
-      await test.step('Remove location role from user', async () => {
-        await navbar.profileButton.click();
-        await navbar.editProfileButton.click();
-        await editUserPage.authorizationTab.click();
-        await editUserPage.authorizationTabSection
-          .deleteLocationRole(LOCATION_NAME)
-          .click();
-      });
+    await test.step('Create Ward location', async () => {
+      await createLocationPage.locationDetailsTabSection.locationNameField.fill(
+        LOCATION_NAME
+      );
+      await createLocationPage.locationDetailsTabSection.locationTypeSelect.click();
+      await createLocationPage.locationDetailsTabSection
+        .getlocationTypeOption('Ward')
+        .click();
+      await createLocationPage.locationDetailsTabSection.saveButton.click();
+      await createLocationPage.locationConfigurationTab.click();
+      await createLocationPage.locationConfigurationTabSection.useDefaultSettingsCheckbox.uncheck();
+      await createLocationPage.locationConfigurationTabSection
+        .removeSupportedActivitiesButton('None')
+        .click();
+      await createLocationPage.locationConfigurationTabSection.supportedActivitiesSelect.click();
+      await createLocationPage.locationConfigurationTabSection
+        .getSupportedActivitiesOption('Submit request')
+        .click();
+      await createLocationPage.locationConfigurationTabSection.saveButton.click();
+    });
 
-      await test.step('Delete created ward location', async () => {
-        await navbar.configurationButton.click();
-        await navbar.getNavItem('Locations').click();
-        await locationListPage.searchByLocationNameField.fill(LOCATION_NAME);
-        await locationListPage.locationTypeSelect.click();
-        await locationListPage.getSelectLocationTypeOption('Ward').click();
-        await locationListPage.findButton.click();
-        await locationListPage.getLocationEditButton(LOCATION_NAME).click();
-        await createLocationPage.actionButton.click();
-        await createLocationPage.clickDeleteLocation();
-      });
+    await test.step('Add user role for created Ward location', async () => {
+      await navbar.profileButton.click();
+      await navbar.editProfileButton.click();
+      await editUserPage.authorizationTab.click();
+      await editUserPage.authorizationTabSection.addLocationRolesButton.click();
+      await editUserPage.authorizationTabSection.locationRoleDialog.locationSelectClearButton.click();
+      await editUserPage.authorizationTabSection.locationRoleDialog.locationForLocationRoleSelect.click();
+      await editUserPage.authorizationTabSection.locationRoleDialog
+        .getLocationForLocationRole(LOCATION_NAME)
+        .click();
+      await editUserPage.authorizationTabSection.locationRoleDialog.locationRoleSelect.click();
+      await editUserPage.authorizationTabSection.locationRoleDialog
+        .getUserLocationRole('Requestor')
+        .click();
+      await editUserPage.authorizationTabSection.locationRoleDialog.saveButton.click();
+    });
+    await page.close();
+  });
 
-      await test.step('Assert that location does not exists in the list', async () => {
-        await locationListPage.searchByLocationNameField.fill(LOCATION_NAME);
-        await locationListPage.locationTypeSelect.click();
-        await locationListPage.getSelectLocationTypeOption('Ward').click();
-        await locationListPage.findButton.click();
-        await expect(
-          locationListPage.getLocationEditButton(LOCATION_NAME)
-        ).toBeHidden();
-      });
-    }
-  );
+  test.afterAll(async ({ browser }) => {
+    const page = await browser.newPage();
+
+    const editUserPage = new EditUserPage(page);
+    const navbar = new Navbar(page);
+    const locationListPage = new LocationListPage(page);
+    const createLocationPage = new CreateLocationPage(page);
+
+    await page.goto('./dashboard');
+    await test.step('Remove location role from user', async () => {
+      await navbar.profileButton.click();
+      await navbar.editProfileButton.click();
+      await editUserPage.authorizationTab.click();
+      await editUserPage.authorizationTabSection
+        .deleteLocationRole(LOCATION_NAME)
+        .click();
+    });
+
+    await test.step('Delete created ward location', async () => {
+      await navbar.configurationButton.click();
+      await navbar.getNavItem('Locations').click();
+      await locationListPage.searchByLocationNameField.fill(LOCATION_NAME);
+      await locationListPage.locationTypeSelect.click();
+      await locationListPage.getSelectLocationTypeOption('Ward').click();
+      await locationListPage.findButton.click();
+      await locationListPage.getLocationEditButton(LOCATION_NAME).click();
+      await createLocationPage.actionButton.click();
+      await createLocationPage.clickDeleteLocation();
+    });
+
+    await test.step('Assert that location does not exists in the list', async () => {
+      await locationListPage.searchByLocationNameField.fill(LOCATION_NAME);
+      await locationListPage.locationTypeSelect.click();
+      await locationListPage.getSelectLocationTypeOption('Ward').click();
+      await locationListPage.findButton.click();
+      await expect(
+        locationListPage.getLocationEditButton(LOCATION_NAME)
+      ).toBeHidden();
+    });
+    await page.close();
+  });
 
   test('Assert created Ward on location chooser, gsp page', async ({
     page,
@@ -396,131 +408,132 @@ test.describe('Check if location is present in location chooser after editing', 
   );
   const LOCATION_NAME = uniqueIdentifier.generateUniqueString('Test-Depot');
 
-  test.beforeAll(
-    async ({
-      navbar,
-      createOrganizationPage,
-      editOrganizationPage,
-      locationListPage,
-      createLocationPage,
-    }) => {
-      await test.step('Go to create organization page', async () => {
-        await createOrganizationPage.goToPage();
-      });
+  test.beforeAll(async ({ browser }) => {
+    const page = await browser.newPage();
 
-      await test.step('Create organization', async () => {
-        await createOrganizationPage.organizationNameField.fill(
-          ORGANIZATION_NAME
-        );
-        await createOrganizationPage.createButton.click();
-        await expect(
-          editOrganizationPage.createOrganizationSuccessMessage
-        ).toBeVisible();
-      });
+    const createOrganizationPage = new CreateOrganizationPage(page);
+    const navbar = new Navbar(page);
+    const locationListPage = new LocationListPage(page);
+    const createLocationPage = new CreateLocationPage(page);
+    const editOrganizationPage = new EditOrganizationPage(page);
 
-      await test.step('Create second organization', async () => {
-        await editOrganizationPage.createOrganizationButton.click();
-        await createOrganizationPage.organizationNameField.fill(
-          ORGANIZATION_NAME_SECOND
-        );
-        await createOrganizationPage.createButton.click();
-        await expect(
-          editOrganizationPage.createOrganizationSuccessMessage
-        ).toBeVisible();
-      });
+    await test.step('Go to create organization page', async () => {
+      await createOrganizationPage.goToPage();
+    });
 
-      await test.step('Go to create location page', async () => {
-        await navbar.configurationButton.click();
-        await navbar.getNavItem('Locations').click();
-        await locationListPage.createLocationButton.click();
-      });
+    await test.step('Create organization', async () => {
+      await createOrganizationPage.organizationNameField.fill(
+        ORGANIZATION_NAME
+      );
+      await createOrganizationPage.createButton.click();
+      await expect(
+        editOrganizationPage.createOrganizationSuccessMessage
+      ).toBeVisible();
+    });
 
-      await test.step('Create location, Depot', async () => {
-        await createLocationPage.locationDetailsTabSection.locationNameField.fill(
-          LOCATION_NAME
-        );
-        await createLocationPage.locationDetailsTabSection.organizationSelect.click();
-        await createLocationPage.locationDetailsTabSection
-          .getOrganization(ORGANIZATION_NAME)
-          .click();
-        await createLocationPage.locationDetailsTabSection.locationTypeSelect.click();
-        await createLocationPage.locationDetailsTabSection
-          .getlocationTypeOption('Depot')
-          .click();
-        await createLocationPage.locationDetailsTabSection.saveButton.click();
-      });
-    }
-  );
+    await test.step('Create second organization', async () => {
+      await editOrganizationPage.createOrganizationButton.click();
+      await createOrganizationPage.organizationNameField.fill(
+        ORGANIZATION_NAME_SECOND
+      );
+      await createOrganizationPage.createButton.click();
+      await expect(
+        editOrganizationPage.createOrganizationSuccessMessage
+      ).toBeVisible();
+    });
 
-  test.afterAll(
-    async ({
-      page,
-      navbar,
-      locationListPage,
-      createLocationPage,
-      organizationListPage,
-      editOrganizationPage,
-    }) => {
-      await page.goto('./dashboard');
+    await test.step('Go to create location page', async () => {
+      await navbar.configurationButton.click();
+      await navbar.getNavItem('Locations').click();
+      await locationListPage.createLocationButton.click();
+    });
 
-      await test.step('Delete created location', async () => {
-        await navbar.configurationButton.click();
-        await navbar.getNavItem('Locations').click();
-        await locationListPage.searchByLocationNameField.fill(LOCATION_NAME);
-        await locationListPage.findButton.click();
-        await locationListPage.getLocationEditButton(LOCATION_NAME).click();
-        await createLocationPage.actionButton.click();
-        await createLocationPage.clickDeleteLocation();
-      });
+    await test.step('Create location, Depot', async () => {
+      await createLocationPage.locationDetailsTabSection.locationNameField.fill(
+        LOCATION_NAME
+      );
+      await createLocationPage.locationDetailsTabSection.organizationSelect.click();
+      await createLocationPage.locationDetailsTabSection
+        .getOrganization(ORGANIZATION_NAME)
+        .click();
+      await createLocationPage.locationDetailsTabSection.locationTypeSelect.click();
+      await createLocationPage.locationDetailsTabSection
+        .getlocationTypeOption('Depot')
+        .click();
+      await createLocationPage.locationDetailsTabSection.saveButton.click();
+    });
+    await page.close();
+  });
 
-      await test.step('Assert that location does not exists in the list', async () => {
-        await locationListPage.searchByLocationNameField.fill(LOCATION_NAME);
-        await locationListPage.findButton.click();
-        await expect(
-          locationListPage.getLocationEditButton(LOCATION_NAME)
-        ).toBeHidden();
-      });
+  test.afterAll(async ({ browser }) => {
+    const page = await browser.newPage();
 
-      await test.step('Delete created organizations', async () => {
-        await navbar.configurationButton.click();
-        await navbar.getNavItem('Organizations').click();
-        await organizationListPage.searchByOrganizationNameField.fill(
-          ORGANIZATION_NAME
-        );
-        await organizationListPage.searchButton.click();
-        await organizationListPage
-          .getOrganizationToEdit(ORGANIZATION_NAME)
-          .click();
-        await editOrganizationPage.clickDeleteOrganization();
-        await organizationListPage.searchByOrganizationNameField.fill(
-          ORGANIZATION_NAME_SECOND
-        );
-        await organizationListPage.searchButton.click();
-        await organizationListPage
-          .getOrganizationToEdit(ORGANIZATION_NAME_SECOND)
-          .click();
-        await editOrganizationPage.clickDeleteOrganization();
-      });
+    const organizationListPage = new OrganizationListPage(page);
+    const navbar = new Navbar(page);
+    const locationListPage = new LocationListPage(page);
+    const createLocationPage = new CreateLocationPage(page);
+    const editOrganizationPage = new EditOrganizationPage(page);
 
-      await test.step('Assert that organizations do not exists in the list', async () => {
-        await organizationListPage.searchByOrganizationNameField.fill(
-          ORGANIZATION_NAME
-        );
-        await organizationListPage.searchButton.click();
-        await expect(
-          organizationListPage.getOrganizationToEdit(ORGANIZATION_NAME)
-        ).toBeHidden();
-        await organizationListPage.searchByOrganizationNameField.clear();
-        await organizationListPage.searchByOrganizationNameField.fill(
-          ORGANIZATION_NAME_SECOND
-        );
-        await organizationListPage.searchButton.click();
-        await expect(
-          organizationListPage.getOrganizationToEdit(ORGANIZATION_NAME_SECOND)
-        ).toBeHidden();
-      });
-    }
-  );
+    await page.goto('./dashboard');
+
+    await test.step('Delete created location', async () => {
+      await navbar.configurationButton.click();
+      await navbar.getNavItem('Locations').click();
+      await locationListPage.searchByLocationNameField.fill(LOCATION_NAME);
+      await locationListPage.findButton.click();
+      await locationListPage.getLocationEditButton(LOCATION_NAME).click();
+      await createLocationPage.actionButton.click();
+      await createLocationPage.clickDeleteLocation();
+    });
+
+    await test.step('Assert that location does not exists in the list', async () => {
+      await locationListPage.searchByLocationNameField.fill(LOCATION_NAME);
+      await locationListPage.findButton.click();
+      await expect(
+        locationListPage.getLocationEditButton(LOCATION_NAME)
+      ).toBeHidden();
+    });
+
+    await test.step('Delete created organizations', async () => {
+      await navbar.configurationButton.click();
+      await navbar.getNavItem('Organizations').click();
+      await organizationListPage.searchByOrganizationNameField.fill(
+        ORGANIZATION_NAME
+      );
+      await organizationListPage.searchButton.click();
+      await organizationListPage
+        .getOrganizationToEdit(ORGANIZATION_NAME)
+        .click();
+      await editOrganizationPage.clickDeleteOrganization();
+      await organizationListPage.searchByOrganizationNameField.fill(
+        ORGANIZATION_NAME_SECOND
+      );
+      await organizationListPage.searchButton.click();
+      await organizationListPage
+        .getOrganizationToEdit(ORGANIZATION_NAME_SECOND)
+        .click();
+      await editOrganizationPage.clickDeleteOrganization();
+    });
+
+    await test.step('Assert that organizations do not exists in the list', async () => {
+      await organizationListPage.searchByOrganizationNameField.fill(
+        ORGANIZATION_NAME
+      );
+      await organizationListPage.searchButton.click();
+      await expect(
+        organizationListPage.getOrganizationToEdit(ORGANIZATION_NAME)
+      ).toBeHidden();
+      await organizationListPage.searchByOrganizationNameField.clear();
+      await organizationListPage.searchByOrganizationNameField.fill(
+        ORGANIZATION_NAME_SECOND
+      );
+      await organizationListPage.searchButton.click();
+      await expect(
+        organizationListPage.getOrganizationToEdit(ORGANIZATION_NAME_SECOND)
+      ).toBeHidden();
+    });
+    await page.close();
+  });
 
   test('Assert created location on location chooser', async ({
     page,
@@ -542,22 +555,27 @@ test.describe('Check if location is present in location chooser after editing', 
   });
 
   test.describe('After updating location group', async () => {
-    test.beforeAll(
-      async ({ page, navbar, locationListPage, createLocationPage }) => {
-        await page.goto('./dashboard');
+    test.beforeAll(async ({ browser }) => {
+      const page = await browser.newPage();
 
-        await navbar.configurationButton.click();
-        await navbar.getNavItem('Locations').click();
-        await locationListPage.searchByLocationNameField.fill(LOCATION_NAME);
-        await locationListPage.findButton.click();
-        await locationListPage.getLocationEditButton(LOCATION_NAME).click();
-        await createLocationPage.locationDetailsTabSection.organizationSelect.click();
-        await createLocationPage.locationDetailsTabSection
-          .getOrganization(ORGANIZATION_NAME_SECOND)
-          .click();
-        await createLocationPage.locationDetailsTabSection.saveButton.click();
-      }
-    );
+      const navbar = new Navbar(page);
+      const locationListPage = new LocationListPage(page);
+      const createLocationPage = new CreateLocationPage(page);
+
+      await page.goto('./dashboard');
+
+      await navbar.configurationButton.click();
+      await navbar.getNavItem('Locations').click();
+      await locationListPage.searchByLocationNameField.fill(LOCATION_NAME);
+      await locationListPage.findButton.click();
+      await locationListPage.getLocationEditButton(LOCATION_NAME).click();
+      await createLocationPage.locationDetailsTabSection.organizationSelect.click();
+      await createLocationPage.locationDetailsTabSection
+        .getOrganization(ORGANIZATION_NAME_SECOND)
+        .click();
+      await createLocationPage.locationDetailsTabSection.saveButton.click();
+      await page.close();
+    });
 
     test('Assert updated organization for location on location chooser, gsp page', async ({
       page,
@@ -645,68 +663,73 @@ test.describe('Check if non manage inventory location is present in location cho
   const LOCATION_NAME = uniqueIdentifier.generateUniqueString('test-Depot');
   let location: LocationResponse;
 
-  test.beforeAll(
-    async ({
-      page,
-      navbar,
-      locationListPage,
-      createLocationPage,
-      mainLocation,
-    }) => {
-      location = await mainLocation.getLocation();
-      await page.goto('./dashboard');
+  test.beforeAll(async ({ browser }) => {
+    const page = await browser.newPage();
 
-      await test.step('Go to create location page', async () => {
-        await navbar.configurationButton.click();
-        await navbar.getNavItem('Locations').click();
-        await locationListPage.createLocationButton.click();
-      });
+    const mainLocation = new LocationData('main', page.request);
+    const navbar = new Navbar(page);
+    const locationListPage = new LocationListPage(page);
+    const createLocationPage = new CreateLocationPage(page);
 
-      await test.step('Create location, Depot without manage inventory', async () => {
-        await createLocationPage.locationDetailsTabSection.locationNameField.fill(
-          LOCATION_NAME
-        );
-        await createLocationPage.locationDetailsTabSection.organizationSelect.click();
-        await createLocationPage.locationDetailsTabSection
-          .getOrganization(location.organization?.name ?? '')
-          .click();
-        await createLocationPage.locationDetailsTabSection.locationTypeSelect.click();
-        await createLocationPage.locationDetailsTabSection
-          .getlocationTypeOption('Depot')
-          .click();
-        await createLocationPage.locationDetailsTabSection.saveButton.click();
-        await createLocationPage.locationConfigurationTab.click();
-        await createLocationPage.locationConfigurationTabSection.useDefaultSettingsCheckbox.uncheck();
-        await createLocationPage.locationConfigurationTabSection
-          .removeSupportedActivitiesButton('Manage inventory')
-          .click();
-        await createLocationPage.locationConfigurationTabSection.saveButton.click();
-      });
-    }
-  );
-  test.afterAll(
-    async ({ page, navbar, locationListPage, createLocationPage }) => {
-      await page.goto('./dashboard');
+    location = await mainLocation.getLocation();
+    await page.goto('./dashboard');
 
-      await test.step('Delete created location', async () => {
-        await navbar.configurationButton.click();
-        await navbar.getNavItem('Locations').click();
-        await locationListPage.searchByLocationNameField.fill(LOCATION_NAME);
-        await locationListPage.findButton.click();
-        await locationListPage.getLocationEditButton(LOCATION_NAME).click();
-        await createLocationPage.actionButton.click();
-        await createLocationPage.clickDeleteLocation();
-      });
+    await test.step('Go to create location page', async () => {
+      await navbar.configurationButton.click();
+      await navbar.getNavItem('Locations').click();
+      await locationListPage.createLocationButton.click();
+    });
 
-      await test.step('Assert that location does not exists in the list', async () => {
-        await locationListPage.searchByLocationNameField.fill(LOCATION_NAME);
-        await locationListPage.findButton.click();
-        await expect(
-          locationListPage.getLocationEditButton(LOCATION_NAME)
-        ).toBeHidden();
-      });
-    }
-  );
+    await test.step('Create location, Depot without manage inventory', async () => {
+      await createLocationPage.locationDetailsTabSection.locationNameField.fill(
+        LOCATION_NAME
+      );
+      await createLocationPage.locationDetailsTabSection.organizationSelect.click();
+      await createLocationPage.locationDetailsTabSection
+        .getOrganization(location.organization?.name ?? '')
+        .click();
+      await createLocationPage.locationDetailsTabSection.locationTypeSelect.click();
+      await createLocationPage.locationDetailsTabSection
+        .getlocationTypeOption('Depot')
+        .click();
+      await createLocationPage.locationDetailsTabSection.saveButton.click();
+      await createLocationPage.locationConfigurationTab.click();
+      await createLocationPage.locationConfigurationTabSection.useDefaultSettingsCheckbox.uncheck();
+      await createLocationPage.locationConfigurationTabSection
+        .removeSupportedActivitiesButton('Manage inventory')
+        .click();
+      await createLocationPage.locationConfigurationTabSection.saveButton.click();
+    });
+    await page.close();
+  });
+  test.afterAll(async ({ browser }) => {
+    const page = await browser.newPage();
+
+    const navbar = new Navbar(page);
+    const locationListPage = new LocationListPage(page);
+    const createLocationPage = new CreateLocationPage(page);
+
+    await page.goto('./dashboard');
+
+    await test.step('Delete created location', async () => {
+      await navbar.configurationButton.click();
+      await navbar.getNavItem('Locations').click();
+      await locationListPage.searchByLocationNameField.fill(LOCATION_NAME);
+      await locationListPage.findButton.click();
+      await locationListPage.getLocationEditButton(LOCATION_NAME).click();
+      await createLocationPage.actionButton.click();
+      await createLocationPage.clickDeleteLocation();
+    });
+
+    await test.step('Assert that location does not exists in the list', async () => {
+      await locationListPage.searchByLocationNameField.fill(LOCATION_NAME);
+      await locationListPage.findButton.click();
+      await expect(
+        locationListPage.getLocationEditButton(LOCATION_NAME)
+      ).toBeHidden();
+    });
+    await page.close();
+  });
 
   test('Assert created location on location chooser, gsp page', async ({
     page,
@@ -789,139 +812,138 @@ test.describe('Check if ward location is present in location chooser based on us
 
   const LOCATION_NAME = uniqueIdentifier.generateUniqueString('Test-Ward');
 
-  test.beforeAll(
-    async ({
-      page,
-      navbar,
-      locationListPage,
-      createLocationPage,
-      editUserPage,
-      userListPage,
-      createUserPage,
-    }) => {
+  test.beforeAll(async ({ browser }) => {
+    const page = await browser.newPage();
+
+    const navbar = new Navbar(page);
+    const locationListPage = new LocationListPage(page);
+    const createLocationPage = new CreateLocationPage(page);
+    const userListPage = new UserListPage(page);
+    const createUserPage = new CreateUserPage(page);
+    const editUserPage = new EditUserPage(page);
+
+    await page.goto('./dashboard');
+
+    await test.step('Go to create location page', async () => {
+      await navbar.configurationButton.click();
+      await navbar.getNavItem('Locations').click();
+      await locationListPage.createLocationButton.click();
+    });
+
+    await test.step('Create Ward location', async () => {
+      await createLocationPage.locationDetailsTabSection.locationNameField.fill(
+        LOCATION_NAME
+      );
+      await createLocationPage.locationDetailsTabSection.locationTypeSelect.click();
+      await createLocationPage.locationDetailsTabSection
+        .getlocationTypeOption('Ward')
+        .click();
+      await createLocationPage.locationDetailsTabSection.saveButton.click();
+      await createLocationPage.locationConfigurationTab.click();
+      await createLocationPage.locationConfigurationTabSection.useDefaultSettingsCheckbox.uncheck();
+      await createLocationPage.locationConfigurationTabSection
+        .removeSupportedActivitiesButton('None')
+        .click();
+      await createLocationPage.locationConfigurationTabSection.supportedActivitiesSelect.click();
+      await createLocationPage.locationConfigurationTabSection
+        .getSupportedActivitiesOption('Submit request')
+        .click();
+      await createLocationPage.locationConfigurationTabSection.saveButton.click();
+    });
+
+    await test.step('Go to create user page', async () => {
       await page.goto('./dashboard');
+      await navbar.configurationButton.click();
+      await navbar.getNavItem('Users').click();
+      await userListPage.createUserButton.click();
+    });
 
-      await test.step('Go to create location page', async () => {
-        await navbar.configurationButton.click();
-        await navbar.getNavItem('Locations').click();
-        await locationListPage.createLocationButton.click();
-      });
+    await test.step('Create new test user', async () => {
+      await createUserPage.fillUserForm(TEST_USER);
+      await createUserPage.saveButton.click();
+      await expect(editUserPage.summary).toContainText(
+        `${TEST_USER.firstName} ${TEST_USER.lastName}`
+      );
+      await editUserPage.userDetailsTabSection.activateUserCheckBox.click();
+      await editUserPage.userDetailsTabSection.saveButton.click();
+    });
 
-      await test.step('Create Ward location', async () => {
-        await createLocationPage.locationDetailsTabSection.locationNameField.fill(
-          LOCATION_NAME
-        );
-        await createLocationPage.locationDetailsTabSection.locationTypeSelect.click();
-        await createLocationPage.locationDetailsTabSection
-          .getlocationTypeOption('Ward')
-          .click();
-        await createLocationPage.locationDetailsTabSection.saveButton.click();
-        await createLocationPage.locationConfigurationTab.click();
-        await createLocationPage.locationConfigurationTabSection.useDefaultSettingsCheckbox.uncheck();
-        await createLocationPage.locationConfigurationTabSection
-          .removeSupportedActivitiesButton('None')
-          .click();
-        await createLocationPage.locationConfigurationTabSection.supportedActivitiesSelect.click();
-        await createLocationPage.locationConfigurationTabSection
-          .getSupportedActivitiesOption('Submit request')
-          .click();
-        await createLocationPage.locationConfigurationTabSection.saveButton.click();
-      });
+    await test.step('Add user role for created Ward location', async () => {
+      await editUserPage.authorizationTab.click();
+      await editUserPage.authorizationTabSection.addLocationRolesButton.click();
+      await editUserPage.authorizationTabSection.locationRoleDialog.locationSelectClearButton.click();
+      await editUserPage.authorizationTabSection.locationRoleDialog.locationForLocationRoleSelect.click();
+      await editUserPage.authorizationTabSection.locationRoleDialog
+        .getLocationForLocationRole(LOCATION_NAME)
+        .click();
+      await editUserPage.authorizationTabSection.locationRoleDialog.locationRoleSelect.click();
+      await editUserPage.authorizationTabSection.locationRoleDialog
+        .getUserLocationRole('Requestor')
+        .click();
+      await editUserPage.authorizationTabSection.locationRoleDialog.saveButton.click();
+    });
+    await page.close();
+  });
 
-      await test.step('Go to create user page', async () => {
-        await page.goto('./dashboard');
-        await navbar.configurationButton.click();
-        await navbar.getNavItem('Users').click();
-        await userListPage.createUserButton.click();
-      });
+  test.afterAll(async ({ browser }) => {
+    const page = await browser.newPage();
 
-      await test.step('Create new test user', async () => {
-        await createUserPage.fillUserForm(TEST_USER);
-        await createUserPage.saveButton.click();
-        await expect(editUserPage.summary).toContainText(
-          `${TEST_USER.firstName} ${TEST_USER.lastName}`
-        );
-        await editUserPage.userDetailsTabSection.activateUserCheckBox.click();
-        await editUserPage.userDetailsTabSection.saveButton.click();
-      });
+    const navbar = new Navbar(page);
+    const locationListPage = new LocationListPage(page);
+    const createLocationPage = new CreateLocationPage(page);
+    const userListPage = new UserListPage(page);
+    const editUserPage = new EditUserPage(page);
 
-      await test.step('Add user role for created Ward location', async () => {
-        await editUserPage.authorizationTab.click();
-        await editUserPage.authorizationTabSection.addLocationRolesButton.click();
-        await editUserPage.authorizationTabSection.locationRoleDialog.locationSelectClearButton.click();
-        await editUserPage.authorizationTabSection.locationRoleDialog.locationForLocationRoleSelect.click();
-        await editUserPage.authorizationTabSection.locationRoleDialog
-          .getLocationForLocationRole(LOCATION_NAME)
-          .click();
-        await editUserPage.authorizationTabSection.locationRoleDialog.locationRoleSelect.click();
-        await editUserPage.authorizationTabSection.locationRoleDialog
-          .getUserLocationRole('Requestor')
-          .click();
-        await editUserPage.authorizationTabSection.locationRoleDialog.saveButton.click();
-      });
-    }
-  );
+    await page.goto('./dashboard');
+    await test.step('Go to edit user page', async () => {
+      await userListPage.goToPage();
+      await userListPage.searchByNameField.fill(TEST_USER.username);
+      await userListPage.findButton.click();
+      await userListPage.getUserToEdit(TEST_USER.username).click();
+    });
 
-  test.afterAll(
-    async ({
-      page,
-      navbar,
-      editUserPage,
-      locationListPage,
-      createLocationPage,
-      userListPage,
-    }) => {
-      await page.goto('./dashboard');
-      await test.step('Go to edit user page', async () => {
-        await userListPage.goToPage();
-        await userListPage.searchByNameField.fill(TEST_USER.username);
-        await userListPage.findButton.click();
-        await userListPage.getUserToEdit(TEST_USER.username).click();
-      });
+    await test.step('Remove location role from user', async () => {
+      await editUserPage.authorizationTab.click();
+      await editUserPage.authorizationTabSection
+        .deleteLocationRole(LOCATION_NAME)
+        .click();
+    });
 
-      await test.step('Remove location role from user', async () => {
-        await editUserPage.authorizationTab.click();
-        await editUserPage.authorizationTabSection
-          .deleteLocationRole(LOCATION_NAME)
-          .click();
-      });
+    await test.step('Delete user', async () => {
+      await editUserPage.actionButton.click();
+      await editUserPage.clickDeleteUser();
+    });
 
-      await test.step('Delete user', async () => {
-        await editUserPage.actionButton.click();
-        await editUserPage.clickDeleteUser();
-      });
+    await test.step('Assert that user does not exists in the list', async () => {
+      await userListPage.searchByNameField.fill(TEST_USER.username);
+      await userListPage.findButton.click();
+      await expect(userListPage.getUserToEdit(TEST_USER.username)).toBeHidden();
+    });
 
-      await test.step('Assert that user does not exists in the list', async () => {
-        await userListPage.searchByNameField.fill(TEST_USER.username);
-        await userListPage.findButton.click();
-        await expect(
-          userListPage.getUserToEdit(TEST_USER.username)
-        ).toBeHidden();
-      });
+    await test.step('Delete created ward location', async () => {
+      await navbar.configurationButton.click();
+      await navbar.getNavItem('Locations').click();
+      await locationListPage.searchByLocationNameField.fill(LOCATION_NAME);
+      await locationListPage.locationTypeSelect.click();
+      await locationListPage.getSelectLocationTypeOption('Ward').click();
+      await locationListPage.findButton.click();
+      await locationListPage.getLocationEditButton(LOCATION_NAME).click();
+      await createLocationPage.actionButton.click();
+      await createLocationPage.clickDeleteLocation();
+    });
 
-      await test.step('Delete created ward location', async () => {
-        await navbar.configurationButton.click();
-        await navbar.getNavItem('Locations').click();
-        await locationListPage.searchByLocationNameField.fill(LOCATION_NAME);
-        await locationListPage.locationTypeSelect.click();
-        await locationListPage.getSelectLocationTypeOption('Ward').click();
-        await locationListPage.findButton.click();
-        await locationListPage.getLocationEditButton(LOCATION_NAME).click();
-        await createLocationPage.actionButton.click();
-        await createLocationPage.clickDeleteLocation();
-      });
+    await test.step('Assert that location does not exists in the list', async () => {
+      await locationListPage.searchByLocationNameField.fill(LOCATION_NAME);
+      await locationListPage.locationTypeSelect.click();
+      await locationListPage.getSelectLocationTypeOption('Ward').click();
+      await locationListPage.findButton.click();
+      await expect(
+        locationListPage.getLocationEditButton(LOCATION_NAME)
+      ).toBeHidden();
+    });
 
-      await test.step('Assert that location does not exists in the list', async () => {
-        await locationListPage.searchByLocationNameField.fill(LOCATION_NAME);
-        await locationListPage.locationTypeSelect.click();
-        await locationListPage.getSelectLocationTypeOption('Ward').click();
-        await locationListPage.findButton.click();
-        await expect(
-          locationListPage.getLocationEditButton(LOCATION_NAME)
-        ).toBeHidden();
-      });
-    }
-  );
+    await page.close();
+  });
 
   test('Assert created Ward on location chooser, admin role', async ({
     userListPage,
@@ -1209,126 +1231,123 @@ test.describe('Check if ward location is present in location chooser based on us
 
   const LOCATION_NAME = uniqueIdentifier.generateUniqueString('Test-Ward');
 
-  test.beforeAll(
-    async ({
-      page,
-      navbar,
-      locationListPage,
-      createLocationPage,
-      editUserPage,
-      userListPage,
-      createUserPage,
-    }) => {
+  test.beforeAll(async ({ browser }) => {
+    const page = await browser.newPage();
+
+    const navbar = new Navbar(page);
+    const locationListPage = new LocationListPage(page);
+    const createLocationPage = new CreateLocationPage(page);
+    const userListPage = new UserListPage(page);
+    const createUserPage = new CreateUserPage(page);
+    const editUserPage = new EditUserPage(page);
+
+    await page.goto('./dashboard');
+
+    await test.step('Go to create location page', async () => {
+      await navbar.configurationButton.click();
+      await navbar.getNavItem('Locations').click();
+      await locationListPage.createLocationButton.click();
+    });
+
+    await test.step('Create Ward location', async () => {
+      await createLocationPage.locationDetailsTabSection.locationNameField.fill(
+        LOCATION_NAME
+      );
+      await createLocationPage.locationDetailsTabSection.locationTypeSelect.click();
+      await createLocationPage.locationDetailsTabSection
+        .getlocationTypeOption('Ward')
+        .click();
+      await createLocationPage.locationDetailsTabSection.saveButton.click();
+      await createLocationPage.locationConfigurationTab.click();
+      await createLocationPage.locationConfigurationTabSection.useDefaultSettingsCheckbox.uncheck();
+      await createLocationPage.locationConfigurationTabSection
+        .removeSupportedActivitiesButton('None')
+        .click();
+      await createLocationPage.locationConfigurationTabSection.supportedActivitiesSelect.click();
+      await createLocationPage.locationConfigurationTabSection
+        .getSupportedActivitiesOption('Submit request')
+        .click();
+      await createLocationPage.locationConfigurationTabSection.saveButton.click();
+    });
+
+    await test.step('Go to create user page', async () => {
       await page.goto('./dashboard');
+      await navbar.configurationButton.click();
+      await navbar.getNavItem('Users').click();
+      await userListPage.createUserButton.click();
+    });
 
-      await test.step('Go to create location page', async () => {
-        await navbar.configurationButton.click();
-        await navbar.getNavItem('Locations').click();
-        await locationListPage.createLocationButton.click();
-      });
+    await test.step('Create new test user', async () => {
+      await createUserPage.fillUserForm(TEST_USER);
+      await createUserPage.saveButton.click();
+      await expect(editUserPage.summary).toContainText(
+        `${TEST_USER.firstName} ${TEST_USER.lastName}`
+      );
+      await editUserPage.userDetailsTabSection.activateUserCheckBox.click();
+      await editUserPage.userDetailsTabSection.saveButton.click();
+    });
 
-      await test.step('Create Ward location', async () => {
-        await createLocationPage.locationDetailsTabSection.locationNameField.fill(
-          LOCATION_NAME
-        );
-        await createLocationPage.locationDetailsTabSection.locationTypeSelect.click();
-        await createLocationPage.locationDetailsTabSection
-          .getlocationTypeOption('Ward')
-          .click();
-        await createLocationPage.locationDetailsTabSection.saveButton.click();
-        await createLocationPage.locationConfigurationTab.click();
-        await createLocationPage.locationConfigurationTabSection.useDefaultSettingsCheckbox.uncheck();
-        await createLocationPage.locationConfigurationTabSection
-          .removeSupportedActivitiesButton('None')
-          .click();
-        await createLocationPage.locationConfigurationTabSection.supportedActivitiesSelect.click();
-        await createLocationPage.locationConfigurationTabSection
-          .getSupportedActivitiesOption('Submit request')
-          .click();
-        await createLocationPage.locationConfigurationTabSection.saveButton.click();
-      });
+    await test.step('Add global requestor user role', async () => {
+      await editUserPage.authorizationTab.click();
+      await editUserPage.authorizationTabSection.defaultRoleSelect.click();
+      await editUserPage.authorizationTabSection
+        .getUserRole('Requestor')
+        .click();
+      await editUserPage.authorizationTabSection.saveButton.click();
+    });
+    await page.close();
+  });
 
-      await test.step('Go to create user page', async () => {
-        await page.goto('./dashboard');
-        await navbar.configurationButton.click();
-        await navbar.getNavItem('Users').click();
-        await userListPage.createUserButton.click();
-      });
+  test.afterAll(async ({ browser }) => {
+    const page = await browser.newPage();
 
-      await test.step('Create new test user', async () => {
-        await createUserPage.fillUserForm(TEST_USER);
-        await createUserPage.saveButton.click();
-        await expect(editUserPage.summary).toContainText(
-          `${TEST_USER.firstName} ${TEST_USER.lastName}`
-        );
-        await editUserPage.userDetailsTabSection.activateUserCheckBox.click();
-        await editUserPage.userDetailsTabSection.saveButton.click();
-      });
+    const navbar = new Navbar(page);
+    const locationListPage = new LocationListPage(page);
+    const createLocationPage = new CreateLocationPage(page);
+    const userListPage = new UserListPage(page);
+    const editUserPage = new EditUserPage(page);
 
-      await test.step('Add global requestor user role', async () => {
-        await editUserPage.authorizationTab.click();
-        await editUserPage.authorizationTabSection.defaultRoleSelect.click();
-        await editUserPage.authorizationTabSection
-          .getUserRole('Requestor')
-          .click();
-        await editUserPage.authorizationTabSection.saveButton.click();
-      });
-    }
-  );
+    await page.goto('./dashboard');
+    await test.step('Go to edit user page', async () => {
+      await userListPage.goToPage();
+      await userListPage.searchByNameField.fill(TEST_USER.username);
+      await userListPage.findButton.click();
+      await userListPage.getUserToEdit(TEST_USER.username).click();
+    });
 
-  test.afterAll(
-    async ({
-      page,
-      navbar,
-      editUserPage,
-      locationListPage,
-      createLocationPage,
-      userListPage,
-    }) => {
-      await page.goto('./dashboard');
-      await test.step('Go to edit user page', async () => {
-        await userListPage.goToPage();
-        await userListPage.searchByNameField.fill(TEST_USER.username);
-        await userListPage.findButton.click();
-        await userListPage.getUserToEdit(TEST_USER.username).click();
-      });
+    await test.step('Delete user', async () => {
+      await editUserPage.actionButton.click();
+      await editUserPage.clickDeleteUser();
+    });
 
-      await test.step('Delete user', async () => {
-        await editUserPage.actionButton.click();
-        await editUserPage.clickDeleteUser();
-      });
+    await test.step('Assert that user does not exists in the list', async () => {
+      await userListPage.searchByNameField.fill(TEST_USER.username);
+      await userListPage.findButton.click();
+      await expect(userListPage.getUserToEdit(TEST_USER.username)).toBeHidden();
+    });
 
-      await test.step('Assert that user does not exists in the list', async () => {
-        await userListPage.searchByNameField.fill(TEST_USER.username);
-        await userListPage.findButton.click();
-        await expect(
-          userListPage.getUserToEdit(TEST_USER.username)
-        ).toBeHidden();
-      });
+    await test.step('Delete created ward location', async () => {
+      await navbar.configurationButton.click();
+      await navbar.getNavItem('Locations').click();
+      await locationListPage.searchByLocationNameField.fill(LOCATION_NAME);
+      await locationListPage.locationTypeSelect.click();
+      await locationListPage.getSelectLocationTypeOption('Ward').click();
+      await locationListPage.findButton.click();
+      await locationListPage.getLocationEditButton(LOCATION_NAME).click();
+      await createLocationPage.actionButton.click();
+      await createLocationPage.clickDeleteLocation();
+    });
 
-      await test.step('Delete created ward location', async () => {
-        await navbar.configurationButton.click();
-        await navbar.getNavItem('Locations').click();
-        await locationListPage.searchByLocationNameField.fill(LOCATION_NAME);
-        await locationListPage.locationTypeSelect.click();
-        await locationListPage.getSelectLocationTypeOption('Ward').click();
-        await locationListPage.findButton.click();
-        await locationListPage.getLocationEditButton(LOCATION_NAME).click();
-        await createLocationPage.actionButton.click();
-        await createLocationPage.clickDeleteLocation();
-      });
-
-      await test.step('Assert that location does not exists in the list', async () => {
-        await locationListPage.searchByLocationNameField.fill(LOCATION_NAME);
-        await locationListPage.locationTypeSelect.click();
-        await locationListPage.getSelectLocationTypeOption('Ward').click();
-        await locationListPage.findButton.click();
-        await expect(
-          locationListPage.getLocationEditButton(LOCATION_NAME)
-        ).toBeHidden();
-      });
-    }
-  );
+    await test.step('Assert that location does not exists in the list', async () => {
+      await locationListPage.searchByLocationNameField.fill(LOCATION_NAME);
+      await locationListPage.locationTypeSelect.click();
+      await locationListPage.getSelectLocationTypeOption('Ward').click();
+      await locationListPage.findButton.click();
+      await expect(
+        locationListPage.getLocationEditButton(LOCATION_NAME)
+      ).toBeHidden();
+    });
+  });
 
   test('Assert created Ward on location chooser, admin role', async ({
     userListPage,
@@ -1524,139 +1543,137 @@ test.describe('Check if ward location is present in location chooser based on us
 
   const LOCATION_NAME = uniqueIdentifier.generateUniqueString('Test-Ward');
 
-  test.beforeAll(
-    async ({
-      page,
-      navbar,
-      locationListPage,
-      createLocationPage,
-      editUserPage,
-      userListPage,
-      createUserPage,
-    }) => {
+  test.beforeAll(async ({ browser }) => {
+    const page = await browser.newPage();
+
+    const navbar = new Navbar(page);
+    const locationListPage = new LocationListPage(page);
+    const createLocationPage = new CreateLocationPage(page);
+    const userListPage = new UserListPage(page);
+    const createUserPage = new CreateUserPage(page);
+    const editUserPage = new EditUserPage(page);
+
+    await page.goto('./dashboard');
+
+    await test.step('Go to create location page', async () => {
+      await navbar.configurationButton.click();
+      await navbar.getNavItem('Locations').click();
+      await locationListPage.createLocationButton.click();
+    });
+
+    await test.step('Create Ward location', async () => {
+      await createLocationPage.locationDetailsTabSection.locationNameField.fill(
+        LOCATION_NAME
+      );
+      await createLocationPage.locationDetailsTabSection.locationTypeSelect.click();
+      await createLocationPage.locationDetailsTabSection
+        .getlocationTypeOption('Ward')
+        .click();
+      await createLocationPage.locationDetailsTabSection.saveButton.click();
+      await createLocationPage.locationConfigurationTab.click();
+      await createLocationPage.locationConfigurationTabSection.useDefaultSettingsCheckbox.uncheck();
+      await createLocationPage.locationConfigurationTabSection
+        .removeSupportedActivitiesButton('None')
+        .click();
+      await createLocationPage.locationConfigurationTabSection.supportedActivitiesSelect.click();
+      await createLocationPage.locationConfigurationTabSection
+        .getSupportedActivitiesOption('Submit request')
+        .click();
+      await createLocationPage.locationConfigurationTabSection.saveButton.click();
+    });
+
+    await test.step('Go to create user page', async () => {
       await page.goto('./dashboard');
+      await navbar.configurationButton.click();
+      await navbar.getNavItem('Users').click();
+      await userListPage.createUserButton.click();
+    });
 
-      await test.step('Go to create location page', async () => {
-        await navbar.configurationButton.click();
-        await navbar.getNavItem('Locations').click();
-        await locationListPage.createLocationButton.click();
-      });
+    await test.step('Create new test user', async () => {
+      await createUserPage.fillUserForm(TEST_USER);
+      await createUserPage.saveButton.click();
+      await expect(editUserPage.summary).toContainText(
+        `${TEST_USER.firstName} ${TEST_USER.lastName}`
+      );
+      await editUserPage.userDetailsTabSection.activateUserCheckBox.click();
+      await editUserPage.userDetailsTabSection.saveButton.click();
+    });
 
-      await test.step('Create Ward location', async () => {
-        await createLocationPage.locationDetailsTabSection.locationNameField.fill(
-          LOCATION_NAME
-        );
-        await createLocationPage.locationDetailsTabSection.locationTypeSelect.click();
-        await createLocationPage.locationDetailsTabSection
-          .getlocationTypeOption('Ward')
-          .click();
-        await createLocationPage.locationDetailsTabSection.saveButton.click();
-        await createLocationPage.locationConfigurationTab.click();
-        await createLocationPage.locationConfigurationTabSection.useDefaultSettingsCheckbox.uncheck();
-        await createLocationPage.locationConfigurationTabSection
-          .removeSupportedActivitiesButton('None')
-          .click();
-        await createLocationPage.locationConfigurationTabSection.supportedActivitiesSelect.click();
-        await createLocationPage.locationConfigurationTabSection
-          .getSupportedActivitiesOption('Submit request')
-          .click();
-        await createLocationPage.locationConfigurationTabSection.saveButton.click();
-      });
+    await test.step('Add user role for created Ward location', async () => {
+      await editUserPage.authorizationTab.click();
+      await editUserPage.authorizationTabSection.addLocationRolesButton.click();
+      await editUserPage.authorizationTabSection.locationRoleDialog.locationSelectClearButton.click();
+      await editUserPage.authorizationTabSection.locationRoleDialog.locationForLocationRoleSelect.click();
+      await editUserPage.authorizationTabSection.locationRoleDialog
+        .getLocationForLocationRole(LOCATION_NAME)
+        .click();
+      await editUserPage.authorizationTabSection.locationRoleDialog.locationRoleSelect.click();
+      await editUserPage.authorizationTabSection.locationRoleDialog
+        .getUserLocationRole('Requestor')
+        .click();
+      await editUserPage.authorizationTabSection.locationRoleDialog.saveButton.click();
+    });
+    await page.close();
+  });
 
-      await test.step('Go to create user page', async () => {
-        await page.goto('./dashboard');
-        await navbar.configurationButton.click();
-        await navbar.getNavItem('Users').click();
-        await userListPage.createUserButton.click();
-      });
+  test.afterAll(async ({ browser }) => {
+    const page = await browser.newPage();
 
-      await test.step('Create new test user', async () => {
-        await createUserPage.fillUserForm(TEST_USER);
-        await createUserPage.saveButton.click();
-        await expect(editUserPage.summary).toContainText(
-          `${TEST_USER.firstName} ${TEST_USER.lastName}`
-        );
-        await editUserPage.userDetailsTabSection.activateUserCheckBox.click();
-        await editUserPage.userDetailsTabSection.saveButton.click();
-      });
+    const navbar = new Navbar(page);
+    const locationListPage = new LocationListPage(page);
+    const createLocationPage = new CreateLocationPage(page);
+    const userListPage = new UserListPage(page);
+    const editUserPage = new EditUserPage(page);
 
-      await test.step('Add user role for created Ward location', async () => {
-        await editUserPage.authorizationTab.click();
-        await editUserPage.authorizationTabSection.addLocationRolesButton.click();
-        await editUserPage.authorizationTabSection.locationRoleDialog.locationSelectClearButton.click();
-        await editUserPage.authorizationTabSection.locationRoleDialog.locationForLocationRoleSelect.click();
-        await editUserPage.authorizationTabSection.locationRoleDialog
-          .getLocationForLocationRole(LOCATION_NAME)
-          .click();
-        await editUserPage.authorizationTabSection.locationRoleDialog.locationRoleSelect.click();
-        await editUserPage.authorizationTabSection.locationRoleDialog
-          .getUserLocationRole('Requestor')
-          .click();
-        await editUserPage.authorizationTabSection.locationRoleDialog.saveButton.click();
-      });
-    }
-  );
+    await page.goto('./dashboard');
+    await test.step('Go to edit user page', async () => {
+      await userListPage.goToPage();
+      await userListPage.searchByNameField.fill(TEST_USER.username);
+      await userListPage.findButton.click();
+      await userListPage.getUserToEdit(TEST_USER.username).click();
+    });
 
-  test.afterAll(
-    async ({
-      page,
-      navbar,
-      editUserPage,
-      locationListPage,
-      createLocationPage,
-      userListPage,
-    }) => {
-      await page.goto('./dashboard');
-      await test.step('Go to edit user page', async () => {
-        await userListPage.goToPage();
-        await userListPage.searchByNameField.fill(TEST_USER.username);
-        await userListPage.findButton.click();
-        await userListPage.getUserToEdit(TEST_USER.username).click();
-      });
+    await test.step('Remove location role from user', async () => {
+      await editUserPage.authorizationTab.click();
+      await editUserPage.authorizationTabSection
+        .deleteLocationRole(LOCATION_NAME)
+        .click();
+    });
 
-      await test.step('Remove location role from user', async () => {
-        await editUserPage.authorizationTab.click();
-        await editUserPage.authorizationTabSection
-          .deleteLocationRole(LOCATION_NAME)
-          .click();
-      });
+    await test.step('Delete user', async () => {
+      await editUserPage.actionButton.click();
+      await editUserPage.clickDeleteUser();
+    });
 
-      await test.step('Delete user', async () => {
-        await editUserPage.actionButton.click();
-        await editUserPage.clickDeleteUser();
-      });
+    await test.step('Assert that user does not exists in the list', async () => {
+      await userListPage.searchByNameField.fill(TEST_USER.username);
+      await userListPage.findButton.click();
+      await expect(userListPage.getUserToEdit(TEST_USER.username)).toBeHidden();
+    });
 
-      await test.step('Assert that user does not exists in the list', async () => {
-        await userListPage.searchByNameField.fill(TEST_USER.username);
-        await userListPage.findButton.click();
-        await expect(
-          userListPage.getUserToEdit(TEST_USER.username)
-        ).toBeHidden();
-      });
+    await test.step('Delete created ward location', async () => {
+      await navbar.configurationButton.click();
+      await navbar.getNavItem('Locations').click();
+      await locationListPage.searchByLocationNameField.fill(LOCATION_NAME);
+      await locationListPage.locationTypeSelect.click();
+      await locationListPage.getSelectLocationTypeOption('Ward').click();
+      await locationListPage.findButton.click();
+      await locationListPage.getLocationEditButton(LOCATION_NAME).click();
+      await createLocationPage.actionButton.click();
+      await createLocationPage.clickDeleteLocation();
+    });
 
-      await test.step('Delete created ward location', async () => {
-        await navbar.configurationButton.click();
-        await navbar.getNavItem('Locations').click();
-        await locationListPage.searchByLocationNameField.fill(LOCATION_NAME);
-        await locationListPage.locationTypeSelect.click();
-        await locationListPage.getSelectLocationTypeOption('Ward').click();
-        await locationListPage.findButton.click();
-        await locationListPage.getLocationEditButton(LOCATION_NAME).click();
-        await createLocationPage.actionButton.click();
-        await createLocationPage.clickDeleteLocation();
-      });
-
-      await test.step('Assert that location does not exists in the list', async () => {
-        await locationListPage.searchByLocationNameField.fill(LOCATION_NAME);
-        await locationListPage.locationTypeSelect.click();
-        await locationListPage.getSelectLocationTypeOption('Ward').click();
-        await locationListPage.findButton.click();
-        await expect(
-          locationListPage.getLocationEditButton(LOCATION_NAME)
-        ).toBeHidden();
-      });
-    }
-  );
+    await test.step('Assert that location does not exists in the list', async () => {
+      await locationListPage.searchByLocationNameField.fill(LOCATION_NAME);
+      await locationListPage.locationTypeSelect.click();
+      await locationListPage.getSelectLocationTypeOption('Ward').click();
+      await locationListPage.findButton.click();
+      await expect(
+        locationListPage.getLocationEditButton(LOCATION_NAME)
+      ).toBeHidden();
+    });
+    await page.close();
+  });
 
   test('Assert created Ward on location chooser in impersonate mode', async ({
     userListPage,
