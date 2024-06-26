@@ -55,7 +55,7 @@ test.describe('Check if depot location is present in location chooser', () => {
 
     await test.step('Go to create location group page', async () => {
       await navbar.configurationButton.click();
-      await navbar.getNavItem('Location groups').click();
+      await navbar.locationGroup.click();
       await locationGroupsListPage.createLocationButton.click();
       await createLocationGroupPage.locationGroupNameField.fill(GROUP_NAME);
       await createLocationGroupPage.createButton.click();
@@ -63,7 +63,7 @@ test.describe('Check if depot location is present in location chooser', () => {
 
     await test.step('Go to create location page', async () => {
       await navbar.configurationButton.click();
-      await navbar.getNavItem('Locations').click();
+      await navbar.locations.click();
       await locationListPage.createLocationButton.click();
     });
 
@@ -109,7 +109,7 @@ test.describe('Check if depot location is present in location chooser', () => {
     await test.step('Delete created location', async () => {
       await page.goto('./dashboard');
       await navbar.configurationButton.click();
-      await navbar.getNavItem('Locations').click();
+      await navbar.locations.click();
       await locationListPage.searchByLocationNameField.fill(LOCATION_NAME);
       await locationListPage.findButton.click();
       await locationListPage.getLocationEditButton(LOCATION_NAME).click();
@@ -127,7 +127,7 @@ test.describe('Check if depot location is present in location chooser', () => {
 
     await test.step('Delete created organization', async () => {
       await navbar.configurationButton.click();
-      await navbar.getNavItem('Organizations').click();
+      await navbar.organizations.click();
       await organizationListPage.searchByOrganizationNameField.fill(
         ORGANIZATION_NAME
       );
@@ -150,7 +150,7 @@ test.describe('Check if depot location is present in location chooser', () => {
 
     await test.step('Delete created location group', async () => {
       await navbar.configurationButton.click();
-      await navbar.getNavItem('Location groups').click();
+      await navbar.locationGroup.click();
       await locationGroupsListPage.getPaginationItem('3').click();
       await locationGroupsListPage.getLocationGroupnToEdit(GROUP_NAME).click();
       await editLocationGroupPage.clickDeleteLocationGroup();
@@ -182,7 +182,7 @@ test.describe('Check if depot location is present in location chooser', () => {
     locationChooser,
   }) => {
     await page.goto('./dashboard');
-    await navbar.getNavItem('Dashboard').click();
+    await navbar.dashboard.click();
     await navbar.locationChooserButton.click();
     await expect(
       locationChooser.getOrganization(ORGANIZATION_NAME)
@@ -244,7 +244,7 @@ test.describe('Check if ward location is present in location chooser', () => {
 
     await test.step('Go to create location page', async () => {
       await navbar.configurationButton.click();
-      await navbar.getNavItem('Locations').click();
+      await navbar.locations.click();
       await locationListPage.createLocationButton.click();
     });
 
@@ -308,7 +308,7 @@ test.describe('Check if ward location is present in location chooser', () => {
 
     await test.step('Delete created ward location', async () => {
       await navbar.configurationButton.click();
-      await navbar.getNavItem('Locations').click();
+      await navbar.locations.click();
       await locationListPage.searchByLocationNameField.fill(LOCATION_NAME);
       await locationListPage.locationTypeSelect.click();
       await locationListPage.getSelectLocationTypeOption('Ward').click();
@@ -354,7 +354,7 @@ test.describe('Check if ward location is present in location chooser', () => {
     locationChooser,
   }) => {
     await page.goto('./dashboard');
-    await navbar.getNavItem('Dashboard').click();
+    await navbar.dashboard.click();
     await navbar.locationChooserButton.click();
     await expect(
       locationChooser.getOrganization('No organization')
@@ -444,7 +444,7 @@ test.describe('Check if location is present in location chooser after editing', 
 
     await test.step('Go to create location page', async () => {
       await navbar.configurationButton.click();
-      await navbar.getNavItem('Locations').click();
+      await navbar.locations.click();
       await locationListPage.createLocationButton.click();
     });
 
@@ -478,7 +478,7 @@ test.describe('Check if location is present in location chooser after editing', 
 
     await test.step('Delete created location', async () => {
       await navbar.configurationButton.click();
-      await navbar.getNavItem('Locations').click();
+      await navbar.locations.click();
       await locationListPage.searchByLocationNameField.fill(LOCATION_NAME);
       await locationListPage.findButton.click();
       await locationListPage.getLocationEditButton(LOCATION_NAME).click();
@@ -496,7 +496,7 @@ test.describe('Check if location is present in location chooser after editing', 
 
     await test.step('Delete created organizations', async () => {
       await navbar.configurationButton.click();
-      await navbar.getNavItem('Organizations').click();
+      await navbar.organizations.click();
       await organizationListPage.searchByOrganizationNameField.fill(
         ORGANIZATION_NAME
       );
@@ -565,7 +565,7 @@ test.describe('Check if location is present in location chooser after editing', 
       await page.goto('./dashboard');
 
       await navbar.configurationButton.click();
-      await navbar.getNavItem('Locations').click();
+      await navbar.locations.click();
       await locationListPage.searchByLocationNameField.fill(LOCATION_NAME);
       await locationListPage.findButton.click();
       await locationListPage.getLocationEditButton(LOCATION_NAME).click();
@@ -606,7 +606,7 @@ test.describe('Check if location is present in location chooser after editing', 
     }) => {
       await page.goto('./dashboard');
 
-      await navbar.getNavItem('Dashboard').click();
+      await navbar.dashboard.click();
       await navbar.locationChooserButton.click();
       await expect(
         locationChooser.getOrganization(ORGANIZATION_NAME)
@@ -676,7 +676,7 @@ test.describe('Check if non manage inventory location is present in location cho
 
     await test.step('Go to create location page', async () => {
       await navbar.configurationButton.click();
-      await navbar.getNavItem('Locations').click();
+      await navbar.locations.click();
       await locationListPage.createLocationButton.click();
     });
 
@@ -713,7 +713,7 @@ test.describe('Check if non manage inventory location is present in location cho
 
     await test.step('Delete created location', async () => {
       await navbar.configurationButton.click();
-      await navbar.getNavItem('Locations').click();
+      await navbar.locations.click();
       await locationListPage.searchByLocationNameField.fill(LOCATION_NAME);
       await locationListPage.findButton.click();
       await locationListPage.getLocationEditButton(LOCATION_NAME).click();
@@ -756,7 +756,7 @@ test.describe('Check if non manage inventory location is present in location cho
   }) => {
     await page.goto('./dashboard');
 
-    await navbar.getNavItem('Dashboard').click();
+    await navbar.dashboard.click();
     await navbar.locationChooserButton.click();
     await expect(
       locationChooser.getOrganization(location.organization?.name ?? '')
@@ -826,7 +826,7 @@ test.describe('Check if ward location is present in location chooser based on us
 
     await test.step('Go to create location page', async () => {
       await navbar.configurationButton.click();
-      await navbar.getNavItem('Locations').click();
+      await navbar.locations.click();
       await locationListPage.createLocationButton.click();
     });
 
@@ -854,7 +854,7 @@ test.describe('Check if ward location is present in location chooser based on us
     await test.step('Go to create user page', async () => {
       await page.goto('./dashboard');
       await navbar.configurationButton.click();
-      await navbar.getNavItem('Users').click();
+      await navbar.users.click();
       await userListPage.createUserButton.click();
     });
 
@@ -922,7 +922,7 @@ test.describe('Check if ward location is present in location chooser based on us
 
     await test.step('Delete created ward location', async () => {
       await navbar.configurationButton.click();
-      await navbar.getNavItem('Locations').click();
+      await navbar.locations.click();
       await locationListPage.searchByLocationNameField.fill(LOCATION_NAME);
       await locationListPage.locationTypeSelect.click();
       await locationListPage.getSelectLocationTypeOption('Ward').click();
@@ -1003,7 +1003,7 @@ test.describe('Check if ward location is present in location chooser based on us
 
     await test.step('Assert created ward on location chooser, react, admin', async () => {
       await newUserPage.goto('./dashboard');
-      await newPageNavbar.getNavItem('Dashboard').click();
+      await newPageNavbar.dashboard.click();
       await newPageNavbar.locationChooserButton.click();
       await expect(
         locationChooser.getOrganization('No organization')
@@ -1018,7 +1018,7 @@ test.describe('Check if ward location is present in location chooser based on us
 
     await test.step('Assert created ward on location chooser, gsp, admin', async () => {
       await newPageNavbar.configurationButton.click();
-      await newPageNavbar.getNavItem('Locations').click();
+      await newPageNavbar.locations.click();
       await newPageNavbar.locationChooserButton.click();
       await expect(
         locationChooser.getOrganization('No organization')
@@ -1095,7 +1095,7 @@ test.describe('Check if ward location is present in location chooser based on us
 
     await test.step('Assert created ward on location chooser, react, manager', async () => {
       await newUserPage.goto('./dashboard');
-      await newPageNavbar.getNavItem('Dashboard').click();
+      await newPageNavbar.dashboard.click();
       await newPageNavbar.locationChooserButton.click();
       await expect(
         locationChooser.getOrganization('No organization')
@@ -1187,7 +1187,7 @@ test.describe('Check if ward location is present in location chooser based on us
 
     await test.step('Assert created ward on location chooser, react, browser', async () => {
       await newUserPage.goto('./dashboard');
-      await newPageNavbar.getNavItem('Dashboard').click();
+      await newPageNavbar.dashboard.click();
       await newPageNavbar.locationChooserButton.click();
       await expect(
         locationChooser.getOrganization('No organization')
@@ -1245,7 +1245,7 @@ test.describe('Check if ward location is present in location chooser based on us
 
     await test.step('Go to create location page', async () => {
       await navbar.configurationButton.click();
-      await navbar.getNavItem('Locations').click();
+      await navbar.locations.click();
       await locationListPage.createLocationButton.click();
     });
 
@@ -1273,7 +1273,7 @@ test.describe('Check if ward location is present in location chooser based on us
     await test.step('Go to create user page', async () => {
       await page.goto('./dashboard');
       await navbar.configurationButton.click();
-      await navbar.getNavItem('Users').click();
+      await navbar.users.click();
       await userListPage.createUserButton.click();
     });
 
@@ -1328,7 +1328,7 @@ test.describe('Check if ward location is present in location chooser based on us
 
     await test.step('Delete created ward location', async () => {
       await navbar.configurationButton.click();
-      await navbar.getNavItem('Locations').click();
+      await navbar.locations.click();
       await locationListPage.searchByLocationNameField.fill(LOCATION_NAME);
       await locationListPage.locationTypeSelect.click();
       await locationListPage.getSelectLocationTypeOption('Ward').click();
@@ -1407,7 +1407,7 @@ test.describe('Check if ward location is present in location chooser based on us
 
     await test.step('Assert created ward on location chooser, react, admin', async () => {
       await newUserPage.goto('./dashboard');
-      await newPageNavbar.getNavItem('Dashboard').click();
+      await newPageNavbar.dashboard.click();
       await newPageNavbar.locationChooserButton.click();
       await expect(
         locationChooser.getOrganization('No organization')
@@ -1422,7 +1422,7 @@ test.describe('Check if ward location is present in location chooser based on us
 
     await test.step('Assert created ward on location chooser, gsp, admin', async () => {
       await newPageNavbar.configurationButton.click();
-      await newPageNavbar.getNavItem('Locations').click();
+      await newPageNavbar.locations.click();
       await newPageNavbar.locationChooserButton.click();
       await expect(
         locationChooser.getOrganization('No organization')
@@ -1499,7 +1499,7 @@ test.describe('Check if ward location is present in location chooser based on us
 
     await test.step('Assert created ward on location chooser, react, manager', async () => {
       await newUserPage.goto('./dashboard');
-      await newPageNavbar.getNavItem('Dashboard').click();
+      await newPageNavbar.dashboard.click();
       await newPageNavbar.locationChooserButton.click();
       await expect(
         locationChooser.getOrganization('No organization')
@@ -1557,7 +1557,7 @@ test.describe('Check if ward location is present in location chooser based on us
 
     await test.step('Go to create location page', async () => {
       await navbar.configurationButton.click();
-      await navbar.getNavItem('Locations').click();
+      await navbar.locations.click();
       await locationListPage.createLocationButton.click();
     });
 
@@ -1585,7 +1585,7 @@ test.describe('Check if ward location is present in location chooser based on us
     await test.step('Go to create user page', async () => {
       await page.goto('./dashboard');
       await navbar.configurationButton.click();
-      await navbar.getNavItem('Users').click();
+      await navbar.users.click();
       await userListPage.createUserButton.click();
     });
 
@@ -1653,7 +1653,7 @@ test.describe('Check if ward location is present in location chooser based on us
 
     await test.step('Delete created ward location', async () => {
       await navbar.configurationButton.click();
-      await navbar.getNavItem('Locations').click();
+      await navbar.locations.click();
       await locationListPage.searchByLocationNameField.fill(LOCATION_NAME);
       await locationListPage.locationTypeSelect.click();
       await locationListPage.getSelectLocationTypeOption('Ward').click();
@@ -1700,7 +1700,7 @@ test.describe('Check if ward location is present in location chooser based on us
 
     await test.step('Assert created ward on location chooser in impersonate mode, react', async () => {
       await newPage.goto('./dashboard');
-      await newPageNavbar.getNavItem('Dashboard').click();
+      await newPageNavbar.dashboard.click();
       await newPageNavbar.locationChooserButton.click();
       await expect(
         newPageLocationChooser.getOrganization('No organization')
@@ -1716,8 +1716,8 @@ test.describe('Check if ward location is present in location chooser based on us
     });
 
     await test.step('Assert created ward on location chooser in impersonate mode, gsp', async () => {
-      await newPageNavbar.getNavItem('Purchasing').click();
-      await newPageNavbar.getNavItem('List Suppliers').click();
+      await newPageNavbar.purchasing.click();
+      await newPageNavbar.listSuppliers.click();
       await newPageNavbar.locationChooserButton.click();
       await expect(
         newPageLocationChooser.getOrganization('No organization')
