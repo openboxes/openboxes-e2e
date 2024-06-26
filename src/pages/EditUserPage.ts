@@ -50,7 +50,7 @@ class EditUserPage extends BasePageModel {
   }
 
   async clickDeleteUser() {
-    this.page.on('dialog', (dialog) => dialog.accept());
+    this.page.once('dialog', (dialog) => dialog.accept());
     await this.deleteUserButton.click();
   }
 }

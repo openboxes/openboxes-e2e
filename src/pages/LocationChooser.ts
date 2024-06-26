@@ -17,12 +17,31 @@ class LocationChooser extends BasePageModel {
     return this.page.getByTestId('location-list').getByText(name);
   }
 
+  async assertLocationColor(name: string, color: string) {
+    await expect(this.getLocation(name)).toHaveCSS('--location-color', color);
+  }
+
   get locationChooserLogoutButton() {
     return this.page.getByRole('link', { name: 'Logout' });
   }
 
   get emptyLocationChooser() {
     return this.page.getByText('No locations available');
+  }
+
+  getLocationGroup(name: string) {
+    return this.page
+      .getByTestId('location-list')
+      .getByRole('heading')
+      .getByText(name);
+  }
+
+  get closeLocationChooserButton() {
+    return this.page.getByRole('button', { name: 'close' });
+  }
+
+  get yourLastSingInInfo() {
+    return this.page.getByText('Your last sign-in occurred');
   }
 }
 

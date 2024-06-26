@@ -30,6 +30,10 @@ class Navbar extends BasePageModel {
   get logoutButton() {
     return this.navbar.getByRole('menuitem', { name: 'Logout' });
   }
+
+  get editProfileButton() {
+    return this.navbar.getByRole('menuitem', { name: 'Edit Profile' });
+  }
 }
 
 export default Navbar;
