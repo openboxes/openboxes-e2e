@@ -1,10 +1,10 @@
 import { Page } from '@playwright/test';
 
 import { expect } from '@/fixtures/fixtures';
-import AuthorizationTabSection from '@/pages/AuthorizationTabSection';
 import BasePageModel from '@/pages/BasePageModel';
-import ChangePasswordTabSection from '@/pages/ChangePasswordTabSection';
-import UserDetailsTabSection from '@/pages/UserDetailsTabSection';
+import AuthorizationTabSection from '@/pages/user/editUser/tabs/AuthorizationTabSection';
+import ChangePasswordTabSection from '@/pages/user/editUser/tabs/ChangePasswordTabSection';
+import UserDetailsTabSection from '@/pages/user/editUser/tabs/UserDetailsTabSection';
 
 class EditUserPage extends BasePageModel {
   userDetailsTabSection: UserDetailsTabSection;

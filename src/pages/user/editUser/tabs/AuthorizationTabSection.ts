@@ -1,7 +1,7 @@
 import { Page } from '@playwright/test';
 
 import BasePageModel from '@/pages/BasePageModel';
-import LocationRoleDialog from '@/pages/LocationRoleDialog';
+import LocationRoleDialog from '@/pages/user/editUser/components/LocationRoleDialog';
 
 class AuthorizationTabSection extends BasePageModel {
   locationRoleDialog: LocationRoleDialog;
