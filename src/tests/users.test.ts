@@ -1,8 +1,8 @@
+import ImpersonateBanner from '@/components/ImpersonateBanner';
+import LocationChooser from '@/components/LocationChooser';
+import Navbar from '@/components/Navbar';
 import { expect, test } from '@/fixtures/fixtures';
-import ImpersonateBanner from '@/pages/ImpersonateBanner';
-import LocationChooser from '@/pages/LocationChooser';
 import LoginPage from '@/pages/LoginPage';
-import Navbar from '@/pages/Navbar';
 import { UserType } from '@/types';
 
 const formData: UserType = {
@@ -17,7 +17,7 @@ test.beforeEach(
     await test.step('Go to create user page', async () => {
       await page.goto('./dashboard');
       await navbar.configurationButton.click();
-      await navbar.getNavItem('Users').click();
+      await navbar.users.click();
       await userListPage.createUserButton.click();
     });
 
@@ -113,20 +113,20 @@ test('Impersonate created user', async ({ editUserPage }) => {
   });
 
   await test.step('Check impersonate banner visibility on list purchase order page', async () => {
-    await newPageNavbar.getNavItem('Purchasing').click();
-    await newPageNavbar.getNavItem('List Purchase Orders').click();
+    await newPageNavbar.purchasing.click();
+    await newPageNavbar.listPurchaseOrders.click();
     await impersonateBanner.isLoaded(formData.username);
   });
 
   await test.step('Check impersonate banner visibility on create outbound page', async () => {
-    await newPageNavbar.getNavItem('Outbound').click();
-    await newPageNavbar.getNavItem('Create Outbound Movement').click();
+    await newPageNavbar.outbound.click();
+    await newPageNavbar.createOutboundMovement.click();
     await impersonateBanner.isLoaded(formData.username);
   });
 
   await test.step('Check impersonate banner visibility on product list page', async () => {
-    await newPageNavbar.getNavItem('Products').click();
-    await newPageNavbar.getNavItem('List Products').click();
+    await newPageNavbar.products.click();
+    await newPageNavbar.listProducts.click();
     await impersonateBanner.isLoaded(formData.username);
   });
 
@@ -172,7 +172,7 @@ test('Add no access global permissions, edit user and add location role', async 
 
   await test.step('Go to user edit page', async () => {
     await navbar.configurationButton.click();
-    await navbar.getNavItem('Users').click();
+    await navbar.users.click();
     await userListPage.searchByNameField.fill(formData.username);
     await userListPage.findButton.click();
     await userListPage.getUserToEdit(formData.username).click();

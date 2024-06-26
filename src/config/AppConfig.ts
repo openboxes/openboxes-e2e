@@ -2,11 +2,11 @@ import path from 'node:path';
 
 import env from 'env-var';
 
+import LocationConfig from '@/config/LocationConfig';
+import TestUserConfig from '@/config/TestUserConfig';
 import { ActivityCode } from '@/constants/ActivityCodes';
 import { LocationTypeCode } from '@/constants/LocationTypeCode';
 import RoleType from '@/constants/RoleTypes';
-import LocationConfig from '@/utils/LocationConfig';
-import TestUserConfig from '@/utils/TestUserConfig';
 
 /**
  * class representing the application configuration for end-to-end tests.

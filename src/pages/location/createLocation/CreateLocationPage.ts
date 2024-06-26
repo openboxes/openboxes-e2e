@@ -2,9 +2,8 @@ import { Page } from '@playwright/test';
 
 import { expect } from '@/fixtures/fixtures';
 import BasePageModel from '@/pages/BasePageModel';
-
-import LocationConfigurationTabSection from './LocationConfigurationTabSection';
-import LocationDetailsTabSection from './LocationDetailsTabSection';
+import LocationConfigurationTabSection from '@/pages/location/createLocation/tabs/LocationConfigurationTabSection';
+import LocationDetailsTabSection from '@/pages/location/createLocation/tabs/LocationDetailsTabSection';
 
 class CreateLocationPage extends BasePageModel {
   locationDetailsTabSection: LocationDetailsTabSection;

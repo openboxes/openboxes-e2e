@@ -2,8 +2,8 @@ import path from 'node:path';
 
 import _ from 'lodash';
 
+import AppConfig from '@/config/AppConfig';
 import RoleType from '@/constants/RoleTypes';
-import AppConfig from '@/utils/AppConfig';
 
 class TestUserConfig {
   username: string;

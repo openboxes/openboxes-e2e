@@ -1,5 +1,5 @@
+import AppConfig from '@/config/AppConfig';
 import { test } from '@/fixtures/fixtures';
-import AppConfig from '@/utils/AppConfig';
 
 for (const [name, user] of Object.entries(AppConfig.instance.users)) {
   test(`authenticate ${name}`, async ({
