@@ -5,7 +5,7 @@ class LocationDetailsTabSection extends BasePageModel {
     return this.page.getByRole('region', { name: 'Location' });
   }
 
-  get locationName() {
+  get locationNameField() {
     return this.section.getByRole('textbox', { name: 'Name' });
   }
 

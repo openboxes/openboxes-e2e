@@ -55,7 +55,7 @@ test.describe('Check if depot location is present in location chooser', () => {
       });
 
       await test.step('Create location, Depot with background color', async () => {
-        await createLocationPage.locationDetailsTabSection.locationName.fill(
+        await createLocationPage.locationDetailsTabSection.locationNameField.fill(
           LOCATION_NAME
         );
         await createLocationPage.locationDetailsTabSection.organizationSelect.click();
@@ -99,7 +99,7 @@ test.describe('Check if depot location is present in location chooser', () => {
         await navbar.getNavItem('Locations').click();
         await locationListPage.searchByLocationNameField.fill(LOCATION_NAME);
         await locationListPage.findButton.click();
-        await locationListPage.getLocationToEdit(LOCATION_NAME).click();
+        await locationListPage.getLocationEditButton(LOCATION_NAME).click();
         await createLocationPage.actionButton.click();
         await createLocationPage.clickDeleteLocation();
       });
@@ -108,7 +108,7 @@ test.describe('Check if depot location is present in location chooser', () => {
         await locationListPage.searchByLocationNameField.fill(LOCATION_NAME);
         await locationListPage.findButton.click();
         await expect(
-          locationListPage.getLocationToEdit(LOCATION_NAME)
+          locationListPage.getLocationEditButton(LOCATION_NAME)
         ).toBeHidden();
       });
 
@@ -237,7 +237,7 @@ test.describe('Check if ward location is present in location chooser', () => {
       });
 
       await test.step('Create Ward location', async () => {
-        await createLocationPage.locationDetailsTabSection.locationName.fill(
+        await createLocationPage.locationDetailsTabSection.locationNameField.fill(
           LOCATION_NAME
         );
         await createLocationPage.locationDetailsTabSection.locationTypeSelect.click();
@@ -248,11 +248,11 @@ test.describe('Check if ward location is present in location chooser', () => {
         await createLocationPage.locationConfigurationTab.click();
         await createLocationPage.locationConfigurationTabSection.useDefaultSettingsCheckbox.uncheck();
         await createLocationPage.locationConfigurationTabSection
-          .removeSupportedActivities('None')
+          .removeSupportedActivitiesButton('None')
           .click();
-        await createLocationPage.locationConfigurationTabSection.supportedActivities.click();
+        await createLocationPage.locationConfigurationTabSection.supportedActivitiesSelect.click();
         await createLocationPage.locationConfigurationTabSection
-          .getSupportedActivities('Submit request')
+          .getSupportedActivitiesOption('Submit request')
           .click();
         await createLocationPage.locationConfigurationTabSection.saveButton.click();
       });
@@ -301,7 +301,7 @@ test.describe('Check if ward location is present in location chooser', () => {
         await locationListPage.locationTypeSelect.click();
         await locationListPage.getSelectLocationTypeOption('Ward').click();
         await locationListPage.findButton.click();
-        await locationListPage.getLocationToEdit(LOCATION_NAME).click();
+        await locationListPage.getLocationEditButton(LOCATION_NAME).click();
         await createLocationPage.actionButton.click();
         await createLocationPage.clickDeleteLocation();
       });
@@ -312,7 +312,7 @@ test.describe('Check if ward location is present in location chooser', () => {
         await locationListPage.getSelectLocationTypeOption('Ward').click();
         await locationListPage.findButton.click();
         await expect(
-          locationListPage.getLocationToEdit(LOCATION_NAME)
+          locationListPage.getLocationEditButton(LOCATION_NAME)
         ).toBeHidden();
       });
     }
@@ -436,7 +436,7 @@ test.describe('Check if location is present in location chooser after editing', 
       });
 
       await test.step('Create location, Depot', async () => {
-        await createLocationPage.locationDetailsTabSection.locationName.fill(
+        await createLocationPage.locationDetailsTabSection.locationNameField.fill(
           LOCATION_NAME
         );
         await createLocationPage.locationDetailsTabSection.organizationSelect.click();
@@ -468,7 +468,7 @@ test.describe('Check if location is present in location chooser after editing', 
         await navbar.getNavItem('Locations').click();
         await locationListPage.searchByLocationNameField.fill(LOCATION_NAME);
         await locationListPage.findButton.click();
-        await locationListPage.getLocationToEdit(LOCATION_NAME).click();
+        await locationListPage.getLocationEditButton(LOCATION_NAME).click();
         await createLocationPage.actionButton.click();
         await createLocationPage.clickDeleteLocation();
       });
@@ -477,7 +477,7 @@ test.describe('Check if location is present in location chooser after editing', 
         await locationListPage.searchByLocationNameField.fill(LOCATION_NAME);
         await locationListPage.findButton.click();
         await expect(
-          locationListPage.getLocationToEdit(LOCATION_NAME)
+          locationListPage.getLocationEditButton(LOCATION_NAME)
         ).toBeHidden();
       });
 
@@ -550,7 +550,7 @@ test.describe('Check if location is present in location chooser after editing', 
         await navbar.getNavItem('Locations').click();
         await locationListPage.searchByLocationNameField.fill(LOCATION_NAME);
         await locationListPage.findButton.click();
-        await locationListPage.getLocationToEdit(LOCATION_NAME).click();
+        await locationListPage.getLocationEditButton(LOCATION_NAME).click();
         await createLocationPage.locationDetailsTabSection.organizationSelect.click();
         await createLocationPage.locationDetailsTabSection
           .getOrganization(ORGANIZATION_NAME_SECOND)
@@ -663,7 +663,7 @@ test.describe('Check if non manage inventory location is present in location cho
       });
 
       await test.step('Create location, Depot without manage inventory', async () => {
-        await createLocationPage.locationDetailsTabSection.locationName.fill(
+        await createLocationPage.locationDetailsTabSection.locationNameField.fill(
           LOCATION_NAME
         );
         await createLocationPage.locationDetailsTabSection.organizationSelect.click();
@@ -678,7 +678,7 @@ test.describe('Check if non manage inventory location is present in location cho
         await createLocationPage.locationConfigurationTab.click();
         await createLocationPage.locationConfigurationTabSection.useDefaultSettingsCheckbox.uncheck();
         await createLocationPage.locationConfigurationTabSection
-          .removeSupportedActivities('Manage inventory')
+          .removeSupportedActivitiesButton('Manage inventory')
           .click();
         await createLocationPage.locationConfigurationTabSection.saveButton.click();
       });
@@ -693,7 +693,7 @@ test.describe('Check if non manage inventory location is present in location cho
         await navbar.getNavItem('Locations').click();
         await locationListPage.searchByLocationNameField.fill(LOCATION_NAME);
         await locationListPage.findButton.click();
-        await locationListPage.getLocationToEdit(LOCATION_NAME).click();
+        await locationListPage.getLocationEditButton(LOCATION_NAME).click();
         await createLocationPage.actionButton.click();
         await createLocationPage.clickDeleteLocation();
       });
@@ -702,7 +702,7 @@ test.describe('Check if non manage inventory location is present in location cho
         await locationListPage.searchByLocationNameField.fill(LOCATION_NAME);
         await locationListPage.findButton.click();
         await expect(
-          locationListPage.getLocationToEdit(LOCATION_NAME)
+          locationListPage.getLocationEditButton(LOCATION_NAME)
         ).toBeHidden();
       });
     }
@@ -808,7 +808,7 @@ test.describe('Check if ward location is present in location chooser based on us
       });
 
       await test.step('Create Ward location', async () => {
-        await createLocationPage.locationDetailsTabSection.locationName.fill(
+        await createLocationPage.locationDetailsTabSection.locationNameField.fill(
           LOCATION_NAME
         );
         await createLocationPage.locationDetailsTabSection.locationTypeSelect.click();
@@ -819,11 +819,11 @@ test.describe('Check if ward location is present in location chooser based on us
         await createLocationPage.locationConfigurationTab.click();
         await createLocationPage.locationConfigurationTabSection.useDefaultSettingsCheckbox.uncheck();
         await createLocationPage.locationConfigurationTabSection
-          .removeSupportedActivities('None')
+          .removeSupportedActivitiesButton('None')
           .click();
-        await createLocationPage.locationConfigurationTabSection.supportedActivities.click();
+        await createLocationPage.locationConfigurationTabSection.supportedActivitiesSelect.click();
         await createLocationPage.locationConfigurationTabSection
-          .getSupportedActivities('Submit request')
+          .getSupportedActivitiesOption('Submit request')
           .click();
         await createLocationPage.locationConfigurationTabSection.saveButton.click();
       });
@@ -906,7 +906,7 @@ test.describe('Check if ward location is present in location chooser based on us
         await locationListPage.locationTypeSelect.click();
         await locationListPage.getSelectLocationTypeOption('Ward').click();
         await locationListPage.findButton.click();
-        await locationListPage.getLocationToEdit(LOCATION_NAME).click();
+        await locationListPage.getLocationEditButton(LOCATION_NAME).click();
         await createLocationPage.actionButton.click();
         await createLocationPage.clickDeleteLocation();
       });
@@ -917,7 +917,7 @@ test.describe('Check if ward location is present in location chooser based on us
         await locationListPage.getSelectLocationTypeOption('Ward').click();
         await locationListPage.findButton.click();
         await expect(
-          locationListPage.getLocationToEdit(LOCATION_NAME)
+          locationListPage.getLocationEditButton(LOCATION_NAME)
         ).toBeHidden();
       });
     }
@@ -1228,7 +1228,7 @@ test.describe('Check if ward location is present in location chooser based on us
       });
 
       await test.step('Create Ward location', async () => {
-        await createLocationPage.locationDetailsTabSection.locationName.fill(
+        await createLocationPage.locationDetailsTabSection.locationNameField.fill(
           LOCATION_NAME
         );
         await createLocationPage.locationDetailsTabSection.locationTypeSelect.click();
@@ -1239,11 +1239,11 @@ test.describe('Check if ward location is present in location chooser based on us
         await createLocationPage.locationConfigurationTab.click();
         await createLocationPage.locationConfigurationTabSection.useDefaultSettingsCheckbox.uncheck();
         await createLocationPage.locationConfigurationTabSection
-          .removeSupportedActivities('None')
+          .removeSupportedActivitiesButton('None')
           .click();
-        await createLocationPage.locationConfigurationTabSection.supportedActivities.click();
+        await createLocationPage.locationConfigurationTabSection.supportedActivitiesSelect.click();
         await createLocationPage.locationConfigurationTabSection
-          .getSupportedActivities('Submit request')
+          .getSupportedActivitiesOption('Submit request')
           .click();
         await createLocationPage.locationConfigurationTabSection.saveButton.click();
       });
@@ -1313,7 +1313,7 @@ test.describe('Check if ward location is present in location chooser based on us
         await locationListPage.locationTypeSelect.click();
         await locationListPage.getSelectLocationTypeOption('Ward').click();
         await locationListPage.findButton.click();
-        await locationListPage.getLocationToEdit(LOCATION_NAME).click();
+        await locationListPage.getLocationEditButton(LOCATION_NAME).click();
         await createLocationPage.actionButton.click();
         await createLocationPage.clickDeleteLocation();
       });
@@ -1324,7 +1324,7 @@ test.describe('Check if ward location is present in location chooser based on us
         await locationListPage.getSelectLocationTypeOption('Ward').click();
         await locationListPage.findButton.click();
         await expect(
-          locationListPage.getLocationToEdit(LOCATION_NAME)
+          locationListPage.getLocationEditButton(LOCATION_NAME)
         ).toBeHidden();
       });
     }
@@ -1543,7 +1543,7 @@ test.describe('Check if ward location is present in location chooser based on us
       });
 
       await test.step('Create Ward location', async () => {
-        await createLocationPage.locationDetailsTabSection.locationName.fill(
+        await createLocationPage.locationDetailsTabSection.locationNameField.fill(
           LOCATION_NAME
         );
         await createLocationPage.locationDetailsTabSection.locationTypeSelect.click();
@@ -1554,11 +1554,11 @@ test.describe('Check if ward location is present in location chooser based on us
         await createLocationPage.locationConfigurationTab.click();
         await createLocationPage.locationConfigurationTabSection.useDefaultSettingsCheckbox.uncheck();
         await createLocationPage.locationConfigurationTabSection
-          .removeSupportedActivities('None')
+          .removeSupportedActivitiesButton('None')
           .click();
-        await createLocationPage.locationConfigurationTabSection.supportedActivities.click();
+        await createLocationPage.locationConfigurationTabSection.supportedActivitiesSelect.click();
         await createLocationPage.locationConfigurationTabSection
-          .getSupportedActivities('Submit request')
+          .getSupportedActivitiesOption('Submit request')
           .click();
         await createLocationPage.locationConfigurationTabSection.saveButton.click();
       });
@@ -1641,7 +1641,7 @@ test.describe('Check if ward location is present in location chooser based on us
         await locationListPage.locationTypeSelect.click();
         await locationListPage.getSelectLocationTypeOption('Ward').click();
         await locationListPage.findButton.click();
-        await locationListPage.getLocationToEdit(LOCATION_NAME).click();
+        await locationListPage.getLocationEditButton(LOCATION_NAME).click();
         await createLocationPage.actionButton.click();
         await createLocationPage.clickDeleteLocation();
       });
@@ -1652,7 +1652,7 @@ test.describe('Check if ward location is present in location chooser based on us
         await locationListPage.getSelectLocationTypeOption('Ward').click();
         await locationListPage.findButton.click();
         await expect(
-          locationListPage.getLocationToEdit(LOCATION_NAME)
+          locationListPage.getLocationEditButton(LOCATION_NAME)
         ).toBeHidden();
       });
     }

@@ -17,20 +17,18 @@ class LocationConfigurationTabSection extends BasePageModel {
     return this.section.getByRole('button', { name: 'Save' });
   }
 
-  get supportedActivities() {
+  get supportedActivitiesSelect() {
     return this.section.getByTestId('supported-activities-select');
   }
 
-  getSupportedActivities(supportedActivity: string) {
-    return this.section
-      .getByTestId('supported-activities-select')
+  getSupportedActivitiesOption(supportedActivity: string) {
+    return this.supportedActivitiesSelect
       .getByRole('listitem')
       .getByText(supportedActivity, { exact: true });
   }
 
-  removeSupportedActivities(supportedActivity: string) {
-    return this.section
-      .getByTestId('supported-activities-select')
+  removeSupportedActivitiesButton(supportedActivity: string) {
+    return this.supportedActivitiesSelect
       .getByRole('listitem')
       .filter({ hasText: supportedActivity })
       .locator('.search-choice-close');

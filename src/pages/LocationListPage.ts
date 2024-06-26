@@ -27,7 +27,7 @@ class LocationListPage extends BasePageModel {
     return this.page.getByRole('table');
   }
 
-  getLocationToEdit(locationName: string) {
+  getLocationEditButton(locationName: string) {
     return this.locationListTable.getByRole('link', {
       name: locationName,
       exact: true,
