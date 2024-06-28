@@ -1,5 +1,5 @@
 import { expect, test } from '@/fixtures/fixtures';
-import { formatDate } from '@/utils/DateUtils';
+import { formatDate, getDateByOffset } from '@/utils/DateUtils';
 import UniqueIdentifier from '@/utils/UniqueIdentifier';
 
 test('create step', async ({ createInboundPage, mainLocation }) => {
@@ -101,10 +101,16 @@ test('Assert that all values are persisted between going through workflow steps'
       recipient: 'dare',
     },
   ];
+  const TRACKING_NUMBER = 'TEST123';
+  const DRIVER_NAME = 'Test-Name Test-Lastname';
+  const COMMENT = 'Test Comment';
+  const EXPECTED_DELIVERY_DATE = getDateByOffset(TODAY, 1);
+  const SHIPMENT_TYPE = 'Land';
 
-  await createInboundPage.goToPage();
-
-  await createInboundPage.wizzardSteps.assertActiveStep('Create');
+  await test.step('Go to create inbound page', async () => {
+    await createInboundPage.goToPage();
+    await createInboundPage.wizzardSteps.assertActiveStep('Create');
+  })
 
   await test.step('Create Stock Movement step', async () => {
     await createInboundPage.createStep.descriptionField.textbox.fill(
@@ -117,80 +123,19 @@ test('Assert that all values are persisted between going through workflow steps'
     await createInboundPage.createStep.dateRequestedDatePicker.fill(TODAY);
   });
 
-  await test.step('Go to add items step', async () => {
+  await test.step('Go next step (Add items)', async () => {
     await createInboundPage.nextButton.click();
     await createInboundPage.addItemsStep.isLoaded();
-
     await createInboundPage.wizzardSteps.assertActiveStep('Add items');
   });
 
-  await test.step('Fill in add items fields', async () => {
-    for (let i = 0; i < ROWS.length; i++) {
-      const data = ROWS[i];
-      const row = createInboundPage.addItemsStep.table.row(i);
-      await row.productSelect.findAndSelectOption(data.productCode);
-      await row.quantityField.numberbox.fill(data.quantity);
-      await row.lotField.textbox.fill(data.lotNumber);
-      await row.recipientSelect.findAndSelectOption(data.recipient);
-
-      await createInboundPage.addItemsStep.addLineButton.click();
-    }
-  });
-
-  await test.step('Go to send step', async () => {
-    await createInboundPage.nextButton.click();
-
-    await createInboundPage.wizzardSteps.assertActiveStep('Send');
-
-    await createInboundPage.sendStep.isLoaded();
-  });
-
-  await test.step('Assert data on send step', async () => {
-    await expect(createInboundPage.sendStep.originField.textbox).toHaveValue(
-      ORIGIN
-    );
-    await expect(
-      createInboundPage.sendStep.destinationSelect.selectField
-    ).toContainText(currentLocation.name);
-
-    for (let i = 0; i < ROWS.length; i++) {
-      const data = ROWS[i];
-      const row = createInboundPage.sendStep.table.row(i);
-      await expect(row.productCode.field).toContainText(data.productCode);
-      await expect(row.lotNumber.field).toContainText(data.lotNumber);
-      await expect(row.quantityPicked.field).toContainText(data.quantity);
-      await expect(row.recipient.field).toContainText(data.recipient);
-    }
-  });
-
-  await test.step('Go back to add items step', async () => {
+  await test.step('Go previous step (Create)', async () => {
     await createInboundPage.previousButton.click();
-    await createInboundPage.sendStep.validationPopup.assertPopupVisible();
-    await createInboundPage.sendStep.validationPopup.confirmButton.click();
-
-    await createInboundPage.addItemsStep.isLoaded();
-
-    await createInboundPage.wizzardSteps.assertActiveStep('Add items');
+    await createInboundPage.createStep.isLoaded();
+    await createInboundPage.wizzardSteps.assertActiveStep('Create');
   });
 
-  await test.step('assert data on add items step when going back', async () => {
-    for (let i = 0; i < ROWS.length; i++) {
-      const data = ROWS[i];
-      const row = createInboundPage.addItemsStep.table.row(i);
-      await expect(row.productSelect.selectField).toContainText(
-        data.productCode
-      );
-      await expect(row.lotField.textbox).toHaveValue(data.lotNumber);
-      await expect(row.quantityField.numberbox).toHaveValue(data.quantity);
-      await expect(row.recipientSelect.selectField).toContainText(
-        data.recipient
-      );
-    }
-  });
-
-  await test.step('Go back to create step', async () => {
-    await createInboundPage.previousButton.click();
-
+  await test.step('Assert data in fields (Create)', async () => {
     await expect(
       createInboundPage.createStep.descriptionField.textbox
     ).toHaveValue(DESCRIPTION);
@@ -206,7 +151,101 @@ test('Assert that all values are persisted between going through workflow steps'
     await expect(
       createInboundPage.createStep.dateRequestedDatePicker.textbox
     ).toHaveValue(formatDate(TODAY));
+  })
+
+  await test.step('Go next step (Add items)', async () => {
+    await createInboundPage.nextButton.click();
+    await createInboundPage.addItemsStep.isLoaded();
+    await createInboundPage.wizzardSteps.assertActiveStep('Add items');
   });
+
+  await test.step('Add line items (Add items)', async () => {
+    for (let i = 0; i < ROWS.length; i++) {
+      const data = ROWS[i];
+      const row = createInboundPage.addItemsStep.table.row(i);
+      await row.productSelect.findAndSelectOption(data.productCode);
+      await row.quantityField.numberbox.fill(data.quantity);
+      await row.lotField.textbox.fill(data.lotNumber);
+      await row.recipientSelect.findAndSelectOption(data.recipient);
+
+      await createInboundPage.addItemsStep.addLineButton.click();
+    }
+  });
+
+  await test.step('Go to next step (Send)', async () => {
+    await createInboundPage.nextButton.click();
+    await createInboundPage.wizzardSteps.assertActiveStep('Send');
+    await createInboundPage.sendStep.isLoaded();
+  });
+
+  await test.step('Fill shipment fields (Send)', async () => {
+    await createInboundPage.sendStep.shipmentTypeSelect.findAndSelectOption(SHIPMENT_TYPE);
+    await createInboundPage.sendStep.trackingNumberField.textbox.fill(TRACKING_NUMBER);
+    await createInboundPage.sendStep.driverNameField.textbox.fill(DRIVER_NAME);
+    await createInboundPage.sendStep.commentField.textbox.fill(COMMENT);
+    await createInboundPage.sendStep.expectedDeliveryDatePicker.fill(EXPECTED_DELIVERY_DATE);
+  });
+
+  await test.step('Go previous step (Add items)', async () => {
+    await createInboundPage.previousButton.click();
+    await createInboundPage.addItemsStep.isLoaded();
+    await createInboundPage.wizzardSteps.assertActiveStep('Add items');
+  });
+
+  await test.step('Assert line items (Add items)', async () => {
+    for (let i = 0; i < ROWS.length; i++) {
+      const data = ROWS[i];
+      const row = createInboundPage.addItemsStep.table.row(i);
+      await expect(row.productSelect.selectField).toContainText(
+        data.productCode
+      );
+      await expect(row.lotField.textbox).toHaveValue(data.lotNumber);
+      await expect(row.quantityField.numberbox).toHaveValue(data.quantity);
+      await expect(row.recipientSelect.selectField).toContainText(
+        data.recipient
+      );
+    }
+  });
+
+  await test.step('Go to next step (Send)', async () => {
+    await createInboundPage.nextButton.click();
+    await createInboundPage.wizzardSteps.assertActiveStep('Send');
+    await createInboundPage.sendStep.isLoaded();
+  });
+
+  await test.step('Assert data on send step', async () => {
+    await expect(createInboundPage.sendStep.originField.textbox).toHaveValue(
+      ORIGIN
+    );
+    await expect(
+      createInboundPage.sendStep.destinationSelect.selectField
+    ).toContainText(currentLocation.name);
+    await expect(createInboundPage.sendStep.shipmentTypeSelect.selectField).toContainText(
+      SHIPMENT_TYPE
+    );
+    await expect(createInboundPage.sendStep.trackingNumberField.textbox).toHaveValue(
+      TRACKING_NUMBER
+    );
+    await expect(createInboundPage.sendStep.driverNameField.textbox).toHaveValue(
+      DRIVER_NAME
+    );
+    await expect(createInboundPage.sendStep.commentField.textbox).toHaveValue(
+      COMMENT
+    );
+    await expect(createInboundPage.sendStep.expectedDeliveryDatePicker.textbox).toHaveValue(
+      formatDate(EXPECTED_DELIVERY_DATE)
+    );
+
+    for (let i = 0; i < ROWS.length; i++) {
+      const data = ROWS[i];
+      const row = createInboundPage.sendStep.table.row(i);
+      await expect(row.productCode.field).toContainText(data.productCode);
+      await expect(row.lotNumber.field).toContainText(data.lotNumber);
+      await expect(row.quantityPicked.field).toContainText(data.quantity);
+      await expect(row.recipient.field).toContainText(data.recipient);
+    }
+  });
+
 });
 
 test('Check Pack level column visiblity on send pagew table', async ({

@@ -33,9 +33,9 @@ class SendStep extends BasePageModel {
       'Expected receipt date'
     );
     this.originField = new TextField(page, 'Origin');
-    this.trackingNumberField = new TextField(page, 'Destination');
-    this.driverNameField = new TextField(page, 'Tracking number');
-    this.commentField = new TextField(page, 'Driver name');
+    this.trackingNumberField = new TextField(page, 'Tracking number');
+    this.driverNameField = new TextField(page, 'Driver name');
+    this.commentField = new TextField(page, 'Comments');
 
     this.validationPopup = new AlertPopup(
       page,
