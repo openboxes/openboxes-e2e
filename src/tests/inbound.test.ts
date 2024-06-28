@@ -1,5 +1,6 @@
 import { expect, test } from '@/fixtures/fixtures';
 import { formatDate } from '@/utils/DateUtils';
+import UniqueIdentifier from '@/utils/UniqueIdentifier';
 
 test('create step', async ({ createInboundPage, mainLocation }) => {
   const ORIGIN = 'Imres (OG)';
@@ -77,7 +78,10 @@ test('create step', async ({ createInboundPage, mainLocation }) => {
   // Once shipment is send, Date Shipped in auditing should be filled with user who shipped it and the date
 });
 
-test('Assert that all values are persisted between going through workflow steps', async ({ createInboundPage, mainLocation }) => {
+test('Assert that all values are persisted between going through workflow steps', async ({
+  createInboundPage,
+  mainLocation,
+}) => {
   const ORIGIN = 'Imres (OG)';
   const REQUESTOR = 'dare';
   const DESCRIPTION = 'some description';
@@ -205,7 +209,9 @@ test('Assert that all values are persisted between going through workflow steps'
   });
 });
 
-test('Check Pack level column visiblity on send pagew table', async ({ createInboundPage }) => {
+test('Check Pack level column visiblity on send pagew table', async ({
+  createInboundPage,
+}) => {
   const ORIGIN = 'Imres (OG)';
   const REQUESTOR = 'dare';
   const DESCRIPTION = 'some description';
@@ -223,9 +229,7 @@ test('Check Pack level column visiblity on send pagew table', async ({ createInb
     await createInboundPage.createStep.descriptionField.textbox.fill(
       DESCRIPTION
     );
-    await createInboundPage.createStep.originSelect.findAndSelectOption(
-      ORIGIN
-    );
+    await createInboundPage.createStep.originSelect.findAndSelectOption(ORIGIN);
     await createInboundPage.createStep.requestedBySelect.findAndSelectOption(
       REQUESTOR
     );
@@ -297,7 +301,10 @@ test('Check Pack level column visiblity on send pagew table', async ({ createInb
 // TODO add test for step 12
 // TODO add test for step 13
 
-test('Use Control+ArrowDown copy cell shortcut', async ({ page, createInboundPage }) => {
+test('Use Control+ArrowDown copy cell shortcut', async ({
+  page,
+  createInboundPage,
+}) => {
   const ORIGIN = 'Imres (OG)';
   const REQUESTOR = 'dare';
   const DESCRIPTION = 'some description';
@@ -315,9 +322,7 @@ test('Use Control+ArrowDown copy cell shortcut', async ({ page, createInboundPag
     await createInboundPage.createStep.descriptionField.textbox.fill(
       DESCRIPTION
     );
-    await createInboundPage.createStep.originSelect.findAndSelectOption(
-      ORIGIN
-    );
+    await createInboundPage.createStep.originSelect.findAndSelectOption(ORIGIN);
     await createInboundPage.createStep.requestedBySelect.findAndSelectOption(
       REQUESTOR
     );
@@ -368,7 +373,9 @@ test('Use Control+ArrowDown copy cell shortcut', async ({ page, createInboundPag
   });
 
   await test.step('Use Control+ArrowDown copy cell shortcut on Lot Number', async () => {
-    await createInboundPage.addItemsStep.table.row(0).lotField.textbox.fill(ROW.lot);
+    await createInboundPage.addItemsStep.table
+      .row(0)
+      .lotField.textbox.fill(ROW.lot);
     await page.keyboard.press('Control+ArrowDown');
     await page.keyboard.press('Control+ArrowDown');
 
@@ -400,10 +407,13 @@ test('Use Control+ArrowDown copy cell shortcut', async ({ page, createInboundPag
       createInboundPage.addItemsStep.table.row(2).quantityField.numberbox
     ).toHaveValue(ROW.quantity);
   });
-
 });
 
-test('Save and exit stock movement on add items step', async ({ stockMovementShowPage, createInboundPage, mainLocation }) => {
+test('Save and exit stock movement on add items step', async ({
+  stockMovementShowPage,
+  createInboundPage,
+  mainLocation,
+}) => {
   const ORIGIN = 'Imres (OG)';
   const REQUESTOR = 'dare';
   const DESCRIPTION = 'some description';
@@ -436,7 +446,9 @@ test('Save and exit stock movement on add items step', async ({ stockMovementSho
     await createInboundPage.createStep.dateRequestedDatePicker.fill(TODAY);
   });
 
-  await createInboundPage.nextButton.click();
+  await test.step('Go to next page', async () => {
+    await createInboundPage.nextButton.click();
+  });
 
   await test.step('Add items step', async () => {
     const row = createInboundPage.addItemsStep.table.row(0);
@@ -446,44 +458,147 @@ test('Save and exit stock movement on add items step', async ({ stockMovementSho
     await row.recipientSelect.findAndSelectOption(ROW.recipient);
   });
 
-  await createInboundPage.addItemsStep.saveAndExitButton.click();
-  await stockMovementShowPage.isLoaded();
-  
+  await test.step('Save and exit', async () => {
+    await createInboundPage.addItemsStep.saveAndExitButton.click();
+    await stockMovementShowPage.isLoaded();
+  });
+
   await expect(stockMovementShowPage.statusTag).toBeVisible();
-  await expect(stockMovementShowPage.auditingTable.dateShippedRow).toContainText('None');
-  await expect(stockMovementShowPage.auditingTable.dateReceivedRow).toContainText('None');
+  await expect(
+    stockMovementShowPage.auditingTable.dateShippedRow
+  ).toContainText('None');
+  await expect(
+    stockMovementShowPage.auditingTable.dateReceivedRow
+  ).toContainText('None');
 
   await test.step('Go back to edit page', async () => {
     await stockMovementShowPage.editButton.click();
     await createInboundPage.addItemsStep.isLoaded();
-  })
-  
+  });
+
   await test.step('Assert table items', async () => {
     const row = createInboundPage.addItemsStep.table.row(0);
-    await expect(row.productSelect.selectField).toContainText(
-      ROW.productCode
-    );
+    await expect(row.productSelect.selectField).toContainText(ROW.productCode);
     await expect(row.lotField.textbox).toHaveValue(ROW.lotNumber);
     await expect(row.quantityField.numberbox).toHaveValue(ROW.quantity);
-    await expect(row.recipientSelect.selectField).toContainText(
-      ROW.recipient
-    );
-  })
+    await expect(row.recipientSelect.selectField).toContainText(ROW.recipient);
+  });
 
   await test.step('Update row with different quantity', async () => {
     const row = createInboundPage.addItemsStep.table.row(0);
     await row.quantityField.numberbox.fill(UPDATED_QUANTITY);
-  })
-  
-  await createInboundPage.addItemsStep.saveAndExitButton.click();
-  await stockMovementShowPage.isLoaded();
-  
-  await stockMovementShowPage.editButton.click();
-  await createInboundPage.addItemsStep.isLoaded();
+  });
+
+  await test.step('save and exit', async () => {
+    await createInboundPage.addItemsStep.saveAndExitButton.click();
+    await stockMovementShowPage.isLoaded();
+  });
+
+  await test.step('Go back to edit inbound', async () => {
+    await stockMovementShowPage.editButton.click();
+    await createInboundPage.addItemsStep.isLoaded();
+  });
 
   await test.step('Assert table items with updated quantity value', async () => {
     const row = createInboundPage.addItemsStep.table.row(0);
     await expect(row.quantityField.numberbox).toHaveValue(UPDATED_QUANTITY);
+  });
+});
+
+test('Switch location on stock movement show page', async ({
+  stockMovementShowPage,
+  createInboundPage,
+  mainLocation,
+  supplierLocation,
+  locationChooser,
+  navbar,
+  createLocationPage,
+}) => {
+  const REQUESTOR = 'dare';
+  const DESCRIPTION = 'some description';
+  const TODAY = new Date();
+  const ORIGIN = await supplierLocation.getLocation();
+  const currentLocation = await mainLocation.getLocation();
+  const ROW = {
+    productCode: '10001',
+    quantity: '12',
+    lotNumber: 'test123',
+    recipient: 'dare',
+  };
+  const uniqueIdentifier = new UniqueIdentifier();
+
+  const OTHER_LOCATION_NAME = uniqueIdentifier.generateUniqueString('Other depot location');;
+  const OTHER_LOCATION_ORGANIZATION = currentLocation.organization?.name as string;
+
+
+  await test.step('Create other depot location', async () => {
+    await createLocationPage.gotToPage();
+    await createLocationPage.locationDetailsTabSection.locationNameField.fill(
+      OTHER_LOCATION_NAME
+    );
+    await createLocationPage.locationDetailsTabSection.locationTypeSelect.click();
+    await createLocationPage.locationDetailsTabSection
+      .getlocationTypeOption('Depot')
+      .click();
+
+
+    await createLocationPage.locationDetailsTabSection.organizationSelect.click();
+    await createLocationPage.locationDetailsTabSection.getOrganization(OTHER_LOCATION_ORGANIZATION).click();
+
+    await createLocationPage.locationDetailsTabSection.saveButton.click();
+  });
+
+  await test.step('Go to create inbound page', async () => {
+    await createInboundPage.goToPage();
+  })
+
+  await test.step('Create Stock Movement step', async () => {
+    await createInboundPage.createStep.isLoaded();
+
+    await expect(
+      createInboundPage.createStep.destinationSelect.selectField
+    ).toContainText(currentLocation.name);
+
+    await createInboundPage.createStep.descriptionField.textbox.fill(
+      DESCRIPTION
+    );
+    await createInboundPage.createStep.originSelect.findAndSelectOption(
+      ORIGIN.name
+    );
+    await createInboundPage.createStep.requestedBySelect.findAndSelectOption(
+      REQUESTOR
+    );
+    await createInboundPage.createStep.dateRequestedDatePicker.fill(TODAY);
+  });
+
+  await test.step('Go to next page', async () => {
+    await createInboundPage.nextButton.click();
+  });
+
+  await test.step('Add items step', async () => {
+    const row = createInboundPage.addItemsStep.table.row(0);
+    await row.productSelect.findAndSelectOption(ROW.productCode);
+    await row.quantityField.numberbox.fill(ROW.quantity);
+    await row.lotField.textbox.fill(ROW.lotNumber);
+    await row.recipientSelect.findAndSelectOption(ROW.recipient);
+  });
+
+  await test.step('Save and exit', async () => {
+    await createInboundPage.addItemsStep.saveAndExitButton.click();
+    await stockMovementShowPage.isLoaded();
+  });
+
+  await test.step('switch locations', async () => {
+    await expect(navbar.locationChooserButton).toContainText(currentLocation.name);
+
+    await navbar.locationChooserButton.click();
+    await locationChooser.getOrganization(OTHER_LOCATION_ORGANIZATION).click();
+    await locationChooser.getLocation(OTHER_LOCATION_NAME).click();
+  });
+
+  await test.step('Assert user should stay on same page without being redirected', async () => {
+    await expect(navbar.locationChooserButton).toContainText(OTHER_LOCATION_NAME);
+    await stockMovementShowPage.isLoaded();
   })
   
 });
