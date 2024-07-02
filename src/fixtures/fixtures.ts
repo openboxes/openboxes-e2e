@@ -83,7 +83,8 @@ export const test = baseTest.extend<Fixtures>({
   editLocationGroupPage: async ({ page }, use) =>
     use(new EditLocationGroupPage(page)),
   createInboundPage: async ({ page }, use) => use(new CreateInbound(page)),
-  stockMovementShowPage: async ({ page }, use) => use(new StockMovementShowPage(page)),
+  stockMovementShowPage: async ({ page }, use) =>
+    use(new StockMovementShowPage(page)),
 });
 
 export { expect } from '@playwright/test';

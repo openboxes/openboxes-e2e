@@ -4,8 +4,6 @@ import FieldLabel from '@/components/FieldLabel';
 import BasePageModel from '@/pages/BasePageModel';
 
 class SendPageTable extends BasePageModel {
-
-
   constructor(page: Page) {
     super(page);
   }

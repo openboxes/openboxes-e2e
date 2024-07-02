@@ -1,4 +1,4 @@
-import { Locator, Page } from '@playwright/test';
+import { expect, Locator, Page } from '@playwright/test';
 
 import BasePageModel from '@/pages/BasePageModel';
 
@@ -16,6 +16,22 @@ class FormField extends BasePageModel {
     return this.root.locator(
       `[data-testid="form-field"][aria-label="${this.fieldName}"]`
     );
+  }
+
+  get errorMessage() {
+    return this.field.getByLabel('subtext');
+  }
+
+  get tooltip() {
+    return this.page.getByRole('tooltip');
+  }
+
+  async assertHasError() {
+    await expect(this.field).toHaveClass(/has-error/);
+  }
+
+  async assertHasNoError() {
+    await expect(this.field).not.toHaveClass(/has-error/);
   }
 }
 

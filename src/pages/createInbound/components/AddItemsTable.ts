@@ -1,5 +1,6 @@
 import { Locator, Page } from '@playwright/test';
 
+import DatePicker from '@/components/DatePicker';
 import Select from '@/components/Select';
 import TextField from '@/components/TextField';
 import BasePageModel from '@/pages/BasePageModel';
@@ -26,6 +27,7 @@ class Row extends BasePageModel {
   row: Locator;
   productSelect: Select;
   recipientSelect: Select;
+  expirationDate: DatePicker;
   packLevel1Field: TextField;
   packLevel2Field: TextField;
   lotField: TextField;
@@ -40,6 +42,7 @@ class Row extends BasePageModel {
     this.packLevel2Field = new TextField(page, 'Pack level 2', row);
     this.lotField = new TextField(page, 'Lot', row);
     this.quantityField = new TextField(page, 'Qty', row);
+    this.expirationDate = new DatePicker(page, 'Expiry', row);
   }
 
   get deleteButton() {

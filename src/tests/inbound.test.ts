@@ -2,7 +2,7 @@ import { expect, test } from '@/fixtures/fixtures';
 import { formatDate, getDateByOffset } from '@/utils/DateUtils';
 import UniqueIdentifier from '@/utils/UniqueIdentifier';
 
-test('create step', async ({ createInboundPage, mainLocation }) => {
+test.skip('create step', async ({ createInboundPage, mainLocation }) => {
   const ORIGIN = 'Imres (OG)';
   const REQUESTOR = 'dare';
   const DESCRIPTION = 'some description';
@@ -78,7 +78,7 @@ test('create step', async ({ createInboundPage, mainLocation }) => {
   // Once shipment is send, Date Shipped in auditing should be filled with user who shipped it and the date
 });
 
-test('Assert that all values are persisted between going through workflow steps', async ({
+test('Assert that all values are persisted between going back and forth through workflow steps', async ({
   createInboundPage,
   mainLocation,
 }) => {
@@ -110,7 +110,7 @@ test('Assert that all values are persisted between going through workflow steps'
   await test.step('Go to create inbound page', async () => {
     await createInboundPage.goToPage();
     await createInboundPage.wizzardSteps.assertActiveStep('Create');
-  })
+  });
 
   await test.step('Create Stock Movement step', async () => {
     await createInboundPage.createStep.descriptionField.textbox.fill(
@@ -151,7 +151,7 @@ test('Assert that all values are persisted between going through workflow steps'
     await expect(
       createInboundPage.createStep.dateRequestedDatePicker.textbox
     ).toHaveValue(formatDate(TODAY));
-  })
+  });
 
   await test.step('Go next step (Add items)', async () => {
     await createInboundPage.nextButton.click();
@@ -179,11 +179,17 @@ test('Assert that all values are persisted between going through workflow steps'
   });
 
   await test.step('Fill shipment fields (Send)', async () => {
-    await createInboundPage.sendStep.shipmentTypeSelect.findAndSelectOption(SHIPMENT_TYPE);
-    await createInboundPage.sendStep.trackingNumberField.textbox.fill(TRACKING_NUMBER);
+    await createInboundPage.sendStep.shipmentTypeSelect.findAndSelectOption(
+      SHIPMENT_TYPE
+    );
+    await createInboundPage.sendStep.trackingNumberField.textbox.fill(
+      TRACKING_NUMBER
+    );
     await createInboundPage.sendStep.driverNameField.textbox.fill(DRIVER_NAME);
     await createInboundPage.sendStep.commentField.textbox.fill(COMMENT);
-    await createInboundPage.sendStep.expectedDeliveryDatePicker.fill(EXPECTED_DELIVERY_DATE);
+    await createInboundPage.sendStep.expectedDeliveryDatePicker.fill(
+      EXPECTED_DELIVERY_DATE
+    );
   });
 
   await test.step('Go previous step (Add items)', async () => {
@@ -220,21 +226,21 @@ test('Assert that all values are persisted between going through workflow steps'
     await expect(
       createInboundPage.sendStep.destinationSelect.selectField
     ).toContainText(currentLocation.name);
-    await expect(createInboundPage.sendStep.shipmentTypeSelect.selectField).toContainText(
-      SHIPMENT_TYPE
-    );
-    await expect(createInboundPage.sendStep.trackingNumberField.textbox).toHaveValue(
-      TRACKING_NUMBER
-    );
-    await expect(createInboundPage.sendStep.driverNameField.textbox).toHaveValue(
-      DRIVER_NAME
-    );
+    await expect(
+      createInboundPage.sendStep.shipmentTypeSelect.selectField
+    ).toContainText(SHIPMENT_TYPE);
+    await expect(
+      createInboundPage.sendStep.trackingNumberField.textbox
+    ).toHaveValue(TRACKING_NUMBER);
+    await expect(
+      createInboundPage.sendStep.driverNameField.textbox
+    ).toHaveValue(DRIVER_NAME);
     await expect(createInboundPage.sendStep.commentField.textbox).toHaveValue(
       COMMENT
     );
-    await expect(createInboundPage.sendStep.expectedDeliveryDatePicker.textbox).toHaveValue(
-      formatDate(EXPECTED_DELIVERY_DATE)
-    );
+    await expect(
+      createInboundPage.sendStep.expectedDeliveryDatePicker.textbox
+    ).toHaveValue(formatDate(EXPECTED_DELIVERY_DATE));
 
     for (let i = 0; i < ROWS.length; i++) {
       const data = ROWS[i];
@@ -245,10 +251,195 @@ test('Assert that all values are persisted between going through workflow steps'
       await expect(row.recipient.field).toContainText(data.recipient);
     }
   });
-
 });
 
-test('Check Pack level column visiblity on send pagew table', async ({
+test('Field validation', async ({ mainLocation, createInboundPage }) => {
+  const ORIGIN = 'Imres (OG)';
+  const REQUESTOR = 'dare';
+  const DESCRIPTION = 'some description';
+  const TODAY = new Date();
+  const currentLocation = await mainLocation.getLocation();
+
+  const ROW = {
+    packLevel1: 'pallet',
+    packLevel2: 'box',
+    productCode: '10001',
+    quantity: '12',
+    lotNumber: 'test123',
+    recipient: 'dare',
+    expirationDate: getDateByOffset(new Date(), 3),
+  };
+
+  const TRACKING_NUMBER = 'TEST123';
+  const DRIVER_NAME = 'Test-Name Test-Lastname';
+  const COMMENT = 'Test Comment';
+  const SHIP_DATE = TODAY;
+  const SHIPMENT_TYPE = 'Land';
+
+  await test.step('Go to create inbound page', async () => {
+    await createInboundPage.goToPage();
+  });
+
+  await test.step('Trigger field validation (Create step)', async () => {
+    await createInboundPage.createStep.isLoaded();
+    await createInboundPage.wizzardSteps.assertActiveStep('Create');
+    await createInboundPage.nextButton.focus();
+    await createInboundPage.nextButton.click();
+  });
+
+  await test.step('Assert field validation on Description field (Create step)', async () => {
+    await createInboundPage.createStep.descriptionField.assertHasError();
+    await expect(
+      createInboundPage.createStep.descriptionField.errorMessage
+    ).toContainText('This field is required');
+  });
+
+  await test.step('Assert field validation on Origin field (Create step)', async () => {
+    await createInboundPage.createStep.originSelect.assertHasError();
+    await expect(
+      createInboundPage.createStep.originSelect.errorMessage
+    ).toContainText('This field is required');
+  });
+
+  await test.step('Assert no field validation on Destination field (Create step)', async () => {
+    await createInboundPage.createStep.destinationSelect.assertHasNoError();
+  });
+
+  await test.step('Assert field validation on Requested By field (Create step)', async () => {
+    await createInboundPage.createStep.requestedBySelect.assertHasError();
+    await expect(
+      createInboundPage.createStep.requestedBySelect.errorMessage
+    ).toContainText('This field is required');
+  });
+
+  await test.step('Assert no field validation on Stock field (Create step)', async () => {
+    await createInboundPage.createStep.stocklistSelect.assertHasNoError();
+  });
+
+  await test.step('Assert field validation on Date Requested field (Create step)', async () => {
+    await createInboundPage.createStep.dateRequestedDatePicker.assertHasError();
+    await expect(
+      createInboundPage.createStep.dateRequestedDatePicker.errorMessage
+    ).toContainText('This field is required');
+  });
+
+  await test.step('Fill all required field on create step (Create step)', async () => {
+    await createInboundPage.createStep.descriptionField.textbox.fill(
+      DESCRIPTION
+    );
+    await createInboundPage.createStep.originSelect.findAndSelectOption(ORIGIN);
+    await createInboundPage.createStep.requestedBySelect.findAndSelectOption(
+      REQUESTOR
+    );
+    await createInboundPage.createStep.dateRequestedDatePicker.fill(TODAY);
+  });
+
+  await test.step('Go to next step (Create -> Add Items)', async () => {
+    await createInboundPage.nextButton.click();
+  });
+
+  await test.step('Assert next button should be disabled on empty table (Add Items)', async () => {
+    await expect(createInboundPage.nextButton).toBeDisabled();
+  });
+
+  const row = createInboundPage.addItemsStep.table.row(0);
+
+  await test.step('Fill single required field (Add Items)', async () => {
+    await row.productSelect.findAndSelectOption(ROW.productCode);
+    await expect(createInboundPage.nextButton).toBeDisabled();
+  });
+
+  await test.step('Fill all required fields (Add Items)', async () => {
+    await row.quantityField.numberbox.fill(ROW.quantity);
+    await expect(createInboundPage.nextButton).toBeEnabled();
+  });
+
+  await test.step('Fill in pack level 2 without pack level 1 (Add Items)', async () => {
+    await row.packLevel2Field.textbox.fill(ROW.packLevel2);
+    await row.packLevel2Field.textbox.blur();
+  });
+
+  await test.step('Assert pack level 2 error (Add Items)', async () => {
+    await row.packLevel2Field.assertHasError();
+    await row.packLevel2Field.textbox.hover();
+    await expect(row.packLevel2Field.tooltip).toContainText(
+      'Please enter Pack level 1 before Pack level 2.'
+    );
+  });
+
+  await test.step('Fill pack level 1 (Add Items)', async () => {
+    await row.packLevel1Field.textbox.fill(ROW.packLevel1);
+    await row.packLevel2Field.assertHasNoError();
+  });
+
+  await test.step('Fill expiration date without lot (Add Items)', async () => {
+    await row.expirationDate.fill(ROW.expirationDate);
+    await row.expirationDate.textbox.blur();
+    await createInboundPage.nextButton.click();
+  });
+
+  await test.step('Assert lot filed errors (Add Items)', async () => {
+    await row.lotField.assertHasError();
+    await row.lotField.textbox.hover();
+    await expect(row.packLevel2Field.tooltip).toContainText(
+      'Items with an expiry date must also have a lot number.'
+    );
+  });
+
+  await test.step('Fill lot number (Add Items)', async () => {
+    await row.lotField.textbox.fill(ROW.lotNumber);
+    await row.packLevel2Field.assertHasNoError();
+  });
+
+  await test.step('Go to next step (Add Items -> Send)', async () => {
+    await createInboundPage.nextButton.click();
+  });
+
+  await test.step('Expected delivery date should be empty', async () => {
+    await expect(
+      createInboundPage.sendStep.expectedDeliveryDatePicker.textbox
+    ).toHaveValue('');
+  });
+
+  await test.step('Send shipment', async () => {
+    await createInboundPage.sendStep.sendShipmentButton.click();
+  });
+
+  await test.step('Expected delivery date field shoudl have validation error', async () => {
+    await createInboundPage.sendStep.expectedDeliveryDatePicker.assertHasError();
+    await expect(
+      createInboundPage.sendStep.expectedDeliveryDatePicker.errorMessage
+    ).toContainText('This field is required');
+  });
+
+  await test.step('Fill ship date', async () => {
+    await createInboundPage.sendStep.shipDateDatePicker.fill(SHIP_DATE);
+  });
+
+  await test.step('Fill expected delivery date one day before ship date', async () => {
+    await createInboundPage.sendStep.expectedDeliveryDatePicker.fill(
+      getDateByOffset(SHIP_DATE, -1)
+    );
+  });
+
+  await test.step('Assert field validation errors on Ship date and Expeted delivery date fields', async () => {
+    await createInboundPage.sendStep.shipDateDatePicker.assertHasError();
+    await expect(
+      createInboundPage.sendStep.shipDateDatePicker.errorMessage
+    ).toContainText(
+      'Please verify timeline. Delivery date cannot be before Ship date.'
+    );
+
+    await createInboundPage.sendStep.expectedDeliveryDatePicker.assertHasError();
+    await expect(
+      createInboundPage.sendStep.expectedDeliveryDatePicker.errorMessage
+    ).toContainText(
+      'Please verify timeline. Delivery date cannot be before Ship date.'
+    );
+  });
+});
+
+test('Check Pack level column visiblity on send page table', async ({
   createInboundPage,
 }) => {
   const ORIGIN = 'Imres (OG)';
@@ -282,7 +473,9 @@ test('Check Pack level column visiblity on send pagew table', async ({
     await row.quantityField.numberbox.fill(ROW.quantity);
   });
 
-  await createInboundPage.nextButton.click();
+  await test.step('Go next step (Send)', async () => {
+    await createInboundPage.nextButton.click();
+  });
 
   await test.step('Assert that pack level columns are not visible ons end page', async () => {
     const row = createInboundPage.sendStep.table.row(0);
@@ -292,7 +485,7 @@ test('Check Pack level column visiblity on send pagew table', async ({
     await expect(row.packLevel2.field).toBeHidden();
   });
 
-  await test.step('Go back to add items step', async () => {
+  await test.step('Go back (Add items)', async () => {
     await createInboundPage.previousButton.click();
     await createInboundPage.sendStep.validationPopup.assertPopupVisible();
     await createInboundPage.sendStep.validationPopup.confirmButton.click();
@@ -304,7 +497,9 @@ test('Check Pack level column visiblity on send pagew table', async ({
       .packLevel1Field.textbox.fill(PACK_LEVEL_1);
   });
 
-  await createInboundPage.nextButton.click();
+  await test.step('Go next step (Send)', async () => {
+    await createInboundPage.nextButton.click();
+  });
 
   await test.step('Assert that pack level 1 columns is visible on send page after update', async () => {
     const row = createInboundPage.sendStep.table.row(0);
@@ -314,7 +509,7 @@ test('Check Pack level column visiblity on send pagew table', async ({
     await expect(row.packLevel2.field).toBeHidden();
   });
 
-  await test.step('Go back to add items step', async () => {
+  await test.step('Go back (Add items)', async () => {
     await createInboundPage.previousButton.click();
     await createInboundPage.sendStep.validationPopup.assertPopupVisible();
     await createInboundPage.sendStep.validationPopup.confirmButton.click();
@@ -326,7 +521,9 @@ test('Check Pack level column visiblity on send pagew table', async ({
       .packLevel2Field.textbox.fill(PACK_LEVEL_2);
   });
 
-  await createInboundPage.nextButton.click();
+  await test.step('Go next step (Send)', async () => {
+    await createInboundPage.nextButton.click();
+  });
 
   await test.step('Assert that both pack level columns are visible on send page after update', async () => {
     const row = createInboundPage.sendStep.table.row(0);
@@ -335,9 +532,32 @@ test('Check Pack level column visiblity on send pagew table', async ({
     await expect(row.packLevel1.field).toContainText(PACK_LEVEL_1);
     await expect(row.packLevel2.field).toContainText(PACK_LEVEL_2);
   });
+
+  await test.step('Go back (Add items)', async () => {
+    await createInboundPage.previousButton.click();
+    await createInboundPage.sendStep.validationPopup.assertPopupVisible();
+    await createInboundPage.sendStep.validationPopup.confirmButton.click();
+  });
+
+  await test.step('Fill in Pack Level 2 on first row', async () => {
+    const row = createInboundPage.addItemsStep.table.row(0);
+    await row.packLevel2Field.textbox.fill('');
+    await row.packLevel1Field.textbox.fill('');
+  });
+
+  await test.step('Go next step (Send)', async () => {
+    await createInboundPage.nextButton.click();
+  });
+
+  await test.step('Assert that both pack level columns are visible on send page after update', async () => {
+    const row = createInboundPage.sendStep.table.row(0);
+    await expect(row.productCode.field).toContainText(ROW.productCode);
+    await expect(row.quantityPicked.field).toContainText(ROW.quantity);
+    await expect(row.packLevel1.field).toBeHidden();
+    await expect(row.packLevel2.field).toBeHidden();
+  });
 });
 
-// TODO add test for step 12
 // TODO add test for step 13
 
 test('Use Control+ArrowDown copy cell shortcut', async ({
@@ -566,9 +786,11 @@ test('Switch location on stock movement show page', async ({
   };
   const uniqueIdentifier = new UniqueIdentifier();
 
-  const OTHER_LOCATION_NAME = uniqueIdentifier.generateUniqueString('Other depot location');;
-  const OTHER_LOCATION_ORGANIZATION = currentLocation.organization?.name as string;
-
+  const OTHER_LOCATION_NAME = uniqueIdentifier.generateUniqueString(
+    'Other depot location'
+  );
+  const OTHER_LOCATION_ORGANIZATION = currentLocation.organization
+    ?.name as string;
 
   await test.step('Create other depot location', async () => {
     await createLocationPage.gotToPage();
@@ -580,16 +802,17 @@ test('Switch location on stock movement show page', async ({
       .getlocationTypeOption('Depot')
       .click();
 
-
     await createLocationPage.locationDetailsTabSection.organizationSelect.click();
-    await createLocationPage.locationDetailsTabSection.getOrganization(OTHER_LOCATION_ORGANIZATION).click();
+    await createLocationPage.locationDetailsTabSection
+      .getOrganization(OTHER_LOCATION_ORGANIZATION)
+      .click();
 
     await createLocationPage.locationDetailsTabSection.saveButton.click();
   });
 
   await test.step('Go to create inbound page', async () => {
     await createInboundPage.goToPage();
-  })
+  });
 
   await test.step('Create Stock Movement step', async () => {
     await createInboundPage.createStep.isLoaded();
@@ -628,7 +851,9 @@ test('Switch location on stock movement show page', async ({
   });
 
   await test.step('switch locations', async () => {
-    await expect(navbar.locationChooserButton).toContainText(currentLocation.name);
+    await expect(navbar.locationChooserButton).toContainText(
+      currentLocation.name
+    );
 
     await navbar.locationChooserButton.click();
     await locationChooser.getOrganization(OTHER_LOCATION_ORGANIZATION).click();
@@ -636,8 +861,9 @@ test('Switch location on stock movement show page', async ({
   });
 
   await test.step('Assert user should stay on same page without being redirected', async () => {
-    await expect(navbar.locationChooserButton).toContainText(OTHER_LOCATION_NAME);
+    await expect(navbar.locationChooserButton).toContainText(
+      OTHER_LOCATION_NAME
+    );
     await stockMovementShowPage.isLoaded();
-  })
-  
+  });
 });

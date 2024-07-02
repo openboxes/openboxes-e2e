@@ -33,7 +33,7 @@ class WizzardSteps extends BasePageModel {
       const stepState = stepName === step;
       this.assertStepStatus(stepName, stepState);
     }
-  } 
+  }
 }
 
 export default WizzardSteps;

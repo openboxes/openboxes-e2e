@@ -16,7 +16,7 @@ class CreateLocationPage extends BasePageModel {
       page
     );
   }
-  
+
   async gotToPage() {
     await this.page.goto('./location/edit');
   }

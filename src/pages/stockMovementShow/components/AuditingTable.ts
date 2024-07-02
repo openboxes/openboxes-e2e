@@ -16,26 +16,24 @@ class AuditingTable extends BasePageModel {
   }
 
   get dateRequestedRow() {
-    return this.rows.filter({ hasText: 'Date Requested' })
+    return this.rows.filter({ hasText: 'Date Requested' });
   }
 
   get dateShippedRow() {
-    return this.rows.filter({ hasText: 'Date Shipped' })
+    return this.rows.filter({ hasText: 'Date Shipped' });
   }
 
   get dateReceivedRow() {
-    return this.rows.filter({ hasText: 'Date Received' })
+    return this.rows.filter({ hasText: 'Date Received' });
   }
 
   get dateCreatedRow() {
-    return this.rows.filter({ hasText: 'Date Created' })
+    return this.rows.filter({ hasText: 'Date Created' });
   }
 
   get lastUpdatedRow() {
-    return this.rows.filter({ hasText: 'Last Updated' })
+    return this.rows.filter({ hasText: 'Last Updated' });
   }
 }
-
-
 
 export default AuditingTable;

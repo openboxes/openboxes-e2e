@@ -29,7 +29,10 @@ class AppConfig {
   public users!: Record<'main', TestUserConfig>;
 
   // test users used in all of the tests
-  public locations!: Record<'main' | 'supplier' | 'noManageInventoryDepot', LocationConfig>;
+  public locations!: Record<
+    'main' | 'supplier' | 'noManageInventoryDepot',
+    LocationConfig
+  >;
 
   // Private constructor to enforce singleton pattern.
   private constructor() {}

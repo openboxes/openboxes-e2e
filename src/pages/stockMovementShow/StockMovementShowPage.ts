@@ -5,9 +5,8 @@ import AuditingTable from '@/pages/stockMovementShow/components/AuditingTable';
 import PackingListTable from '@/pages/stockMovementShow/components/PackingListTable';
 
 class StockMovementShowPage extends BasePageModel {
-
-  auditingTable: AuditingTable
-  packingListTable: PackingListTable
+  auditingTable: AuditingTable;
+  packingListTable: PackingListTable;
 
   constructor(page: Page) {
     super(page);
@@ -18,7 +17,6 @@ class StockMovementShowPage extends BasePageModel {
   async isLoaded() {
     await expect(this.summary).toBeVisible();
   }
-
 
   get summary() {
     return this.page.getByRole('region', { name: 'Summary' });

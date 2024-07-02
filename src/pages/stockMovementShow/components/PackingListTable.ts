@@ -8,7 +8,9 @@ class PackingListTable extends BasePageModel {
   }
 
   get table() {
-    return this.page.getByRole('region', { name: 'Packing List' }).getByRole('table');
+    return this.page
+      .getByRole('region', { name: 'Packing List' })
+      .getByRole('table');
   }
 
   get rows() {

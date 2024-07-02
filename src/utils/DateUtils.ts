@@ -6,10 +6,9 @@ const formatDate = (date: Date) => {
   }).format(date);
 };
 
-
 const getDateByOffset = (date: Date, offset: number) => {
   const newDate = new Date(date);
   return new Date(newDate.setDate(newDate.getDate() + offset));
-}
+};
 
 export { formatDate, getDateByOffset };
