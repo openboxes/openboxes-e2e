@@ -67,13 +67,11 @@ test('Create and send inbound stock movement', async ({
 }) => {
   await test.step('Go to create inbound page', async () => {
     await createInboundPage.goToPage();
+    await createInboundPage.createStep.isLoaded();
     await createInboundPage.wizzardSteps.assertActiveStep('Create');
   });
 
   await test.step('Create Stock Movement step', async () => {
-    await createInboundPage.createStep.descriptionField.textbox.fill(
-      DESCRIPTION
-    );
     await createInboundPage.createStep.originSelect.findAndSelectOption(
       ORIGIN.name
     );
@@ -81,6 +79,9 @@ test('Create and send inbound stock movement', async ({
       REQUESTOR
     );
     await createInboundPage.createStep.dateRequestedDatePicker.fill(TODAY);
+    await createInboundPage.createStep.descriptionField.textbox.fill(
+      DESCRIPTION
+    );
   });
 
   await test.step('Go next step (Add items)', async () => {
@@ -165,11 +166,12 @@ test('Create Inbound stock movement field validations', async ({
 }) => {
   await test.step('Go to create inbound page', async () => {
     await createInboundPage.goToPage();
+    await createInboundPage.createStep.isLoaded();
+    await createInboundPage.wizzardSteps.assertActiveStep('Create');
   });
 
   await test.step('Trigger field validation (Create step)', async () => {
-    await createInboundPage.createStep.isLoaded();
-    await createInboundPage.wizzardSteps.assertActiveStep('Create');
+    await createInboundPage.createStep.descriptionField.textbox.blur();
     await createInboundPage.nextButton.focus();
     await createInboundPage.nextButton.click();
   });
@@ -269,7 +271,7 @@ test('Create Inbound stock movement field validations', async ({
   await test.step('Assert lot filed errors (Add Items)', async () => {
     await row.lotField.assertHasError();
     await row.lotField.textbox.hover();
-    await expect(row.packLevel2Field.tooltip).toContainText(
+    await expect(row.lotField.tooltip).toContainText(
       'Items with an expiry date must also have a lot number.'
     );
   });
@@ -328,12 +330,10 @@ test.describe('Create stock movement', () => {
     await test.step('Go to create inbound page', async () => {
       await createInboundPage.goToPage();
       await createInboundPage.wizzardSteps.assertActiveStep('Create');
+      await createInboundPage.createStep.isLoaded();
     });
 
     await test.step('Create Stock Movement step', async () => {
-      await createInboundPage.createStep.descriptionField.textbox.fill(
-        DESCRIPTION
-      );
       await createInboundPage.createStep.originSelect.findAndSelectOption(
         ORIGIN.name
       );
@@ -341,7 +341,11 @@ test.describe('Create stock movement', () => {
         REQUESTOR
       );
       await createInboundPage.createStep.dateRequestedDatePicker.fill(TODAY);
+      await createInboundPage.createStep.descriptionField.textbox.fill(
+        DESCRIPTION
+      );
     });
+    
 
     await test.step('Go next step (Add items)', async () => {
       await createInboundPage.nextButton.click();
@@ -735,33 +739,6 @@ test.describe('Create stock movement', () => {
     depotLocation,
   }) => {
     const OTHER_LOCATION = await depotLocation.getLocation();
-
-    await test.step('Go to create inbound page', async () => {
-      await createInboundPage.goToPage();
-    });
-
-    await test.step('Create Stock Movement step', async () => {
-      await createInboundPage.createStep.isLoaded();
-
-      await expect(
-        createInboundPage.createStep.destinationSelect.selectField
-      ).toContainText(CURRENT_LOCATION.name);
-
-      await createInboundPage.createStep.descriptionField.textbox.fill(
-        DESCRIPTION
-      );
-      await createInboundPage.createStep.originSelect.findAndSelectOption(
-        ORIGIN.name
-      );
-      await createInboundPage.createStep.requestedBySelect.findAndSelectOption(
-        REQUESTOR
-      );
-      await createInboundPage.createStep.dateRequestedDatePicker.fill(TODAY);
-    });
-
-    await test.step('Go to next page', async () => {
-      await createInboundPage.nextButton.click();
-    });
 
     await test.step('Add items step', async () => {
       const rowData = ROWS[0];
