@@ -14,7 +14,7 @@ class FormField extends BasePageModel {
 
   get field() {
     return this.root.locator(
-      `[data-testid="form-field"][aria-label="${this.fieldName}"]`
+      `div[data-testid="form-field"][aria-label="${this.fieldName}"]`
     );
   }
 

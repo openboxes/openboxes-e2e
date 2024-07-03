@@ -54,3 +54,13 @@ type UserType = {
   firstName: string;
   lastName: string;
 };
+
+type AddItemsTableRow = {
+  packLevel1: string;
+  packLevel2: string;
+  productCode: string;
+  lotNumber: string;
+  expirationDate: Date;
+  quantity: string;
+  recipient: string;
+};
