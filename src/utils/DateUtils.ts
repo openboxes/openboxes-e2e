@@ -1,9 +1,7 @@
-const formatDate = (date: Date) => {
-  return new Intl.DateTimeFormat('en-US', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  }).format(date);
+import dayjs from 'dayjs';
+
+const formatDate = (date: Date, format = 'MM/DD/YYYY') => {
+  return dayjs(date).format(format);
 };
 
 const getDateByOffset = (date: Date, offset: number) => {

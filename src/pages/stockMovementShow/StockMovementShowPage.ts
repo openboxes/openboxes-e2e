@@ -14,6 +14,10 @@ class StockMovementShowPage extends BasePageModel {
     this.packingListTable = new PackingListTable(page);
   }
 
+  async waitForUrl() {
+    await this.page.waitForURL('**/stockMovement/show/**');
+  }
+
   async isLoaded() {
     await expect(this.summary).toBeVisible();
   }

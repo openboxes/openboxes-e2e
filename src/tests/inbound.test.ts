@@ -2,80 +2,134 @@ import { expect, test } from '@/fixtures/fixtures';
 import { formatDate, getDateByOffset } from '@/utils/DateUtils';
 import UniqueIdentifier from '@/utils/UniqueIdentifier';
 
-test.skip('create step', async ({ createInboundPage, mainLocation }) => {
-  const ORIGIN = 'Imres (OG)';
-  const REQUESTOR = 'dare';
+test('Create and send inbound stock movement', async ({
+  createInboundPage,
+  stockMovementShowPage,
+  mainLocation,
+  supplierLocation,
+  genericService,
+}) => {
+  const ORIGIN = await supplierLocation.getLocation();
+  const currentLocation = await mainLocation.getLocation();
+  const {
+    data: { user },
+  } = await genericService.getAppContext();
+  const REQUESTOR = user.name;
   const DESCRIPTION = 'some description';
   const TODAY = new Date();
-  const currentLocation = await mainLocation.getLocation();
-  const ROW = {
-    productCode: '10001',
-    quantity: '12',
-    lotNumber: 'test123',
-    recipient: 'dare',
-  };
+  const ROWS = [
+    {
+      productCode: '10001',
+      quantity: '12',
+      lotNumber: 'test123',
+      recipient: user.name,
+    },
+    {
+      productCode: '10002',
+      quantity: '3',
+      lotNumber: 'test123',
+      recipient: user.name,
+    },
+  ];
+  const TRACKING_NUMBER = 'TEST123';
+  const DRIVER_NAME = 'Test-Name Test-Lastname';
+  const COMMENT = 'Test Comment';
+  const EXPECTED_DELIVERY_DATE = getDateByOffset(TODAY, 1);
+  const SHIPMENT_TYPE = 'Land';
 
-  await createInboundPage.goToPage();
+  await test.step('Go to create inbound page', async () => {
+    await createInboundPage.goToPage();
+    await createInboundPage.wizzardSteps.assertActiveStep('Create');
+  });
 
-  await test.step('Create step', async () => {
-    await createInboundPage.createStep.isLoaded();
-    await createInboundPage.wizzardSteps.assertStepStatus('Create', true);
-
-    await expect(
-      createInboundPage.createStep.destinationSelect.selectField
-    ).toContainText(currentLocation.name);
-
+  await test.step('Create Stock Movement step', async () => {
     await createInboundPage.createStep.descriptionField.textbox.fill(
       DESCRIPTION
     );
-    await createInboundPage.createStep.originSelect.findAndSelectOption(ORIGIN);
+    await createInboundPage.createStep.originSelect.findAndSelectOption(
+      ORIGIN.name
+    );
     await createInboundPage.createStep.requestedBySelect.findAndSelectOption(
       REQUESTOR
     );
     await createInboundPage.createStep.dateRequestedDatePicker.fill(TODAY);
-
-    await createInboundPage.nextButton.click();
   });
 
-  await test.step('Add items step', async () => {
-    await createInboundPage.wizzardSteps.assertStepStatus('Add items', true);
+  await test.step('Go next step (Add items)', async () => {
+    await createInboundPage.nextButton.click();
+    await createInboundPage.addItemsStep.isLoaded();
+  });
+
+  await test.step('Assert page header data', async () => {
+    await createInboundPage.wizzardSteps.assertActiveStep('Add items');
     await createInboundPage.assertHeaderIsVisible({
-      origin: ORIGIN,
+      origin: ORIGIN.name,
       destination: currentLocation.name,
       description: DESCRIPTION,
       date: formatDate(TODAY),
     });
-    expect(await createInboundPage.addItemsStep.table.rows.count()).toBe(1);
+  });
 
-    // table with empty values shuld have disabled next button
-    await expect(createInboundPage.previousButton).toBeEnabled();
-    await expect(createInboundPage.nextButton).toBeDisabled();
-
+  await test.step('Add first line items (Add items)', async () => {
+    const data = ROWS[0];
     const row = createInboundPage.addItemsStep.table.row(0);
+    await row.productSelect.findAndSelectOption(data.productCode);
+    await row.quantityField.numberbox.fill(data.quantity);
+    await row.lotField.textbox.fill(data.lotNumber);
+    await row.recipientSelect.findAndSelectOption(data.recipient);
 
-    await row.productSelect.findAndSelectOption(ROW.productCode);
-    await row.quantityField.numberbox.fill(ROW.quantity);
-    // next button should be enabled after filling all required fields
-    await expect(createInboundPage.previousButton).toBeEnabled();
-    await expect(createInboundPage.nextButton).toBeEnabled();
-    await expect(createInboundPage.addItemsStep.saveButton).toBeEnabled();
-    await expect(
-      createInboundPage.addItemsStep.saveAndExitButton
-    ).toBeEnabled();
-    await expect(createInboundPage.addItemsStep.deleteAllButton).toBeEnabled();
+    expect(await createInboundPage.addItemsStep.table.rows.count()).toBe(1);
+  });
 
-    await row.lotField.textbox.fill(ROW.lotNumber);
-    await row.recipientSelect.findAndSelectOption(ROW.recipient);
-
+  await test.step('Add second line item (Add items)', async () => {
     await createInboundPage.addItemsStep.addLineButton.click();
-    expect(await createInboundPage.addItemsStep.table.rows.count()).toBe(2);
 
+    const data = ROWS[1];
+    const row = createInboundPage.addItemsStep.table.row(1);
+    await row.productSelect.findAndSelectOption(data.productCode);
+    await row.quantityField.numberbox.fill(data.quantity);
+    await row.lotField.textbox.fill(data.lotNumber);
+    await row.recipientSelect.findAndSelectOption(data.recipient);
+
+    expect(await createInboundPage.addItemsStep.table.rows.count()).toBe(2);
+  });
+
+  await test.step('Remove second item', async () => {
     await createInboundPage.addItemsStep.table.row(1).deleteButton.click();
     expect(await createInboundPage.addItemsStep.table.rows.count()).toBe(1);
   });
 
-  // on send page check origin, destination, description field are same as on create step
-  // Once shipment is send, Date Shipped in auditing should be filled with user who shipped it and the date
+  await test.step('Go to next step (Send)', async () => {
+    await createInboundPage.nextButton.click();
+    await createInboundPage.wizzardSteps.assertActiveStep('Send');
+    await createInboundPage.sendStep.isLoaded();
+  });
+
+  await test.step('Fill shipment fields (Send)', async () => {
+    await createInboundPage.sendStep.shipmentTypeSelect.findAndSelectOption(
+      SHIPMENT_TYPE
+    );
+    await createInboundPage.sendStep.trackingNumberField.textbox.fill(
+      TRACKING_NUMBER
+    );
+    await createInboundPage.sendStep.driverNameField.textbox.fill(DRIVER_NAME);
+    await createInboundPage.sendStep.commentField.textbox.fill(COMMENT);
+    await createInboundPage.sendStep.expectedDeliveryDatePicker.fill(
+      EXPECTED_DELIVERY_DATE
+    );
+  });
+
+  await test.step('Send shipment', async () => {
+    await createInboundPage.sendStep.sendShipmentButton.click();
+    await stockMovementShowPage.waitForUrl();
+    await stockMovementShowPage.isLoaded();
+  });
+
+  await test.step('Assert all values on show page', async () => {
+    await expect(
+      stockMovementShowPage.auditingTable.dateShippedRow
+    ).toContainText(`${formatDate(new Date(), 'DD/MMM/YYYY')} by ${user.name}`);
+  });
 });
 
 test('Assert that all values are persisted between going back and forth through workflow steps', async ({
@@ -253,12 +307,11 @@ test('Assert that all values are persisted between going back and forth through 
   });
 });
 
-test('Field validation', async ({ mainLocation, createInboundPage }) => {
+test('Field validation', async ({ createInboundPage }) => {
   const ORIGIN = 'Imres (OG)';
   const REQUESTOR = 'dare';
   const DESCRIPTION = 'some description';
   const TODAY = new Date();
-  const currentLocation = await mainLocation.getLocation();
 
   const ROW = {
     packLevel1: 'pallet',
@@ -269,12 +322,6 @@ test('Field validation', async ({ mainLocation, createInboundPage }) => {
     recipient: 'dare',
     expirationDate: getDateByOffset(new Date(), 3),
   };
-
-  const TRACKING_NUMBER = 'TEST123';
-  const DRIVER_NAME = 'Test-Name Test-Lastname';
-  const COMMENT = 'Test Comment';
-  const SHIP_DATE = TODAY;
-  const SHIPMENT_TYPE = 'Land';
 
   await test.step('Go to create inbound page', async () => {
     await createInboundPage.goToPage();
@@ -412,13 +459,9 @@ test('Field validation', async ({ mainLocation, createInboundPage }) => {
     ).toContainText('This field is required');
   });
 
-  await test.step('Fill ship date', async () => {
-    await createInboundPage.sendStep.shipDateDatePicker.fill(SHIP_DATE);
-  });
-
   await test.step('Fill expected delivery date one day before ship date', async () => {
     await createInboundPage.sendStep.expectedDeliveryDatePicker.fill(
-      getDateByOffset(SHIP_DATE, -1)
+      getDateByOffset(new Date(), -1)
     );
   });
 
@@ -557,8 +600,6 @@ test('Check Pack level column visiblity on send page table', async ({
     await expect(row.packLevel2.field).toBeHidden();
   });
 });
-
-// TODO add test for step 13
 
 test('Use Control+ArrowDown copy cell shortcut', async ({
   page,
@@ -719,6 +760,7 @@ test('Save and exit stock movement on add items step', async ({
 
   await test.step('Save and exit', async () => {
     await createInboundPage.addItemsStep.saveAndExitButton.click();
+    await stockMovementShowPage.waitForUrl();
     await stockMovementShowPage.isLoaded();
   });
 
@@ -750,6 +792,7 @@ test('Save and exit stock movement on add items step', async ({
 
   await test.step('save and exit', async () => {
     await createInboundPage.addItemsStep.saveAndExitButton.click();
+    await stockMovementShowPage.waitForUrl();
     await stockMovementShowPage.isLoaded();
   });
 
@@ -847,6 +890,7 @@ test('Switch location on stock movement show page', async ({
 
   await test.step('Save and exit', async () => {
     await createInboundPage.addItemsStep.saveAndExitButton.click();
+    await stockMovementShowPage.waitForUrl();
     await stockMovementShowPage.isLoaded();
   });
 
