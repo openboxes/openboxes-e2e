@@ -23,19 +23,8 @@ import UserListPage from '@/pages/user/UserListPage';
 import LocationData from '@/utils/LocationData';
 
 type Fixtures = {
+  // PAGES
   loginPage: LoginPage;
-  genericService: GenericService;
-  locationService: LocationService;
-  authService: AuthService;
-  navbar: Navbar;
-  locationChooser: LocationChooser;
-  mainLocation: LocationData;
-  noManageInventoryDepot: LocationData;
-  supplierLocation: LocationData;
-  userListPage: UserListPage;
-  createUserPage: CreateUserPage;
-  editUserPage: EditUserPage;
-  impersonateBanner: ImpersonateBanner;
   locationListPage: LocationListPage;
   createLocationPage: CreateLocationPage;
   organizationListPage: OrganizationListPage;
@@ -46,27 +35,29 @@ type Fixtures = {
   editLocationGroupPage: EditLocationGroupPage;
   createInboundPage: CreateInbound;
   stockMovementShowPage: StockMovementShowPage;
-};
+  userListPage: UserListPage;
+  createUserPage: CreateUserPage;
+  editUserPage: EditUserPage;
+  // COMPONENTS
+  navbar: Navbar;
+  locationChooser: LocationChooser;
+  impersonateBanner: ImpersonateBanner;
+  // SERVICES
+  genericService: GenericService;
+  locationService: LocationService;
+  authService: AuthService;
+  // LOCATIONS
+  mainLocation: LocationData;
+  noManageInventoryDepot: LocationData;
+  supplierLocation: LocationData;
+  depotLocation: LocationData;
+}
 
 export const test = baseTest.extend<Fixtures>({
   loginPage: async ({ page }, use) => use(new LoginPage(page)),
-  genericService: async ({ page }, use) =>
-    use(new GenericService(page.request)),
-  locationService: async ({ page }, use) =>
-    use(new LocationService(page.request)),
-  authService: async ({ page }, use) => use(new AuthService(page.request)),
-  navbar: async ({ page }, use) => use(new Navbar(page)),
-  locationChooser: async ({ page }, use) => use(new LocationChooser(page)),
-  mainLocation: async ({ page }, use) =>
-    use(new LocationData('main', page.request)),
-  noManageInventoryDepot: async ({ page }, use) =>
-    use(new LocationData('noManageInventoryDepot', page.request)),
-  supplierLocation: async ({ page }, use) =>
-    use(new LocationData('supplier', page.request)),
   userListPage: async ({ page }, use) => use(new UserListPage(page)),
   createUserPage: async ({ page }, use) => use(new CreateUserPage(page)),
   editUserPage: async ({ page }, use) => use(new EditUserPage(page)),
-  impersonateBanner: async ({ page }, use) => use(new ImpersonateBanner(page)),
   locationListPage: async ({ page }, use) => use(new LocationListPage(page)),
   createLocationPage: async ({ page }, use) =>
     use(new CreateLocationPage(page)),
@@ -85,6 +76,25 @@ export const test = baseTest.extend<Fixtures>({
   createInboundPage: async ({ page }, use) => use(new CreateInbound(page)),
   stockMovementShowPage: async ({ page }, use) =>
     use(new StockMovementShowPage(page)),
+  // COMPONENTS
+  navbar: async ({ page }, use) => use(new Navbar(page)),
+  locationChooser: async ({ page }, use) => use(new LocationChooser(page)),
+  // SERVICES
+  genericService: async ({ page }, use) =>
+    use(new GenericService(page.request)),
+  locationService: async ({ page }, use) =>
+    use(new LocationService(page.request)),
+  authService: async ({ page }, use) => use(new AuthService(page.request)),
+  impersonateBanner: async ({ page }, use) => use(new ImpersonateBanner(page)),
+  // LOCATIONS
+  mainLocation: async ({ page }, use) =>
+    use(new LocationData('main', page.request)),
+  noManageInventoryDepot: async ({ page }, use) =>
+    use(new LocationData('noManageInventoryDepot', page.request)),
+  supplierLocation: async ({ page }, use) =>
+    use(new LocationData('supplier', page.request)),
+  depotLocation: async ({ page }, use) =>
+    use(new LocationData('depot', page.request)),
 });
 
 export { expect } from '@playwright/test';

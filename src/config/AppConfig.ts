@@ -30,7 +30,7 @@ class AppConfig {
 
   // test users used in all of the tests
   public locations!: Record<
-    'main' | 'supplier' | 'noManageInventoryDepot',
+    'main' | 'supplier' | 'noManageInventoryDepot' | 'depot',
     LocationConfig
   >;
 
@@ -86,6 +86,24 @@ class AppConfig {
           ActivityCode.FULFILL_REQUEST,
           ActivityCode.EXTERNAL,
           ActivityCode.RECEIVE_STOCK,
+        ]),
+        LocationTypeCode.DEPOT
+      ),
+      depot: new LocationConfig(
+        env.get('LOCATION_DEPOT').required().asString(),
+        new Set([
+          ActivityCode.MANAGE_INVENTORY,
+          ActivityCode.PLACE_ORDER,
+          ActivityCode.PLACE_REQUEST,
+          ActivityCode.FULFILL_REQUEST,
+          ActivityCode.SEND_STOCK,
+          ActivityCode.RECEIVE_STOCK,
+          ActivityCode.PUTAWAY_STOCK,
+          ActivityCode.PICK_STOCK,
+          ActivityCode.EXTERNAL,
+          ActivityCode.ENABLE_REQUESTOR_APPROVAL_NOTIFICATIONS,
+          ActivityCode.ENABLE_FULFILLER_APPROVAL_NOTIFICATIONS,
+          ActivityCode.SUBMIT_REQUEST,
         ]),
         LocationTypeCode.DEPOT
       ),

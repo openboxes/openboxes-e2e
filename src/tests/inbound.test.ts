@@ -3,7 +3,6 @@ import { expect, test } from '@/fixtures/fixtures';
 import { AddItemsTableRow, LocationResponse } from '@/types';
 import { formatDate, getDateByOffset } from '@/utils/DateUtils';
 import LocationData from '@/utils/LocationData';
-import UniqueIdentifier from '@/utils/UniqueIdentifier';
 
 // CREATE STEP DATA
 let REQUESTOR: string;
@@ -161,22 +160,9 @@ test('Create and send inbound stock movement', async ({
   });
 });
 
-test('Create Inbound stock movement field validations', async ({ createInboundPage }) => {
-  const ORIGIN = 'Imres (OG)';
-  const REQUESTOR = 'dare';
-  const DESCRIPTION = 'some description';
-  const TODAY = new Date();
-
-  const ROW = {
-    packLevel1: 'pallet',
-    packLevel2: 'box',
-    productCode: '10001',
-    quantity: '12',
-    lotNumber: 'test123',
-    recipient: 'dare',
-    expirationDate: getDateByOffset(new Date(), 3),
-  };
-
+test('Create Inbound stock movement field validations', async ({
+  createInboundPage,
+}) => {
   await test.step('Go to create inbound page', async () => {
     await createInboundPage.goToPage();
   });
@@ -228,7 +214,7 @@ test('Create Inbound stock movement field validations', async ({ createInboundPa
     await createInboundPage.createStep.descriptionField.textbox.fill(
       DESCRIPTION
     );
-    await createInboundPage.createStep.originSelect.findAndSelectOption(ORIGIN);
+    await createInboundPage.createStep.originSelect.findAndSelectOption(ORIGIN.name);
     await createInboundPage.createStep.requestedBySelect.findAndSelectOption(
       REQUESTOR
     );
@@ -244,19 +230,20 @@ test('Create Inbound stock movement field validations', async ({ createInboundPa
   });
 
   const row = createInboundPage.addItemsStep.table.row(0);
+  const rowData = ROWS[0];
 
   await test.step('Fill single required field (Add Items)', async () => {
-    await row.productSelect.findAndSelectOption(ROW.productCode);
+    await row.productSelect.findAndSelectOption(rowData.productCode);
     await expect(createInboundPage.nextButton).toBeDisabled();
   });
 
   await test.step('Fill all required fields (Add Items)', async () => {
-    await row.quantityField.numberbox.fill(ROW.quantity);
+    await row.quantityField.numberbox.fill(rowData.quantity);
     await expect(createInboundPage.nextButton).toBeEnabled();
   });
 
   await test.step('Fill in pack level 2 without pack level 1 (Add Items)', async () => {
-    await row.packLevel2Field.textbox.fill(ROW.packLevel2);
+    await row.packLevel2Field.textbox.fill(rowData.packLevel2);
     await row.packLevel2Field.textbox.blur();
   });
 
@@ -269,12 +256,12 @@ test('Create Inbound stock movement field validations', async ({ createInboundPa
   });
 
   await test.step('Fill pack level 1 (Add Items)', async () => {
-    await row.packLevel1Field.textbox.fill(ROW.packLevel1);
+    await row.packLevel1Field.textbox.fill(rowData.packLevel1);
     await row.packLevel2Field.assertHasNoError();
   });
 
   await test.step('Fill expiration date without lot (Add Items)', async () => {
-    await row.expirationDate.fill(ROW.expirationDate);
+    await row.expirationDate.fill(rowData.expirationDate);
     await row.expirationDate.textbox.blur();
     await createInboundPage.nextButton.click();
   });
@@ -288,7 +275,7 @@ test('Create Inbound stock movement field validations', async ({ createInboundPa
   });
 
   await test.step('Fill lot number (Add Items)', async () => {
-    await row.lotField.textbox.fill(ROW.lotNumber);
+    await row.lotField.textbox.fill(rowData.lotNumber);
     await row.packLevel2Field.assertHasNoError();
   });
 
@@ -745,33 +732,9 @@ test.describe('Create stock movement', () => {
     createInboundPage,
     locationChooser,
     navbar,
-    createLocationPage,
+    depotLocation,
   }) => {
-    const uniqueIdentifier = new UniqueIdentifier();
-
-    const OTHER_LOCATION_NAME = uniqueIdentifier.generateUniqueString(
-      'Other depot location'
-    );
-    const OTHER_LOCATION_ORGANIZATION = CURRENT_LOCATION.organization
-      ?.name as string;
-
-    await test.step('Create other depot location', async () => {
-      await createLocationPage.gotToPage();
-      await createLocationPage.locationDetailsTabSection.locationNameField.fill(
-        OTHER_LOCATION_NAME
-      );
-      await createLocationPage.locationDetailsTabSection.locationTypeSelect.click();
-      await createLocationPage.locationDetailsTabSection
-        .getlocationTypeOption('Depot')
-        .click();
-
-      await createLocationPage.locationDetailsTabSection.organizationSelect.click();
-      await createLocationPage.locationDetailsTabSection
-        .getOrganization(OTHER_LOCATION_ORGANIZATION)
-        .click();
-
-      await createLocationPage.locationDetailsTabSection.saveButton.click();
-    });
+    const OTHER_LOCATION = await depotLocation.getLocation();
 
     await test.step('Go to create inbound page', async () => {
       await createInboundPage.goToPage();
@@ -822,14 +785,14 @@ test.describe('Create stock movement', () => {
 
       await navbar.locationChooserButton.click();
       await locationChooser
-        .getOrganization(OTHER_LOCATION_ORGANIZATION)
+        .getOrganization(OTHER_LOCATION.organization?.name as string)
         .click();
-      await locationChooser.getLocation(OTHER_LOCATION_NAME).click();
+      await locationChooser.getLocation(OTHER_LOCATION.name).click();
     });
 
     await test.step('Assert user should stay on same page without being redirected', async () => {
       await expect(navbar.locationChooserButton).toContainText(
-        OTHER_LOCATION_NAME
+        OTHER_LOCATION.name
       );
       await stockMovementShowPage.isLoaded();
     });
