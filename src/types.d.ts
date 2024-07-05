@@ -5,6 +5,8 @@ import {
   PlaywrightWorkerOptions,
 } from '@playwright/test';
 
+import { LocationTypeCode } from './constants/LocationTypeCode';
+
 type TestFixtureProps<T> = T &
   PlaywrightTestArgs &
   PlaywrightTestOptions &
@@ -41,11 +43,56 @@ type LocationResponse = {
     locationTypeCode: string;
   };
   supportedActivities: string[];
-  organization?: {
+  organization: {
     id: string;
     name: string;
     code: string;
   };
+};
+
+type CreateLocationPayload = {
+  active: boolean;
+  name: string;
+  locationType?: LocationType;
+  organization: { id: string };
+  supportedActivities: string[] | Set<string>;
+};
+
+type LocationType = {
+  id: string;
+  name: string;
+  description: string;
+  locationTypeCode: LocationTypeCode;
+  supportedActivities: string[];
+};
+
+type ProductResponse = {
+  id: string;
+  productCode: string;
+  name: string;
+  description: string;
+  category: string;
+  unitOfMeasure: string;
+  pricePerUnit?: number;
+  color?: string;
+  handlingIcons: unknown[];
+  lotAndExpiryControl: boolean;
+  active: boolean;
+  displayNames: unknown;
+};
+
+type DemandResponse = {
+  totalDemand: number;
+  totalDays: number;
+  dailyDemand: number;
+  monthlyDemand: number;
+  onHandMonths: number;
+  quantityOnHand: number;
+};
+
+type ProductDemandResponse = {
+  product: ProductResponse;
+  demand: DemandResponse;
 };
 
 type UserType = {
@@ -53,4 +100,15 @@ type UserType = {
   password: string;
   firstName: string;
   lastName: string;
+};
+
+type AddItemsTableRow = {
+  packLevel1: string;
+  packLevel2: string;
+  productCode: string;
+  productName: string;
+  lotNumber: string;
+  expirationDate: Date;
+  quantity: string;
+  recipient: string;
 };

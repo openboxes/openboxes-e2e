@@ -16,6 +16,11 @@ class CreateLocationPage extends BasePageModel {
       page
     );
   }
+
+  async gotToPage() {
+    await this.page.goto('./location/edit');
+  }
+
   async isLoaded() {
     await expect(this.page.getByText('New Location')).toBeVisible();
   }

@@ -40,8 +40,26 @@ export default defineConfig({
 
   /* Configure projects for major browsers */
   projects: [
-    { name: 'data-setup', testMatch: 'data.setup.ts', testDir: './src/setup' },
-    { name: 'auth-setup', testMatch: 'auth.setup.ts', testDir: './src/setup', dependencies: ['data-setup'], },
+    {
+      name: 'validate-data-setup',
+      testMatch: 'validateData.setup.ts',
+      testDir: './src/setup',
+    },
+    {
+      name: 'auth-setup',
+      testMatch: 'auth.setup.ts',
+      testDir: './src/setup',
+      dependencies: ['validate-data-setup'],
+    },
+    {
+      name: 'create-data-setup',
+      testMatch: 'createData.setup.ts',
+      testDir: './src/setup',
+      dependencies: ['auth-setup'],
+      use: {
+        storageState: appConfig.users['main'].storagePath,
+      },
+    },
     {
       name: 'chromium',
       use: {
@@ -49,7 +67,7 @@ export default defineConfig({
         viewport: { width: 1366, height: 768 },
         storageState: appConfig.users['main'].storagePath,
       },
-      dependencies: ['auth-setup'],
+      dependencies: ['auth-setup', 'create-data-setup'],
     },
   ],
 });

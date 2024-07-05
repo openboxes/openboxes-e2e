@@ -36,7 +36,7 @@ class UniqueIdentifier {
    * @returns {string} The generated unique identifier.
    */
   generateUniqueString(str: string): string {
-    return [this.prefix, str, this.hash].join(this.separator);
+    return [this.prefix, str, this.hash].filter(Boolean).join(this.separator);
   }
 }
 
