@@ -28,8 +28,8 @@ test.beforeAll(async ({ browser }) => {
   const mainLocation = new LocationData('main', page.request);
   const supplierLocation = new LocationData('supplier', page.request);
 
-  const prodOne = new ProductData('prod_one', page.request);
-  const prodTwo = new ProductData('prod_two', page.request);
+  const prodOne = new ProductData('productOne', page.request);
+  const prodTwo = new ProductData('productTwo', page.request);
 
   const genericService = new GenericService(page.request);
 

@@ -41,7 +41,7 @@ class AppConfig {
   >;
 
   // test products used in all of the tests
-  public products!: Record<'prod_one' | 'prod_two', ProductConfig>;
+  public products!: Record<'productOne' | 'productTwo', ProductConfig>;
 
   // Private constructor to enforce singleton pattern.
   private constructor() {
@@ -99,10 +99,11 @@ class AppConfig {
           ActivityCode.EXTERNAL,
           ActivityCode.RECEIVE_STOCK,
         ]),
-        requiredType: LocationTypeCode.DEPOT,
+        type: LocationTypeCode.DEPOT,
         required: true,
       }),
       depot: new LocationConfig({
+        id: env.get('LOCATION_DEPOT').asString(),
         key: 'depot',
         name: this.uniqueIdentifier.generateUniqueString('depot'),
         requiredActivityCodes: new Set([
@@ -119,9 +120,11 @@ class AppConfig {
           ActivityCode.ENABLE_FULFILLER_APPROVAL_NOTIFICATIONS,
           ActivityCode.SUBMIT_REQUEST,
         ]),
-        requiredType: LocationTypeCode.DEPOT,
+        required: false,
+        type: LocationTypeCode.DEPOT,
       }),
       supplier: new LocationConfig({
+        id: env.get('LOCATION_SUPPLIER').asString(),
         key: 'supplier',
         name: this.uniqueIdentifier.generateUniqueString('supplier'),
         requiredActivityCodes: new Set([
@@ -129,9 +132,11 @@ class AppConfig {
           ActivityCode.SEND_STOCK,
           ActivityCode.EXTERNAL,
         ]),
-        requiredType: LocationTypeCode.SUPPLIER,
+        required: false,
+        type: LocationTypeCode.SUPPLIER,
       }),
       noManageInventoryDepot: new LocationConfig({
+        id: env.get('LOCATION_NO_MANAGE_INVENOTRY_DEPOT').asString(),
         key: 'noManageInventoryDepot',
         name: this.uniqueIdentifier.generateUniqueString('no-manage-inventory'),
         requiredActivityCodes: new Set([
@@ -144,20 +149,25 @@ class AppConfig {
           ActivityCode.EXTERNAL,
           ActivityCode.RECEIVE_STOCK,
         ]),
-        requiredType: LocationTypeCode.DEPOT,
+        required: false,
+        type: LocationTypeCode.DEPOT,
       }),
     };
 
     this.products = {
-      prod_one: new ProductConfig({
-        key: 'prod_one',
+      productOne: new ProductConfig({
+        id: env.get('PRODUCT_ONE').asString(),
+        key: 'productOne',
         name: this.uniqueIdentifier.generateUniqueString('product-one'),
         quantity: 122,
+        required: false,
       }),
-      prod_two: new ProductConfig({
-        key: 'prod_two',
+      productTwo: new ProductConfig({
+        id: env.get('PRODUCT_TWO').asString(),
+        key: 'productTwo',
         name: this.uniqueIdentifier.generateUniqueString('product-two'),
         quantity: 123,
+        required: false,
       }),
     };
   }

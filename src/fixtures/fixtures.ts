@@ -107,9 +107,9 @@ export const test = baseTest.extend<Fixtures>({
     use(new LocationData('depot', page.request)),
   // PRODUCTS
   mainProduct: async ({ page }, use) =>
-    use(new ProductData('prod_one', page.request)),
+    use(new ProductData('productOne', page.request)),
   otherProduct: async ({ page }, use) =>
-    use(new ProductData('prod_two', page.request)),
+    use(new ProductData('productTwo', page.request)),
 });
 
 export { expect } from '@playwright/test';

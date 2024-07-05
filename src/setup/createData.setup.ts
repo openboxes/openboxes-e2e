@@ -18,7 +18,10 @@ test('create data', async ({
   };
 
   // // PRODUCST
-  const products = Object.values(AppConfig.instance.products);
+  const products = Object.values(AppConfig.instance.products).filter(
+    (product) => product.isCreateNew
+  );
+  
   for (const product of products) {
     await test.step(`create product ${product.key}`, async () => {
       await createProductPage.goToPage();
@@ -53,13 +56,13 @@ test('create data', async ({
   const { data: locationTypes } = await locationService.getLocationTypes();
 
   const locations = Object.values(AppConfig.instance.locations).filter(
-    (location) => !location.required
+    (location) => location.isCreateNew
   );
 
   for (const location of locations) {
     await test.step(`create location ${location.key}`, async () => {
       const locationType = locationTypes.find(
-        (it) => it.locationTypeCode == location.requiredType
+        (it) => it.locationTypeCode == location.type
       );
       const payload = {
         active: true,

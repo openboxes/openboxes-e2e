@@ -41,15 +41,15 @@ export default defineConfig({
   /* Configure projects for major browsers */
   projects: [
     {
-      name: 'data-setup',
-      testMatch: 'data.setup.ts',
+      name: 'validate-data-setup',
+      testMatch: 'validateData.setup.ts',
       testDir: './src/setup',
     },
     {
       name: 'auth-setup',
       testMatch: 'auth.setup.ts',
       testDir: './src/setup',
-      dependencies: ['data-setup'],
+      dependencies: ['validate-data-setup'],
     },
     {
       name: 'create-data-setup',
