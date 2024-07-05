@@ -1,21 +1,47 @@
 import _ from 'lodash';
 
+import AppConfig from '@/config/AppConfig';
 import { ActivityCode } from '@/constants/ActivityCodes';
 import { LocationTypeCode } from '@/constants/LocationTypeCode';
+import { readFile } from '@/utils/FileIOUtils';
 
 class LocationConfig {
   id: string;
+  name: string;
   requiredActivityCodes: Set<ActivityCode>;
   requiredType: LocationTypeCode;
+  required: boolean;
+  key: string;
 
-  constructor(
-    id: string,
-    requiredActivityCodes: Set<ActivityCode>,
-    requiredType: LocationTypeCode
-  ) {
-    this.id = id;
+  constructor({
+    key,
+    id,
+    name,
+    requiredActivityCodes,
+    requiredType,
+    required,
+  }: {
+    id?: string;
+    name?: string;
+    key: string;
+    requiredActivityCodes: Set<ActivityCode>;
+    requiredType: LocationTypeCode;
+    required?: boolean;
+  }) {
+    this.id = id || '';
+    this.name = name || '';
     this.requiredActivityCodes = requiredActivityCodes;
     this.requiredType = requiredType;
+    this.required = required ?? false;
+    this.key = key;
+  }
+
+  readId() {
+    if (this.id) {
+      return this.id;
+    }
+    const data = readFile(AppConfig.TEST_DATA_FILE_PATH);
+    return _.get(data, `locations.${this.key}`) as string;
   }
 
   assertAllRequiredActivityCodes(activityCodes: Set<string>) {

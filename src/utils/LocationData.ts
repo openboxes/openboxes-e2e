@@ -23,7 +23,7 @@ class LocationData {
 
   async getLocation() {
     const { data } = await this.locationService.getLocation(
-      this.locationConfig.id
+      this.locationConfig.readId()
     );
     return data;
   }

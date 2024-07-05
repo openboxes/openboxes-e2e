@@ -11,12 +11,17 @@ class TestUserConfig {
   storagePath: string;
   requiredRoles: Set<RoleType>;
 
-  constructor(
-    username: string,
-    password: string,
-    storageFileName: string,
-    requiredRoles: Set<RoleType>
-  ) {
+  constructor({
+    username,
+    password,
+    storageFileName,
+    requiredRoles,
+  }: {
+    username: string;
+    password: string;
+    storageFileName: string;
+    requiredRoles: Set<RoleType>;
+  }) {
     this.username = username;
     this.password = password;
     this.storagePath = path.join(

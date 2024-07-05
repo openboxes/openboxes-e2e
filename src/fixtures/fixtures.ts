@@ -16,11 +16,14 @@ import LoginPage from '@/pages/LoginPage';
 import CreateOrganizationPage from '@/pages/oranization/CreateOrganizationPage';
 import EditOrganizationPage from '@/pages/oranization/EditOrganizationPage';
 import OrganizationListPage from '@/pages/oranization/OrganizationListPage';
+import CreateProductPage from '@/pages/product/CreateProductPage';
+import ProductShowPage from '@/pages/product/productShow/ProductShowPage';
 import StockMovementShowPage from '@/pages/stockMovementShow/StockMovementShowPage';
 import CreateUserPage from '@/pages/user/CreateUserPage';
 import EditUserPage from '@/pages/user/editUser/EditUserPage';
 import UserListPage from '@/pages/user/UserListPage';
 import LocationData from '@/utils/LocationData';
+import ProductData from '@/utils/ProductData';
 
 type Fixtures = {
   // PAGES
@@ -38,6 +41,8 @@ type Fixtures = {
   userListPage: UserListPage;
   createUserPage: CreateUserPage;
   editUserPage: EditUserPage;
+  createProductPage: CreateProductPage;
+  productShowPage: ProductShowPage;
   // COMPONENTS
   navbar: Navbar;
   locationChooser: LocationChooser;
@@ -51,7 +56,10 @@ type Fixtures = {
   noManageInventoryDepot: LocationData;
   supplierLocation: LocationData;
   depotLocation: LocationData;
-}
+  // PRODUCT DATA
+  mainProduct: ProductData;
+  otherProduct: ProductData;
+};
 
 export const test = baseTest.extend<Fixtures>({
   loginPage: async ({ page }, use) => use(new LoginPage(page)),
@@ -76,6 +84,8 @@ export const test = baseTest.extend<Fixtures>({
   createInboundPage: async ({ page }, use) => use(new CreateInbound(page)),
   stockMovementShowPage: async ({ page }, use) =>
     use(new StockMovementShowPage(page)),
+  createProductPage: async ({ page }, use) => use(new CreateProductPage(page)),
+  productShowPage: async ({ page }, use) => use(new ProductShowPage(page)),
   // COMPONENTS
   navbar: async ({ page }, use) => use(new Navbar(page)),
   locationChooser: async ({ page }, use) => use(new LocationChooser(page)),
@@ -95,6 +105,11 @@ export const test = baseTest.extend<Fixtures>({
     use(new LocationData('supplier', page.request)),
   depotLocation: async ({ page }, use) =>
     use(new LocationData('depot', page.request)),
+  // PRODUCTS
+  mainProduct: async ({ page }, use) =>
+    use(new ProductData('prod_one', page.request)),
+  otherProduct: async ({ page }, use) =>
+    use(new ProductData('prod_two', page.request)),
 });
 
 export { expect } from '@playwright/test';

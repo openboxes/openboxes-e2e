@@ -17,7 +17,10 @@ test('validate data', async ({
   });
 
   // validate all of the provided location data
-  for (const location of Object.values(AppConfig.instance.locations)) {
+  const preconfiguredLocations = Object.values(
+    AppConfig.instance.locations
+  ).filter((location) => location.required);
+  for (const location of preconfiguredLocations) {
     const { data: fetchedLocation } = await locationService.getLocation(
       location.id
     );

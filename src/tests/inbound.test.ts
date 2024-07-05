@@ -3,6 +3,7 @@ import { expect, test } from '@/fixtures/fixtures';
 import { AddItemsTableRow, LocationResponse } from '@/types';
 import { formatDate, getDateByOffset } from '@/utils/DateUtils';
 import LocationData from '@/utils/LocationData';
+import ProductData from '@/utils/ProductData';
 
 // CREATE STEP DATA
 let REQUESTOR: string;
@@ -26,6 +27,10 @@ test.beforeAll(async ({ browser }) => {
 
   const mainLocation = new LocationData('main', page.request);
   const supplierLocation = new LocationData('supplier', page.request);
+
+  const prodOne = new ProductData('prod_one', page.request);
+  const prodTwo = new ProductData('prod_two', page.request);
+
   const genericService = new GenericService(page.request);
 
   const {
@@ -35,13 +40,17 @@ test.beforeAll(async ({ browser }) => {
   CURRENT_LOCATION = await mainLocation.getLocation();
   ORIGIN = await supplierLocation.getLocation();
 
+  const PRODUCT_ONE = await prodOne.getProduct();
+  const PRODUCT_TWO = await prodTwo.getProduct();
+
   REQUESTOR = user.name;
 
   ROWS = [
     {
       packLevel1: 'test-pallet',
       packLevel2: 'test-box',
-      productCode: '10001',
+      productCode: PRODUCT_ONE.productCode,
+      productName: PRODUCT_ONE.name,
       quantity: '12',
       lotNumber: 'E2E-lot-test',
       recipient: user.name,
@@ -50,7 +59,8 @@ test.beforeAll(async ({ browser }) => {
     {
       packLevel1: 'test-pallet',
       packLevel2: 'test-box',
-      productCode: '10002',
+      productCode: PRODUCT_TWO.productCode,
+      productName: PRODUCT_TWO.name,
       quantity: '12',
       lotNumber: 'E2E-lot-test',
       recipient: user.name,
@@ -102,7 +112,7 @@ test('Create and send inbound stock movement', async ({
   await test.step('Add first line items (Add items)', async () => {
     const data = ROWS[0];
     const row = createInboundPage.addItemsStep.table.row(0);
-    await row.productSelect.findAndSelectOption(data.productCode);
+    await row.productSelect.findAndSelectOption(data.productName);
     await row.quantityField.numberbox.fill(data.quantity);
     await row.lotField.textbox.fill(data.lotNumber);
     await row.recipientSelect.findAndSelectOption(data.recipient);
@@ -115,7 +125,7 @@ test('Create and send inbound stock movement', async ({
 
     const data = ROWS[1];
     const row = createInboundPage.addItemsStep.table.row(1);
-    await row.productSelect.findAndSelectOption(data.productCode);
+    await row.productSelect.findAndSelectOption(data.productName);
     await row.quantityField.numberbox.fill(data.quantity);
     await row.lotField.textbox.fill(data.lotNumber);
     await row.recipientSelect.findAndSelectOption(data.recipient);
@@ -216,7 +226,9 @@ test('Create Inbound stock movement field validations', async ({
     await createInboundPage.createStep.descriptionField.textbox.fill(
       DESCRIPTION
     );
-    await createInboundPage.createStep.originSelect.findAndSelectOption(ORIGIN.name);
+    await createInboundPage.createStep.originSelect.findAndSelectOption(
+      ORIGIN.name
+    );
     await createInboundPage.createStep.requestedBySelect.findAndSelectOption(
       REQUESTOR
     );
@@ -235,7 +247,7 @@ test('Create Inbound stock movement field validations', async ({
   const rowData = ROWS[0];
 
   await test.step('Fill single required field (Add Items)', async () => {
-    await row.productSelect.findAndSelectOption(rowData.productCode);
+    await row.productSelect.findAndSelectOption(rowData.productName);
     await expect(createInboundPage.nextButton).toBeDisabled();
   });
 
@@ -345,7 +357,6 @@ test.describe('Create stock movement', () => {
         DESCRIPTION
       );
     });
-    
 
     await test.step('Go next step (Add items)', async () => {
       await createInboundPage.nextButton.click();
@@ -391,7 +402,7 @@ test.describe('Create stock movement', () => {
       for (let i = 0; i < ROWS.length; i++) {
         const data = ROWS[i];
         const row = createInboundPage.addItemsStep.table.row(i);
-        await row.productSelect.findAndSelectOption(data.productCode);
+        await row.productSelect.findAndSelectOption(data.productName);
         await row.quantityField.numberbox.fill(data.quantity);
         await row.lotField.textbox.fill(data.lotNumber);
         await row.recipientSelect.findAndSelectOption(data.recipient);
@@ -433,7 +444,7 @@ test.describe('Create stock movement', () => {
         const data = ROWS[i];
         const row = createInboundPage.addItemsStep.table.row(i);
         await expect(row.productSelect.selectField).toContainText(
-          data.productCode
+          data.productName
         );
         await expect(row.lotField.textbox).toHaveValue(data.lotNumber);
         await expect(row.quantityField.numberbox).toHaveValue(data.quantity);
@@ -490,7 +501,7 @@ test.describe('Create stock movement', () => {
 
     await test.step('Fill in add items fields without pack levels', async () => {
       const row = createInboundPage.addItemsStep.table.row(0);
-      await row.productSelect.findAndSelectOption(rowData.productCode);
+      await row.productSelect.findAndSelectOption(rowData.productName);
       await row.quantityField.numberbox.fill(rowData.quantity);
     });
 
@@ -672,7 +683,7 @@ test.describe('Create stock movement', () => {
 
     await test.step('Add items step', async () => {
       const row = createInboundPage.addItemsStep.table.row(0);
-      await row.productSelect.findAndSelectOption(rowData.productCode);
+      await row.productSelect.findAndSelectOption(rowData.productName);
       await row.quantityField.numberbox.fill(rowData.quantity);
       await row.lotField.textbox.fill(rowData.lotNumber);
       await row.recipientSelect.findAndSelectOption(rowData.recipient);
@@ -700,7 +711,7 @@ test.describe('Create stock movement', () => {
     await test.step('Assert table items', async () => {
       const row = createInboundPage.addItemsStep.table.row(0);
       await expect(row.productSelect.selectField).toContainText(
-        rowData.productCode
+        rowData.productName
       );
       await expect(row.lotField.textbox).toHaveValue(rowData.lotNumber);
       await expect(row.quantityField.numberbox).toHaveValue(rowData.quantity);
@@ -743,7 +754,7 @@ test.describe('Create stock movement', () => {
     await test.step('Add items step', async () => {
       const rowData = ROWS[0];
       const row = createInboundPage.addItemsStep.table.row(0);
-      await row.productSelect.findAndSelectOption(rowData.productCode);
+      await row.productSelect.findAndSelectOption(rowData.productName);
       await row.quantityField.numberbox.fill(rowData.quantity);
       await row.lotField.textbox.fill(rowData.lotNumber);
       await row.recipientSelect.findAndSelectOption(rowData.recipient);

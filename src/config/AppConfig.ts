@@ -3,10 +3,12 @@ import path from 'node:path';
 import env from 'env-var';
 
 import LocationConfig from '@/config/LocationConfig';
+import ProductConfig from '@/config/ProductConfig';
 import TestUserConfig from '@/config/TestUserConfig';
 import { ActivityCode } from '@/constants/ActivityCodes';
 import { LocationTypeCode } from '@/constants/LocationTypeCode';
 import RoleType from '@/constants/RoleTypes';
+import UniqueIdentifier from '@/utils/UniqueIdentifier';
 
 /**
  * class representing the application configuration for end-to-end tests.
@@ -14,10 +16,14 @@ import RoleType from '@/constants/RoleTypes';
 class AppConfig {
   private static configInstance: AppConfig;
 
+  private uniqueIdentifier: UniqueIdentifier;
+
   public static AUTH_STORAGE_DIR_PATH = path.join(
     process.cwd(),
     '.authStorage'
   );
+
+  public static TEST_DATA_FILE_PATH = path.join(process.cwd(), '.data.json');
 
   // Base URL to use in actions like `await page.goto('./dashboard')`.
   public appURL!: string;
@@ -34,8 +40,13 @@ class AppConfig {
     LocationConfig
   >;
 
+  // test products used in all of the tests
+  public products!: Record<'prod_one' | 'prod_two', ProductConfig>;
+
   // Private constructor to enforce singleton pattern.
-  private constructor() {}
+  private constructor() {
+    this.uniqueIdentifier = new UniqueIdentifier();
+  }
 
   /**
    * Retrieves the singleton instance of AppConfig.
@@ -59,24 +70,25 @@ class AppConfig {
     this.isCI = env.get('CI').default('false').asBool();
 
     this.users = {
-      main: new TestUserConfig(
-        env.get('USER_MAIN_USERNAME').required().asString(),
-        env.get('USER_MAIN_PASSWORD').required().asString(),
-        '.auth-storage-MAIN-USER.json',
-        new Set([
+      main: new TestUserConfig({
+        username: env.get('USER_MAIN_USERNAME').required().asString(),
+        password: env.get('USER_MAIN_PASSWORD').required().asString(),
+        storageFileName: '.auth-storage-MAIN-USER.json',
+        requiredRoles: new Set([
           RoleType.ROLE_SUPERUSER,
           RoleType.ROLE_FINANCE,
           RoleType.ROLE_PRODUCT_MANAGER,
           RoleType.ROLE_INVOICE,
           RoleType.ROLE_PURCHASE_APPROVER,
-        ])
-      ),
+        ]),
+      }),
     };
 
     this.locations = {
-      main: new LocationConfig(
-        env.get('LOCATION_MAIN').required().asString(),
-        new Set([
+      main: new LocationConfig({
+        key: 'main',
+        id: env.get('LOCATION_MAIN').required().asString(),
+        requiredActivityCodes: new Set([
           ActivityCode.MANAGE_INVENTORY,
           ActivityCode.DYNAMIC_CREATION,
           ActivityCode.AUTOSAVE,
@@ -87,11 +99,13 @@ class AppConfig {
           ActivityCode.EXTERNAL,
           ActivityCode.RECEIVE_STOCK,
         ]),
-        LocationTypeCode.DEPOT
-      ),
-      depot: new LocationConfig(
-        env.get('LOCATION_DEPOT').required().asString(),
-        new Set([
+        requiredType: LocationTypeCode.DEPOT,
+        required: true,
+      }),
+      depot: new LocationConfig({
+        key: 'depot',
+        name: this.uniqueIdentifier.generateUniqueString('depot'),
+        requiredActivityCodes: new Set([
           ActivityCode.MANAGE_INVENTORY,
           ActivityCode.PLACE_ORDER,
           ActivityCode.PLACE_REQUEST,
@@ -105,20 +119,22 @@ class AppConfig {
           ActivityCode.ENABLE_FULFILLER_APPROVAL_NOTIFICATIONS,
           ActivityCode.SUBMIT_REQUEST,
         ]),
-        LocationTypeCode.DEPOT
-      ),
-      supplier: new LocationConfig(
-        env.get('LOCATION_SUPPLIER').required().asString(),
-        new Set([
+        requiredType: LocationTypeCode.DEPOT,
+      }),
+      supplier: new LocationConfig({
+        key: 'supplier',
+        name: this.uniqueIdentifier.generateUniqueString('supplier'),
+        requiredActivityCodes: new Set([
           ActivityCode.FULFILL_ORDER,
           ActivityCode.SEND_STOCK,
           ActivityCode.EXTERNAL,
         ]),
-        LocationTypeCode.SUPPLIER
-      ),
-      noManageInventoryDepot: new LocationConfig(
-        env.get('LOCATION_NO_MANAGE_INVENOTRY_DEPOT').required().asString(),
-        new Set([
+        requiredType: LocationTypeCode.SUPPLIER,
+      }),
+      noManageInventoryDepot: new LocationConfig({
+        key: 'noManageInventoryDepot',
+        name: this.uniqueIdentifier.generateUniqueString('no-manage-inventory'),
+        requiredActivityCodes: new Set([
           ActivityCode.DYNAMIC_CREATION,
           ActivityCode.AUTOSAVE,
           ActivityCode.SUBMIT_REQUEST,
@@ -128,8 +144,21 @@ class AppConfig {
           ActivityCode.EXTERNAL,
           ActivityCode.RECEIVE_STOCK,
         ]),
-        LocationTypeCode.DEPOT
-      ),
+        requiredType: LocationTypeCode.DEPOT,
+      }),
+    };
+
+    this.products = {
+      prod_one: new ProductConfig({
+        key: 'prod_one',
+        name: this.uniqueIdentifier.generateUniqueString('product-one'),
+        quantity: 122,
+      }),
+      prod_two: new ProductConfig({
+        key: 'prod_two',
+        name: this.uniqueIdentifier.generateUniqueString('product-two'),
+        quantity: 123,
+      }),
     };
   }
 }
