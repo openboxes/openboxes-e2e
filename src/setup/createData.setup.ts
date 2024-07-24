@@ -21,7 +21,7 @@ test('create data', async ({
   const products = Object.values(AppConfig.instance.products).filter(
     (product) => product.isCreateNew
   );
-  
+
   for (const product of products) {
     await test.step(`create product ${product.key}`, async () => {
       await createProductPage.goToPage();

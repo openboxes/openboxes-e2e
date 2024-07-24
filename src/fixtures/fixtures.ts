@@ -3,10 +3,12 @@ import { test as baseTest } from '@playwright/test';
 import AuthService from '@/api/AuthService';
 import GenericService from '@/api/GenericService';
 import LocationService from '@/api/LocationService';
+import StockMovementService from '@/api/StockMovementService';
 import ImpersonateBanner from '@/components/ImpersonateBanner';
 import LocationChooser from '@/components/LocationChooser';
 import Navbar from '@/components/Navbar';
 import CreateInbound from '@/pages/createInbound/CreateInboundPage';
+import InboundListPage from '@/pages/inbound/list/InboundListPage';
 import CreateLocationPage from '@/pages/location/createLocation/CreateLocationPage';
 import LocationListPage from '@/pages/location/LocationListPage';
 import CreateLocationGroupPage from '@/pages/locationGroup/CreateLocationGroupPage';
@@ -43,6 +45,7 @@ type Fixtures = {
   editUserPage: EditUserPage;
   createProductPage: CreateProductPage;
   productShowPage: ProductShowPage;
+  inboundListPage: InboundListPage;
   // COMPONENTS
   navbar: Navbar;
   locationChooser: LocationChooser;
@@ -51,6 +54,7 @@ type Fixtures = {
   genericService: GenericService;
   locationService: LocationService;
   authService: AuthService;
+  stockMovementService: StockMovementService;
   // LOCATIONS
   mainLocation: LocationData;
   noManageInventoryDepot: LocationData;
@@ -82,6 +86,7 @@ export const test = baseTest.extend<Fixtures>({
   editLocationGroupPage: async ({ page }, use) =>
     use(new EditLocationGroupPage(page)),
   createInboundPage: async ({ page }, use) => use(new CreateInbound(page)),
+  inboundListPage: async ({ page }, use) => use(new InboundListPage(page)),
   stockMovementShowPage: async ({ page }, use) =>
     use(new StockMovementShowPage(page)),
   createProductPage: async ({ page }, use) => use(new CreateProductPage(page)),
@@ -89,13 +94,15 @@ export const test = baseTest.extend<Fixtures>({
   // COMPONENTS
   navbar: async ({ page }, use) => use(new Navbar(page)),
   locationChooser: async ({ page }, use) => use(new LocationChooser(page)),
+  impersonateBanner: async ({ page }, use) => use(new ImpersonateBanner(page)),
   // SERVICES
   genericService: async ({ page }, use) =>
     use(new GenericService(page.request)),
   locationService: async ({ page }, use) =>
     use(new LocationService(page.request)),
   authService: async ({ page }, use) => use(new AuthService(page.request)),
-  impersonateBanner: async ({ page }, use) => use(new ImpersonateBanner(page)),
+  stockMovementService: async ({ page }, use) =>
+    use(new StockMovementService(page.request)),
   // LOCATIONS
   mainLocation: async ({ page }, use) =>
     use(new LocationData('main', page.request)),
