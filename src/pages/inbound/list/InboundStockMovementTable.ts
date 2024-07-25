@@ -18,6 +18,10 @@ class InboundStockMovementTable extends BasePageModel {
   get allStatusColumnCells() {
     return this.table.getByTestId('status-indicator');
   }
+
+  get allOriginColumnCells() {
+    return this.table.locator('[role="row"] [role="gridcell"]:nth-child(6)');
+  }
 }
 
 class Row extends BasePageModel {

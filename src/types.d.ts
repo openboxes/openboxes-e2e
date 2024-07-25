@@ -55,7 +55,7 @@ type CreateLocationPayload = {
   name: string;
   locationType?: LocationType;
   organization: { id: string };
-  supportedActivities: string[] | Set<string>;
+  supportedActivities?: string[] | Set<string>;
 };
 
 type LocationType = {

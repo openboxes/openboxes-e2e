@@ -1,5 +1,6 @@
 import GenericService from '@/api/GenericService';
 import StockMovementService from '@/api/StockMovementService';
+import { LocationTypeCode } from '@/constants/LocationTypeCode';
 import { expect, test } from '@/fixtures/fixtures';
 import {
   AddItemsTableRow,
@@ -995,9 +996,58 @@ test.describe('Inbond Stock Movement list page', () => {
   });
 
 
-  // test('Use "Origin" filter', async ({ page }) => {
-  //   //
-  // });
+  test('Use "Origin" filter', async ({ stockMovementService, supplierAltLocation, supplierLocation, mainLocation, genericService,inboundListPage, page }) => {
+    const mainLocationLocation = await mainLocation.getLocation();
+    const supplierLocationLocation = await supplierLocation.getLocation();
+    const supplierAltLocationLocation = await supplierAltLocation.getLocation();
+    const {
+      data: { user },
+    } = await genericService.getAppContext();
+
+
+    await stockMovementService.createStockMovement({
+      description: uniqueIdentifier.generateUniqueString('SM supplier ONE'),
+      destination: { id: mainLocationLocation.id },
+      origin: { id: supplierLocationLocation.id },
+      requestedBy: { id: user.id },
+      dateRequested: formatDate(new Date()),
+    });
+
+   await stockMovementService.createStockMovement({
+      description: uniqueIdentifier.generateUniqueString('SM supplier TWO'),
+      destination: { id: mainLocationLocation.id },
+      origin: { id: supplierAltLocationLocation.id },
+      requestedBy: { id: user.id },
+      dateRequested: formatDate(new Date()),
+    });
+
+
+    await inboundListPage.goToPage();
+    await inboundListPage.filters.originSelect.findAndSelectOption(supplierLocationLocation.name);
+    await inboundListPage.filters.searchButton.click();
+    await inboundListPage.waitForResponse();
+
+    let originColumnsContent = await inboundListPage.table.allOriginColumnCells.allTextContents();
+    originColumnsContent = originColumnsContent.filter(it => !!it.trim());
+
+    expect(originColumnsContent.length).toBeGreaterThan(0);
+    expect(originColumnsContent).toEqual(
+      Array(originColumnsContent.length).fill(supplierLocationLocation.name)
+    );
+
+    await inboundListPage.filters.originSelect.findAndSelectOption(supplierAltLocationLocation.name);
+    await inboundListPage.filters.searchButton.click();
+    await inboundListPage.waitForResponse();
+
+    originColumnsContent = await inboundListPage.table.allOriginColumnCells.allTextContents();
+    originColumnsContent = originColumnsContent.filter(it => !!it.trim());
+
+    console.log(originColumnsContent)
+    expect(originColumnsContent.length).toBeGreaterThan(0);
+    expect(originColumnsContent).toEqual(
+      Array(originColumnsContent.length).fill(supplierAltLocationLocation.name)
+    );
+  });
 
   // test('"Destination" filter should be disabled', async ({ page }) => {
   //   //

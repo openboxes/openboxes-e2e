@@ -21,6 +21,10 @@ class InboundListPage extends BasePageModel {
   async waitForUrl() {
     await this.page.waitForURL('**/stockMovement/list**');
   }
+
+  async waitForResponse() {
+    await this.page.waitForResponse('./api/stockMovements?destination=**');
+  }
 }
 
 export default InboundListPage;

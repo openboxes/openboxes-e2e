@@ -36,7 +36,7 @@ class AppConfig {
 
   // test users used in all of the tests
   public locations!: Record<
-    'main' | 'supplier' | 'noManageInventoryDepot' | 'depot',
+    'main' | 'supplier' | 'supplierAlt' | 'noManageInventoryDepot' | 'depot',
     LocationConfig
   >;
 
@@ -127,6 +127,18 @@ class AppConfig {
         id: env.get('LOCATION_SUPPLIER').asString(),
         key: 'supplier',
         name: this.uniqueIdentifier.generateUniqueString('supplier'),
+        requiredActivityCodes: new Set([
+          ActivityCode.FULFILL_ORDER,
+          ActivityCode.SEND_STOCK,
+          ActivityCode.EXTERNAL,
+        ]),
+        required: false,
+        type: LocationTypeCode.SUPPLIER,
+      }),
+      supplierAlt: new LocationConfig({
+        id: env.get('LOCATION_SUPPLIER_ALT').asString(),
+        key: 'supplier-alt',
+        name: this.uniqueIdentifier.generateUniqueString('supplier-alt'),
         requiredActivityCodes: new Set([
           ActivityCode.FULFILL_ORDER,
           ActivityCode.SEND_STOCK,

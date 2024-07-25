@@ -59,6 +59,7 @@ type Fixtures = {
   mainLocation: LocationData;
   noManageInventoryDepot: LocationData;
   supplierLocation: LocationData;
+  supplierAltLocation: LocationData;
   depotLocation: LocationData;
   // PRODUCT DATA
   mainProduct: ProductData;
@@ -110,6 +111,8 @@ export const test = baseTest.extend<Fixtures>({
     use(new LocationData('noManageInventoryDepot', page.request)),
   supplierLocation: async ({ page }, use) =>
     use(new LocationData('supplier', page.request)),
+  supplierAltLocation: async ({ page }, use) =>
+    use(new LocationData('supplierAlt', page.request)),
   depotLocation: async ({ page }, use) =>
     use(new LocationData('depot', page.request)),
   // PRODUCTS
