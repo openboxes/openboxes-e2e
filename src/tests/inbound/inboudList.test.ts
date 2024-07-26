@@ -994,6 +994,81 @@ test.describe('Inbond Stock Movement list page', () => {
     await expect(inboundListPage.table.rows.filter({ hasText: otherData.identifier })).toBeVisible();
   });
 
+  // TODO: there is bug in the app when filtering by updatedBy
+  test.skip('Use "Updated By" filter', async ({
+    browser,
+    mainLocation,
+    supplierLocation,
+    genericService,
+    stockMovementService,
+    inboundListPage,
+    mainProduct,
+  }) => {
+    const mainLocationLocation = await mainLocation.getLocation();
+    const supplierLocationLocation = await supplierLocation.getLocation();
+    const product = await mainProduct.getProduct();
+
+    const {
+      data: { user },
+    } = await genericService.getAppContext();
+
+    const { data } = await stockMovementService.createStockMovement({
+      description: uniqueIdentifier.generateUniqueString('Land SM'),
+      destination: { id: mainLocationLocation.id },
+      origin: { id: supplierLocationLocation.id },
+      requestedBy: { id: user.id },
+      dateRequested: formatDate(new Date()),
+    });
+
+    console.log(data.identifier)
+
+    const newCtx = await browser.newContext({
+      storageState: AppConfig.instance.users.alternative.storagePath,
+    });
+    const newPage = await newCtx.newPage();
+    const otherSotckMvoementService = new StockMovementService(newPage.request);
+    const otherGenericService = new GenericService(newPage.request);
+   
+    const {
+      data: { user: otherUser },
+    } = await otherGenericService.getAppContext();
+
+    await inboundListPage.goToPage();
+
+    await inboundListPage.filters.updatedBySelect.findAndSelectOption(user.name);
+    await inboundListPage.filters.searchButton.click();
+    await inboundListPage.waitForResponse();
+    await expect(inboundListPage.table.rows.filter({ hasText: data.identifier })).toBeVisible();
+
+    await inboundListPage.filters.clearButton.click();
+    await inboundListPage.waitForResponse();
+
+    await inboundListPage.filters.updatedBySelect.findAndSelectOption(otherUser.name);
+    await inboundListPage.filters.searchButton.click();
+    await inboundListPage.waitForResponse();
+    await expect(inboundListPage.table.rows.filter({ hasText: data.identifier })).toBeHidden();
+    
+    await otherSotckMvoementService.addItemsToInboundStockMovement(data.id, {
+      id: data.id,
+      lineItems: [
+        {
+          product: { id: product.id },
+          quantityRequested: '2',
+          sortOrder: 100,
+        },
+      ],
+    });
+    await newCtx.close();
+
+    await inboundListPage.filters.clearButton.click();
+    await inboundListPage.waitForResponse();
+
+    await inboundListPage.filters.updatedBySelect.findAndSelectOption(otherUser.name);
+    await inboundListPage.filters.searchButton.click();
+    await inboundListPage.waitForResponse();
+    await expect(inboundListPage.table.rows.filter({ hasText: data.identifier })).toBeVisible();
+  });
+
   // test('Use "Updated By" filter', async ({ page }) => {
   //   //
   // });
