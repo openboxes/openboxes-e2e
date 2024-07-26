@@ -23,7 +23,7 @@ class InboundListPage extends BasePageModel {
   }
 
   async waitForResponse() {
-    await this.page.waitForResponse('./api/stockMovements?destination=**');
+    await this.page.waitForResponse('./api/stockMovements?**');
   }
 }
 

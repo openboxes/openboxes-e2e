@@ -31,16 +31,10 @@ class StockMovementService extends BaseServiceModel {
     return await apiResponse.json();
   }
 
-  async updateShipment(
-    id: string,
-    payload: UpdateStockMovementPayload
-  ) {
-    await this.request.post(
-      `./api/stockMovements/${id}/updateShipment`,
-      {
-        data: payload,
-      }
-    );
+  async updateShipment(id: string, payload: UpdateStockMovementPayload) {
+    await this.request.post(`./api/stockMovements/${id}/updateShipment`, {
+      data: payload,
+    });
   }
 
   async updateStatusStockMovement(
@@ -64,7 +58,6 @@ class StockMovementService extends BaseServiceModel {
     id: string,
     payload: UpdateStockMovementPayload
   ) {
-    console.log(payload)
     const res = await this.updateShipment(id, payload);
     await this.updateStatusStockMovement(id, { status: 'DISPATCHED' });
     return res;

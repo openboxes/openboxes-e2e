@@ -16,7 +16,7 @@ class Select extends FormField {
   }
 
   get clearButton() {
-    return this.selectField.locator('.filter-select__clear-indicator')
+    return this.selectField.locator('.filter-select__clear-indicator');
   }
 
   async click() {

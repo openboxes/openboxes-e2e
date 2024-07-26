@@ -32,7 +32,7 @@ class AppConfig {
   public isCI!: boolean;
 
   // test users used in all of the tests
-  public users!: Record<'main', TestUserConfig>;
+  public users!: Record<'main' | 'alternative', TestUserConfig>;
 
   // test users used in all of the tests
   public locations!: Record<
@@ -74,6 +74,18 @@ class AppConfig {
         username: env.get('USER_MAIN_USERNAME').required().asString(),
         password: env.get('USER_MAIN_PASSWORD').required().asString(),
         storageFileName: '.auth-storage-MAIN-USER.json',
+        requiredRoles: new Set([
+          RoleType.ROLE_SUPERUSER,
+          RoleType.ROLE_FINANCE,
+          RoleType.ROLE_PRODUCT_MANAGER,
+          RoleType.ROLE_INVOICE,
+          RoleType.ROLE_PURCHASE_APPROVER,
+        ]),
+      }),
+      alternative: new TestUserConfig({
+        username: env.get('USER_ALT_USERNAME').required().asString(),
+        password: env.get('USER_ALT_PASSWORD').required().asString(),
+        storageFileName: '.auth-storage-ALT-USER.json',
         requiredRoles: new Set([
           RoleType.ROLE_SUPERUSER,
           RoleType.ROLE_FINANCE,
