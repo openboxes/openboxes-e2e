@@ -34,14 +34,13 @@ class StockMovementService extends BaseServiceModel {
   async updateShipment(
     id: string,
     payload: UpdateStockMovementPayload
-  ): Promise<ApiResponse<unknown>> {
-    const apiResponse = await this.request.post(
+  ) {
+    await this.request.post(
       `./api/stockMovements/${id}/updateShipment`,
       {
         data: payload,
       }
     );
-    return await apiResponse.json();
   }
 
   async updateStatusStockMovement(
@@ -65,6 +64,7 @@ class StockMovementService extends BaseServiceModel {
     id: string,
     payload: UpdateStockMovementPayload
   ) {
+    console.log(payload)
     const res = await this.updateShipment(id, payload);
     await this.updateStatusStockMovement(id, { status: 'DISPATCHED' });
     return res;

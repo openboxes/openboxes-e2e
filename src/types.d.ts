@@ -211,6 +211,6 @@ type UpdateStockMovementPayload = {
   dateShipped: string;
   driverName?: string;
   expectedDeliveryDate: string;
-  shipmentType: '1' | '2' | '3' | '4';
+  shipmentType?: '1' | '2' | '3' | '4';
   trackingNumber?: string;
 };

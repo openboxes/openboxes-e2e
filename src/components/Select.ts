@@ -15,6 +15,10 @@ class Select extends FormField {
     return this.field.getByTestId('custom-select-element');
   }
 
+  get clearButton() {
+    return this.selectField.locator('.filter-select__clear-indicator')
+  }
+
   async click() {
     await this.selectField.click();
   }
@@ -34,6 +38,11 @@ class Select extends FormField {
     await this.click();
     await this.search(searchTerm);
     await this.clickOption(searchTerm);
+  }
+
+  async assertDisabled() {
+    await this.click();
+    await expect(this.selectDropdown).toBeHidden();
   }
 }
 

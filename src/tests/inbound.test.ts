@@ -1,6 +1,5 @@
 import GenericService from '@/api/GenericService';
 import StockMovementService from '@/api/StockMovementService';
-import { LocationTypeCode } from '@/constants/LocationTypeCode';
 import { expect, test } from '@/fixtures/fixtures';
 import {
   AddItemsTableRow,
@@ -996,7 +995,7 @@ test.describe('Inbond Stock Movement list page', () => {
   });
 
 
-  test('Use "Origin" filter', async ({ stockMovementService, supplierAltLocation, supplierLocation, mainLocation, genericService,inboundListPage, page }) => {
+  test('Use "Origin" filter', async ({ stockMovementService, supplierAltLocation, supplierLocation, mainLocation, genericService,inboundListPage }) => {
     const mainLocationLocation = await mainLocation.getLocation();
     const supplierLocationLocation = await supplierLocation.getLocation();
     const supplierAltLocationLocation = await supplierAltLocation.getLocation();
@@ -1042,20 +1041,492 @@ test.describe('Inbond Stock Movement list page', () => {
     originColumnsContent = await inboundListPage.table.allOriginColumnCells.allTextContents();
     originColumnsContent = originColumnsContent.filter(it => !!it.trim());
 
-    console.log(originColumnsContent)
     expect(originColumnsContent.length).toBeGreaterThan(0);
     expect(originColumnsContent).toEqual(
       Array(originColumnsContent.length).fill(supplierAltLocationLocation.name)
     );
   });
 
-  // test('"Destination" filter should be disabled', async ({ page }) => {
-  //   //
-  // });
+  // eslint-disable-next-line playwright/expect-expect
+  test('"Destination" filter should be disabled', async ({ inboundListPage }) => {
+    await inboundListPage.goToPage();
+    await inboundListPage.filters.destinationSelect.assertDisabled();
+  });
 
-  // test('Use "Shipment Type" filter', async ({ page }) => {
-  //   //
-  // });
+  test.describe('Shipment type filter', () => {
+    test('Shipment Type "Air"', async ({ mainLocation, supplierLocation,mainProduct, genericService, stockMovementService, inboundListPage, page }) => {
+      const mainLocationLocation = await mainLocation.getLocation();
+      const supplierLocationLocation = await supplierLocation.getLocation();
+      const product = await mainProduct.getProduct();
+      const {
+        data: { user },
+      } = await genericService.getAppContext();
+
+      const { data } = await stockMovementService.createStockMovement({
+        description: uniqueIdentifier.generateUniqueString('Air SM'),
+        destination: { id: mainLocationLocation.id },
+        origin: { id: supplierLocationLocation.id },
+        requestedBy: { id: user.id },
+        dateRequested: formatDate(new Date()),
+      });
+      
+      await stockMovementService.addItemsToInboundStockMovement(data.id, {
+        id: data.id,
+        lineItems: [
+          {
+            product: { id: product.id },
+            quantityRequested: '2',
+            sortOrder: 100,
+          },
+        ],
+      });
+      await stockMovementService.sendInboundStockMovement(data.id, {
+        dateShipped: formatDate(new Date(), 'MM/DD/YYYY HH:mm Z'),
+        expectedDeliveryDate: formatDate(new Date(), 'MM/DD/YYYY HH:mm Z'),
+        shipmentType: '1',
+      });
+
+      await inboundListPage.goToPage();
+
+      await inboundListPage.filters.shipmentTypeSelect.click();
+      await inboundListPage.filters.shipmentTypeSelect.getSelectOption('Air').click();
+      await inboundListPage.filters.searchButton.click();
+      await inboundListPage.waitForResponse();
+
+      await expect(inboundListPage.table.rows.filter({ hasText: data.identifier })).toBeVisible();
+      await inboundListPage.table.rows.getByRole('link', { name: data.identifier }).hover();
+      await expect(page.getByRole('tooltip')).toContainText('Air');
+
+      await inboundListPage.filters.shipmentTypeSelect.clearButton.click();
+      await inboundListPage.filters.shipmentTypeSelect.click();
+      await inboundListPage.filters.shipmentTypeSelect.getSelectOption('Sea').click();
+      await inboundListPage.filters.searchButton.click();
+      await inboundListPage.waitForResponse();
+
+      await expect(inboundListPage.table.rows.filter({ hasText: data.identifier })).toBeHidden();
+
+      await inboundListPage.filters.shipmentTypeSelect.clearButton.click();
+      await inboundListPage.filters.shipmentTypeSelect.click();
+      await inboundListPage.filters.shipmentTypeSelect.getSelectOption('Land').click();
+      await inboundListPage.filters.searchButton.click();
+      await inboundListPage.waitForResponse();
+
+      await expect(inboundListPage.table.rows.filter({ hasText: data.identifier })).toBeHidden();
+
+      await inboundListPage.filters.shipmentTypeSelect.clearButton.click();
+      await inboundListPage.filters.shipmentTypeSelect.click();
+      await inboundListPage.filters.shipmentTypeSelect.getSelectOption('Suitcase').click();
+      await inboundListPage.filters.searchButton.click();
+      await inboundListPage.waitForResponse();
+
+      await expect(inboundListPage.table.rows.filter({ hasText: data.identifier })).toBeHidden();
+
+      await inboundListPage.filters.shipmentTypeSelect.clearButton.click();
+      await inboundListPage.filters.shipmentTypeSelect.click();
+      await inboundListPage.filters.shipmentTypeSelect.getSelectOption('Default').click();
+      await inboundListPage.filters.searchButton.click();
+      await inboundListPage.waitForResponse();
+
+      await expect(inboundListPage.table.rows.filter({ hasText: data.identifier })).toBeHidden();
+    });
+
+    test('Shipment Type "Sea"', async ({ mainLocation, supplierLocation,mainProduct, genericService, stockMovementService, inboundListPage, page }) => {
+      const mainLocationLocation = await mainLocation.getLocation();
+      const supplierLocationLocation = await supplierLocation.getLocation();
+      const product = await mainProduct.getProduct();
+      const {
+        data: { user },
+      } = await genericService.getAppContext();
+
+      const { data } = await stockMovementService.createStockMovement({
+        description: uniqueIdentifier.generateUniqueString('Sea SM'),
+        destination: { id: mainLocationLocation.id },
+        origin: { id: supplierLocationLocation.id },
+        requestedBy: { id: user.id },
+        dateRequested: formatDate(new Date()),
+      });
+      
+      await stockMovementService.addItemsToInboundStockMovement(data.id, {
+        id: data.id,
+        lineItems: [
+          {
+            product: { id: product.id },
+            quantityRequested: '2',
+            sortOrder: 100,
+          },
+        ],
+      });
+      await stockMovementService.sendInboundStockMovement(data.id, {
+        dateShipped: formatDate(new Date(), 'MM/DD/YYYY HH:mm Z'),
+        expectedDeliveryDate: formatDate(new Date(), 'MM/DD/YYYY HH:mm Z'),
+        shipmentType: '2',
+      });
+
+      await inboundListPage.goToPage();
+
+      await inboundListPage.filters.shipmentTypeSelect.click();
+      await inboundListPage.filters.shipmentTypeSelect.getSelectOption('Sea').click();
+      await inboundListPage.filters.searchButton.click();
+      await inboundListPage.waitForResponse();
+
+      await expect(inboundListPage.table.rows.filter({ hasText: data.identifier })).toBeVisible();
+      await inboundListPage.table.rows.getByRole('link', { name: data.identifier }).hover();
+      await expect(page.getByRole('tooltip')).toContainText('Sea');
+
+      await inboundListPage.filters.shipmentTypeSelect.clearButton.click();
+      await inboundListPage.filters.shipmentTypeSelect.click();
+      await inboundListPage.filters.shipmentTypeSelect.getSelectOption('Air').click();
+      await inboundListPage.filters.searchButton.click();
+      await inboundListPage.waitForResponse();
+
+      await expect(inboundListPage.table.rows.filter({ hasText: data.identifier })).toBeHidden();
+
+      await inboundListPage.filters.shipmentTypeSelect.clearButton.click();
+      await inboundListPage.filters.shipmentTypeSelect.click();
+      await inboundListPage.filters.shipmentTypeSelect.getSelectOption('Land').click();
+      await inboundListPage.filters.searchButton.click();
+      await inboundListPage.waitForResponse();
+
+      await expect(inboundListPage.table.rows.filter({ hasText: data.identifier })).toBeHidden();
+
+      await inboundListPage.filters.shipmentTypeSelect.clearButton.click();
+      await inboundListPage.filters.shipmentTypeSelect.click();
+      await inboundListPage.filters.shipmentTypeSelect.getSelectOption('Suitcase').click();
+      await inboundListPage.filters.searchButton.click();
+      await inboundListPage.waitForResponse();
+
+      await expect(inboundListPage.table.rows.filter({ hasText: data.identifier })).toBeHidden();
+
+      await inboundListPage.filters.shipmentTypeSelect.clearButton.click();
+      await inboundListPage.filters.shipmentTypeSelect.click();
+      await inboundListPage.filters.shipmentTypeSelect.getSelectOption('Default').click();
+      await inboundListPage.filters.searchButton.click();
+      await inboundListPage.waitForResponse();
+
+      await expect(inboundListPage.table.rows.filter({ hasText: data.identifier })).toBeHidden();
+    });
+
+    test('Shipment Type "Land"', async ({ mainLocation, supplierLocation,mainProduct, genericService, stockMovementService, inboundListPage, page }) => {
+      const mainLocationLocation = await mainLocation.getLocation();
+      const supplierLocationLocation = await supplierLocation.getLocation();
+      const product = await mainProduct.getProduct();
+      const {
+        data: { user },
+      } = await genericService.getAppContext();
+
+      const { data } = await stockMovementService.createStockMovement({
+        description: uniqueIdentifier.generateUniqueString('Land SM'),
+        destination: { id: mainLocationLocation.id },
+        origin: { id: supplierLocationLocation.id },
+        requestedBy: { id: user.id },
+        dateRequested: formatDate(new Date()),
+      });
+      
+      await stockMovementService.addItemsToInboundStockMovement(data.id, {
+        id: data.id,
+        lineItems: [
+          {
+            product: { id: product.id },
+            quantityRequested: '2',
+            sortOrder: 100,
+          },
+        ],
+      });
+      await stockMovementService.sendInboundStockMovement(data.id, {
+        dateShipped: formatDate(new Date(), 'MM/DD/YYYY HH:mm Z'),
+        expectedDeliveryDate: formatDate(new Date(), 'MM/DD/YYYY HH:mm Z'),
+        shipmentType: '3',
+      });
+
+      await inboundListPage.goToPage();
+
+      await inboundListPage.filters.shipmentTypeSelect.click();
+      await inboundListPage.filters.shipmentTypeSelect.getSelectOption('Land').click();
+      await inboundListPage.filters.searchButton.click();
+      await inboundListPage.waitForResponse();
+
+      await expect(inboundListPage.table.rows.filter({ hasText: data.identifier })).toBeVisible();
+      await inboundListPage.table.rows.getByRole('link', { name: data.identifier }).hover();
+      await expect(page.getByRole('tooltip')).toContainText('Land');
+
+      await inboundListPage.filters.shipmentTypeSelect.clearButton.click();
+      await inboundListPage.filters.shipmentTypeSelect.click();
+      await inboundListPage.filters.shipmentTypeSelect.getSelectOption('Air').click();
+      await inboundListPage.filters.searchButton.click();
+      await inboundListPage.waitForResponse();
+
+      await expect(inboundListPage.table.rows.filter({ hasText: data.identifier })).toBeHidden();
+
+      await inboundListPage.filters.shipmentTypeSelect.clearButton.click();
+      await inboundListPage.filters.shipmentTypeSelect.click();
+      await inboundListPage.filters.shipmentTypeSelect.getSelectOption('Sea').click();
+      await inboundListPage.filters.searchButton.click();
+      await inboundListPage.waitForResponse();
+
+      await expect(inboundListPage.table.rows.filter({ hasText: data.identifier })).toBeHidden();
+
+      await inboundListPage.filters.shipmentTypeSelect.clearButton.click();
+      await inboundListPage.filters.shipmentTypeSelect.click();
+      await inboundListPage.filters.shipmentTypeSelect.getSelectOption('Suitcase').click();
+      await inboundListPage.filters.searchButton.click();
+      await inboundListPage.waitForResponse();
+
+      await expect(inboundListPage.table.rows.filter({ hasText: data.identifier })).toBeHidden();
+
+      await inboundListPage.filters.shipmentTypeSelect.clearButton.click();
+      await inboundListPage.filters.shipmentTypeSelect.click();
+      await inboundListPage.filters.shipmentTypeSelect.getSelectOption('Default').click();
+      await inboundListPage.filters.searchButton.click();
+      await inboundListPage.waitForResponse();
+
+      await expect(inboundListPage.table.rows.filter({ hasText: data.identifier })).toBeHidden();
+    });
+
+    test('Shipment Type "Suitcase"', async ({ mainLocation, supplierLocation,mainProduct, genericService, stockMovementService, inboundListPage, page }) => {
+      const mainLocationLocation = await mainLocation.getLocation();
+      const supplierLocationLocation = await supplierLocation.getLocation();
+      const product = await mainProduct.getProduct();
+      const {
+        data: { user },
+      } = await genericService.getAppContext();
+
+      const { data } = await stockMovementService.createStockMovement({
+        description: uniqueIdentifier.generateUniqueString('Land SM'),
+        destination: { id: mainLocationLocation.id },
+        origin: { id: supplierLocationLocation.id },
+        requestedBy: { id: user.id },
+        dateRequested: formatDate(new Date()),
+      });
+      
+      await stockMovementService.addItemsToInboundStockMovement(data.id, {
+        id: data.id,
+        lineItems: [
+          {
+            product: { id: product.id },
+            quantityRequested: '2',
+            sortOrder: 100,
+          },
+        ],
+      });
+      await stockMovementService.sendInboundStockMovement(data.id, {
+        dateShipped: formatDate(new Date(), 'MM/DD/YYYY HH:mm Z'),
+        expectedDeliveryDate: formatDate(new Date(), 'MM/DD/YYYY HH:mm Z'),
+        shipmentType: '4',
+      });
+
+      await inboundListPage.goToPage();
+
+      await inboundListPage.filters.shipmentTypeSelect.click();
+      await inboundListPage.filters.shipmentTypeSelect.getSelectOption('Suitcase').click();
+      await inboundListPage.filters.searchButton.click();
+      await inboundListPage.waitForResponse();
+
+      await expect(inboundListPage.table.rows.filter({ hasText: data.identifier })).toBeVisible();
+      await inboundListPage.table.rows.getByRole('link', { name: data.identifier }).hover();
+      await expect(page.getByRole('tooltip')).toContainText('Suitcase');
+
+      await inboundListPage.filters.shipmentTypeSelect.clearButton.click();
+      await inboundListPage.filters.shipmentTypeSelect.click();
+      await inboundListPage.filters.shipmentTypeSelect.getSelectOption('Air').click();
+      await inboundListPage.filters.searchButton.click();
+      await inboundListPage.waitForResponse();
+
+      await expect(inboundListPage.table.rows.filter({ hasText: data.identifier })).toBeHidden();
+
+      await inboundListPage.filters.shipmentTypeSelect.clearButton.click();
+      await inboundListPage.filters.shipmentTypeSelect.click();
+      await inboundListPage.filters.shipmentTypeSelect.getSelectOption('Sea').click();
+      await inboundListPage.filters.searchButton.click();
+      await inboundListPage.waitForResponse();
+
+      await expect(inboundListPage.table.rows.filter({ hasText: data.identifier })).toBeHidden();
+
+      await inboundListPage.filters.shipmentTypeSelect.clearButton.click();
+      await inboundListPage.filters.shipmentTypeSelect.click();
+      await inboundListPage.filters.shipmentTypeSelect.getSelectOption('Land').click();
+      await inboundListPage.filters.searchButton.click();
+      await inboundListPage.waitForResponse();
+
+      await expect(inboundListPage.table.rows.filter({ hasText: data.identifier })).toBeHidden();
+
+      await inboundListPage.filters.shipmentTypeSelect.clearButton.click();
+      await inboundListPage.filters.shipmentTypeSelect.click();
+      await inboundListPage.filters.shipmentTypeSelect.getSelectOption('Default').click();
+      await inboundListPage.filters.searchButton.click();
+      await inboundListPage.waitForResponse();
+
+      await expect(inboundListPage.table.rows.filter({ hasText: data.identifier })).toBeHidden();
+    });
+
+    test('Shipment Type "Default"', async ({ mainLocation, supplierLocation,mainProduct, genericService, stockMovementService, inboundListPage, page }) => {
+      const mainLocationLocation = await mainLocation.getLocation();
+      const supplierLocationLocation = await supplierLocation.getLocation();
+      const product = await mainProduct.getProduct();
+      const {
+        data: { user },
+      } = await genericService.getAppContext();
+
+      const { data } = await stockMovementService.createStockMovement({
+        description: uniqueIdentifier.generateUniqueString('Land SM'),
+        destination: { id: mainLocationLocation.id },
+        origin: { id: supplierLocationLocation.id },
+        requestedBy: { id: user.id },
+        dateRequested: formatDate(new Date()),
+      });
+      
+      await stockMovementService.addItemsToInboundStockMovement(data.id, {
+        id: data.id,
+        lineItems: [
+          {
+            product: { id: product.id },
+            quantityRequested: '2',
+            sortOrder: 100,
+          },
+        ],
+      });
+      await stockMovementService.sendInboundStockMovement(data.id, {
+        dateShipped: formatDate(new Date(), 'MM/DD/YYYY HH:mm Z'),
+        expectedDeliveryDate: formatDate(new Date(), 'MM/DD/YYYY HH:mm Z'),
+      });
+
+      await inboundListPage.goToPage();
+
+      await inboundListPage.filters.shipmentTypeSelect.click();
+      await inboundListPage.filters.shipmentTypeSelect.getSelectOption('Default').click();
+      await inboundListPage.filters.searchButton.click();
+      await inboundListPage.waitForResponse();
+
+      await expect(inboundListPage.table.rows.filter({ hasText: data.identifier })).toBeVisible();
+      await inboundListPage.table.rows.getByRole('link', { name: data.identifier }).hover();
+      await expect(page.getByRole('tooltip')).toContainText('Default');
+
+      await inboundListPage.filters.shipmentTypeSelect.clearButton.click();
+      await inboundListPage.filters.shipmentTypeSelect.click();
+      await inboundListPage.filters.shipmentTypeSelect.getSelectOption('Air').click();
+      await inboundListPage.filters.searchButton.click();
+      await inboundListPage.waitForResponse();
+
+      await expect(inboundListPage.table.rows.filter({ hasText: data.identifier })).toBeHidden();
+
+      await inboundListPage.filters.shipmentTypeSelect.clearButton.click();
+      await inboundListPage.filters.shipmentTypeSelect.click();
+      await inboundListPage.filters.shipmentTypeSelect.getSelectOption('Sea').click();
+      await inboundListPage.filters.searchButton.click();
+      await inboundListPage.waitForResponse();
+
+      await expect(inboundListPage.table.rows.filter({ hasText: data.identifier })).toBeHidden();
+
+      await inboundListPage.filters.shipmentTypeSelect.clearButton.click();
+      await inboundListPage.filters.shipmentTypeSelect.click();
+      await inboundListPage.filters.shipmentTypeSelect.getSelectOption('Land').click();
+      await inboundListPage.filters.searchButton.click();
+      await inboundListPage.waitForResponse();
+
+      await expect(inboundListPage.table.rows.filter({ hasText: data.identifier })).toBeHidden();
+
+      await inboundListPage.filters.shipmentTypeSelect.clearButton.click();
+      await inboundListPage.filters.shipmentTypeSelect.click();
+      await inboundListPage.filters.shipmentTypeSelect.getSelectOption('Suitcase').click();
+      await inboundListPage.filters.searchButton.click();
+      await inboundListPage.waitForResponse();
+
+      await expect(inboundListPage.table.rows.filter({ hasText: data.identifier })).toBeHidden();
+    });
+
+    test('Multiple Shipment Type "Land" & "Sea"', async ({ mainLocation, supplierLocation,mainProduct, genericService, stockMovementService, inboundListPage, page }) => {
+      const mainLocationLocation = await mainLocation.getLocation();
+      const supplierLocationLocation = await supplierLocation.getLocation();
+      const product = await mainProduct.getProduct();
+      const {
+        data: { user },
+      } = await genericService.getAppContext();
+
+      const { data: landShipment } = await stockMovementService.createStockMovement({
+        description: uniqueIdentifier.generateUniqueString('Land SM'),
+        destination: { id: mainLocationLocation.id },
+        origin: { id: supplierLocationLocation.id },
+        requestedBy: { id: user.id },
+        dateRequested: formatDate(new Date()),
+      });
+      
+      await stockMovementService.addItemsToInboundStockMovement(landShipment.id, {
+        id: landShipment.id,
+        lineItems: [
+          {
+            product: { id: product.id },
+            quantityRequested: '2',
+            sortOrder: 100,
+          },
+        ],
+      });
+      await stockMovementService.sendInboundStockMovement(landShipment.id, {
+        dateShipped: formatDate(new Date(), 'MM/DD/YYYY HH:mm Z'),
+        expectedDeliveryDate: formatDate(new Date(), 'MM/DD/YYYY HH:mm Z'),
+        shipmentType: '3',
+      });
+
+      const { data: seaShipment } = await stockMovementService.createStockMovement({
+        description: uniqueIdentifier.generateUniqueString('Land SM'),
+        destination: { id: mainLocationLocation.id },
+        origin: { id: supplierLocationLocation.id },
+        requestedBy: { id: user.id },
+        dateRequested: formatDate(new Date()),
+      });
+      
+      await stockMovementService.addItemsToInboundStockMovement(seaShipment.id, {
+        id: seaShipment.id,
+        lineItems: [
+          {
+            product: { id: product.id },
+            quantityRequested: '2',
+            sortOrder: 100,
+          },
+        ],
+      });
+      await stockMovementService.sendInboundStockMovement(seaShipment.id, {
+        dateShipped: formatDate(new Date(), 'MM/DD/YYYY HH:mm Z'),
+        expectedDeliveryDate: formatDate(new Date(), 'MM/DD/YYYY HH:mm Z'),
+        shipmentType: '2',
+      });
+
+      await inboundListPage.goToPage();
+
+      await inboundListPage.filters.shipmentTypeSelect.click();
+      await inboundListPage.filters.shipmentTypeSelect.getSelectOption('Default').click();
+      await inboundListPage.filters.searchButton.click();
+      await inboundListPage.waitForResponse();
+
+      await expect(inboundListPage.table.rows.filter({ hasText: landShipment.identifier })).toBeHidden();
+      await expect(inboundListPage.table.rows.filter({ hasText: seaShipment.identifier })).toBeHidden();
+
+      await inboundListPage.filters.clearButton.click();
+      await inboundListPage.waitForResponse();
+
+      await inboundListPage.filters.shipmentTypeSelect.click();
+      await inboundListPage.filters.shipmentTypeSelect.getSelectOption('Land').click();
+      await inboundListPage.filters.searchButton.click();
+      await inboundListPage.waitForResponse();
+
+      await expect(inboundListPage.table.rows.filter({ hasText: landShipment.identifier })).toBeVisible();
+      await inboundListPage.table.rows.getByRole('link', { name: landShipment.identifier }).hover();
+      await expect(page.getByRole('tooltip')).toContainText('Land');
+      await expect(inboundListPage.table.rows.filter({ hasText: seaShipment.identifier })).toBeHidden();
+
+      await inboundListPage.filters.shipmentTypeSelect.click();
+      await inboundListPage.filters.shipmentTypeSelect.getSelectOption('Sea').click();
+      await inboundListPage.filters.searchButton.click();
+      await inboundListPage.waitForResponse();
+
+      await expect(inboundListPage.table.rows.filter({ hasText: landShipment.identifier })).toBeVisible();
+      await inboundListPage.table.rows.getByRole('link', { name: landShipment.identifier }).hover();
+      await expect(page.getByRole('tooltip')).toContainText('Land');
+
+      await expect(inboundListPage.table.rows.filter({ hasText: seaShipment.identifier })).toBeVisible();
+      await inboundListPage.table.rows.getByRole('link', { name: seaShipment.identifier }).hover();
+      await expect(page.getByRole('tooltip')).toContainText('Sea');
+    });
+  });
+  
 
   // test('Use "Created By" filter', async ({ page }) => {
   //   //
