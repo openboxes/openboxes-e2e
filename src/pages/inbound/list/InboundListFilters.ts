@@ -1,6 +1,6 @@
 import { Page } from '@playwright/test';
 
-import DatePicker from '@/components/DatePicker';
+import DateFilter from '@/components/DateFilter';
 import Select from '@/components/Select';
 import TextField from '@/components/TextField';
 import BasePageModel from '@/pages/BasePageModel';
@@ -14,8 +14,8 @@ class InboundListFilters extends BasePageModel {
   requestedBySelect: Select;
   createdBySelect: Select;
   updatedBySelect: Select;
-  createdAfterDatePicker: DatePicker;
-  createdBeforeDatePicker: DatePicker;
+  createdAfterDateFilter: DateFilter;
+  createdBeforeDateFilter: DateFilter;
 
   constructor(page: Page) {
     super(page);
@@ -27,8 +27,8 @@ class InboundListFilters extends BasePageModel {
     this.requestedBySelect = new Select(page, 'Requested By');
     this.createdBySelect = new Select(page, 'Created By');
     this.updatedBySelect = new Select(page, 'Updated By');
-    this.createdAfterDatePicker = new DatePicker(page, 'Created after');
-    this.createdBeforeDatePicker = new DatePicker(page, 'Created before');
+    this.createdAfterDateFilter = new DateFilter(page, 'Created after');
+    this.createdBeforeDateFilter = new DateFilter(page, 'Created before');
   }
 
   get searchButton() {

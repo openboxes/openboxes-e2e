@@ -22,6 +22,10 @@ class InboundStockMovementTable extends BasePageModel {
   get allOriginColumnCells() {
     return this.table.locator('[role="row"] [role="gridcell"]:nth-child(6)');
   }
+
+  get allDateCreatedColumnCells() {
+    return this.table.locator('[role="row"] [role="gridcell"]:nth-child(9)');
+  }
 }
 
 class Row extends BasePageModel {

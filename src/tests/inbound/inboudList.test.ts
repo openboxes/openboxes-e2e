@@ -1,10 +1,12 @@
 /* eslint-disable playwright/expect-expect */
+import dayjs from 'dayjs';
+
 import GenericService from '@/api/GenericService';
 import StockMovementService from '@/api/StockMovementService';
 import AppConfig from '@/config/AppConfig';
 import { expect, test } from '@/fixtures/fixtures';
 import { StockMovementResponse } from '@/types';
-import { formatDate } from '@/utils/DateUtils';
+import { formatDate, getDateByOffset, getDayOfMonth, getToday } from '@/utils/DateUtils';
 import LocationData from '@/utils/LocationData';
 import UniqueIdentifier from '@/utils/UniqueIdentifier';
 
@@ -962,36 +964,49 @@ test.describe('Inbond Stock Movement list page', () => {
     const newPage = await newCtx.newPage();
     const otherSotckMvoementService = new StockMovementService(newPage.request);
     const otherGenericService = new GenericService(newPage.request);
-   
+
     const {
       data: { user: otherUser },
     } = await otherGenericService.getAppContext();
 
-    const { data: otherData } = await otherSotckMvoementService.createStockMovement({
-      description: uniqueIdentifier.generateUniqueString('other SM'),
-      destination: { id: mainLocationLocation.id },
-      origin: { id: supplierLocationLocation.id },
-      requestedBy: { id: user.id },
-      dateRequested: formatDate(new Date()),
-    });
+    const { data: otherData } =
+      await otherSotckMvoementService.createStockMovement({
+        description: uniqueIdentifier.generateUniqueString('other SM'),
+        destination: { id: mainLocationLocation.id },
+        origin: { id: supplierLocationLocation.id },
+        requestedBy: { id: user.id },
+        dateRequested: formatDate(new Date()),
+      });
     await newCtx.close();
 
     await inboundListPage.goToPage();
 
-    await inboundListPage.filters.createdBySelect.findAndSelectOption(user.name);
+    await inboundListPage.filters.createdBySelect.findAndSelectOption(
+      user.name
+    );
     await inboundListPage.filters.searchButton.click();
     await inboundListPage.waitForResponse();
-    await expect(inboundListPage.table.rows.filter({ hasText: data.identifier })).toBeVisible();
-    await expect(inboundListPage.table.rows.filter({ hasText: otherData.identifier })).toBeHidden();
+    await expect(
+      inboundListPage.table.rows.filter({ hasText: data.identifier })
+    ).toBeVisible();
+    await expect(
+      inboundListPage.table.rows.filter({ hasText: otherData.identifier })
+    ).toBeHidden();
 
     await inboundListPage.filters.clearButton.click();
     await inboundListPage.waitForResponse();
 
-    await inboundListPage.filters.createdBySelect.findAndSelectOption(otherUser.name);
+    await inboundListPage.filters.createdBySelect.findAndSelectOption(
+      otherUser.name
+    );
     await inboundListPage.filters.searchButton.click();
     await inboundListPage.waitForResponse();
-    await expect(inboundListPage.table.rows.filter({ hasText: data.identifier })).toBeHidden();
-    await expect(inboundListPage.table.rows.filter({ hasText: otherData.identifier })).toBeVisible();
+    await expect(
+      inboundListPage.table.rows.filter({ hasText: data.identifier })
+    ).toBeHidden();
+    await expect(
+      inboundListPage.table.rows.filter({ hasText: otherData.identifier })
+    ).toBeVisible();
   });
 
   // TODO: there is bug in the app when filtering by updatedBy
@@ -1020,7 +1035,7 @@ test.describe('Inbond Stock Movement list page', () => {
       dateRequested: formatDate(new Date()),
     });
 
-    console.log(data.identifier)
+    console.log(data.identifier);
 
     const newCtx = await browser.newContext({
       storageState: AppConfig.instance.users.alternative.storagePath,
@@ -1028,26 +1043,34 @@ test.describe('Inbond Stock Movement list page', () => {
     const newPage = await newCtx.newPage();
     const otherSotckMvoementService = new StockMovementService(newPage.request);
     const otherGenericService = new GenericService(newPage.request);
-   
+
     const {
       data: { user: otherUser },
     } = await otherGenericService.getAppContext();
 
     await inboundListPage.goToPage();
 
-    await inboundListPage.filters.updatedBySelect.findAndSelectOption(user.name);
+    await inboundListPage.filters.updatedBySelect.findAndSelectOption(
+      user.name
+    );
     await inboundListPage.filters.searchButton.click();
     await inboundListPage.waitForResponse();
-    await expect(inboundListPage.table.rows.filter({ hasText: data.identifier })).toBeVisible();
+    await expect(
+      inboundListPage.table.rows.filter({ hasText: data.identifier })
+    ).toBeVisible();
 
     await inboundListPage.filters.clearButton.click();
     await inboundListPage.waitForResponse();
 
-    await inboundListPage.filters.updatedBySelect.findAndSelectOption(otherUser.name);
+    await inboundListPage.filters.updatedBySelect.findAndSelectOption(
+      otherUser.name
+    );
     await inboundListPage.filters.searchButton.click();
     await inboundListPage.waitForResponse();
-    await expect(inboundListPage.table.rows.filter({ hasText: data.identifier })).toBeHidden();
-    
+    await expect(
+      inboundListPage.table.rows.filter({ hasText: data.identifier })
+    ).toBeHidden();
+
     await otherSotckMvoementService.addItemsToInboundStockMovement(data.id, {
       id: data.id,
       lineItems: [
@@ -1063,23 +1086,157 @@ test.describe('Inbond Stock Movement list page', () => {
     await inboundListPage.filters.clearButton.click();
     await inboundListPage.waitForResponse();
 
-    await inboundListPage.filters.updatedBySelect.findAndSelectOption(otherUser.name);
+    await inboundListPage.filters.updatedBySelect.findAndSelectOption(
+      otherUser.name
+    );
     await inboundListPage.filters.searchButton.click();
     await inboundListPage.waitForResponse();
-    await expect(inboundListPage.table.rows.filter({ hasText: data.identifier })).toBeVisible();
+    await expect(
+      inboundListPage.table.rows.filter({ hasText: data.identifier })
+    ).toBeVisible();
   });
 
-  // test('Use "Updated By" filter', async ({ page }) => {
-  //   //
-  // });
+  test('"Requested By" filter', async ({
+    browser,
+    mainLocation,
+    supplierLocation,
+    genericService,
+    stockMovementService,
+    inboundListPage,
+  }) => {
+    const mainLocationLocation = await mainLocation.getLocation();
+    const supplierLocationLocation = await supplierLocation.getLocation();
+    const {
+      data: { user },
+    } = await genericService.getAppContext();
 
-  // test('Use "Created After" filter', async ({ page }) => {
-  //   //
-  // });
+    const newCtx = await browser.newContext({
+      storageState: AppConfig.instance.users.alternative.storagePath,
+    });
+    const newPage = await newCtx.newPage();
+    const otherGenericService = new GenericService(newPage.request);
 
-  // test('Use "Created Before" filter', async ({ page }) => {
-  //   //
-  // });
+    const {
+      data: { user: otherUser },
+    } = await otherGenericService.getAppContext();
+
+    await newCtx.close();
+
+    const { data } = await stockMovementService.createStockMovement({
+      description: uniqueIdentifier.generateUniqueString('Land SM'),
+      destination: { id: mainLocationLocation.id },
+      origin: { id: supplierLocationLocation.id },
+      requestedBy: { id: otherUser.id },
+      dateRequested: formatDate(new Date()),
+    });
+
+    await inboundListPage.goToPage();
+
+    await inboundListPage.filters.requestedBySelect.findAndSelectOption(
+      user.name
+    );
+    await inboundListPage.filters.searchButton.click();
+    await inboundListPage.waitForResponse();
+    await expect(
+      inboundListPage.table.rows.filter({ hasText: data.identifier })
+    ).toBeHidden();
+
+    await inboundListPage.filters.clearButton.click();
+    await inboundListPage.waitForResponse();
+
+    await inboundListPage.filters.requestedBySelect.findAndSelectOption(
+      otherUser.name
+    );
+    await inboundListPage.filters.searchButton.click();
+    await inboundListPage.waitForResponse();
+    await expect(
+      inboundListPage.table.rows.filter({ hasText: data.identifier })
+    ).toBeVisible();
+  });
+
+  test.describe('Date created filters', () => {
+    test.beforeAll(async ({ browser }) => {
+      const newCtx = await browser.newContext({
+        storageState: AppConfig.instance.users.main.storagePath,
+      });
+      const newPage = await newCtx.newPage();
+
+      const stockMovementService = new StockMovementService(newPage.request);
+      const otherGenericService = new GenericService(newPage.request);
+      const mainLocation = new LocationData('main', newPage.request);
+      const supplierLocation = new LocationData('supplier', newPage.request);
+
+      const mainLocationLocation = await mainLocation.getLocation();
+      const supplierLocationLocation = await supplierLocation.getLocation();
+      const {
+        data: { user },
+      } = await otherGenericService.getAppContext();
+
+      await stockMovementService.createStockMovement({
+        description: uniqueIdentifier.generateUniqueString('Land SM'),
+        destination: { id: mainLocationLocation.id },
+        origin: { id: supplierLocationLocation.id },
+        requestedBy: { id: user.id },
+        dateRequested: formatDate(new Date()),
+      });
+
+      await newCtx.close();
+    });
+
+    test('"Created After" filter', async ({ inboundListPage }) => {
+      const TODAY = getToday();
+      await inboundListPage.goToPage();
+
+      await inboundListPage.filters.createdAfterDateFilter.click();
+      await inboundListPage.filters.createdAfterDateFilter
+        .getMonthDay(getDayOfMonth(TODAY))
+        .click();
+
+      await inboundListPage.filters.searchButton.click();
+      await inboundListPage.waitForResponse();
+
+      let dateCreatedColumnsContent =
+        await inboundListPage.table.allDateCreatedColumnCells.allTextContents();
+      dateCreatedColumnsContent = dateCreatedColumnsContent.filter(
+        (it) => !!it.trim()
+      );
+
+      const dateCreatedDateValues = dateCreatedColumnsContent.map((it) =>
+        dayjs(it).toDate()
+      );
+
+      for (const date of dateCreatedDateValues) {
+        expect(date.getTime()).toBeGreaterThanOrEqual(TODAY.getTime());
+      }
+    });
+
+    test('"Created Before" filter', async ({ inboundListPage }) => {
+      const TODAY = getToday();
+
+      await inboundListPage.goToPage();
+
+      await inboundListPage.filters.createdBeforeDateFilter.click();
+      await inboundListPage.filters.createdBeforeDateFilter
+        .getMonthDay(getDayOfMonth(TODAY))
+        .click();
+      await inboundListPage.filters.searchButton.click();
+      await inboundListPage.waitForResponse();
+
+      let dateCreatedColumnsContent =
+        await inboundListPage.table.allDateCreatedColumnCells.allTextContents();
+      dateCreatedColumnsContent = dateCreatedColumnsContent.filter(
+        (it) => !!it.trim()
+      );
+
+      const dateCreatedDateValues = dateCreatedColumnsContent.map((it) =>
+        dayjs(it).toDate()
+      );
+
+      for (const date of dateCreatedDateValues) {
+        expect(date.getTime()).toBeLessThan(TODAY.getTime());
+      }
+    });
+  });
 
   // test('Clear filters', async ({ page }) => {
   //   //
