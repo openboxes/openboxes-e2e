@@ -25,7 +25,6 @@ class Row extends BasePageModel {
   row: Locator;
   receivingNowField: TextField;
 
-
   constructor(page: Page, row: Locator) {
     super(page);
     this.row = row;
