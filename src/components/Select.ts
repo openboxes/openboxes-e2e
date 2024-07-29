@@ -19,6 +19,10 @@ class Select extends FormField {
     return this.selectField.locator('.filter-select__clear-indicator');
   }
 
+  get countIndicator() {
+    return this.selectField.getByTestId('filter-count-indicator');
+  }
+
   async click() {
     await this.selectField.click();
   }

@@ -95,11 +95,21 @@ type ProductDemandResponse = {
   demand: DemandResponse;
 };
 
-type UserType = {
+type CreateUserType = {
   username: string;
   password: string;
   firstName: string;
   lastName: string;
+};
+
+type User = {
+  id: string;
+  name: string;
+  firstName: string;
+  lastName: string;
+  email?: string;
+  username: string;
+  roles: string[];
 };
 
 type AddItemsTableRow = {
@@ -211,6 +221,11 @@ type UpdateStockMovementPayload = {
   dateShipped: string;
   driverName?: string;
   expectedDeliveryDate: string;
-  shipmentType?: '1' | '2' | '3' | '4';
+  shipmentType?: string;
   trackingNumber?: string;
+};
+
+type AppContextResponse = {
+  location: LocationResponse;
+  user: User;
 };

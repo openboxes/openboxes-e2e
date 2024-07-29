@@ -8,7 +8,7 @@ class InboundStockMovementTable extends BasePageModel {
   }
 
   get rows() {
-    return this.table.getByRole('row');
+    return this.table.locator('.rt-tbody').getByRole('row');
   }
 
   row(index: number) {
@@ -16,7 +16,7 @@ class InboundStockMovementTable extends BasePageModel {
   }
 
   get allStatusColumnCells() {
-    return this.table.getByTestId('status-indicator');
+    return this.table.locator('[role="row"] [role="gridcell"]:nth-child(3)');
   }
 
   get allOriginColumnCells() {

@@ -3,9 +3,9 @@ import LocationChooser from '@/components/LocationChooser';
 import Navbar from '@/components/Navbar';
 import { expect, test } from '@/fixtures/fixtures';
 import LoginPage from '@/pages/LoginPage';
-import { UserType } from '@/types';
+import { CreateUserType } from '@/types';
 
-const formData: UserType = {
+const formData: CreateUserType = {
   username: 'testUser_E2E',
   firstName: 'user_firstanme',
   lastName: 'user_lastname',
