@@ -2,9 +2,9 @@ import { expect, Page } from '@playwright/test';
 
 import WizzardSteps from '@/components/WizzardSteps';
 import BasePageModel from '@/pages/BasePageModel';
-import AddItemsStep from '@/pages/createInbound/steps/AddItemsStep';
-import CreateStep from '@/pages/createInbound/steps/CreateStep';
-import SendStep from '@/pages/createInbound/steps/SendStep';
+import AddItemsStep from '@/pages/inbound/create/steps/AddItemsStep';
+import CreateStep from '@/pages/inbound/create/steps/CreateStep';
+import SendStep from '@/pages/inbound/create/steps/SendStep';
 
 class CreateInboundPage extends BasePageModel {
   createStep: CreateStep;

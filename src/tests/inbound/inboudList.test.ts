@@ -153,6 +153,68 @@ test.describe('Inbond Stock Movement list page', () => {
         Array(rowCount).fill(ReceiptStatus.SHIPPED)
       );
     });
+
+    test('Filter by "Received" status', async ({
+      inboundListPage,
+      stockMovementService,
+      supplierLocation,
+      mainProduct,
+      stockMovementShowPage
+    }) => {
+      const supplierLocationLocation = await supplierLocation.getLocation();
+      const product = await mainProduct.getProduct();
+
+      const STOCK_MOVEMENT = await stockMovementService.createInbound({
+        originId: supplierLocationLocation.id,
+      });
+      await stockMovementService.addItemsToInboundStockMovement(
+        STOCK_MOVEMENT.id,
+        [{ productId: product.id, quantity: 2 }]
+      );
+
+      await stockMovementService.sendInboundStockMovement(STOCK_MOVEMENT.id, {
+        shipmentType: ShipmentType.AIR,
+      });
+
+      await test.step('Go to stock movement show page', async () => {
+        await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
+        await stockMovementShowPage.isLoaded();
+      });
+
+      await test.step('Go to shipment receiving page', async () => {
+        await stockMovementShowPage.receiveButton.click();
+      })
+      
+      await test.step('Select all items to receiv', async () => {
+        //
+      })
+
+      await test.step('Go to Check page', async () => {
+        // 
+      })
+
+      await test.step('Receive shipment', async () => {
+        //
+      })
+
+      await test.step('Go to inbound list page', async () => {
+        await inboundListPage.goToPage();
+      });
+
+      await test.step('Filter by Receipt status "Shipped"', async () => {
+        await inboundListPage.filters.receiptStatusSelect.click();
+        await inboundListPage.filters.receiptStatusSelect
+          .getSelectOption(ReceiptStatus.SHIPPED)
+          .click();
+        await inboundListPage.filters.searchButton.click();
+        await inboundListPage.waitForResponse();
+      });
+
+      const rowCount = await inboundListPage.table.allStatusColumnCells.count();
+      await expect(inboundListPage.table.allStatusColumnCells).toHaveText(
+        Array(rowCount).fill(ReceiptStatus.SHIPPED)
+      );
+    });
   });
 
   test('Use "Origin" filter', async ({

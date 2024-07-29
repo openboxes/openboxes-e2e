@@ -14,6 +14,10 @@ class StockMovementShowPage extends BasePageModel {
     this.packingListTable = new PackingListTable(page);
   }
 
+  async goToPage(id: string) {
+    await this.page.goto(`./stockMovement/show/${id}`);
+  }
+
   async waitForUrl() {
     await this.page.waitForURL('**/stockMovement/show/**');
   }
