@@ -51,13 +51,13 @@ test.describe('Filter by "Shipped" status', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
 
   test.beforeEach(
-    async ({ supplierLocationService, stockMovementService, mainProduct }) => {
+    async ({ supplierLocationService, stockMovementService, mainProductService }) => {
       const supplierLocation = await supplierLocationService.getLocation();
       STOCK_MOVEMENT = await stockMovementService.createInbound({
         originId: supplierLocation.id,
       });
 
-      const product = await mainProduct.getProduct();
+      const product = await mainProductService.getProduct();
 
       await stockMovementService.addItemsToInboundStockMovement(
         STOCK_MOVEMENT.id,
@@ -114,7 +114,7 @@ test.describe('Filter by "Received" status', () => {
     async ({
       supplierLocationService,
       stockMovementService,
-      mainProduct,
+      mainProductService,
       stockMovementShowPage,
       receivingPage,
     }) => {
@@ -123,7 +123,7 @@ test.describe('Filter by "Received" status', () => {
         originId: supplierLocation.id,
       });
 
-      const product = await mainProduct.getProduct();
+      const product = await mainProductService.getProduct();
 
       await stockMovementService.addItemsToInboundStockMovement(
         STOCK_MOVEMENT.id,
@@ -206,8 +206,8 @@ test.describe('Filter by "Receiving" status', () => {
     async ({
       supplierLocationService,
       stockMovementService,
-      mainProduct,
-      otherProduct,
+      mainProductService,
+      otherProductService,
       stockMovementShowPage,
       receivingPage,
     }) => {
@@ -216,8 +216,8 @@ test.describe('Filter by "Receiving" status', () => {
         originId: supplierLocation.id,
       });
 
-      const product = await mainProduct.getProduct();
-      const productTwo = await otherProduct.getProduct();
+      const product = await mainProductService.getProduct();
+      const productTwo = await otherProductService.getProduct();
 
       await stockMovementService.addItemsToInboundStockMovement(
         STOCK_MOVEMENT.id,
@@ -301,7 +301,7 @@ test.describe('Filter by multiple statuses - "Pending" and "Shipped"', () => {
   let STOCK_MOVEMENT_TWO: StockMovementResponse;
 
   test.beforeEach(
-    async ({ supplierLocationService, stockMovementService, mainProduct }) => {
+    async ({ supplierLocationService, stockMovementService, mainProductService }) => {
       const supplierLocation = await supplierLocationService.getLocation();
       STOCK_MOVEMENT = await stockMovementService.createInbound({
         originId: supplierLocation.id,
@@ -311,7 +311,7 @@ test.describe('Filter by multiple statuses - "Pending" and "Shipped"', () => {
         originId: supplierLocation.id,
       });
 
-      const product = await mainProduct.getProduct();
+      const product = await mainProductService.getProduct();
 
       await stockMovementService.addItemsToInboundStockMovement(
         STOCK_MOVEMENT_TWO.id,

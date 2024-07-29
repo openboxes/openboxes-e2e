@@ -7,6 +7,11 @@ class GenericService extends BaseServiceModel {
     return await apiResponse.json();
   }
 
+  async getUser(id: string): Promise<ApiResponse<User>> {
+    const apiResponse = await this.request.get(`./api/generic/user/${id}`);
+    return await apiResponse.json();
+  }
+
   async getLoggedInUser(): Promise<User> {
     const {
       data: { user },

@@ -1,5 +1,3 @@
-import GenericService from '@/api/GenericService';
-import AppConfig from '@/config/AppConfig';
 import { expect, test } from '@/fixtures/fixtures';
 import { StockMovementResponse, User } from '@/types';
 
@@ -11,23 +9,14 @@ test.describe('"Requested By" filter', () => {
 
   test.beforeEach(
     async ({
-      genericService,
       supplierLocationService,
-      browser,
-      stockMovementService,
+      mainUserService,
+      altUserService,
+      stockMovementService
     }) => {
       const supplierLocation = await supplierLocationService.getLocation();
-      USER = await genericService.getLoggedInUser();
-
-      const newCtx = await browser.newContext({
-        storageState: AppConfig.instance.users.alternative.storagePath,
-      });
-      const newPage = await newCtx.newPage();
-      const otherGenericService = new GenericService(newPage.request);
-
-      USER_ALT = await otherGenericService.getLoggedInUser();
-
-      await newCtx.close();
+      USER = await mainUserService.getUser();
+      USER_ALT = await altUserService.getUser();
 
       STOCK_MOVEMENT = await stockMovementService.createInbound({
         requestorId: USER_ALT.id,

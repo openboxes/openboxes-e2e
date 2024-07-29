@@ -1,4 +1,3 @@
-import GenericService from '@/api/GenericService';
 import StockMovementService from '@/api/StockMovementService';
 import AppConfig from '@/config/AppConfig';
 import { expect, test } from '@/fixtures/fixtures';
@@ -16,16 +15,16 @@ test.describe('Use "Created By" filter', () => {
       browser,
       stockMovementService,
       supplierLocationService,
-      genericService,
+      mainUserService,
+      altUserService
     }) => {
       const supplierLocation = await supplierLocationService.getLocation();
-      const user = await genericService.getLoggedInUser();
-
-      USER = await genericService.getLoggedInUser();
+      USER = await mainUserService.getUser();
+      USER_ALT = await altUserService.getUser();
 
       await test.step('Create stock movement for main user', async () => {
         STOCK_MOVEMENT = await stockMovementService.createInbound({
-          requestorId: user.id,
+          requestorId: USER.id,
           originId: supplierLocation.id,
         });
       });
@@ -40,13 +39,10 @@ test.describe('Use "Created By" filter', () => {
           newPage.request
         );
         STOCK_MOVEMENT_OTHER = await otherSotckMvoementService.createInbound({
-          requestorId: user.id,
+          requestorId: USER.id,
           originId: supplierLocation.id,
         });
       });
-      const otherGenericService = new GenericService(newPage.request);
-      USER_ALT = await otherGenericService.getLoggedInUser();
-
       await newCtx.close();
     }
   );

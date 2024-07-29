@@ -71,6 +71,7 @@ class AppConfig {
 
     this.users = {
       main: new TestUserConfig({
+        key: 'main',
         username: env.get('USER_MAIN_USERNAME').required().asString(),
         password: env.get('USER_MAIN_PASSWORD').required().asString(),
         storageFileName: '.auth-storage-MAIN-USER.json',
@@ -83,6 +84,7 @@ class AppConfig {
         ]),
       }),
       alternative: new TestUserConfig({
+        key: 'alternative',
         username: env.get('USER_ALT_USERNAME').required().asString(),
         password: env.get('USER_ALT_PASSWORD').required().asString(),
         storageFileName: '.auth-storage-ALT-USER.json',

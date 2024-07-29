@@ -1,4 +1,3 @@
-import GenericService from '@/api/GenericService';
 import StockMovementService from '@/api/StockMovementService';
 import AppConfig from '@/config/AppConfig';
 import { expect, test } from '@/fixtures/fixtures';
@@ -7,15 +6,18 @@ import { StockMovementResponse, User } from '@/types';
 test.describe('Use "Updated By" filter', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
   let USER: User;
+  let USER_ALT: User;
 
   test.beforeEach(
     async ({
-      genericService,
+      mainUserService,
+      altUserService,
       supplierLocationService,
       stockMovementService,
     }) => {
       const supplierLocation = await supplierLocationService.getLocation();
-      USER = await genericService.getLoggedInUser();
+      USER = await mainUserService.getUser();
+      USER_ALT = await altUserService.getUser();
 
       STOCK_MOVEMENT = await stockMovementService.createInbound({
         requestorId: USER.id,
@@ -31,9 +33,9 @@ test.describe('Use "Updated By" filter', () => {
   test.skip('Only show stock movements updated by filtered user', async ({
     browser,
     inboundListPage,
-    mainProduct,
+    mainProductService,
   }) => {
-    const product = await mainProduct.getProduct();
+    const product = await mainProductService.getProduct();
 
     await test.step('Go to inbound list page', async () => {
       await inboundListPage.goToPage();
@@ -63,13 +65,10 @@ test.describe('Use "Updated By" filter', () => {
     });
     const newPage = await newCtx.newPage();
     const otherSotckMvoementService = new StockMovementService(newPage.request);
-    const otherGenericService = new GenericService(newPage.request);
-
-    const otherUser = await otherGenericService.getLoggedInUser();
 
     await test.step('Filter updated by other user', async () => {
       await inboundListPage.filters.updatedBySelect.findAndSelectOption(
-        otherUser.name
+        USER_ALT.name
       );
       await inboundListPage.filters.searchButton.click();
       await inboundListPage.waitForResponse();
@@ -96,7 +95,7 @@ test.describe('Use "Updated By" filter', () => {
 
     await test.step('Filter updated by other user', async () => {
       await inboundListPage.filters.updatedBySelect.findAndSelectOption(
-        otherUser.name
+        USER_ALT.name
       );
       await inboundListPage.filters.searchButton.click();
       await inboundListPage.waitForResponse();

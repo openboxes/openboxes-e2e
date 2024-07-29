@@ -27,6 +27,7 @@ import EditUserPage from '@/pages/user/editUser/EditUserPage';
 import UserListPage from '@/pages/user/UserListPage';
 import LocationData from '@/utils/LocationData';
 import ProductData from '@/utils/ProductData';
+import UserData from '@/utils/UserData';
 
 type Fixtures = {
   // PAGES
@@ -57,15 +58,18 @@ type Fixtures = {
   locationService: LocationService;
   authService: AuthService;
   stockMovementService: StockMovementService;
-  // LOCATIONS
+  // LOCATIONS DATA
   mainLocationService: LocationData;
   noManageInventoryDepotService: LocationData;
   supplierLocationService: LocationData;
   supplierAltLocationService: LocationData;
   depotLocationService: LocationData;
   // PRODUCT DATA
-  mainProduct: ProductData;
-  otherProduct: ProductData;
+  mainProductService: ProductData;
+  otherProductService: ProductData;
+  // USERS DATA
+  mainUserService: UserData;
+  altUserService: UserData;
 };
 
 export const test = baseTest.extend<Fixtures>({
@@ -119,10 +123,15 @@ export const test = baseTest.extend<Fixtures>({
   depotLocationService: async ({ page }, use) =>
     use(new LocationData('depot', page.request)),
   // PRODUCTS
-  mainProduct: async ({ page }, use) =>
+  mainProductService: async ({ page }, use) =>
     use(new ProductData('productOne', page.request)),
-  otherProduct: async ({ page }, use) =>
+  otherProductService: async ({ page }, use) =>
     use(new ProductData('productTwo', page.request)),
+  // USERS
+  mainUserService: async ({ page }, use) =>
+    use(new UserData('main', page.request)),
+  altUserService: async ({ page }, use) =>
+    use(new UserData('alternative', page.request)),
 });
 
 export { expect } from '@playwright/test';
