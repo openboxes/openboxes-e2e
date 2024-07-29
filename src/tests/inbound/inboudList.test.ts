@@ -6,9 +6,12 @@ import AppConfig from '@/config/AppConfig';
 import { ReceiptStatus } from '@/constants/ReceiptStatus';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
+import ReceivingPage from '@/pages/receiving/ReceivingPage';
+import StockMovementShowPage from '@/pages/stockMovementShow/StockMovementShowPage';
 import { StockMovementResponse } from '@/types';
 import { formatDate, getDayOfMonth, getToday } from '@/utils/DateUtils';
 import LocationData from '@/utils/LocationData';
+import ProductData from '@/utils/ProductData';
 import UniqueIdentifier from '@/utils/UniqueIdentifier';
 
 const uniqueIdentifier = new UniqueIdentifier();
@@ -31,6 +34,13 @@ test.describe('Inbond Stock Movement list page', () => {
       });
       await page.close();
     });
+
+    test.afterAll(async ({ browser }) => {
+      const page = await browser.newPage();
+      const stockMovementService = new StockMovementService(page.request);  
+      await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
+      await page.close();
+    })
 
     test('Search stock movement by identifier', async ({ inboundListPage }) => {
       await test.step('Go to inbound list page', async () => {
@@ -80,286 +90,402 @@ test.describe('Inbond Stock Movement list page', () => {
   });
 
   test.describe('Receipt status filter', () => {
-    test('Filter by "Pending" status', async ({
-      inboundListPage,
-      stockMovementService,
-      supplierLocation,
-    }) => {
-      const supplierLocationLocation = await supplierLocation.getLocation();
-      const STOCK_MOVEMENT = await stockMovementService.createInbound({
-        originId: supplierLocationLocation.id,
+    test.describe('Filter by "Pending" status', () => {
+      let STOCK_MOVEMENT: StockMovementResponse;
+      
+      test.beforeAll(async ({ browser }) => {
+        const page = await browser.newPage();
+        const supplierLocation = new LocationData('supplier', page.request);
+        const stockMovementService = new StockMovementService(page.request)
+
+        const supplierLocationLocation = await supplierLocation.getLocation();
+        STOCK_MOVEMENT = await stockMovementService.createInbound({
+          originId: supplierLocationLocation.id,
+        });
+        await page.close();
+      })
+      
+      test.afterAll(async ({ browser }) => {
+        const page = await browser.newPage();
+        const stockMovementService = new StockMovementService(page.request)
+
+        await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
+        await page.close();
+      })
+      
+      test('Only "Pending" stock movements should be visible in the table', async ({
+        inboundListPage,
+      }) => {
+
+        await test.step('Go to inbound list page', async () => {
+          await inboundListPage.goToPage();
+        });
+  
+        await test.step('Filter by Receipt status "Pending"', async () => {
+          await inboundListPage.filters.receiptStatusSelect.click();
+          await inboundListPage.filters.receiptStatusSelect
+            .getSelectOption(ReceiptStatus.PENDING)
+            .click();
+          await inboundListPage.filters.searchButton.click();
+          await inboundListPage.waitForResponse();
+        });
+  
+        await expect(inboundListPage.table.table).toContainText(STOCK_MOVEMENT.identifier);
+  
+        const statusColumnValues =
+          await inboundListPage.table.allStatusColumnCells.allTextContents();
+        const filteredEmptyValues = statusColumnValues.filter(
+          (it) => !!it.trim()
+        );
+  
+        expect(filteredEmptyValues).toEqual(
+          Array(filteredEmptyValues.length).fill(ReceiptStatus.PENDING)
+        );
       });
-
-      await test.step('Go to inbound list page', async () => {
-        await inboundListPage.goToPage();
-      });
-
-      await test.step('Filter by Receipt status "Pending"', async () => {
-        await inboundListPage.filters.receiptStatusSelect.click();
-        await inboundListPage.filters.receiptStatusSelect
-          .getSelectOption(ReceiptStatus.PENDING)
-          .click();
-        await inboundListPage.filters.searchButton.click();
-        await inboundListPage.waitForResponse();
-      });
-
-      await expect(inboundListPage.table.table).toContainText(STOCK_MOVEMENT.identifier);
-
-      const statusColumnValues =
-        await inboundListPage.table.allStatusColumnCells.allTextContents();
-      const filteredEmptyValues = statusColumnValues.filter(
-        (it) => !!it.trim()
-      );
-
-      expect(filteredEmptyValues).toEqual(
-        Array(filteredEmptyValues.length).fill(ReceiptStatus.PENDING)
-      );
     });
 
-    test('Filter by "Shipped" status', async ({
-      inboundListPage,
-      stockMovementService,
-      supplierLocation,
-      mainProduct,
-    }) => {
-      const supplierLocationLocation = await supplierLocation.getLocation();
-      const product = await mainProduct.getProduct();
+    test.describe('Filter by "Shipped" status', () => {
+      let STOCK_MOVEMENT: StockMovementResponse;
 
-      const STOCK_MOVEMENT = await stockMovementService.createInbound({
-        originId: supplierLocationLocation.id,
-      });
-      await stockMovementService.addItemsToInboundStockMovement(
-        STOCK_MOVEMENT.id,
-        [{ productId: product.id, quantity: 2 }]
-      );
+      test.beforeAll(async ({ browser }) => {
+        const page = await browser.newPage();
+        const supplierLocation = new LocationData('supplier', page.request);
+        const mainProduct = new ProductData('productOne', page.request);
+        const stockMovementService = new StockMovementService(page.request)
 
-      await stockMovementService.sendInboundStockMovement(STOCK_MOVEMENT.id, {
-        shipmentType: ShipmentType.AIR,
-      });
+        const supplierLocationLocation = await supplierLocation.getLocation();
+        STOCK_MOVEMENT = await stockMovementService.createInbound({
+          originId: supplierLocationLocation.id,
+        });
 
-      await test.step('Go to inbound list page', async () => {
-        await inboundListPage.goToPage();
-      });
+        const product = await mainProduct.getProduct();
 
-      await test.step('Filter by Receipt status "Shipped"', async () => {
-        await inboundListPage.filters.receiptStatusSelect.click();
-        await inboundListPage.filters.receiptStatusSelect
-          .getSelectOption(ReceiptStatus.SHIPPED)
-          .click();
-        await inboundListPage.filters.searchButton.click();
-        await inboundListPage.waitForResponse();
-      });
+        await stockMovementService.addItemsToInboundStockMovement(
+          STOCK_MOVEMENT.id,
+          [{ productId: product.id, quantity: 2 }]
+        );
+  
+        await stockMovementService.sendInboundStockMovement(STOCK_MOVEMENT.id, {
+          shipmentType: ShipmentType.AIR,
+        });
 
-      await expect(inboundListPage.table.table).toContainText(STOCK_MOVEMENT.identifier);
+        await page.close();
+      })
+      
+      test.afterAll(async ({ browser }) => {
+        const page = await browser.newPage();
+        const stockMovementService = new StockMovementService(page.request)
+        const stockMovementShowPage = new StockMovementShowPage(page)
 
-      const statusColumnValues =
-        await inboundListPage.table.allStatusColumnCells.allTextContents();
-      const filteredEmptyValues = statusColumnValues.filter(
-        (it) => !!it.trim()
-      );
-
-      expect(filteredEmptyValues).toEqual(
-        Array(filteredEmptyValues.length).fill(ReceiptStatus.SHIPPED)
-      );
-    });
-
-    test('Filter by "Received" status', async ({
-      inboundListPage,
-      stockMovementService,
-      supplierLocation,
-      mainProduct,
-      stockMovementShowPage,
-      receivingPage,
-    }) => {
-      const supplierLocationLocation = await supplierLocation.getLocation();
-      const product = await mainProduct.getProduct();
-
-      const STOCK_MOVEMENT = await stockMovementService.createInbound({
-        originId: supplierLocationLocation.id,
-      });
-      await stockMovementService.addItemsToInboundStockMovement(
-        STOCK_MOVEMENT.id,
-        [{ productId: product.id, quantity: 2 }]
-      );
-
-      await stockMovementService.sendInboundStockMovement(STOCK_MOVEMENT.id, {
-        shipmentType: ShipmentType.AIR,
-      });
-
-      await test.step('Go to stock movement show page', async () => {
         await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
-        await stockMovementShowPage.isLoaded();
-      });
+        await stockMovementShowPage.rollbackButton.click();
 
-      await test.step('Go to shipment receiving page', async () => {
-        await stockMovementShowPage.receiveButton.click();
-        await receivingPage.receivingStep.isLoaded();
-      });
+        await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
+        await page.close();
+      })
       
-      await test.step('Select all items to receiv', async () => {
-        await receivingPage.receivingStep.table.row(1).receivingNowField.textbox.fill('2');
-      })
-
-      await test.step('Go to Check page', async () => {
-        await receivingPage.nextButton.click();
-      })
-
-      await test.step('Receive shipment', async () => {
-        await receivingPage.checkStep.isLoaded();
-        await receivingPage.checkStep.receiveShipmentButton.click();
-      })
-
-      await test.step('Go to inbound list page', async () => {
-        await inboundListPage.goToPage();
+      test('Only "Shipped" stock movements should be visible in the table', async ({
+        inboundListPage,
+      }) => {
+        await test.step('Go to inbound list page', async () => {
+          await inboundListPage.goToPage();
+        });
+  
+        await test.step('Filter by Receipt status "Shipped"', async () => {
+          await inboundListPage.filters.receiptStatusSelect.click();
+          await inboundListPage.filters.receiptStatusSelect
+            .getSelectOption(ReceiptStatus.SHIPPED)
+            .click();
+          await inboundListPage.filters.searchButton.click();
+          await inboundListPage.waitForResponse();
+        });
+  
+        await expect(inboundListPage.table.table).toContainText(STOCK_MOVEMENT.identifier);
+  
+        const statusColumnValues =
+          await inboundListPage.table.allStatusColumnCells.allTextContents();
+        const filteredEmptyValues = statusColumnValues.filter(
+          (it) => !!it.trim()
+        );
+  
+        expect(filteredEmptyValues).toEqual(
+          Array(filteredEmptyValues.length).fill(ReceiptStatus.SHIPPED)
+        );
       });
+    })
 
-      await test.step('Filter by Receipt status "Received"', async () => {
-        await inboundListPage.filters.receiptStatusSelect.click();
-        await inboundListPage.filters.receiptStatusSelect
-          .getSelectOption(ReceiptStatus.RECEIVED)
-          .click();
-        await inboundListPage.filters.searchButton.click();
-        await inboundListPage.waitForResponse();
-      });
+    test.describe('Filter by "Received" status', () => {
+      let STOCK_MOVEMENT: StockMovementResponse;
+
+      test.beforeAll(async ({ browser }) => {
+        const page = await browser.newPage();
+        const stockMovementShowPage = new StockMovementShowPage(page);
+        const receivingPage = new ReceivingPage(page);
+        const supplierLocation = new LocationData('supplier', page.request);
+        const mainProduct = new ProductData('productOne', page.request);
+        const stockMovementService = new StockMovementService(page.request)
+
+        const supplierLocationLocation = await supplierLocation.getLocation();
+        STOCK_MOVEMENT = await stockMovementService.createInbound({
+          originId: supplierLocationLocation.id,
+        });
+
+        const product = await mainProduct.getProduct();
+
+        await stockMovementService.addItemsToInboundStockMovement(
+          STOCK_MOVEMENT.id,
+          [{ productId: product.id, quantity: 2 }]
+        );
+  
+        await stockMovementService.sendInboundStockMovement(STOCK_MOVEMENT.id, {
+          shipmentType: ShipmentType.AIR,
+        });
+
+        await test.step('Go to stock movement show page', async () => {
+          await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
+          await stockMovementShowPage.isLoaded();
+        });
+
+        await test.step('Go to shipment receiving page', async () => {
+          await stockMovementShowPage.receiveButton.click();
+          await receivingPage.receivingStep.isLoaded();
+        });
+        
+        await test.step('Select all items to receiv', async () => {
+          await receivingPage.receivingStep.table.row(1).receivingNowField.textbox.fill('2');
+        })
+
+        await test.step('Go to Check page', async () => {
+          await receivingPage.nextButton.click();
+        })
+
+        await test.step('Receive shipment', async () => {
+          await receivingPage.checkStep.isLoaded();
+          await receivingPage.checkStep.receiveShipmentButton.click();
+        });
+
+        await page.close();
+      })
       
-      await expect(inboundListPage.table.table).toContainText(STOCK_MOVEMENT.identifier);
+      test.afterAll(async ({ browser }) => {
+        const page = await browser.newPage();
+        const stockMovementService = new StockMovementService(page.request)
+        const stockMovementShowPage = new StockMovementShowPage(page)
 
-      const statusColumnValues =
-        await inboundListPage.table.allStatusColumnCells.allTextContents();
-      const filteredEmptyValues = statusColumnValues.filter(
-        (it) => !!it.trim()
-      );
-
-      expect(filteredEmptyValues).toEqual(
-        Array(filteredEmptyValues.length).fill(ReceiptStatus.RECEIVED)
-      );
-    });
-
-    test('Filter by "Receiving" status', async ({
-      inboundListPage,
-      stockMovementService,
-      supplierLocation,
-      mainProduct,
-      otherProduct,
-      stockMovementShowPage,
-      receivingPage,
-    }) => {
-      const supplierLocationLocation = await supplierLocation.getLocation();
-      const PRODUCT = await mainProduct.getProduct();
-      const PRODUCT_TWO = await otherProduct.getProduct();
-
-      const STOCK_MOVEMENT = await stockMovementService.createInbound({
-        originId: supplierLocationLocation.id,
-      });
-      await stockMovementService.addItemsToInboundStockMovement(
-        STOCK_MOVEMENT.id,
-        [
-          { productId: PRODUCT.id, quantity: 2 },
-          { productId: PRODUCT_TWO.id, quantity: 2 },
-        ]
-      );
-
-      await stockMovementService.sendInboundStockMovement(STOCK_MOVEMENT.id, {
-        shipmentType: ShipmentType.AIR,
-      });
-
-      await test.step('Go to stock movement show page', async () => {
         await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
-        await stockMovementShowPage.isLoaded();
-      });
+        await stockMovementShowPage.rollbackLastReceiptButton.click();
+        await stockMovementShowPage.rollbackButton.click();
 
-      await test.step('Go to shipment receiving page', async () => {
-        await stockMovementShowPage.receiveButton.click();
-        await receivingPage.receivingStep.isLoaded();
-      });
-      
-      await test.step('Select all items to receiv', async () => {
-        await receivingPage.receivingStep.table.row(1).receivingNowField.textbox.fill('2');
+        await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
+        await page.close();
       })
 
-      await test.step('Go to Check page', async () => {
-        await receivingPage.nextButton.click();
-      })
+      test('Only "Received" stock movements should be visible in the table', async ({
+        inboundListPage,
+      }) => {
+        await test.step('Go to inbound list page', async () => {
+          await inboundListPage.goToPage();
+        });
 
-      await test.step('Receive shipment', async () => {
-        await receivingPage.checkStep.isLoaded();
-        await receivingPage.checkStep.receiveShipmentButton.click();
-      })
+        await test.step('Filter by Receipt status "Received"', async () => {
+          await inboundListPage.filters.receiptStatusSelect.click();
+          await inboundListPage.filters.receiptStatusSelect
+            .getSelectOption(ReceiptStatus.RECEIVED)
+            .click();
+          await inboundListPage.filters.searchButton.click();
+          await inboundListPage.waitForResponse();
+        });
+        
+        await expect(inboundListPage.table.table).toContainText(STOCK_MOVEMENT.identifier);
 
-      await test.step('Go to inbound list page', async () => {
-        await inboundListPage.goToPage();
+        const statusColumnValues =
+          await inboundListPage.table.allStatusColumnCells.allTextContents();
+        const filteredEmptyValues = statusColumnValues.filter(
+          (it) => !!it.trim()
+        );
+
+        expect(filteredEmptyValues).toEqual(
+          Array(filteredEmptyValues.length).fill(ReceiptStatus.RECEIVED)
+        );
       });
-
-      await test.step('Filter by Receipt status "Receiving"', async () => {
-        await inboundListPage.filters.receiptStatusSelect.click();
-        await inboundListPage.filters.receiptStatusSelect
-          .getSelectOption(ReceiptStatus.RECEIVING)
-          .click();
-        await inboundListPage.filters.searchButton.click();
-        await inboundListPage.waitForResponse();
-      });
-
-      await expect(inboundListPage.table.table).toContainText(STOCK_MOVEMENT.identifier);
-      
-      const statusColumnValues =
-        await inboundListPage.table.allStatusColumnCells.allTextContents();
-      const filteredEmptyValues = statusColumnValues.filter(
-        (it) => !!it.trim()
-      );
-
-      expect(filteredEmptyValues).toEqual(
-        Array(filteredEmptyValues.length).fill(ReceiptStatus.RECEIVING)
-      );
     });
 
-    test('Filter by multiple statuses - "Pending" and "Shipped"', async ({
-      inboundListPage,
-      stockMovementService,
-      supplierLocation,
-      mainProduct,
-    }) => {
-      const supplierLocationLocation = await supplierLocation.getLocation();
-      const product = await mainProduct.getProduct();
+    test.describe('Filter by "Receiving" status', () => {
+      let STOCK_MOVEMENT: StockMovementResponse;
 
-      const STOCK_MOVEMENT = await stockMovementService.createInbound({
-        originId: supplierLocationLocation.id,
+      test.beforeAll(async ({ browser }) => {
+        const page = await browser.newPage();
+        const stockMovementShowPage = new StockMovementShowPage(page);
+        const receivingPage = new ReceivingPage(page);
+        const supplierLocation = new LocationData('supplier', page.request);
+        const mainProduct = new ProductData('productOne', page.request);
+        const otherProduct = new ProductData('productTwo', page.request);
+        const stockMovementService = new StockMovementService(page.request)
+
+        const supplierLocationLocation = await supplierLocation.getLocation();
+        STOCK_MOVEMENT = await stockMovementService.createInbound({
+          originId: supplierLocationLocation.id,
+        });
+
+        const product = await mainProduct.getProduct();
+        const productTwo = await otherProduct.getProduct();
+
+        await stockMovementService.addItemsToInboundStockMovement(
+          STOCK_MOVEMENT.id,
+          [
+            { productId: product.id, quantity: 2 },
+            { productId: productTwo.id, quantity: 2 }
+          ]
+        );
+  
+        await stockMovementService.sendInboundStockMovement(STOCK_MOVEMENT.id, {
+          shipmentType: ShipmentType.AIR,
+        });
+
+        await test.step('Go to stock movement show page', async () => {
+          await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
+          await stockMovementShowPage.isLoaded();
+        });
+
+        await test.step('Go to shipment receiving page', async () => {
+          await stockMovementShowPage.receiveButton.click();
+          await receivingPage.receivingStep.isLoaded();
+        });
+        
+        await test.step('Select all items to receiv', async () => {
+          await receivingPage.receivingStep.table.row(1).receivingNowField.textbox.fill('2');
+        })
+
+        await test.step('Go to Check page', async () => {
+          await receivingPage.nextButton.click();
+        })
+
+        await test.step('Receive shipment', async () => {
+          await receivingPage.checkStep.isLoaded();
+          await receivingPage.checkStep.receiveShipmentButton.click();
+        });
+
+        await page.close();
+      })
+      
+      test.afterAll(async ({ browser }) => {
+        const page = await browser.newPage();
+        const stockMovementService = new StockMovementService(page.request)
+        const stockMovementShowPage = new StockMovementShowPage(page)
+
+        await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
+        await stockMovementShowPage.rollbackLastReceiptButton.click();
+        await stockMovementShowPage.rollbackButton.click();
+
+        await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
+        await page.close();
+      })
+
+      test('Only "Receiving" stock movements should be visible in the table', async ({
+          inboundListPage,
+        }) => {
+          await test.step('Go to inbound list page', async () => {
+            await inboundListPage.goToPage();
+          });
+
+          await test.step('Filter by Receipt status "Receiving"', async () => {
+            await inboundListPage.filters.receiptStatusSelect.click();
+            await inboundListPage.filters.receiptStatusSelect
+              .getSelectOption(ReceiptStatus.RECEIVING)
+              .click();
+            await inboundListPage.filters.searchButton.click();
+            await inboundListPage.waitForResponse();
+          });
+
+          await expect(inboundListPage.table.table).toContainText(STOCK_MOVEMENT.identifier);
+          
+          const statusColumnValues =
+            await inboundListPage.table.allStatusColumnCells.allTextContents();
+          const filteredEmptyValues = statusColumnValues.filter(
+            (it) => !!it.trim()
+          );
+
+          expect(filteredEmptyValues).toEqual(
+            Array(filteredEmptyValues.length).fill(ReceiptStatus.RECEIVING)
+          );
       });
-
-      const STOCK_MOVEMENT_TWO = await stockMovementService.createInbound({
-        originId: supplierLocationLocation.id,
-      });
-      await stockMovementService.addItemsToInboundStockMovement(
-        STOCK_MOVEMENT_TWO.id,
-        [{ productId: product.id, quantity: 2 }]
-      );
-
-      await stockMovementService.sendInboundStockMovement(STOCK_MOVEMENT_TWO.id, {
-        shipmentType: ShipmentType.AIR,
-      });
-
-      await test.step('Go to inbound list page', async () => {
-        await inboundListPage.goToPage();
-      });
-
-      await test.step('Select Receipt statuses "Pending" and "Shipped"', async () => {
-        await inboundListPage.filters.receiptStatusSelect.click();
-        await inboundListPage.filters.receiptStatusSelect
-          .getSelectOption(ReceiptStatus.PENDING)
-          .click();
-
-        await inboundListPage.filters.receiptStatusSelect
-          .getSelectOption(ReceiptStatus.SHIPPED)
-          .click();
-      });
-
-      await test.step('Search by provided receipt statuses', async () => {
-        await inboundListPage.filters.searchButton.click();
-        await inboundListPage.waitForResponse();
-      });
-
-      await expect(inboundListPage.table.table).toContainText(STOCK_MOVEMENT.identifier);
-      await expect(inboundListPage.table.table).toContainText(STOCK_MOVEMENT_TWO.identifier);
     });
+
+    test.describe('Filter by multiple statuses - "Pending" and "Shipped"', () => {
+      let STOCK_MOVEMENT: StockMovementResponse;
+      let STOCK_MOVEMENT_TWO: StockMovementResponse;
+
+      test.beforeAll(async ({ browser }) => {
+        const page = await browser.newPage();
+        const supplierLocation = new LocationData('supplier', page.request);
+        const mainProduct = new ProductData('productOne', page.request);
+        const stockMovementService = new StockMovementService(page.request)
+
+        const supplierLocationLocation = await supplierLocation.getLocation();
+        STOCK_MOVEMENT = await stockMovementService.createInbound({
+          originId: supplierLocationLocation.id,
+        });
+
+        STOCK_MOVEMENT_TWO = await stockMovementService.createInbound({
+          originId: supplierLocationLocation.id,
+        });
+
+        const product = await mainProduct.getProduct();
+
+        await stockMovementService.addItemsToInboundStockMovement(
+          STOCK_MOVEMENT_TWO.id,
+          [{ productId: product.id, quantity: 2 }]
+        );
+  
+        await stockMovementService.sendInboundStockMovement(STOCK_MOVEMENT_TWO.id, {
+          shipmentType: ShipmentType.AIR,
+        });
+
+        await page.close();
+      })
+      
+      test.afterAll(async ({ browser }) => {
+        const page = await browser.newPage();
+        const stockMovementService = new StockMovementService(page.request)
+        const stockMovementShowPage = new StockMovementShowPage(page)
+
+        await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
+
+        await stockMovementShowPage.goToPage(STOCK_MOVEMENT_TWO.id);
+        await stockMovementShowPage.rollbackButton.click();
+
+        await stockMovementService.deleteStockMovement(STOCK_MOVEMENT_TWO.id);
+
+        await page.close();
+      })
+      
+      test('Only "Shipped" and "Pending" stock movements should be visible in the table', async ({
+        inboundListPage,
+      }) => {
+        await test.step('Go to inbound list page', async () => {
+          await inboundListPage.goToPage();
+        });
+  
+        await test.step('Select Receipt statuses "Pending" and "Shipped"', async () => {
+          await inboundListPage.filters.receiptStatusSelect.click();
+          await inboundListPage.filters.receiptStatusSelect
+            .getSelectOption(ReceiptStatus.PENDING)
+            .click();
+  
+          await inboundListPage.filters.receiptStatusSelect
+            .getSelectOption(ReceiptStatus.SHIPPED)
+            .click();
+        });
+  
+        await test.step('Search by provided receipt statuses', async () => {
+          await inboundListPage.filters.searchButton.click();
+          await inboundListPage.waitForResponse();
+        });
+  
+        await expect(inboundListPage.table.table).toContainText(STOCK_MOVEMENT.identifier);
+        await expect(inboundListPage.table.table).toContainText(STOCK_MOVEMENT_TWO.identifier);
+      });
+    })
   });
 
   test('Use "Origin" filter', async ({

@@ -60,6 +60,14 @@ class StockMovementShowPage extends BasePageModel {
     return this.page.getByRole('link', { name: 'Edit' });
   }
 
+  get rollbackButton() {
+    return this.page.getByRole('link', { name: 'Rollback' });
+  }
+
+  get rollbackLastReceiptButton() {
+    return this.page.getByRole('link', { name: 'Rollback Last Receipt' });
+  }
+
   get receiveButton() {
     return this.page.getByRole('link', { name: 'Receive' });
   }

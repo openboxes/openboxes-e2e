@@ -50,6 +50,10 @@ class StockMovementService extends BaseServiceModel {
     return await apiResponse.json();
   }
 
+  async deleteStockMovement(id: string) {
+    await this.request.delete(`./api/stockMovements/${id}`);
+  }
+
   async updateItems(
     id: string,
     payload: UpdateStockMovementItemsPayload
