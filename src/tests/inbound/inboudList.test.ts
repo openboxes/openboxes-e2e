@@ -1,4 +1,3 @@
-/* eslint-disable playwright/expect-expect */
 import dayjs from 'dayjs';
 
 import GenericService from '@/api/GenericService';

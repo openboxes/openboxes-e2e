@@ -1,5 +1,3 @@
-/* eslint-disable playwright/expect-expect */
-
 import AppConfig from '@/config/AppConfig';
 import { test } from '@/fixtures/fixtures';
 import { writeToFile } from '@/utils/FileIOUtils';

@@ -228,4 +228,5 @@ type UpdateStockMovementPayload = {
 type AppContextResponse = {
   location: LocationResponse;
   user: User;
+  currentLocationRoles: string[];
 };
