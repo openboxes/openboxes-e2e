@@ -949,7 +949,7 @@ test.describe('Check if ward location is present in location chooser based on us
     userListPage,
     editUserPage,
     browser,
-    mainLocation,
+    mainLocationService,
   }) => {
     await test.step('Go to edit user page', async () => {
       await userListPage.goToPage();
@@ -994,7 +994,7 @@ test.describe('Check if ward location is present in location chooser based on us
     });
 
     await test.step('Select main location in location chooser', async () => {
-      const location = await mainLocation.getLocation();
+      const location = await mainLocationService.getLocation();
       await locationChooser
         .getOrganization(location.organization?.name)
         .click();
@@ -1038,7 +1038,7 @@ test.describe('Check if ward location is present in location chooser based on us
     userListPage,
     editUserPage,
     browser,
-    mainLocation,
+    mainLocationService,
   }) => {
     await test.step('Go to edit user page', async () => {
       await userListPage.goToPage();
@@ -1086,7 +1086,7 @@ test.describe('Check if ward location is present in location chooser based on us
     });
 
     await test.step('Select main location in location chooser', async () => {
-      const location = await mainLocation.getLocation();
+      const location = await mainLocationService.getLocation();
       await locationChooser
         .getOrganization(location.organization?.name)
         .click();
@@ -1130,7 +1130,7 @@ test.describe('Check if ward location is present in location chooser based on us
     userListPage,
     editUserPage,
     browser,
-    mainLocation,
+    mainLocationService,
   }) => {
     await test.step('Go to edit user page', async () => {
       await userListPage.goToPage();
@@ -1178,7 +1178,7 @@ test.describe('Check if ward location is present in location chooser based on us
     });
 
     await test.step('Select main location in location chooser', async () => {
-      const location = await mainLocation.getLocation();
+      const location = await mainLocationService.getLocation();
       await locationChooser
         .getOrganization(location.organization?.name)
         .click();
@@ -1353,7 +1353,7 @@ test.describe('Check if ward location is present in location chooser based on us
     userListPage,
     editUserPage,
     browser,
-    mainLocation,
+    mainLocationService,
   }) => {
     await test.step('Go to edit user page', async () => {
       await userListPage.goToPage();
@@ -1398,7 +1398,7 @@ test.describe('Check if ward location is present in location chooser based on us
     });
 
     await test.step('Select main location in location chooser', async () => {
-      const location = await mainLocation.getLocation();
+      const location = await mainLocationService.getLocation();
       await locationChooser
         .getOrganization(location.organization?.name)
         .click();
@@ -1442,7 +1442,7 @@ test.describe('Check if ward location is present in location chooser based on us
     userListPage,
     editUserPage,
     browser,
-    mainLocation,
+    mainLocationService,
   }) => {
     await test.step('Go to edit user page', async () => {
       await userListPage.goToPage();
@@ -1490,7 +1490,7 @@ test.describe('Check if ward location is present in location chooser based on us
     });
 
     await test.step('Select main location in location chooser', async () => {
-      const location = await mainLocation.getLocation();
+      const location = await mainLocationService.getLocation();
       await locationChooser
         .getOrganization(location.organization?.name)
         .click();

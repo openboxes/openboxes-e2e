@@ -4,20 +4,20 @@ import { formatDate, getDayOfMonth, getToday } from '@/utils/DateUtils';
 
 test('Clicking clear button should clear all of the editable filters', async ({
   inboundListPage,
-  supplierLocation,
-  mainLocation,
+  supplierLocationService,
+  mainLocationService,
   genericService,
 }) => {
-  const mainLocationLocation = await mainLocation.getLocation();
-  const supplierLocationLocation = await supplierLocation.getLocation();
+  const mainLocation = await mainLocationService.getLocation();
+  const supplierLocation = await supplierLocationService.getLocation();
   const user = await genericService.getLoggedInUser();
   const TODAY = getToday();
 
   const filters = {
     search: 'TEST',
     receiptStatus: 'Created',
-    destination: mainLocationLocation.name,
-    origin: supplierLocationLocation.name,
+    destination: mainLocation.name,
+    origin: supplierLocation.name,
     shipmentType: 'Air',
     requestedBy: user.name,
     createdBy: user.name,
@@ -43,7 +43,7 @@ test('Clicking clear button should clear all of the editable filters', async ({
 
   await test.step('Fill origin filter', async () => {
     await inboundListPage.filters.originSelect.findAndSelectOption(
-      supplierLocationLocation.name
+      supplierLocation.name
     );
   });
 
@@ -161,7 +161,6 @@ test('Clicking clear button should clear all of the editable filters', async ({
 });
 
 test('"Destination" filter should be disabled', async ({ inboundListPage }) => {
-  
   await test.step('Go to inbound list page', async () => {
     await inboundListPage.goToPage();
   });
@@ -172,39 +171,47 @@ test('"Destination" filter should be disabled', async ({ inboundListPage }) => {
 test.describe('Switch locations on inbound list page', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
 
-  test.beforeEach(async ({ supplierLocation, stockMovementService }) => {
-    const supplierLocationLocation = await supplierLocation.getLocation();
+  test.beforeEach(async ({ supplierLocationService, stockMovementService }) => {
+    const supplierLocation = await supplierLocationService.getLocation();
 
     STOCK_MOVEMENT = await stockMovementService.createInbound({
-      originId: supplierLocationLocation.id,
+      originId: supplierLocation.id,
     });
   });
 
-  test.afterEach(async ({ stockMovementService , navbar, locationChooser, mainLocation, inboundListPage }) => {
-    await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
+  test.afterEach(
+    async ({
+      stockMovementService,
+      navbar,
+      locationChooser,
+      mainLocationService,
+      inboundListPage,
+    }) => {
+      await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
 
-    await inboundListPage.goToPage();
+      await inboundListPage.goToPage();
 
-    const location = await mainLocation.getLocation();
+      const location = await mainLocationService.getLocation();
 
-    await test.step('Switch to other depot location', async () => {
-      await navbar.locationChooserButton.click();
-      await locationChooser
-        .getOrganization(location.organization?.name as string)
-        .click();
-      await locationChooser.getLocation(location.name).click();
-    });
-  });
+      await test.step('Switch to other depot location', async () => {
+        await navbar.locationChooserButton.click();
+        await locationChooser
+          .getOrganization(location.organization?.name as string)
+          .click();
+        await locationChooser.getLocation(location.name).click();
+      });
+    }
+  );
 
   test('Destination filter should change to current logged in location', async ({
     inboundListPage,
-    mainLocation,
-    depotLocation,
+    mainLocationService,
+    depotLocationService,
     navbar,
     locationChooser,
   }) => {
-    const mainLocationLocation = await mainLocation.getLocation();
-    const depotLocationLocation = await depotLocation.getLocation();
+    const mainLocation = await mainLocationService.getLocation();
+    const depotLocation = await depotLocationService.getLocation();
 
     await test.step('Go to inbound list page', async () => {
       await inboundListPage.goToPage();
@@ -213,44 +220,44 @@ test.describe('Switch locations on inbound list page', () => {
     await test.step('Assert that destination filter is fillted with current logged in location', async () => {
       await expect(
         inboundListPage.filters.destinationSelect.field
-      ).toContainText(mainLocationLocation.name);
+      ).toContainText(mainLocation.name);
     });
 
     await test.step('Switch to other depot location', async () => {
       await navbar.locationChooserButton.click();
       await locationChooser
-        .getOrganization(depotLocationLocation.organization?.name as string)
+        .getOrganization(depotLocation.organization?.name as string)
         .click();
-      await locationChooser.getLocation(depotLocationLocation.name).click();
+      await locationChooser.getLocation(depotLocation.name).click();
     });
 
     await test.step('Assert that destination filter is fillted with current logged in location', async () => {
       await expect(
         inboundListPage.filters.destinationSelect.field
-      ).toContainText(depotLocationLocation.name);
+      ).toContainText(depotLocation.name);
     });
   });
 
   test('All editable fields should be cleared when switching a location', async ({
     inboundListPage,
-    supplierLocation,
-    mainLocation,
-    depotLocation,
+    supplierLocationService,
+    mainLocationService,
+    depotLocationService,
     genericService,
     locationChooser,
     navbar,
   }) => {
-    const mainLocationLocation = await mainLocation.getLocation();
-    const depotLocationLocation = await depotLocation.getLocation();
-    const supplierLocationLocation = await supplierLocation.getLocation();
+    const mainLocation = await mainLocationService.getLocation();
+    const depotLocation = await depotLocationService.getLocation();
+    const supplierLocation = await supplierLocationService.getLocation();
     const user = await genericService.getLoggedInUser();
     const TODAY = getToday();
 
     const filters = {
       search: 'TEST',
       receiptStatus: 'Created',
-      destination: mainLocationLocation.name,
-      origin: supplierLocationLocation.name,
+      destination: mainLocation.name,
+      origin: supplierLocation.name,
       shipmentType: 'Air',
       requestedBy: user.name,
       createdBy: user.name,
@@ -282,7 +289,7 @@ test.describe('Switch locations on inbound list page', () => {
 
     await test.step('Fill origin filter', async () => {
       await inboundListPage.filters.originSelect.findAndSelectOption(
-        supplierLocationLocation.name
+        supplierLocation.name
       );
     });
 
@@ -358,9 +365,9 @@ test.describe('Switch locations on inbound list page', () => {
     await test.step('Switch to other depot location', async () => {
       await navbar.locationChooserButton.click();
       await locationChooser
-        .getOrganization(depotLocationLocation.organization?.name as string)
+        .getOrganization(depotLocation.organization?.name as string)
         .click();
-      await locationChooser.getLocation(depotLocationLocation.name).click();
+      await locationChooser.getLocation(depotLocation.name).click();
     });
 
     await test.step('Assert that created stock movement is visible in the table', async () => {

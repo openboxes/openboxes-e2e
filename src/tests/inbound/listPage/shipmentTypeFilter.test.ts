@@ -14,12 +14,12 @@ test.describe('Shipment type filter', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
 
   test.beforeEach(
-    async ({ supplierLocation, mainProduct, stockMovementService }) => {
-      const supplierLocationLocation = await supplierLocation.getLocation();
+    async ({ supplierLocationService, mainProduct, stockMovementService }) => {
+      const supplierLocation = await supplierLocationService.getLocation();
       const product = await mainProduct.getProduct();
 
       STOCK_MOVEMENT = await stockMovementService.createInbound({
-        originId: supplierLocationLocation.id,
+        originId: supplierLocation.id,
       });
 
       await stockMovementService.addItemsToInboundStockMovement(
@@ -103,12 +103,12 @@ test.describe('Multiple shipment types', () => {
   let STOCK_MOVEMENT_SEA: StockMovementResponse;
 
   test.beforeEach(
-    async ({ supplierLocation, mainProduct, stockMovementService }) => {
-      const supplierLocationLocation = await supplierLocation.getLocation();
+    async ({ supplierLocationService, mainProduct, stockMovementService }) => {
+      const supplierLocation = await supplierLocationService.getLocation();
       const product = await mainProduct.getProduct();
 
       STOCK_MOVEMENT_LAND = await stockMovementService.createInbound({
-        originId: supplierLocationLocation.id,
+        originId: supplierLocation.id,
       });
       await stockMovementService.addItemsToInboundStockMovement(
         STOCK_MOVEMENT_LAND.id,
@@ -122,7 +122,7 @@ test.describe('Multiple shipment types', () => {
       );
 
       STOCK_MOVEMENT_SEA = await stockMovementService.createInbound({
-        originId: supplierLocationLocation.id,
+        originId: supplierLocation.id,
       });
       await stockMovementService.addItemsToInboundStockMovement(
         STOCK_MOVEMENT_SEA.id,

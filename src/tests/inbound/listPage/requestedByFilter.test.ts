@@ -12,11 +12,11 @@ test.describe('"Requested By" filter', () => {
   test.beforeEach(
     async ({
       genericService,
-      supplierLocation,
+      supplierLocationService,
       browser,
       stockMovementService,
     }) => {
-      const supplierLocationLocation = await supplierLocation.getLocation();
+      const supplierLocation = await supplierLocationService.getLocation();
       USER = await genericService.getLoggedInUser();
 
       const newCtx = await browser.newContext({
@@ -31,7 +31,7 @@ test.describe('"Requested By" filter', () => {
 
       STOCK_MOVEMENT = await stockMovementService.createInbound({
         requestorId: USER_ALT.id,
-        originId: supplierLocationLocation.id,
+        originId: supplierLocation.id,
       });
     }
   );

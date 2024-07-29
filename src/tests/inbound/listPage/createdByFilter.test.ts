@@ -15,10 +15,10 @@ test.describe('Use "Created By" filter', () => {
     async ({
       browser,
       stockMovementService,
-      supplierLocation,
+      supplierLocationService,
       genericService,
     }) => {
-      const supplierLocationLocation = await supplierLocation.getLocation();
+      const supplierLocation = await supplierLocationService.getLocation();
       const user = await genericService.getLoggedInUser();
 
       USER = await genericService.getLoggedInUser();
@@ -26,7 +26,7 @@ test.describe('Use "Created By" filter', () => {
       await test.step('Create stock movement for main user', async () => {
         STOCK_MOVEMENT = await stockMovementService.createInbound({
           requestorId: user.id,
-          originId: supplierLocationLocation.id,
+          originId: supplierLocation.id,
         });
       });
 
@@ -41,7 +41,7 @@ test.describe('Use "Created By" filter', () => {
         );
         STOCK_MOVEMENT_OTHER = await otherSotckMvoementService.createInbound({
           requestorId: user.id,
-          originId: supplierLocationLocation.id,
+          originId: supplierLocation.id,
         });
       });
       const otherGenericService = new GenericService(newPage.request);

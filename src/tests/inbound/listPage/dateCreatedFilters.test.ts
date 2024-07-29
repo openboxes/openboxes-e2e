@@ -7,11 +7,11 @@ import { formatDate, getDayOfMonth, getToday } from '@/utils/DateUtils';
 test.describe('Date created filters', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
 
-  test.beforeEach(async ({ stockMovementService, supplierLocation }) => {
-    const supplierLocationLocation = await supplierLocation.getLocation();
+  test.beforeEach(async ({ stockMovementService, supplierLocationService }) => {
+    const supplierLocation = await supplierLocationService.getLocation();
 
     STOCK_MOVEMENT = await stockMovementService.createInbound({
-      originId: supplierLocationLocation.id,
+      originId: supplierLocation.id,
     });
   });
 

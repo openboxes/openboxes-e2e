@@ -4,11 +4,11 @@ import { StockMovementResponse } from '@/types';
 test.describe('Search filter', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
 
-  test.beforeEach(async ({ supplierLocation, stockMovementService }) => {
-    const supplierLocationLocation = await supplierLocation.getLocation();
+  test.beforeEach(async ({ supplierLocationService, stockMovementService }) => {
+    const supplierLocation = await supplierLocationService.getLocation();
 
     STOCK_MOVEMENT = await stockMovementService.createInbound({
-      originId: supplierLocationLocation.id,
+      originId: supplierLocation.id,
     });
   });
 

@@ -756,9 +756,9 @@ test.describe('Create Inbound Stock Movement', () => {
       createInboundPage,
       locationChooser,
       navbar,
-      depotLocation,
+      depotLocationService,
     }) => {
-      const OTHER_LOCATION = await depotLocation.getLocation();
+      const OTHER_LOCATION = await depotLocationService.getLocation();
 
       await test.step('Add items step', async () => {
         const rowData = ROWS[0];

@@ -6,17 +6,21 @@ test.describe('Use "Origin" filter', () => {
   let STOCK_MOVEMENT_SUPPLIER_ALT: StockMovementResponse;
 
   test.beforeEach(
-    async ({ stockMovementService, supplierLocation, supplierAltLocation }) => {
-      const supplierLocationLocation = await supplierLocation.getLocation();
-      const supplierAltLocationLocation =
-        await supplierAltLocation.getLocation();
+    async ({
+      stockMovementService,
+      supplierLocationService,
+      supplierAltLocationService,
+    }) => {
+      const supplierLocation = await supplierLocationService.getLocation();
+      const supplierAltLocation =
+        await supplierAltLocationService.getLocation();
 
       STOCK_MOVEMENT_SUPPLIER = await stockMovementService.createInbound({
-        originId: supplierLocationLocation.id,
+        originId: supplierLocation.id,
       });
 
       STOCK_MOVEMENT_SUPPLIER_ALT = await stockMovementService.createInbound({
-        originId: supplierAltLocationLocation.id,
+        originId: supplierAltLocation.id,
       });
     }
   );
@@ -28,12 +32,12 @@ test.describe('Use "Origin" filter', () => {
     );
   });
   test('Only show stock movements with origin location that is filtered by', async ({
-    supplierAltLocation,
-    supplierLocation,
+    supplierAltLocationService,
+    supplierLocationService,
     inboundListPage,
   }) => {
-    const supplierLocationLocation = await supplierLocation.getLocation();
-    const supplierAltLocationLocation = await supplierAltLocation.getLocation();
+    const supplierLocation = await supplierLocationService.getLocation();
+    const supplierAltLocation = await supplierAltLocationService.getLocation();
 
     await test.step('Go to inbound list page', async () => {
       await inboundListPage.goToPage();
@@ -41,7 +45,7 @@ test.describe('Use "Origin" filter', () => {
 
     await test.step('Filter by origin of one supplier location', async () => {
       await inboundListPage.filters.originSelect.findAndSelectOption(
-        supplierLocationLocation.name
+        supplierLocation.name
       );
       await inboundListPage.filters.searchButton.click();
       await inboundListPage.waitForResponse();
@@ -55,9 +59,7 @@ test.describe('Use "Origin" filter', () => {
 
     expect(filteredEmptyOriginValues.length).toBeGreaterThan(0);
     expect(filteredEmptyOriginValues).toEqual(
-      Array(filteredEmptyOriginValues.length).fill(
-        supplierLocationLocation.name
-      )
+      Array(filteredEmptyOriginValues.length).fill(supplierLocation.name)
     );
     await expect(inboundListPage.table.table).toContainText(
       STOCK_MOVEMENT_SUPPLIER.identifier
@@ -68,7 +70,7 @@ test.describe('Use "Origin" filter', () => {
 
     await test.step('Filter by origin of alternative supplier location', async () => {
       await inboundListPage.filters.originSelect.findAndSelectOption(
-        supplierAltLocationLocation.name
+        supplierAltLocation.name
       );
       await inboundListPage.filters.searchButton.click();
       await inboundListPage.waitForResponse();
@@ -82,7 +84,7 @@ test.describe('Use "Origin" filter', () => {
     expect(filteredEmptyOriginValuesAltSupplier.length).toBeGreaterThan(0);
     expect(filteredEmptyOriginValuesAltSupplier).toEqual(
       Array(filteredEmptyOriginValuesAltSupplier.length).fill(
-        supplierAltLocationLocation.name
+        supplierAltLocation.name
       )
     );
     await expect(inboundListPage.table.table).toContainText(

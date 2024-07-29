@@ -58,11 +58,11 @@ type Fixtures = {
   authService: AuthService;
   stockMovementService: StockMovementService;
   // LOCATIONS
-  mainLocation: LocationData;
-  noManageInventoryDepot: LocationData;
-  supplierLocation: LocationData;
-  supplierAltLocation: LocationData;
-  depotLocation: LocationData;
+  mainLocationService: LocationData;
+  noManageInventoryDepotService: LocationData;
+  supplierLocationService: LocationData;
+  supplierAltLocationService: LocationData;
+  depotLocationService: LocationData;
   // PRODUCT DATA
   mainProduct: ProductData;
   otherProduct: ProductData;
@@ -108,15 +108,15 @@ export const test = baseTest.extend<Fixtures>({
   stockMovementService: async ({ page }, use) =>
     use(new StockMovementService(page.request)),
   // LOCATIONS
-  mainLocation: async ({ page }, use) =>
+  mainLocationService: async ({ page }, use) =>
     use(new LocationData('main', page.request)),
-  noManageInventoryDepot: async ({ page }, use) =>
+  noManageInventoryDepotService: async ({ page }, use) =>
     use(new LocationData('noManageInventoryDepot', page.request)),
-  supplierLocation: async ({ page }, use) =>
+  supplierLocationService: async ({ page }, use) =>
     use(new LocationData('supplier', page.request)),
-  supplierAltLocation: async ({ page }, use) =>
+  supplierAltLocationService: async ({ page }, use) =>
     use(new LocationData('supplierAlt', page.request)),
-  depotLocation: async ({ page }, use) =>
+  depotLocationService: async ({ page }, use) =>
     use(new LocationData('depot', page.request)),
   // PRODUCTS
   mainProduct: async ({ page }, use) =>

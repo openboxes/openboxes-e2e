@@ -9,13 +9,17 @@ test.describe('Use "Updated By" filter', () => {
   let USER: User;
 
   test.beforeEach(
-    async ({ genericService, supplierLocation, stockMovementService }) => {
-      const supplierLocationLocation = await supplierLocation.getLocation();
+    async ({
+      genericService,
+      supplierLocationService,
+      stockMovementService,
+    }) => {
+      const supplierLocation = await supplierLocationService.getLocation();
       USER = await genericService.getLoggedInUser();
 
       STOCK_MOVEMENT = await stockMovementService.createInbound({
         requestorId: USER.id,
-        originId: supplierLocationLocation.id,
+        originId: supplierLocation.id,
       });
     }
   );
