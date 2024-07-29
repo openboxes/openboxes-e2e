@@ -20,6 +20,7 @@ import EditOrganizationPage from '@/pages/oranization/EditOrganizationPage';
 import OrganizationListPage from '@/pages/oranization/OrganizationListPage';
 import CreateProductPage from '@/pages/product/CreateProductPage';
 import ProductShowPage from '@/pages/product/productShow/ProductShowPage';
+import ReceivingPage from '@/pages/receiving/ReceivingPage';
 import StockMovementShowPage from '@/pages/stockMovementShow/StockMovementShowPage';
 import CreateUserPage from '@/pages/user/CreateUserPage';
 import EditUserPage from '@/pages/user/editUser/EditUserPage';
@@ -38,14 +39,15 @@ type Fixtures = {
   locationGroupsListPage: LocationGroupsListPage;
   createLocationGroupPage: CreateLocationGroupPage;
   editLocationGroupPage: EditLocationGroupPage;
-  createInboundPage: CreateInbound;
   stockMovementShowPage: StockMovementShowPage;
   userListPage: UserListPage;
   createUserPage: CreateUserPage;
   editUserPage: EditUserPage;
   createProductPage: CreateProductPage;
   productShowPage: ProductShowPage;
+  createInboundPage: CreateInbound;
   inboundListPage: InboundListPage;
+  receivingPage: ReceivingPage;
   // COMPONENTS
   navbar: Navbar;
   locationChooser: LocationChooser;
@@ -86,6 +88,7 @@ export const test = baseTest.extend<Fixtures>({
     use(new CreateLocationGroupPage(page)),
   editLocationGroupPage: async ({ page }, use) =>
     use(new EditLocationGroupPage(page)),
+  receivingPage: async ({ page }, use) => use(new ReceivingPage(page)),
   createInboundPage: async ({ page }, use) => use(new CreateInbound(page)),
   inboundListPage: async ({ page }, use) => use(new InboundListPage(page)),
   stockMovementShowPage: async ({ page }, use) =>

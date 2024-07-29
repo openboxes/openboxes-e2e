@@ -110,6 +110,7 @@ class AppConfig {
           ActivityCode.FULFILL_REQUEST,
           ActivityCode.EXTERNAL,
           ActivityCode.RECEIVE_STOCK,
+          ActivityCode.PARTIAL_RECEIVING,
         ]),
         type: LocationTypeCode.DEPOT,
         required: true,

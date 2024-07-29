@@ -86,7 +86,7 @@ test.describe('Inbond Stock Movement list page', () => {
       supplierLocation,
     }) => {
       const supplierLocationLocation = await supplierLocation.getLocation();
-      await stockMovementService.createInbound({
+      const STOCK_MOVEMENT = await stockMovementService.createInbound({
         originId: supplierLocationLocation.id,
       });
 
@@ -103,13 +103,15 @@ test.describe('Inbond Stock Movement list page', () => {
         await inboundListPage.waitForResponse();
       });
 
+      await expect(inboundListPage.table.table).toContainText(STOCK_MOVEMENT.identifier);
+
       const statusColumnValues =
         await inboundListPage.table.allStatusColumnCells.allTextContents();
       const filteredEmptyValues = statusColumnValues.filter(
         (it) => !!it.trim()
       );
 
-      await expect(inboundListPage.table.allStatusColumnCells).toHaveText(
+      expect(filteredEmptyValues).toEqual(
         Array(filteredEmptyValues.length).fill(ReceiptStatus.PENDING)
       );
     });
@@ -148,9 +150,16 @@ test.describe('Inbond Stock Movement list page', () => {
         await inboundListPage.waitForResponse();
       });
 
-      const rowCount = await inboundListPage.table.allStatusColumnCells.count();
-      await expect(inboundListPage.table.allStatusColumnCells).toHaveText(
-        Array(rowCount).fill(ReceiptStatus.SHIPPED)
+      await expect(inboundListPage.table.table).toContainText(STOCK_MOVEMENT.identifier);
+
+      const statusColumnValues =
+        await inboundListPage.table.allStatusColumnCells.allTextContents();
+      const filteredEmptyValues = statusColumnValues.filter(
+        (it) => !!it.trim()
+      );
+
+      expect(filteredEmptyValues).toEqual(
+        Array(filteredEmptyValues.length).fill(ReceiptStatus.SHIPPED)
       );
     });
 
@@ -159,7 +168,8 @@ test.describe('Inbond Stock Movement list page', () => {
       stockMovementService,
       supplierLocation,
       mainProduct,
-      stockMovementShowPage
+      stockMovementShowPage,
+      receivingPage,
     }) => {
       const supplierLocationLocation = await supplierLocation.getLocation();
       const product = await mainProduct.getProduct();
@@ -183,37 +193,172 @@ test.describe('Inbond Stock Movement list page', () => {
 
       await test.step('Go to shipment receiving page', async () => {
         await stockMovementShowPage.receiveButton.click();
-      })
+        await receivingPage.receivingStep.isLoaded();
+      });
       
       await test.step('Select all items to receiv', async () => {
-        //
+        await receivingPage.receivingStep.table.row(1).receivingNowField.textbox.fill('2');
       })
 
       await test.step('Go to Check page', async () => {
-        // 
+        await receivingPage.nextButton.click();
       })
 
       await test.step('Receive shipment', async () => {
-        //
+        await receivingPage.checkStep.isLoaded();
+        await receivingPage.checkStep.receiveShipmentButton.click();
       })
 
       await test.step('Go to inbound list page', async () => {
         await inboundListPage.goToPage();
       });
 
-      await test.step('Filter by Receipt status "Shipped"', async () => {
+      await test.step('Filter by Receipt status "Received"', async () => {
         await inboundListPage.filters.receiptStatusSelect.click();
         await inboundListPage.filters.receiptStatusSelect
-          .getSelectOption(ReceiptStatus.SHIPPED)
+          .getSelectOption(ReceiptStatus.RECEIVED)
+          .click();
+        await inboundListPage.filters.searchButton.click();
+        await inboundListPage.waitForResponse();
+      });
+      
+      await expect(inboundListPage.table.table).toContainText(STOCK_MOVEMENT.identifier);
+
+      const statusColumnValues =
+        await inboundListPage.table.allStatusColumnCells.allTextContents();
+      const filteredEmptyValues = statusColumnValues.filter(
+        (it) => !!it.trim()
+      );
+
+      expect(filteredEmptyValues).toEqual(
+        Array(filteredEmptyValues.length).fill(ReceiptStatus.RECEIVED)
+      );
+    });
+
+    test('Filter by "Receiving" status', async ({
+      inboundListPage,
+      stockMovementService,
+      supplierLocation,
+      mainProduct,
+      otherProduct,
+      stockMovementShowPage,
+      receivingPage,
+    }) => {
+      const supplierLocationLocation = await supplierLocation.getLocation();
+      const PRODUCT = await mainProduct.getProduct();
+      const PRODUCT_TWO = await otherProduct.getProduct();
+
+      const STOCK_MOVEMENT = await stockMovementService.createInbound({
+        originId: supplierLocationLocation.id,
+      });
+      await stockMovementService.addItemsToInboundStockMovement(
+        STOCK_MOVEMENT.id,
+        [
+          { productId: PRODUCT.id, quantity: 2 },
+          { productId: PRODUCT_TWO.id, quantity: 2 },
+        ]
+      );
+
+      await stockMovementService.sendInboundStockMovement(STOCK_MOVEMENT.id, {
+        shipmentType: ShipmentType.AIR,
+      });
+
+      await test.step('Go to stock movement show page', async () => {
+        await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
+        await stockMovementShowPage.isLoaded();
+      });
+
+      await test.step('Go to shipment receiving page', async () => {
+        await stockMovementShowPage.receiveButton.click();
+        await receivingPage.receivingStep.isLoaded();
+      });
+      
+      await test.step('Select all items to receiv', async () => {
+        await receivingPage.receivingStep.table.row(1).receivingNowField.textbox.fill('2');
+      })
+
+      await test.step('Go to Check page', async () => {
+        await receivingPage.nextButton.click();
+      })
+
+      await test.step('Receive shipment', async () => {
+        await receivingPage.checkStep.isLoaded();
+        await receivingPage.checkStep.receiveShipmentButton.click();
+      })
+
+      await test.step('Go to inbound list page', async () => {
+        await inboundListPage.goToPage();
+      });
+
+      await test.step('Filter by Receipt status "Receiving"', async () => {
+        await inboundListPage.filters.receiptStatusSelect.click();
+        await inboundListPage.filters.receiptStatusSelect
+          .getSelectOption(ReceiptStatus.RECEIVING)
           .click();
         await inboundListPage.filters.searchButton.click();
         await inboundListPage.waitForResponse();
       });
 
-      const rowCount = await inboundListPage.table.allStatusColumnCells.count();
-      await expect(inboundListPage.table.allStatusColumnCells).toHaveText(
-        Array(rowCount).fill(ReceiptStatus.SHIPPED)
+      await expect(inboundListPage.table.table).toContainText(STOCK_MOVEMENT.identifier);
+      
+      const statusColumnValues =
+        await inboundListPage.table.allStatusColumnCells.allTextContents();
+      const filteredEmptyValues = statusColumnValues.filter(
+        (it) => !!it.trim()
       );
+
+      expect(filteredEmptyValues).toEqual(
+        Array(filteredEmptyValues.length).fill(ReceiptStatus.RECEIVING)
+      );
+    });
+
+    test('Filter by multiple statuses - "Pending" and "Shipped"', async ({
+      inboundListPage,
+      stockMovementService,
+      supplierLocation,
+      mainProduct,
+    }) => {
+      const supplierLocationLocation = await supplierLocation.getLocation();
+      const product = await mainProduct.getProduct();
+
+      const STOCK_MOVEMENT = await stockMovementService.createInbound({
+        originId: supplierLocationLocation.id,
+      });
+
+      const STOCK_MOVEMENT_TWO = await stockMovementService.createInbound({
+        originId: supplierLocationLocation.id,
+      });
+      await stockMovementService.addItemsToInboundStockMovement(
+        STOCK_MOVEMENT_TWO.id,
+        [{ productId: product.id, quantity: 2 }]
+      );
+
+      await stockMovementService.sendInboundStockMovement(STOCK_MOVEMENT_TWO.id, {
+        shipmentType: ShipmentType.AIR,
+      });
+
+      await test.step('Go to inbound list page', async () => {
+        await inboundListPage.goToPage();
+      });
+
+      await test.step('Select Receipt statuses "Pending" and "Shipped"', async () => {
+        await inboundListPage.filters.receiptStatusSelect.click();
+        await inboundListPage.filters.receiptStatusSelect
+          .getSelectOption(ReceiptStatus.PENDING)
+          .click();
+
+        await inboundListPage.filters.receiptStatusSelect
+          .getSelectOption(ReceiptStatus.SHIPPED)
+          .click();
+      });
+
+      await test.step('Search by provided receipt statuses', async () => {
+        await inboundListPage.filters.searchButton.click();
+        await inboundListPage.waitForResponse();
+      });
+
+      await expect(inboundListPage.table.table).toContainText(STOCK_MOVEMENT.identifier);
+      await expect(inboundListPage.table.table).toContainText(STOCK_MOVEMENT_TWO.identifier);
     });
   });
 
