@@ -4,7 +4,10 @@ import BaseServiceModel from '@/api/BaseServiceModel';
 import { ShipmentType } from '@/constants/ShipmentType';
 import {
   ApiResponse,
+  CreateInboundPayload,
   CreateStockMovementPayload,
+  LineItemsPayload,
+  SendInboundPayload,
   StockMovementResponse,
   UpdateStockMovementItemsPayload,
   UpdateStockMovementPayload,
@@ -14,22 +17,6 @@ import { formatDate } from '@/utils/DateUtils';
 import UniqueIdentifier from '@/utils/UniqueIdentifier';
 
 import GenericService from './GenericService';
-
-type CreateInboundPayload = {
-  originId: string;
-  destinationId?: string;
-  description?: string;
-  requestorId?: string;
-  dateRequested?: Date;
-};
-
-type LineItemsPayload = { productId: string; quantity: number }[];
-
-type SendInboundPayload = {
-  dateShipped?: Date;
-  expectedDeliveryDate?: Date;
-  shipmentType: ShipmentType;
-};
 
 class StockMovementService extends BaseServiceModel {
   private uniqueIdentifier: UniqueIdentifier;
@@ -86,7 +73,6 @@ class StockMovementService extends BaseServiceModel {
         ? formatDate(payload.dateRequested)
         : formatDate(new Date()),
     });
-    console.log('DEBUG: ', data?.identifier);
 
     return data;
   }

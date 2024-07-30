@@ -97,14 +97,10 @@ test('Save and exit stock movement on add items step', async ({
 
   await test.step('Assert table items', async () => {
     const row = createInboundPage.addItemsStep.table.row(0);
-    await expect(row.productSelect.selectField).toContainText(
-      ROW.productName
-    );
+    await expect(row.productSelect.selectField).toContainText(ROW.productName);
     await expect(row.lotField.textbox).toHaveValue(ROW.lotNumber);
     await expect(row.quantityField.numberbox).toHaveValue(ROW.quantity);
-    await expect(row.recipientSelect.selectField).toContainText(
-      ROW.recipient
-    );
+    await expect(row.recipientSelect.selectField).toContainText(ROW.recipient);
   });
 
   await test.step('Update row with different quantity', async () => {

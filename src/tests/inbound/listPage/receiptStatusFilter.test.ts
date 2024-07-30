@@ -29,8 +29,7 @@ test.describe('Filter by "Pending" status', () => {
       await inboundListPage.filters.receiptStatusSelect
         .getSelectOption(ReceiptStatus.PENDING)
         .click();
-      await inboundListPage.filters.searchButton.click();
-      await inboundListPage.waitForResponse();
+      await inboundListPage.search();
     });
 
     await expect(inboundListPage.table.table).toContainText(
@@ -93,8 +92,7 @@ test.describe('Filter by "Shipped" status', () => {
       await inboundListPage.filters.receiptStatusSelect
         .getSelectOption(ReceiptStatus.SHIPPED)
         .click();
-      await inboundListPage.filters.searchButton.click();
-      await inboundListPage.waitForResponse();
+      await inboundListPage.search();
     });
 
     await expect(inboundListPage.table.table).toContainText(
@@ -185,8 +183,7 @@ test.describe('Filter by "Received" status', () => {
       await inboundListPage.filters.receiptStatusSelect
         .getSelectOption(ReceiptStatus.RECEIVED)
         .click();
-      await inboundListPage.filters.searchButton.click();
-      await inboundListPage.waitForResponse();
+      await inboundListPage.search();
     });
 
     await expect(inboundListPage.table.table).toContainText(
@@ -282,8 +279,7 @@ test.describe('Filter by "Receiving" status', () => {
       await inboundListPage.filters.receiptStatusSelect
         .getSelectOption(ReceiptStatus.RECEIVING)
         .click();
-      await inboundListPage.filters.searchButton.click();
-      await inboundListPage.waitForResponse();
+      await inboundListPage.search();
     });
 
     await expect(inboundListPage.table.table).toContainText(
@@ -363,8 +359,7 @@ test.describe('Filter by multiple statuses - "Pending" and "Shipped"', () => {
     });
 
     await test.step('Search by provided receipt statuses', async () => {
-      await inboundListPage.filters.searchButton.click();
-      await inboundListPage.waitForResponse();
+      await inboundListPage.search();
     });
 
     await expect(inboundListPage.table.table).toContainText(

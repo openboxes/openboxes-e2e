@@ -59,8 +59,7 @@ test.describe('Shipment type filter', () => {
         await inboundListPage.filters.shipmentTypeSelect
           .getSelectOption(shipmentType)
           .click();
-        await inboundListPage.filters.searchButton.click();
-        await inboundListPage.waitForResponse();
+        await inboundListPage.search();
       });
 
       await test.step(`Assert that stock movement is visible for filter by "${shipmentType}" shipment tpe`, async () => {
@@ -86,8 +85,7 @@ test.describe('Shipment type filter', () => {
           await inboundListPage.filters.shipmentTypeSelect
             .getSelectOption(otherShipmentType)
             .click();
-          await inboundListPage.filters.searchButton.click();
-          await inboundListPage.waitForResponse();
+          await inboundListPage.search();
         });
 
         await test.step(`Assert that stock movement is not visible when filtering by "${otherShipmentType}"`, async () => {

@@ -47,8 +47,7 @@ test.describe('Use "Origin" filter', () => {
       await inboundListPage.filters.originSelect.findAndSelectOption(
         supplierLocation.name
       );
-      await inboundListPage.filters.searchButton.click();
-      await inboundListPage.waitForResponse();
+      await inboundListPage.search();
     });
 
     const originColumnsText =
@@ -72,8 +71,7 @@ test.describe('Use "Origin" filter', () => {
       await inboundListPage.filters.originSelect.findAndSelectOption(
         supplierAltLocation.name
       );
-      await inboundListPage.filters.searchButton.click();
-      await inboundListPage.waitForResponse();
+      await inboundListPage.search();
     });
 
     const originColumnsTextAltSupplier =

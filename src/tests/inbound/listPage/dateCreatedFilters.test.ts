@@ -33,8 +33,7 @@ test.describe('Date created filters', () => {
       await inboundListPage.filters.createdAfterDateFilter
         .getMonthDay(getDayOfMonth(TODAY))
         .click();
-      await inboundListPage.filters.searchButton.click();
-      await inboundListPage.waitForResponse();
+      await inboundListPage.search();
     });
 
     const dateCreatedColumnsContent =
@@ -62,8 +61,7 @@ test.describe('Date created filters', () => {
       await inboundListPage.filters.createdBeforeDateFilter
         .getMonthDay(getDayOfMonth(TODAY))
         .click();
-      await inboundListPage.filters.searchButton.click();
-      await inboundListPage.waitForResponse();
+      await inboundListPage.search();
     });
 
     const dateCreatedColumnsContent =

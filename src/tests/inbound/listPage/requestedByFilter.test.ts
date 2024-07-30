@@ -40,8 +40,7 @@ test.describe('"Requested By" filter', () => {
       await inboundListPage.filters.requestedBySelect.findAndSelectOption(
         USER.name
       );
-      await inboundListPage.filters.searchButton.click();
-      await inboundListPage.waitForResponse();
+      await inboundListPage.search();
     });
 
     await test.step('Assert stock movement not to be visible in the table', async () => {
@@ -51,16 +50,14 @@ test.describe('"Requested By" filter', () => {
     });
 
     await test.step('Clear filters', async () => {
-      await inboundListPage.filters.clearButton.click();
-      await inboundListPage.waitForResponse();
+      await inboundListPage.clear();
     });
 
     await test.step('Filter requested by "other user"', async () => {
       await inboundListPage.filters.requestedBySelect.findAndSelectOption(
         USER_ALT.name
       );
-      await inboundListPage.filters.searchButton.click();
-      await inboundListPage.waitForResponse();
+      await inboundListPage.search();
     });
 
     await test.step('Assert stock movement to be visible in the table', async () => {

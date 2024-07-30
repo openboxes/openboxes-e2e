@@ -6,6 +6,7 @@ import {
 } from '@playwright/test';
 
 import { LocationTypeCode } from './constants/LocationTypeCode';
+import { ShipmentType } from './constants/ShipmentType';
 
 type TestFixtureProps<T> = T &
   PlaywrightTestArgs &
@@ -229,4 +230,20 @@ type AppContextResponse = {
   location: LocationResponse;
   user: User;
   currentLocationRoles: string[];
+};
+
+type CreateInboundPayload = {
+  originId: string;
+  destinationId?: string;
+  description?: string;
+  requestorId?: string;
+  dateRequested?: Date;
+};
+
+type LineItemsPayload = { productId: string; quantity: number }[];
+
+type SendInboundPayload = {
+  dateShipped?: Date;
+  expectedDeliveryDate?: Date;
+  shipmentType: ShipmentType;
 };

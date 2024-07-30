@@ -25,8 +25,7 @@ test.describe('Search filter', () => {
       await inboundListPage.filters.searchField.textbox.fill(
         STOCK_MOVEMENT.identifier
       );
-      await inboundListPage.filters.searchButton.click();
-      await inboundListPage.waitForResponse();
+      await inboundListPage.search();
     });
 
     const rowsContent = await inboundListPage.table.rows.allTextContents();
@@ -49,8 +48,8 @@ test.describe('Search filter', () => {
       await inboundListPage.filters.searchField.textbox.fill(
         STOCK_MOVEMENT.identifier
       );
-      await page.keyboard.press('Enter');
-      await inboundListPage.waitForResponse();
+      await inboundListPage.filters.searchField.textbox.focus();
+      await Promise.all([inboundListPage.waitForResponse(), page.keyboard.press('Enter')])
     });
 
     const rowsContent = await inboundListPage.table.rows.allTextContents();

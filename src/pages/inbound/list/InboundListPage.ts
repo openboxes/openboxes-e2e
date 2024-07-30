@@ -25,6 +25,20 @@ class InboundListPage extends BasePageModel {
   async waitForResponse() {
     await this.page.waitForResponse('./api/stockMovements?**');
   }
+
+  async search() {
+    await Promise.all([
+      this.waitForResponse(),
+      this.filters.searchButton.click(),
+    ]);
+  }
+
+  async clear() {
+    await Promise.all([
+      this.waitForResponse(),
+      this.filters.clearButton.click(),
+    ]);
+  }
 }
 
 export default InboundListPage;

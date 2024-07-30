@@ -63,8 +63,7 @@ test.describe('Use "Created By" filter', () => {
       await inboundListPage.filters.createdBySelect.findAndSelectOption(
         USER.name
       );
-      await inboundListPage.filters.searchButton.click();
-      await inboundListPage.waitForResponse();
+      await inboundListPage.search();
 
       await expect(inboundListPage.table.table).toContainText(
         STOCK_MOVEMENT.identifier
@@ -75,16 +74,14 @@ test.describe('Use "Created By" filter', () => {
     });
 
     await test.step('Clear filters', async () => {
-      await inboundListPage.filters.clearButton.click();
-      await inboundListPage.waitForResponse();
+      await inboundListPage.clear();
     });
 
     await test.step('Filter by alternative user', async () => {
       await inboundListPage.filters.createdBySelect.findAndSelectOption(
         USER_ALT.name
       );
-      await inboundListPage.filters.searchButton.click();
-      await inboundListPage.waitForResponse();
+      await inboundListPage.search();
 
       await expect(inboundListPage.table.table).toContainText(
         STOCK_MOVEMENT_OTHER.identifier

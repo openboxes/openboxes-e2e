@@ -45,8 +45,7 @@ test.describe('Use "Updated By" filter', () => {
       await inboundListPage.filters.updatedBySelect.findAndSelectOption(
         USER.name
       );
-      await inboundListPage.filters.searchButton.click();
-      await inboundListPage.waitForResponse();
+      await inboundListPage.search();
     });
 
     await test.step('Assert that stock movement is visible in the table', async () => {
@@ -56,8 +55,7 @@ test.describe('Use "Updated By" filter', () => {
     });
 
     await test.step('Clear filters', async () => {
-      await inboundListPage.filters.clearButton.click();
-      await inboundListPage.waitForResponse();
+      await inboundListPage.clear();
     });
 
     const newCtx = await browser.newContext({
@@ -70,8 +68,7 @@ test.describe('Use "Updated By" filter', () => {
       await inboundListPage.filters.updatedBySelect.findAndSelectOption(
         USER_ALT.name
       );
-      await inboundListPage.filters.searchButton.click();
-      await inboundListPage.waitForResponse();
+      await inboundListPage.search();
     });
 
     await test.step('Assert that stock movement is not visible in the table', async () => {
@@ -89,16 +86,14 @@ test.describe('Use "Updated By" filter', () => {
     await newCtx.close();
 
     await test.step('Clear filters', async () => {
-      await inboundListPage.filters.clearButton.click();
-      await inboundListPage.waitForResponse();
+      await inboundListPage.clear();
     });
 
     await test.step('Filter updated by other user', async () => {
       await inboundListPage.filters.updatedBySelect.findAndSelectOption(
         USER_ALT.name
       );
-      await inboundListPage.filters.searchButton.click();
-      await inboundListPage.waitForResponse();
+      await inboundListPage.search();
     });
 
     await test.step('Assert that stock movement is not visible in the table', async () => {
