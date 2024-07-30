@@ -16,7 +16,7 @@ test.describe('Use "Created By" filter', () => {
       stockMovementService,
       supplierLocationService,
       mainUserService,
-      altUserService
+      altUserService,
     }) => {
       const supplierLocation = await supplierLocationService.getLocation();
       USER = await mainUserService.getUser();

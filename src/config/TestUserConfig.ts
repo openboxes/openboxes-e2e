@@ -63,17 +63,17 @@ class TestUserConfig {
     }
   }
 
-    /**
+  /**
    * Returns a user Id either from
    * @returns
    */
-    readId() {
-      if (this.id) {
-        return this.id;
-      }
-      const data = readFile(AppConfig.TEST_DATA_FILE_PATH);
-      return _.get(data, `users.${this.key}`) as string;
+  readId() {
+    if (this.id) {
+      return this.id;
     }
+    const data = readFile(AppConfig.TEST_DATA_FILE_PATH);
+    return _.get(data, `users.${this.key}`) as string;
+  }
 }
 
 export default TestUserConfig;

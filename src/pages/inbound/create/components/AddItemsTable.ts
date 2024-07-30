@@ -41,7 +41,7 @@ class Row extends BasePageModel {
     this.packLevel1Field = new TextField(page, 'Pack level 1', row);
     this.packLevel2Field = new TextField(page, 'Pack level 2', row);
     this.lotField = new TextField(page, 'Lot', row);
-    this.quantityField = new TextField(page, 'Qty', row);
+    this.quantityField = new TextField(page, 'Quantity', row);
     this.expirationDate = new DatePicker(page, 'Expiry', row);
   }
 

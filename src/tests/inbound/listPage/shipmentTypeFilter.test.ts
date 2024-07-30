@@ -14,7 +14,11 @@ test.describe('Shipment type filter', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
 
   test.beforeEach(
-    async ({ supplierLocationService, mainProductService, stockMovementService }) => {
+    async ({
+      supplierLocationService,
+      mainProductService,
+      stockMovementService,
+    }) => {
       const supplierLocation = await supplierLocationService.getLocation();
       const product = await mainProductService.getProduct();
 
@@ -103,7 +107,11 @@ test.describe('Multiple shipment types', () => {
   let STOCK_MOVEMENT_SEA: StockMovementResponse;
 
   test.beforeEach(
-    async ({ supplierLocationService, mainProductService, stockMovementService }) => {
+    async ({
+      supplierLocationService,
+      mainProductService,
+      stockMovementService,
+    }) => {
       const supplierLocation = await supplierLocationService.getLocation();
       const product = await mainProductService.getProduct();
 

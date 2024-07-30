@@ -12,7 +12,7 @@ test.describe('"Requested By" filter', () => {
       supplierLocationService,
       mainUserService,
       altUserService,
-      stockMovementService
+      stockMovementService,
     }) => {
       const supplierLocation = await supplierLocationService.getLocation();
       USER = await mainUserService.getUser();

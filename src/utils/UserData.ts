@@ -9,10 +9,7 @@ class ProductData {
 
   private userConfig: TestUserConfig;
 
-  constructor(
-    userType: keyof AppConfig['users'],
-    request: APIRequestContext
-  ) {
+  constructor(userType: keyof AppConfig['users'], request: APIRequestContext) {
     this.genericService = new GenericService(request);
 
     this.userConfig = AppConfig.instance.users[userType];
@@ -23,7 +20,6 @@ class ProductData {
     const { data } = await this.genericService.getUser(id);
     return data;
   }
-
 }
 
 export default ProductData;

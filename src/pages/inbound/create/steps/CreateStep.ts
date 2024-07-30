@@ -18,9 +18,9 @@ class CreateStep extends BasePageModel {
     this.descriptionField = new TextField(page, 'Description');
     this.originSelect = new Select(page, 'Origin');
     this.destinationSelect = new Select(page, 'Destination');
-    this.requestedBySelect = new Select(page, 'Requested by');
+    this.requestedBySelect = new Select(page, 'Requested By');
     this.stocklistSelect = new Select(page, 'Stocklist');
-    this.dateRequestedDatePicker = new DatePicker(page, 'Date requested');
+    this.dateRequestedDatePicker = new DatePicker(page, 'Date Requested');
   }
 
   async isLoaded() {
@@ -29,7 +29,7 @@ class CreateStep extends BasePageModel {
     await expect(this.destinationSelect.selectField).toBeVisible();
     await expect(this.requestedBySelect.selectField).toBeVisible();
     await expect(this.stocklistSelect.selectField).toBeVisible();
-    await expect(this.dateRequestedDatePicker.textbox).toBeVisible();
+    await expect(this.dateRequestedDatePicker.field).toBeVisible();
   }
 }
 

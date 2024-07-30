@@ -5,6 +5,7 @@ import BasePageModel from '@/pages/BasePageModel';
 import AddItemsStep from '@/pages/inbound/create/steps/AddItemsStep';
 import CreateStep from '@/pages/inbound/create/steps/CreateStep';
 import SendStep from '@/pages/inbound/create/steps/SendStep';
+import { parseUrl } from '@/utils/UrlUtils';
 
 class CreateInboundPage extends BasePageModel {
   createStep: CreateStep;
@@ -25,6 +26,14 @@ class CreateInboundPage extends BasePageModel {
 
   async goToPage() {
     await this.page.goto('./stockMovement/createInbound?direction=INBOUND');
+  }
+
+  getId() {
+    const stockMovementUrl = parseUrl(
+      this.page.url(),
+      '/openboxes/stockMovement/createInbound/$id'
+    );
+    return stockMovementUrl['id'];
   }
 
   get previousButton() {
