@@ -12,11 +12,11 @@ test.describe('Use "Created By" filter', () => {
 
   test.beforeEach(
     async ({
-      browser,
       stockMovementService,
       supplierLocationService,
       mainUserService,
       altUserService,
+      altUserContext
     }) => {
       const supplierLocation = await supplierLocationService.getLocation();
       USER = await mainUserService.getUser();
@@ -29,21 +29,17 @@ test.describe('Use "Created By" filter', () => {
         });
       });
 
-      const newCtx = await browser.newContext({
-        storageState: AppConfig.instance.users.alternative.storagePath,
-      });
-      const newPage = await newCtx.newPage();
+      const altUserPage = await altUserContext.newPage();
 
       await test.step('Create stock movement with alternative user', async () => {
         const otherSotckMvoementService = new StockMovementService(
-          newPage.request
+          altUserPage.request
         );
         STOCK_MOVEMENT_OTHER = await otherSotckMvoementService.createInbound({
           requestorId: USER.id,
           originId: supplierLocation.id,
         });
       });
-      await newCtx.close();
     }
   );
 

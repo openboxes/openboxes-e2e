@@ -31,7 +31,7 @@ test.describe('Use "Updated By" filter', () => {
   });
 
   test.skip('Only show stock movements updated by filtered user', async ({
-    browser,
+    altUserContext,
     inboundListPage,
     mainProductService,
   }) => {
@@ -58,10 +58,7 @@ test.describe('Use "Updated By" filter', () => {
       await inboundListPage.clear();
     });
 
-    const newCtx = await browser.newContext({
-      storageState: AppConfig.instance.users.alternative.storagePath,
-    });
-    const newPage = await newCtx.newPage();
+    const newPage = await altUserContext.newPage();
     const otherSotckMvoementService = new StockMovementService(newPage.request);
 
     await test.step('Filter updated by other user', async () => {
@@ -83,7 +80,6 @@ test.describe('Use "Updated By" filter', () => {
         [{ productId: product.id, quantity: 2 }]
       );
     });
-    await newCtx.close();
 
     await test.step('Clear filters', async () => {
       await inboundListPage.clear();

@@ -1,4 +1,4 @@
-import { test as baseTest } from '@playwright/test';
+import { BrowserContext, Page,test as baseTest } from '@playwright/test';
 
 import AuthService from '@/api/AuthService';
 import GenericService from '@/api/GenericService';
@@ -7,6 +7,7 @@ import StockMovementService from '@/api/StockMovementService';
 import ImpersonateBanner from '@/components/ImpersonateBanner';
 import LocationChooser from '@/components/LocationChooser';
 import Navbar from '@/components/Navbar';
+import AppConfig from '@/config/AppConfig';
 import CreateInbound from '@/pages/inbound/create/CreateInboundPage';
 import InboundListPage from '@/pages/inbound/list/InboundListPage';
 import CreateLocationPage from '@/pages/location/createLocation/CreateLocationPage';
@@ -70,6 +71,10 @@ type Fixtures = {
   // USERS DATA
   mainUserService: UserData;
   altUserService: UserData;
+  // USER CONTEXT
+  mainUserContext: BrowserContext
+  altUserContext: BrowserContext
+  emptyUserContext: BrowserContext
 };
 
 export const test = baseTest.extend<Fixtures>({
@@ -132,6 +137,34 @@ export const test = baseTest.extend<Fixtures>({
     use(new UserData('main', page.request)),
   altUserService: async ({ page }, use) =>
     use(new UserData('alternative', page.request)),
+  // NEW USER CONTEXTS
+  mainUserContext: async ({ browser }, use) => {
+    const newCtx = await browser.newContext({
+      storageState: AppConfig.instance.users.main.storagePath,
+    });
+    
+    await use(newCtx);
+
+    await newCtx.close();
+  },
+  altUserContext: async ({ browser }, use) => {
+    const newCtx = await browser.newContext({
+      storageState: AppConfig.instance.users.alternative.storagePath,
+    });
+
+    await use(newCtx);
+
+    await newCtx.close();
+  },
+  emptyUserContext: async ({ browser }, use) => {
+    const newCtx = await browser.newContext({
+      storageState: { cookies: [], origins: [] }
+    });
+
+    await use(newCtx);
+
+    await newCtx.close();
+  }
 });
 
 export { expect } from '@playwright/test';
