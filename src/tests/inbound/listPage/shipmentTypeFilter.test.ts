@@ -163,8 +163,7 @@ test.describe('Multiple shipment types', () => {
     await inboundListPage.filters.shipmentTypeSelect
       .getSelectOption('Default')
       .click();
-    await inboundListPage.filters.searchButton.click();
-    await inboundListPage.waitForResponse();
+    await inboundListPage.search();
 
     await expect(
       inboundListPage.table.rows.filter({
@@ -177,15 +176,13 @@ test.describe('Multiple shipment types', () => {
       })
     ).toBeHidden();
 
-    await inboundListPage.filters.clearButton.click();
-    await inboundListPage.waitForResponse();
+    await inboundListPage.clear();
 
     await inboundListPage.filters.shipmentTypeSelect.click();
     await inboundListPage.filters.shipmentTypeSelect
       .getSelectOption('Land')
       .click();
-    await inboundListPage.filters.searchButton.click();
-    await inboundListPage.waitForResponse();
+    await inboundListPage.search();
 
     await expect(
       inboundListPage.table.rows.filter({
@@ -206,8 +203,7 @@ test.describe('Multiple shipment types', () => {
     await inboundListPage.filters.shipmentTypeSelect
       .getSelectOption('Sea')
       .click();
-    await inboundListPage.filters.searchButton.click();
-    await inboundListPage.waitForResponse();
+    await inboundListPage.search();
 
     await expect(
       inboundListPage.table.rows.filter({

@@ -1,4 +1,4 @@
-import { BrowserContext, Page,test as baseTest } from '@playwright/test';
+import { BrowserContext, Page, test as baseTest } from '@playwright/test';
 
 import AuthService from '@/api/AuthService';
 import GenericService from '@/api/GenericService';
@@ -72,9 +72,9 @@ type Fixtures = {
   mainUserService: UserData;
   altUserService: UserData;
   // USER CONTEXT
-  mainUserContext: BrowserContext
-  altUserContext: BrowserContext
-  emptyUserContext: BrowserContext
+  mainUserContext: BrowserContext;
+  altUserContext: BrowserContext;
+  emptyUserContext: BrowserContext;
 };
 
 export const test = baseTest.extend<Fixtures>({
@@ -142,7 +142,7 @@ export const test = baseTest.extend<Fixtures>({
     const newCtx = await browser.newContext({
       storageState: AppConfig.instance.users.main.storagePath,
     });
-    
+
     await use(newCtx);
 
     await newCtx.close();
@@ -158,13 +158,13 @@ export const test = baseTest.extend<Fixtures>({
   },
   emptyUserContext: async ({ browser }, use) => {
     const newCtx = await browser.newContext({
-      storageState: { cookies: [], origins: [] }
+      storageState: { cookies: [], origins: [] },
     });
 
     await use(newCtx);
 
     await newCtx.close();
-  }
+  },
 });
 
 export { expect } from '@playwright/test';

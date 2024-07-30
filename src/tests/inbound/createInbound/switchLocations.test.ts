@@ -1,3 +1,4 @@
+import AppConfig from '@/config/AppConfig';
 import { expect, test } from '@/fixtures/fixtures';
 import { AddItemsTableRow } from '@/types';
 import { getDateByOffset, getToday } from '@/utils/DateUtils';
@@ -59,7 +60,8 @@ test.describe('Switching location on inbound stock movement', () => {
     }
   );
 
-  test.afterEach(async ({ stockMovementService }) => {
+  test.afterEach(async ({ stockMovementService, authService }) => {
+    await authService.changeLocation(AppConfig.instance.locations.main.id);
     await stockMovementService.deleteStockMovement(INBOUND_ID);
   });
 

@@ -49,7 +49,10 @@ test.describe('Search filter', () => {
         STOCK_MOVEMENT.identifier
       );
       await inboundListPage.filters.searchField.textbox.focus();
-      await Promise.all([inboundListPage.waitForResponse(), page.keyboard.press('Enter')])
+      await Promise.all([
+        inboundListPage.waitForResponse(),
+        page.keyboard.press('Enter'),
+      ]);
     });
 
     const rowsContent = await inboundListPage.table.rows.allTextContents();
