@@ -1,4 +1,4 @@
-import { BrowserContext, Page, test as baseTest } from '@playwright/test';
+import { BrowserContext, test as baseTest } from '@playwright/test';
 
 import AuthService from '@/api/AuthService';
 import GenericService from '@/api/GenericService';

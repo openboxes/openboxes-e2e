@@ -1,5 +1,4 @@
 import StockMovementService from '@/api/StockMovementService';
-import AppConfig from '@/config/AppConfig';
 import { expect, test } from '@/fixtures/fixtures';
 import { StockMovementResponse, User } from '@/types';
 
