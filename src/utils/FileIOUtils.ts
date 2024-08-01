@@ -1,8 +1,18 @@
 import fs from 'node:fs';
 
 const readFile = (path: string) => {
-  const rawdata = fs.readFileSync(path, 'utf8');
-  return JSON.parse(rawdata);
+  try {
+    const rawdata = fs.readFileSync(path, 'utf8');
+    return JSON.parse(rawdata);
+  } catch (error) {
+    if (
+      error instanceof Error &&
+      (error as NodeJS.ErrnoException).code === 'ENOENT'
+    ) {
+      return null;
+    }
+    throw error;
+  }
 };
 
 const writeToFile = (path: string, data: unknown) => {

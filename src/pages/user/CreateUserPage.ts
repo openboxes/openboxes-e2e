@@ -1,6 +1,6 @@
 import { expect } from '@/fixtures/fixtures';
 import BasePageModel from '@/pages/BasePageModel';
-import { UserType } from '@/types';
+import { CreateUserType } from '@/types';
 
 class CreateUserPage extends BasePageModel {
   async isLoaded() {
@@ -33,7 +33,7 @@ class CreateUserPage extends BasePageModel {
     return this.page.getByRole('button', { name: 'Save' });
   }
 
-  async fillUserForm(data: UserType) {
+  async fillUserForm(data: CreateUserType) {
     await this.usernameField.fill(data.username);
     await this.firstNameField.fill(data.firstName);
     await this.lastNameField.fill(data.lastName);

@@ -14,6 +14,10 @@ class StockMovementShowPage extends BasePageModel {
     this.packingListTable = new PackingListTable(page);
   }
 
+  async goToPage(id: string) {
+    await this.page.goto(`./stockMovement/show/${id}`);
+  }
+
   async waitForUrl() {
     await this.page.waitForURL('**/stockMovement/show/**');
   }
@@ -54,6 +58,14 @@ class StockMovementShowPage extends BasePageModel {
 
   get editButton() {
     return this.page.getByRole('link', { name: 'Edit' });
+  }
+
+  get rollbackButton() {
+    return this.page.getByRole('link', { name: 'Rollback' });
+  }
+
+  get rollbackLastReceiptButton() {
+    return this.page.getByRole('link', { name: 'Rollback Last Receipt' });
   }
 
   get receiveButton() {

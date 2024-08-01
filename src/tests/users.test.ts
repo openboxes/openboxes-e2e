@@ -3,9 +3,9 @@ import LocationChooser from '@/components/LocationChooser';
 import Navbar from '@/components/Navbar';
 import { expect, test } from '@/fixtures/fixtures';
 import LoginPage from '@/pages/LoginPage';
-import { UserType } from '@/types';
+import { CreateUserType } from '@/types';
 
-const formData: UserType = {
+const formData: CreateUserType = {
   username: 'testUser_E2E',
   firstName: 'user_firstanme',
   lastName: 'user_lastname',
@@ -58,7 +58,7 @@ test.afterEach(async ({ editUserPage, userListPage }) => {
 //tests are covering all steps from test case OBPIH-4622 Users
 test('Add default location for user and auto-login to location', async ({
   editUserPage,
-  mainLocation,
+  mainLocationService,
   browser,
 }) => {
   await editUserPage.authorizationTabSection.defaultRoleSelect.click();
@@ -71,7 +71,7 @@ test('Add default location for user and auto-login to location', async ({
 
   await test.step('Select default location', async () => {
     await editUserPage.authorizationTabSection.defaultLocationSelect.click();
-    const location = await mainLocation.getLocation();
+    const location = await mainLocationService.getLocation();
     await editUserPage.authorizationTabSection
       .getDefaultLocation(location.name)
       .click();
@@ -142,7 +142,7 @@ test('Add no access global permissions, edit user and add location role', async 
   navbar,
   userListPage,
   editUserPage,
-  mainLocation,
+  mainLocationService,
   browser,
 }) => {
   await test.step('Select role "No access"', async () => {
@@ -178,7 +178,7 @@ test('Add no access global permissions, edit user and add location role', async 
     await userListPage.getUserToEdit(formData.username).click();
   });
 
-  const location = await mainLocation.getLocation();
+  const location = await mainLocationService.getLocation();
 
   await test.step('Add role "Manager" on "Main location"', async () => {
     await editUserPage.authorizationTab.click();
@@ -223,7 +223,7 @@ test('Add no access global permissions, edit user and add location role', async 
 
 test('Add requestor permission to non manage inventory depot', async ({
   editUserPage,
-  noManageInventoryDepot,
+  noManageInventoryDepotService,
   browser,
 }) => {
   await test.step('Select role "Admin"', async () => {
@@ -232,7 +232,7 @@ test('Add requestor permission to non manage inventory depot', async ({
     await editUserPage.authorizationTabSection.saveButton.click();
   });
 
-  const location = await noManageInventoryDepot.getLocation();
+  const location = await noManageInventoryDepotService.getLocation();
 
   await test.step('Add role "Requestor" on location', async () => {
     await editUserPage.authorizationTabSection.addLocationRolesButton.click();
