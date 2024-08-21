@@ -1,8 +1,6 @@
-/* eslint-disable playwright/expect-expect */
-
 import AppConfig from '@/config/AppConfig';
 import { test } from '@/fixtures/fixtures';
-import { writeToFile } from '@/utils/FileIOUtils';
+import { readFile, writeToFile } from '@/utils/FileIOUtils';
 import { parseUrl } from '@/utils/UrlUtils';
 
 test('create data', async ({
@@ -10,9 +8,13 @@ test('create data', async ({
   createProductPage,
   productShowPage,
   locationService,
-  mainLocation,
+  mainLocationService,
 }) => {
+  // eslint-disable-next-line playwright/no-conditional-in-test
+  const data = readFile(AppConfig.TEST_DATA_FILE_PATH) || {};
+
   const seedData: Record<'products' | 'locations', Record<string, string>> = {
+    ...data,
     products: {},
     locations: {},
   };
@@ -21,7 +23,7 @@ test('create data', async ({
   const products = Object.values(AppConfig.instance.products).filter(
     (product) => product.isCreateNew
   );
-  
+
   for (const product of products) {
     await test.step(`create product ${product.key}`, async () => {
       await createProductPage.goToPage();
@@ -52,7 +54,7 @@ test('create data', async ({
   }
 
   // LOCATIONS
-  const { organization } = await mainLocation.getLocation();
+  const { organization } = await mainLocationService.getLocation();
   const { data: locationTypes } = await locationService.getLocationTypes();
 
   const locations = Object.values(AppConfig.instance.locations).filter(

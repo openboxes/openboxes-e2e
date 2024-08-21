@@ -1,12 +1,15 @@
-import { test as baseTest } from '@playwright/test';
+import { BrowserContext, test as baseTest } from '@playwright/test';
 
 import AuthService from '@/api/AuthService';
 import GenericService from '@/api/GenericService';
 import LocationService from '@/api/LocationService';
+import StockMovementService from '@/api/StockMovementService';
 import ImpersonateBanner from '@/components/ImpersonateBanner';
 import LocationChooser from '@/components/LocationChooser';
 import Navbar from '@/components/Navbar';
-import CreateInbound from '@/pages/createInbound/CreateInboundPage';
+import AppConfig from '@/config/AppConfig';
+import CreateInbound from '@/pages/inbound/create/CreateInboundPage';
+import InboundListPage from '@/pages/inbound/list/InboundListPage';
 import CreateLocationPage from '@/pages/location/createLocation/CreateLocationPage';
 import LocationListPage from '@/pages/location/LocationListPage';
 import CreateLocationGroupPage from '@/pages/locationGroup/CreateLocationGroupPage';
@@ -18,12 +21,14 @@ import EditOrganizationPage from '@/pages/oranization/EditOrganizationPage';
 import OrganizationListPage from '@/pages/oranization/OrganizationListPage';
 import CreateProductPage from '@/pages/product/CreateProductPage';
 import ProductShowPage from '@/pages/product/productShow/ProductShowPage';
+import ReceivingPage from '@/pages/receiving/ReceivingPage';
 import StockMovementShowPage from '@/pages/stockMovementShow/StockMovementShowPage';
 import CreateUserPage from '@/pages/user/CreateUserPage';
 import EditUserPage from '@/pages/user/editUser/EditUserPage';
 import UserListPage from '@/pages/user/UserListPage';
 import LocationData from '@/utils/LocationData';
 import ProductData from '@/utils/ProductData';
+import UserData from '@/utils/UserData';
 
 type Fixtures = {
   // PAGES
@@ -36,13 +41,15 @@ type Fixtures = {
   locationGroupsListPage: LocationGroupsListPage;
   createLocationGroupPage: CreateLocationGroupPage;
   editLocationGroupPage: EditLocationGroupPage;
-  createInboundPage: CreateInbound;
   stockMovementShowPage: StockMovementShowPage;
   userListPage: UserListPage;
   createUserPage: CreateUserPage;
   editUserPage: EditUserPage;
   createProductPage: CreateProductPage;
   productShowPage: ProductShowPage;
+  createInboundPage: CreateInbound;
+  inboundListPage: InboundListPage;
+  receivingPage: ReceivingPage;
   // COMPONENTS
   navbar: Navbar;
   locationChooser: LocationChooser;
@@ -51,14 +58,23 @@ type Fixtures = {
   genericService: GenericService;
   locationService: LocationService;
   authService: AuthService;
-  // LOCATIONS
-  mainLocation: LocationData;
-  noManageInventoryDepot: LocationData;
-  supplierLocation: LocationData;
-  depotLocation: LocationData;
+  stockMovementService: StockMovementService;
+  // LOCATIONS DATA
+  mainLocationService: LocationData;
+  noManageInventoryDepotService: LocationData;
+  supplierLocationService: LocationData;
+  supplierAltLocationService: LocationData;
+  depotLocationService: LocationData;
   // PRODUCT DATA
-  mainProduct: ProductData;
-  otherProduct: ProductData;
+  mainProductService: ProductData;
+  otherProductService: ProductData;
+  // USERS DATA
+  mainUserService: UserData;
+  altUserService: UserData;
+  // USER CONTEXT
+  mainUserContext: BrowserContext;
+  altUserContext: BrowserContext;
+  emptyUserContext: BrowserContext;
 };
 
 export const test = baseTest.extend<Fixtures>({
@@ -81,7 +97,9 @@ export const test = baseTest.extend<Fixtures>({
     use(new CreateLocationGroupPage(page)),
   editLocationGroupPage: async ({ page }, use) =>
     use(new EditLocationGroupPage(page)),
+  receivingPage: async ({ page }, use) => use(new ReceivingPage(page)),
   createInboundPage: async ({ page }, use) => use(new CreateInbound(page)),
+  inboundListPage: async ({ page }, use) => use(new InboundListPage(page)),
   stockMovementShowPage: async ({ page }, use) =>
     use(new StockMovementShowPage(page)),
   createProductPage: async ({ page }, use) => use(new CreateProductPage(page)),
@@ -89,27 +107,64 @@ export const test = baseTest.extend<Fixtures>({
   // COMPONENTS
   navbar: async ({ page }, use) => use(new Navbar(page)),
   locationChooser: async ({ page }, use) => use(new LocationChooser(page)),
+  impersonateBanner: async ({ page }, use) => use(new ImpersonateBanner(page)),
   // SERVICES
   genericService: async ({ page }, use) =>
     use(new GenericService(page.request)),
   locationService: async ({ page }, use) =>
     use(new LocationService(page.request)),
   authService: async ({ page }, use) => use(new AuthService(page.request)),
-  impersonateBanner: async ({ page }, use) => use(new ImpersonateBanner(page)),
+  stockMovementService: async ({ page }, use) =>
+    use(new StockMovementService(page.request)),
   // LOCATIONS
-  mainLocation: async ({ page }, use) =>
+  mainLocationService: async ({ page }, use) =>
     use(new LocationData('main', page.request)),
-  noManageInventoryDepot: async ({ page }, use) =>
+  noManageInventoryDepotService: async ({ page }, use) =>
     use(new LocationData('noManageInventoryDepot', page.request)),
-  supplierLocation: async ({ page }, use) =>
+  supplierLocationService: async ({ page }, use) =>
     use(new LocationData('supplier', page.request)),
-  depotLocation: async ({ page }, use) =>
+  supplierAltLocationService: async ({ page }, use) =>
+    use(new LocationData('supplierAlt', page.request)),
+  depotLocationService: async ({ page }, use) =>
     use(new LocationData('depot', page.request)),
   // PRODUCTS
-  mainProduct: async ({ page }, use) =>
+  mainProductService: async ({ page }, use) =>
     use(new ProductData('productOne', page.request)),
-  otherProduct: async ({ page }, use) =>
+  otherProductService: async ({ page }, use) =>
     use(new ProductData('productTwo', page.request)),
+  // USERS
+  mainUserService: async ({ page }, use) =>
+    use(new UserData('main', page.request)),
+  altUserService: async ({ page }, use) =>
+    use(new UserData('alternative', page.request)),
+  // NEW USER CONTEXTS
+  mainUserContext: async ({ browser }, use) => {
+    const newCtx = await browser.newContext({
+      storageState: AppConfig.instance.users.main.storagePath,
+    });
+
+    await use(newCtx);
+
+    await newCtx.close();
+  },
+  altUserContext: async ({ browser }, use) => {
+    const newCtx = await browser.newContext({
+      storageState: AppConfig.instance.users.alternative.storagePath,
+    });
+
+    await use(newCtx);
+
+    await newCtx.close();
+  },
+  emptyUserContext: async ({ browser }, use) => {
+    const newCtx = await browser.newContext({
+      storageState: { cookies: [], origins: [] },
+    });
+
+    await use(newCtx);
+
+    await newCtx.close();
+  },
 });
 
 export { expect } from '@playwright/test';

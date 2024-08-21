@@ -20,11 +20,6 @@
             "error",
             { "allow": ["constructors"] }
         ],
-        "playwright/expect-expect": [
-            "warn",
-            {
-              "assertFunctionNames": ["isLoaded"]
-            }
-          ]
+        "playwright/expect-expect": ["off"]
     }
 }

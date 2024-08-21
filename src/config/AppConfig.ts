@@ -32,11 +32,11 @@ class AppConfig {
   public isCI!: boolean;
 
   // test users used in all of the tests
-  public users!: Record<'main', TestUserConfig>;
+  public users!: Record<'main' | 'alternative', TestUserConfig>;
 
   // test users used in all of the tests
   public locations!: Record<
-    'main' | 'supplier' | 'noManageInventoryDepot' | 'depot',
+    'main' | 'supplier' | 'supplierAlt' | 'noManageInventoryDepot' | 'depot',
     LocationConfig
   >;
 
@@ -71,9 +71,23 @@ class AppConfig {
 
     this.users = {
       main: new TestUserConfig({
+        key: 'main',
         username: env.get('USER_MAIN_USERNAME').required().asString(),
         password: env.get('USER_MAIN_PASSWORD').required().asString(),
         storageFileName: '.auth-storage-MAIN-USER.json',
+        requiredRoles: new Set([
+          RoleType.ROLE_SUPERUSER,
+          RoleType.ROLE_FINANCE,
+          RoleType.ROLE_PRODUCT_MANAGER,
+          RoleType.ROLE_INVOICE,
+          RoleType.ROLE_PURCHASE_APPROVER,
+        ]),
+      }),
+      alternative: new TestUserConfig({
+        key: 'alternative',
+        username: env.get('USER_ALT_USERNAME').required().asString(),
+        password: env.get('USER_ALT_PASSWORD').required().asString(),
+        storageFileName: '.auth-storage-ALT-USER.json',
         requiredRoles: new Set([
           RoleType.ROLE_SUPERUSER,
           RoleType.ROLE_FINANCE,
@@ -98,6 +112,7 @@ class AppConfig {
           ActivityCode.FULFILL_REQUEST,
           ActivityCode.EXTERNAL,
           ActivityCode.RECEIVE_STOCK,
+          ActivityCode.PARTIAL_RECEIVING,
         ]),
         type: LocationTypeCode.DEPOT,
         required: true,
@@ -127,6 +142,18 @@ class AppConfig {
         id: env.get('LOCATION_SUPPLIER').asString(),
         key: 'supplier',
         name: this.uniqueIdentifier.generateUniqueString('supplier'),
+        requiredActivityCodes: new Set([
+          ActivityCode.FULFILL_ORDER,
+          ActivityCode.SEND_STOCK,
+          ActivityCode.EXTERNAL,
+        ]),
+        required: false,
+        type: LocationTypeCode.SUPPLIER,
+      }),
+      supplierAlt: new LocationConfig({
+        id: env.get('LOCATION_SUPPLIER_ALT').asString(),
+        key: 'supplier-alt',
+        name: this.uniqueIdentifier.generateUniqueString('supplier-alt'),
         requiredActivityCodes: new Set([
           ActivityCode.FULFILL_ORDER,
           ActivityCode.SEND_STOCK,

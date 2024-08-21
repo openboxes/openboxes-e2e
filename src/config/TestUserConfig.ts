@@ -4,24 +4,31 @@ import _ from 'lodash';
 
 import AppConfig from '@/config/AppConfig';
 import RoleType from '@/constants/RoleTypes';
+import { readFile } from '@/utils/FileIOUtils';
 
 class TestUserConfig {
+  id: string;
+  key: string;
   username: string;
   password: string;
   storagePath: string;
   requiredRoles: Set<RoleType>;
 
   constructor({
+    key,
     username,
     password,
     storageFileName,
     requiredRoles,
   }: {
+    key: string;
     username: string;
     password: string;
     storageFileName: string;
     requiredRoles: Set<RoleType>;
   }) {
+    this.id = '';
+    this.key = key;
     this.username = username;
     this.password = password;
     this.storagePath = path.join(
@@ -54,6 +61,18 @@ class TestUserConfig {
         `User "${this.username}" has unexpected roles: ${[...unexpectedRoles].join(', ')}`
       );
     }
+  }
+
+  /**
+   * Returns a user Id either from
+   * @returns
+   */
+  readId() {
+    if (this.id) {
+      return this.id;
+    }
+    const data = readFile(AppConfig.TEST_DATA_FILE_PATH);
+    return _.get(data, `users.${this.key}`) as string;
   }
 }
 

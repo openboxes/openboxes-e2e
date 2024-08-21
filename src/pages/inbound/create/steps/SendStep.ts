@@ -5,7 +5,7 @@ import DatePicker from '@/components/DatePicker';
 import Select from '@/components/Select';
 import TextField from '@/components/TextField';
 import BasePageModel from '@/pages/BasePageModel';
-import SendPageTable from '@/pages/createInbound/components/SendPageTable';
+import SendPageTable from '@/pages/inbound/create/components/SendPageTable';
 
 class SendStep extends BasePageModel {
   table: SendPageTable;
@@ -27,14 +27,14 @@ class SendStep extends BasePageModel {
 
     this.destinationSelect = new Select(page, 'Destination');
     this.shipmentTypeSelect = new Select(page, 'Shipment type');
-    this.shipDateDatePicker = new DatePicker(page, 'Shipment date');
+    this.shipDateDatePicker = new DatePicker(page, 'Ship date');
     this.expectedDeliveryDatePicker = new DatePicker(
       page,
-      'Expected receipt date'
+      'Expected Delivery Date'
     );
     this.originField = new TextField(page, 'Origin');
-    this.trackingNumberField = new TextField(page, 'Tracking number');
-    this.driverNameField = new TextField(page, 'Driver name');
+    this.trackingNumberField = new TextField(page, 'Tracking Number');
+    this.driverNameField = new TextField(page, 'Driver Name');
     this.commentField = new TextField(page, 'Comments');
 
     this.validationPopup = new AlertPopup(
