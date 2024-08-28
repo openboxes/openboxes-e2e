@@ -4,7 +4,7 @@ import GenericService from '@/api/GenericService';
 import AppConfig from '@/config/AppConfig';
 import TestUserConfig from '@/config/TestUserConfig';
 
-class ProductData {
+class UserData {
   private genericService: GenericService;
 
   private userConfig: TestUserConfig;
@@ -22,4 +22,4 @@ class ProductData {
   }
 }
 
-export default ProductData;
+export default UserData;
