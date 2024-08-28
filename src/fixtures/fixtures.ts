@@ -7,7 +7,7 @@ import StockMovementService from '@/api/StockMovementService';
 import ImpersonateBanner from '@/components/ImpersonateBanner';
 import LocationChooser from '@/components/LocationChooser';
 import Navbar from '@/components/Navbar';
-import AppConfig from '@/config/AppConfig';
+import AppConfig, { LOCATION_KEY, PRODUCT_KEY, USER_KEY } from '@/config/AppConfig';
 import CreateInbound from '@/pages/inbound/create/CreateInboundPage';
 import InboundListPage from '@/pages/inbound/list/InboundListPage';
 import CreateLocationPage from '@/pages/location/createLocation/CreateLocationPage';
@@ -118,25 +118,25 @@ export const test = baseTest.extend<Fixtures>({
     use(new StockMovementService(page.request)),
   // LOCATIONS
   mainLocationService: async ({ page }, use) =>
-    use(new LocationData('main', page.request)),
+    use(new LocationData(LOCATION_KEY.MAIN, page.request)),
   noManageInventoryDepotService: async ({ page }, use) =>
-    use(new LocationData('noManageInventoryDepot', page.request)),
+    use(new LocationData(LOCATION_KEY.NO_MANAGER_INENTORY, page.request)),
   supplierLocationService: async ({ page }, use) =>
-    use(new LocationData('supplier', page.request)),
+    use(new LocationData(LOCATION_KEY.SUPPLIER, page.request)),
   supplierAltLocationService: async ({ page }, use) =>
-    use(new LocationData('supplierAlt', page.request)),
+    use(new LocationData(LOCATION_KEY.SUPPLIER_ALT, page.request)),
   depotLocationService: async ({ page }, use) =>
-    use(new LocationData('depot', page.request)),
+    use(new LocationData(LOCATION_KEY.DEPOT, page.request)),
   // PRODUCTS
   mainProductService: async ({ page }, use) =>
-    use(new ProductData('productOne', page.request)),
+    use(new ProductData(PRODUCT_KEY.ONE, page.request)),
   otherProductService: async ({ page }, use) =>
-    use(new ProductData('productTwo', page.request)),
+    use(new ProductData(PRODUCT_KEY.TWO, page.request)),
   // USERS
   mainUserService: async ({ page }, use) =>
-    use(new UserData('main', page.request)),
+    use(new UserData(USER_KEY.MAIN, page.request)),
   altUserService: async ({ page }, use) =>
-    use(new UserData('alternative', page.request)),
+    use(new UserData(USER_KEY.ALTERNATIVE, page.request)),
   // NEW USER CONTEXTS
   mainUserContext: async ({ browser }, use) => {
     const newCtx = await browser.newContext({

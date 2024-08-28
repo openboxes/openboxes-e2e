@@ -1,7 +1,7 @@
 import ImpersonateBanner from '@/components/ImpersonateBanner';
 import LocationChooser from '@/components/LocationChooser';
 import Navbar from '@/components/Navbar';
-import AppConfig from '@/config/AppConfig';
+import AppConfig, { LOCATION_KEY } from '@/config/AppConfig';
 import { expect, test } from '@/fixtures/fixtures';
 import CreateLocationPage from '@/pages/location/createLocation/CreateLocationPage';
 import LocationListPage from '@/pages/location/LocationListPage';
@@ -666,7 +666,7 @@ test.describe('Check if non manage inventory location is present in location cho
   test.beforeAll(async ({ browser }) => {
     const page = await browser.newPage();
 
-    const mainLocation = new LocationData('main', page.request);
+    const mainLocation = new LocationData(LOCATION_KEY.MAIN, page.request);
     const navbar = new Navbar(page);
     const locationListPage = new LocationListPage(page);
     const createLocationPage = new CreateLocationPage(page);
