@@ -2,13 +2,13 @@
 End to end testing for OpenBoxes 
 
 # Table of Contents
-1. [Environment Variables](/documentation/EnvironmentVariables.md)
-2. [Folder Structure](/documentation/ProjectFolderStructure.md)
-3. [Application Configuration](/documentation/ApplicationConfiguration.md)
-4. [Pages - Page Object Model (POM)](/documentation/Pages.md)
-5. [API Service (direct interaaction with backend)](/documentation/ApiService.md)
-6. [User Authentication](/documentation/Authentication.md)
-7. [Fixtures](/documentation/Fixtures.md)
+1. [Introduction (Tutorial)](/documentation/Tutorial.md)
+2. [Environment Variables](/documentation/EnvironmentVariables.md)
+3. [Folder Structure](/documentation/ProjectFolderStructure.md)
+4. [Application Configuration](/documentation/ApplicationConfiguration.md)
+5. [User Authentication](/documentation/Authentication.md)
+6. [Fixtures](/documentation/Fixtures.md)
+7. [Data Setup](/documentation/DataSetup.md)
 
 ## Setup
 ### Required
