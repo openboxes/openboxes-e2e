@@ -86,5 +86,5 @@ test('example test with alt user' async ({ page, altUserContext }) => {
 ```
 
 ## [!IMPORTANT] Try to avoid loggin out from a user
-When ever we want to have a differnt user to log in, **always** open a fresh new window and log in manually.
+When ever we want to have a differnt user to log in, **always** open a fresh new window (create a new context and a new page) and log in manually.
 If we log out from the user it will remove the active session and we will not be able to use the user sessions that we have stored before executing all of the tests.

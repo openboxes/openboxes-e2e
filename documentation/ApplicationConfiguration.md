@@ -48,18 +48,20 @@ test('example test', async ({ page }) => {
 
 ## User Configuration
 
-During initialization app config creates an instance of the `TestUserConfig` where we have specified the following variables
+`TestUserConfig` is a utility class that stores all of the configuration related to a user with properties described below.
 
-**key** - user variable identifier which will be used to access a given user
+| | |
+| -- | -- |
+| **key** | user variable identifier which will be used to access a given user |
+| **username** | user username value of the variable provided in `.env` file |
+| **password**  | user password value of the variable provided in `.env` file |
+| **storageFileName** | path to the file of authenticated session [read more]() |
+| **requiredRoles** | exact roles that the provided user is required to have |
 
-**username** - user username value of the variable provided in `.env` file 
-
-**password** - user password value of the variable provided in `.env` file 
-
-**storageFileName** - path to the file of authenticated session [read more]()
-
-**requiredRoles** - exact roles that the provided user is required to have
 > **!IMPORTANT**: if provided user contains more roles than specified in the config - application will fail
+
+<br>
+
 
 ```ts
 this.users = {
@@ -81,20 +83,20 @@ this.users = {
 
 ## Location Configuration
 
-During initialization app config creates an instance of the `LocationConfig` where we have specified the following variables
+`LocationConfig` is a utility class that stores all of the configuration related to a location with properties described below.
 
-**key** - location variable identifier which will be used to access a given location
+| | |
+|-- | --|
+| **key**  | location variable identifier which will be used to access a given location |
+| **required** | boolean value that specifies if **id** and **name** properties are required  |
+| **id** | _id_ value of the location that will be used to fetch a given location
+| **name** | if existing location is not provided in the `.env` it will create a brand new location based on the specified config with provided **name** ([read more](/documentation/DataSetup.md#data-creation)) |
+| **type** | required location type which will be validated before running all of the tests. eg. DEPOT, SUPPLIER etc... |
+| **requiredRoles** | exact supported activities that the provided locations is required to have |
 
-**required** - boolean value that specifies if **id** and **name** properties are required 
-
-**id** - _id_ value of the location that will be used to fetch a given location
-
-**name** - if existing location is not provided in the `.env` it will create a brand new location based on the specified config with provided **name**
-
-**type** - required location type which will be validated before running all of the tests. eg. DEPOT, SUPPLIER etc...
-
-**requiredRoles** - exact supported activities that the provided locations is required to have
 > **!IMPORTANT**: if provided location contains more activities than specified in the config - application will fail
+
+<br>
 
 ```ts
 this.locations = {
@@ -121,17 +123,17 @@ this.locations = {
 
 ## Product Configuration
 
-During initialization app config creates an instance of the `ProductConfig` where we have specified the following variables
+`ProductConfig` is a utility class that stores all of the configuration related to a product with properties described below.
 
-**key** - location variable identifier which will be used to access a given location
+|  |  |
+|-- |-- |
+| **key** | product variable identifier which will be used to access a given product |
+| **required** | boolean value that specifies if **id** property is required  |
+| **id**  | _id_ value of the product that will be used to fetch a given product |
+| **name** | if existing product is not provided in the `.env` it will create a brand new product based on the specified config with provided **name**  ([read more](/documentation/DataSetup.md#data-creation)) |
+| **quantity**  | Quantity available that will be set for a product when it will be created at setup stage |
 
-**required** - boolean value that specifies if **id** property is required 
-
-**id** - _id_ value of the location that will be used to fetch a given location
-
-**name** - if existing product is not provided in the `.env` it will create a brand new product based on the specified config with provided **name**
-
-**quantity** - Quantity available that will be set for a product when it will be created at setup stage
+<br>
 
 ```ts
 this.products = {

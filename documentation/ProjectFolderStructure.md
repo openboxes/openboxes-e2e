@@ -49,21 +49,13 @@ This structure is designed to make the project modular, maintainable, and easy t
 | **Use Case**  | Provides utility functions that simplify common tasks and operations, reducing code duplication. |
 | **Examples**  | Date manipulation functions, data formatting utilities, etc. |
 
-## Utilities
-|  |  |
-| --------- | ------- |
-| **Directory** | `utils/` |
-| **Purpose**   | A collection of helper functions used across the project. |
-| **Use Case**  | Provides utility functions that simplify common tasks and operations, reducing code duplication. |
-| **Examples**  | Date manipulation functions, data formatting utilities, etc. |
-
 ## Fixtures
 |  |  |
 | --------- | ------- |
 | **Directory** | `fixtures/` |
 | **Purpose**   | Sets up POM classes for easy access within tests. |
 | **Use Case**  | Simplifies test scripts by allowing pre-initialized POM classes to be accessed directly from test parameters. |
-| **Examples**  | More info here |
+| **Examples**  | [More info here](/documentation/Fixtures.md) |
 
 
 ## Setup
