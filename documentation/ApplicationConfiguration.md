@@ -1,6 +1,6 @@
-[Back to README](/README.md)
+[↩️ Back to README](/README.md)
 
-# AppConfig Class Documentation
+# ⚙️ AppConfig Class Documentation
 
 The `AppConfig` class is a singleton configuration manager designed for end-to-end testing. It centralizes configuration details, such as URLs, environment settings, test user credentials, and other configurations needed for running tests. This class ensures that all configurations are loaded from environment variables and are accessible throughout the test suite.
 
@@ -58,7 +58,7 @@ test('example test', async ({ page }) => {
 | **storageFileName** | path to the file of authenticated session [read more]() |
 | **requiredRoles** | exact roles that the provided user is required to have |
 
-> **!IMPORTANT**: if provided user contains more roles than specified in the config - application will fail
+> **❗IMPORTANT**: if provided user contains more roles than specified in the config - application will fail
 
 <br>
 
@@ -94,7 +94,7 @@ this.users = {
 | **type** | required location type which will be validated before running all of the tests. eg. DEPOT, SUPPLIER etc... |
 | **requiredRoles** | exact supported activities that the provided locations is required to have |
 
-> **!IMPORTANT**: if provided location contains more activities than specified in the config - application will fail
+> **❗IMPORTANT**: if provided location contains more activities than specified in the config - application will fail
 
 <br>
 

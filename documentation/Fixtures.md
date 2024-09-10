@@ -1,8 +1,8 @@
-[Back to README](/README.md)
+[↩️ Back to README](/README.md)
 
 > For more information on **Fixtures**, please check out the official playwright [documentation](https://playwright.dev/docs/test-fixtures).
 
-# Fixtures
+# ⚓ Fixtures
 
 Fixtures is a neat way for use to make the code a little more DRY and avoid repetitive instantiation of POM object.
 
@@ -16,7 +16,7 @@ test('example', async ({ page }) => {
 
     await productShowPage.saveButton.click();
     ...
-})
+});
 ```
 
 Instead we can import it in the `fixtures.ts`

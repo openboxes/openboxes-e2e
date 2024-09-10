@@ -1,6 +1,6 @@
-[Back to README](/README.md)
+[↩️ Back to README](/README.md)
 
-# Directory Structure Overview
+# 📂 Folder Structure Overview
 The following is an overview of the project's folder structure, detailing the purpose and contents of each directory. This will help new developers quickly understand how the project is organized and where to find specific components.
 
 <p align="center">
