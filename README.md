@@ -1,7 +1,7 @@
 # Openboxes E2E tests
 End to end testing for OpenBoxes 
 
-# Table of Contents
+# Documentation
 1. [Introduction (Tutorial)](/documentation/Tutorial.md)
 2. [Environment Variables](/documentation/EnvironmentVariables.md)
 3. [Folder Structure](/documentation/ProjectFolderStructure.md)
