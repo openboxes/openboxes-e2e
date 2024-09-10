@@ -1,10 +1,10 @@
-[Back to README](/README.md)
+[↩️ Back to README](/README.md)
 
 
-## Environment Variables
+# 🔠  Environment Variables
 Environment variables facilitate the configuration of our testing project by allowing us to set appropriate configuration settings. A sample file can be located in the root directory of the project under the title `.env.example.` To configure this project effectively, it is imperative to create a `.env` file and declare all necessary variables within it.
 
-## Required variables
+## ❗ Required variables
 
 _base URL of the running openboxes environment_
 ```
@@ -28,7 +28,7 @@ _`locationId` of the default location that will be used in most of the tests_
 LOCATION_MAIN=locationIdHash
 ```
 
-## Optional variables
+## ⚪ Optional variables
 
 _[optional]_ `true` or `false` flag indicating whether tests are running in Continuous Integration.
 ```

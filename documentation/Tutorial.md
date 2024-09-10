@@ -1,6 +1,6 @@
-[Back to README](/README.md)
+[↩️ Back to README](/README.md)
 
-# Imeplement a test
+# 🗒️ Imeplement a test
 
 Lets try to implement the following test
 
@@ -26,7 +26,7 @@ Before running the test, ensure that you have:
 ## Test skeleton
 Let's start by preparing a test skeleton and breaking down each step, which we will implement later. We can use the [step](https://playwright.dev/docs/api/class-test#test-step) method to divide a test into "steps" that the test will follow. These steps are useful for grouping actions into organized blocks. Additionally, they make Playwright's reports easier to navigate, as it's simpler to identify which section of the test has failed.
 
-> **[!IMPORTANT]** Note that we are importing the test object from `@/fixtures/fixtures` instead of `@playwright/test` to access our Page Object Model (POM) instances. [(Read more)](/documentation/Fixtures.md)
+> **❗IMPORTANT**: Note that we are importing the test object from `@/fixtures/fixtures` instead of `@playwright/test` to access our Page Object Model (POM) instances. [(Read more)](/documentation/Fixtures.md)
 
 ```ts
 import { test } from '@/fixtures/fixtures';

@@ -1,8 +1,8 @@
-[Back to README](/README.md)
+[↩️ Back to README](/README.md)
 
-# Authentication Setup for Tests
+# 🛡️ Authentication Setup for Tests
 
-> **[!IMPORTANT]** For more information please refer to the [playwright authetication documentation](https://playwright.dev/docs/auth) since the implementation for user authentication was done based on the provided examples in the official playwright documentation.
+> **❗IMPORTANT**: For more information please refer to the [playwright authetication documentation](https://playwright.dev/docs/auth) since the implementation for user authentication was done based on the provided examples in the official playwright documentation.
 
 Before executing the test suite, an authentication setup script (`auth.setup.ts`) is run to initialize user credentials provided in the `.env` file. The process involves the following steps:
 
@@ -85,6 +85,6 @@ test('example test with alt user' async ({ page, altUserContext }) => {
 });
 ```
 
-## [!IMPORTANT] Try to avoid loggin out from a user
+## ❗IMPORTANT: Try to avoid loggin out from a user
 When ever we want to have a differnt user to log in, **always** open a fresh new window (create a new context and a new page) and log in manually.
 If we log out from the user it will remove the active session and we will not be able to use the user sessions that we have stored before executing all of the tests.

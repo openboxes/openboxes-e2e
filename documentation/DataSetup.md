@@ -1,6 +1,6 @@
-[Back to README](/README.md)
+[↩️ Back to README](/README.md)
 
-# Data Setup
+# 🧰 Data Setup
 
 Before running any tests, it's essential to ensure that the data provided by the configuration exists and is valid. For this reason, two "test projects" are executed before the actual tests: `createData.setup.ts` and `validateData.setup.ts`.
 
