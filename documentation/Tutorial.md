@@ -4,6 +4,12 @@
 
 Lets try to implement the following test
 
+
+## Prerequisites
+Before running the test, ensure that you have:
+1. Properly set up the required environment variables.
+2. Installed all necessary dependencies for Playwright to function correctly.
+
 ## Test Overview
 ### Test Objective:
 
