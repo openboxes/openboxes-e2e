@@ -10,6 +10,24 @@ import { LocationTypeCode } from '@/constants/LocationTypeCode';
 import RoleType from '@/constants/RoleTypes';
 import UniqueIdentifier from '@/utils/UniqueIdentifier';
 
+export enum USER_KEY {
+  MAIN = 'main',
+  ALTERNATIVE = 'alternative'
+}
+
+export enum LOCATION_KEY {
+  MAIN = 'main',
+  SUPPLIER = 'supplier',
+  SUPPLIER_ALT = 'supplierAlt',
+  NO_MANAGER_INENTORY = 'noManageInventoryDepot',
+  DEPOT = 'depot'
+}
+
+export enum PRODUCT_KEY {
+  ONE = 'productOne',
+  TWO = 'productTwo'
+}
+
 /**
  * class representing the application configuration for end-to-end tests.
  */
@@ -32,16 +50,13 @@ class AppConfig {
   public isCI!: boolean;
 
   // test users used in all of the tests
-  public users!: Record<'main' | 'alternative', TestUserConfig>;
+  public users!: Record<USER_KEY, TestUserConfig>;
 
   // test users used in all of the tests
-  public locations!: Record<
-    'main' | 'supplier' | 'supplierAlt' | 'noManageInventoryDepot' | 'depot',
-    LocationConfig
-  >;
+  public locations!: Record<LOCATION_KEY, LocationConfig>;
 
   // test products used in all of the tests
-  public products!: Record<'productOne' | 'productTwo', ProductConfig>;
+  public products!: Record<PRODUCT_KEY, ProductConfig>;
 
   // Private constructor to enforce singleton pattern.
   private constructor() {
@@ -71,7 +86,7 @@ class AppConfig {
 
     this.users = {
       main: new TestUserConfig({
-        key: 'main',
+        key: USER_KEY.MAIN,
         username: env.get('USER_MAIN_USERNAME').required().asString(),
         password: env.get('USER_MAIN_PASSWORD').required().asString(),
         storageFileName: '.auth-storage-MAIN-USER.json',
@@ -84,7 +99,7 @@ class AppConfig {
         ]),
       }),
       alternative: new TestUserConfig({
-        key: 'alternative',
+        key: USER_KEY.ALTERNATIVE,
         username: env.get('USER_ALT_USERNAME').required().asString(),
         password: env.get('USER_ALT_PASSWORD').required().asString(),
         storageFileName: '.auth-storage-ALT-USER.json',
@@ -100,7 +115,7 @@ class AppConfig {
 
     this.locations = {
       main: new LocationConfig({
-        key: 'main',
+        key: LOCATION_KEY.MAIN,
         id: env.get('LOCATION_MAIN').required().asString(),
         requiredActivityCodes: new Set([
           ActivityCode.MANAGE_INVENTORY,
@@ -119,7 +134,7 @@ class AppConfig {
       }),
       depot: new LocationConfig({
         id: env.get('LOCATION_DEPOT').asString(),
-        key: 'depot',
+        key: LOCATION_KEY.DEPOT,
         name: this.uniqueIdentifier.generateUniqueString('depot'),
         requiredActivityCodes: new Set([
           ActivityCode.MANAGE_INVENTORY,
@@ -139,7 +154,7 @@ class AppConfig {
         type: LocationTypeCode.DEPOT,
       }),
       supplier: new LocationConfig({
-        id: env.get('LOCATION_SUPPLIER').asString(),
+        id: env.get(LOCATION_KEY.SUPPLIER).asString(),
         key: 'supplier',
         name: this.uniqueIdentifier.generateUniqueString('supplier'),
         requiredActivityCodes: new Set([
@@ -152,7 +167,7 @@ class AppConfig {
       }),
       supplierAlt: new LocationConfig({
         id: env.get('LOCATION_SUPPLIER_ALT').asString(),
-        key: 'supplier-alt',
+        key: LOCATION_KEY.SUPPLIER_ALT,
         name: this.uniqueIdentifier.generateUniqueString('supplier-alt'),
         requiredActivityCodes: new Set([
           ActivityCode.FULFILL_ORDER,
@@ -164,7 +179,7 @@ class AppConfig {
       }),
       noManageInventoryDepot: new LocationConfig({
         id: env.get('LOCATION_NO_MANAGE_INVENOTRY_DEPOT').asString(),
-        key: 'noManageInventoryDepot',
+        key: LOCATION_KEY.NO_MANAGER_INENTORY,
         name: this.uniqueIdentifier.generateUniqueString('no-manage-inventory'),
         requiredActivityCodes: new Set([
           ActivityCode.DYNAMIC_CREATION,
@@ -184,14 +199,14 @@ class AppConfig {
     this.products = {
       productOne: new ProductConfig({
         id: env.get('PRODUCT_ONE').asString(),
-        key: 'productOne',
+        key: PRODUCT_KEY.ONE,
         name: this.uniqueIdentifier.generateUniqueString('product-one'),
         quantity: 122,
         required: false,
       }),
       productTwo: new ProductConfig({
         id: env.get('PRODUCT_TWO').asString(),
-        key: 'productTwo',
+        key: PRODUCT_KEY.TWO,
         name: this.uniqueIdentifier.generateUniqueString('product-two'),
         quantity: 123,
         required: false,
