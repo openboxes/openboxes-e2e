@@ -7,7 +7,11 @@ import StockMovementService from '@/api/StockMovementService';
 import ImpersonateBanner from '@/components/ImpersonateBanner';
 import LocationChooser from '@/components/LocationChooser';
 import Navbar from '@/components/Navbar';
-import AppConfig, { LOCATION_KEY, PRODUCT_KEY, USER_KEY } from '@/config/AppConfig';
+import AppConfig, {
+  LOCATION_KEY,
+  PRODUCT_KEY,
+  USER_KEY,
+} from '@/config/AppConfig';
 import CreateInbound from '@/pages/inbound/create/CreateInboundPage';
 import InboundListPage from '@/pages/inbound/list/InboundListPage';
 import CreateLocationPage from '@/pages/location/createLocation/CreateLocationPage';
