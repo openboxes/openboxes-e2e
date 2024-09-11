@@ -14,6 +14,7 @@ import {
   UpdateStockMovementStatusPayload,
 } from '@/types';
 import { formatDate } from '@/utils/DateUtils';
+import { parseRequestToJSON } from '@/utils/ServiceUtils';
 import UniqueIdentifier from '@/utils/UniqueIdentifier';
 
 import GenericService from './GenericService';
@@ -31,33 +32,51 @@ class StockMovementService extends BaseServiceModel {
   async createStockMovement(
     payload: CreateStockMovementPayload
   ): Promise<ApiResponse<StockMovementResponse>> {
-    const apiResponse = await this.request.post('./api/stockMovements', {
-      data: payload,
-    });
-    return await apiResponse.json();
+    try {
+      const apiResponse = await this.request.post('./api/stockMovements', {
+        data: payload,
+      });
+
+      return await parseRequestToJSON(apiResponse);
+    } catch (error) {
+      throw new Error('Problem creating stock movement');
+    }
   }
 
   async deleteStockMovement(id: string) {
-    await this.request.delete(`./api/stockMovements/${id}`);
+    try {
+      await this.request.delete(`./api/stockMovements/${id}`);
+    } catch (error) {
+      throw new Error('Problem deleting stock movement');
+    }
   }
 
   async updateItems(
     id: string,
     payload: UpdateStockMovementItemsPayload
   ): Promise<ApiResponse<unknown>> {
-    const apiResponse = await this.request.post(
-      `./api/stockMovements/${id}/updateItems`,
-      {
-        data: payload,
-      }
-    );
-    return await apiResponse.json();
+    try {
+      const apiResponse = await this.request.post(
+        `./api/stockMovements/${id}/updateItems`,
+        {
+          data: payload,
+        }
+      );
+
+      return await parseRequestToJSON(apiResponse);
+    } catch (error) {
+      throw new Error('Problem updating item');
+    }
   }
 
   async updateShipment(id: string, payload: UpdateStockMovementPayload) {
-    await this.request.post(`./api/stockMovements/${id}/updateShipment`, {
-      data: payload,
-    });
+    try {
+      await this.request.post(`./api/stockMovements/${id}/updateShipment`, {
+        data: payload,
+      });
+    } catch (error) {
+      throw new Error('Problem updating shipment');
+    }
   }
 
   async createInbound(payload: CreateInboundPayload) {
@@ -81,9 +100,13 @@ class StockMovementService extends BaseServiceModel {
     id: string,
     payload: UpdateStockMovementStatusPayload
   ) {
-    await this.request.post(`./api/stockMovements/${id}/status`, {
-      data: payload,
-    });
+    try {
+      await this.request.post(`./api/stockMovements/${id}/status`, {
+        data: payload,
+      });
+    } catch (error) {
+      throw new Error('Problem updating status');
+    }
   }
 
   async addItemsToInboundStockMovement(

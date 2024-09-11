@@ -12,7 +12,7 @@ import UniqueIdentifier from '@/utils/UniqueIdentifier';
 
 export enum USER_KEY {
   MAIN = 'main',
-  ALTERNATIVE = 'alternative'
+  ALTERNATIVE = 'alternative',
 }
 
 export enum LOCATION_KEY {
@@ -20,12 +20,12 @@ export enum LOCATION_KEY {
   SUPPLIER = 'supplier',
   SUPPLIER_ALT = 'supplierAlt',
   NO_MANAGER_INENTORY = 'noManageInventoryDepot',
-  DEPOT = 'depot'
+  DEPOT = 'depot',
 }
 
 export enum PRODUCT_KEY {
   ONE = 'productOne',
-  TWO = 'productTwo'
+  TWO = 'productTwo',
 }
 
 /**
