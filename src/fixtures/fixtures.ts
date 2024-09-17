@@ -69,16 +69,19 @@ type Fixtures = {
   supplierLocationService: LocationData;
   supplierAltLocationService: LocationData;
   depotLocationService: LocationData;
+  wardLocationService: LocationData;
   // PRODUCT DATA
   mainProductService: ProductData;
   otherProductService: ProductData;
   // USERS DATA
   mainUserService: UserData;
   altUserService: UserData;
+  managerUserService: UserData;
   // USER CONTEXT
   mainUserContext: BrowserContext;
   altUserContext: BrowserContext;
   emptyUserContext: BrowserContext;
+  managerUserContext: BrowserContext;
 };
 
 export const test = baseTest.extend<Fixtures>({
@@ -131,6 +134,8 @@ export const test = baseTest.extend<Fixtures>({
     use(new LocationData(LOCATION_KEY.SUPPLIER_ALT, page.request)),
   depotLocationService: async ({ page }, use) =>
     use(new LocationData(LOCATION_KEY.DEPOT, page.request)),
+  wardLocationService: async ({ page }, use) =>
+    use(new LocationData(LOCATION_KEY.WARD, page.request)),
   // PRODUCTS
   mainProductService: async ({ page }, use) =>
     use(new ProductData(PRODUCT_KEY.ONE, page.request)),
@@ -141,6 +146,8 @@ export const test = baseTest.extend<Fixtures>({
     use(new UserData(USER_KEY.MAIN, page.request)),
   altUserService: async ({ page }, use) =>
     use(new UserData(USER_KEY.ALTERNATIVE, page.request)),
+  managerUserService: async ({ page }, use) =>
+    use(new UserData(USER_KEY.MANAGER, page.request)),
   // NEW USER CONTEXTS
   mainUserContext: async ({ browser }, use) => {
     const newCtx = await browser.newContext({
@@ -163,6 +170,16 @@ export const test = baseTest.extend<Fixtures>({
   emptyUserContext: async ({ browser }, use) => {
     const newCtx = await browser.newContext({
       storageState: { cookies: [], origins: [] },
+    });
+
+    await use(newCtx);
+
+    await newCtx.close();
+  },
+
+  managerUserContext: async ({ browser }, use) => {
+    const newCtx = await browser.newContext({
+      storageState: AppConfig.instance.users.maganer.storagePath,
     });
 
     await use(newCtx);
