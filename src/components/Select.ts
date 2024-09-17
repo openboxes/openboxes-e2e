@@ -44,6 +44,11 @@ class Select extends FormField {
     await this.clickOption(searchTerm);
   }
 
+  async findOption(searchTerm: string) {
+    await this.click();
+    await this.search(searchTerm);
+  }
+
   async assertDisabled() {
     await this.click();
     await expect(this.selectDropdown).toBeHidden();
