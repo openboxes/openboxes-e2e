@@ -13,6 +13,7 @@ import UniqueIdentifier from '@/utils/UniqueIdentifier';
 export enum USER_KEY {
   MAIN = 'main',
   ALTERNATIVE = 'alternative',
+  MANAGER = 'maganer',
 }
 
 export enum LOCATION_KEY {
@@ -21,6 +22,7 @@ export enum LOCATION_KEY {
   SUPPLIER_ALT = 'supplierAlt',
   NO_MANAGER_INENTORY = 'noManageInventoryDepot',
   DEPOT = 'depot',
+  WARD = 'ward',
 }
 
 export enum PRODUCT_KEY {
@@ -111,6 +113,13 @@ class AppConfig {
           RoleType.ROLE_PURCHASE_APPROVER,
         ]),
       }),
+      maganer: new TestUserConfig({
+        key: USER_KEY.MANAGER,
+        username: env.get('USER_MANAGER_USERNAME').required().asString(),
+        password: env.get('USER_MANAGER_PASSWORD').required().asString(),
+        storageFileName: '.auth-storage-ALT-USER.json',
+        requiredRoles: new Set([RoleType.ROLE_MANAGER]),
+      }),
     };
 
     this.locations = {
@@ -193,6 +202,18 @@ class AppConfig {
         ]),
         required: false,
         type: LocationTypeCode.DEPOT,
+      }),
+
+      ward: new LocationConfig({
+        id: env.get('WARD').asString(),
+        key: LOCATION_KEY.WARD,
+        name: this.uniqueIdentifier.generateUniqueString('ward'),
+        requiredActivityCodes: new Set([
+          ActivityCode.SUBMIT_REQUEST,
+          ActivityCode.RECEIVE_STOCK,
+        ]),
+        required: false,
+        type: LocationTypeCode.WARD,
       }),
     };
 
