@@ -205,7 +205,7 @@ class AppConfig {
       }),
 
       ward: new LocationConfig({
-        id: env.get('WARD').asString(),
+        id: env.get('LOCATION_WARD').asString(),
         key: LOCATION_KEY.WARD,
         name: this.uniqueIdentifier.generateUniqueString('ward'),
         requiredActivityCodes: new Set([

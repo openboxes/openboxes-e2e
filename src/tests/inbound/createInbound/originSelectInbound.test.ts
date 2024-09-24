@@ -1,31 +1,22 @@
 import { expect, test } from '@/fixtures/fixtures';
 import CreateInboundPage from '@/pages/inbound/create/CreateInboundPage';
-import { LocationResponse, User } from '@/types';
+import { LocationResponse } from '@/types';
 
 test.describe('Assert locations on origin select in inbound stock movement', () => {
   const DESCRIPTION = 'some description';
   let ORIGIN1: LocationResponse;
   let ORIGIN2: LocationResponse;
   let ORIGIN3: LocationResponse;
-  let CURRENT_LOCATION: LocationResponse;
-  let USER: User;
-  let USER_MANAGER: User;
 
   test.beforeEach(
     async ({
-      mainUserService,
-      managerUserService,
       depotLocationService,
       noManageInventoryDepotService,
-      mainLocationService,
       wardLocationService,
     }) => {
-      USER = await mainUserService.getUser();
-      USER_MANAGER = await managerUserService.getUser();
       ORIGIN1 = await depotLocationService.getLocation();
       ORIGIN2 = await noManageInventoryDepotService.getLocation();
       ORIGIN3 = await wardLocationService.getLocation();
-      CURRENT_LOCATION = await mainLocationService.getLocation();
     }
   );
 
