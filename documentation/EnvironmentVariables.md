@@ -23,6 +23,12 @@ USER_ALT_USERNAME=username
 USER_ALT_PASSWORD=password 
 ```
 
+_login credentials of the manager user that can be used_
+``` 
+USER_MANAGER_USERNAME=username 
+USER_MANAGER_PASSWORD=password 
+```
+
 _`locationId` of the default location that will be used in most of the tests_
 ```
 LOCATION_MAIN=locationIdHash
@@ -56,6 +62,11 @@ LOCATION_SUPPLIER_ALT=locationIdHash
 _`locationId` of the location of type depot_
 ```
 LOCATION_DEPOT=locationIdHash
+```
+
+_`locationId` of the location of type ward_
+```
+LOCATION_WARD=locationIdHash
 ```
 
 ### Products
