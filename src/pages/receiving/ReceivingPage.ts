@@ -40,9 +40,11 @@ class ReceivingPage extends BasePageModel {
     description: string;
   }) {
     const regexPattern = new RegExp(
-      `Receiving | * ${origin} to ${destination}, ${date}, ${description}`
+      `Receiving .+ ${origin} to ${destination}, ${date}, ${description}`
     );
-    await expect(this.page.getByText(regexPattern)).toBeVisible();
+    await expect(
+      this.page.getByTestId('wizardTitle').getByText(regexPattern)
+    ).toBeVisible();
   }
 }
 
