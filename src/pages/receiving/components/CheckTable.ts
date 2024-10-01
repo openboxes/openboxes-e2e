@@ -1,6 +1,7 @@
 import { Locator, Page } from '@playwright/test';
 
 import BasePageModel from '@/pages/BasePageModel';
+import { nth } from 'lodash';
 
 class CheckTable extends BasePageModel {
   constructor(page: Page) {
@@ -18,6 +19,26 @@ class CheckTable extends BasePageModel {
   row(index: number) {
     return new Row(this.page, this.rows.nth(index));
   }
+
+  getColumnHeader(columnName: string) {
+    return this.table.locator('.table-header').getByText(columnName);
+  }
+
+  get receivingNowColumnContent() {
+    return this.table
+      .getByRole('row')
+      .nth(1)
+      .locator('.table-inner-row > div')
+      .nth(8);
+  }
+
+  get remainingColumnContent() {
+    return this.table
+      .getByRole('row')
+      .nth(1)
+      .locator('.table-inner-row > div')
+      .nth(9);
+  }
 }
 
 class Row extends BasePageModel {
@@ -26,6 +47,10 @@ class Row extends BasePageModel {
   constructor(page: Page, row: Locator) {
     super(page);
     this.row = row;
+  }
+
+  getitem(name: string) {
+    return this.row.getByTestId('label-field').getByText(name);
   }
 }
 
