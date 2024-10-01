@@ -21,16 +21,7 @@ class ReceivingTable extends BasePageModel {
   }
 
   getColumnHeader(columnName: string) {
-    return this.table
-      .locator('[class= "text-center border table-header"]')
-      .getByText(columnName);
-  }
-
-  get codeColumn() {
-    return this.table
-      .locator('[class= "text-center border table-header"]')
-      .locator('.table-header > div > div')
-      .nth(0);
+    return this.table.locator('.table-header').getByText(columnName);
   }
 }
 
@@ -46,6 +37,10 @@ class Row extends BasePageModel {
 
   get deleteButton() {
     return this.row.getByRole('button', { name: 'Delete' });
+  }
+
+  getitem(name: string) {
+    return this.row.getByTestId('label-field').getByText(name);
   }
 }
 
