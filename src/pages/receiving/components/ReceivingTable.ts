@@ -19,6 +19,19 @@ class ReceivingTable extends BasePageModel {
   row(index: number) {
     return new Row(this.page, this.rows.nth(index));
   }
+
+  getColumnHeader(columnName: string) {
+    return this.table
+      .locator('[class= "text-center border table-header"]')
+      .getByText(columnName);
+  }
+
+  get codeColumn() {
+    return this.table
+      .locator('[class= "text-center border table-header"]')
+      .locator('.table-header > div > div')
+      .nth(0);
+  }
 }
 
 class Row extends BasePageModel {
