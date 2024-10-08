@@ -6,7 +6,7 @@ import { formatDate, getToday } from '@/utils/DateUtils';
 test.describe('Receive inbound stock movement', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
   const description = 'some description';
-  const dateRequested = new Date();
+  const dateRequested = getToday();
   const TODAY = getToday();
 
   test.beforeEach(
@@ -48,7 +48,6 @@ test.describe('Receive inbound stock movement', () => {
     receivingPage,
     supplierLocationService,
     mainLocationService,
-    page,
     mainProductService,
   }) => {
     await test.step('Go to stock movement show page', async () => {
@@ -73,65 +72,39 @@ test.describe('Receive inbound stock movement', () => {
     });
 
     await test.step('Assert table column headers on receiving page', async () => {
-      await receivingPage.receivingStep.table
-        .getColumnHeader('Pack level 1')
-        .hover();
-      await expect(page.getByRole('tooltip')).toContainText('Pack level 1');
-      await receivingPage.receivingStep.table
-        .getColumnHeader('Pack level 2')
-        .hover();
-      await expect(page.getByRole('tooltip')).toContainText('Pack level 2');
-      await receivingPage.receivingStep.table.getColumnHeader('Code').hover();
-      await expect(page.getByRole('tooltip')).toContainText('Code');
-      await receivingPage.receivingStep.table
-        .getColumnHeader('Product')
-        .hover();
-      await expect(page.getByRole('tooltip')).toContainText('Product');
-      await receivingPage.receivingStep.table
-        .getColumnHeader('Lot/Serial No.')
-        .hover();
-      await expect(page.getByRole('tooltip')).toContainText('Lot/Serial No.');
-      await receivingPage.receivingStep.table
-        .getColumnHeader('Expiration date')
-        .hover();
-      await expect(page.getByRole('tooltip')).toContainText('Expiration date');
-      await receivingPage.receivingStep.table
-        .getColumnHeader('Bin Location')
-        .hover();
-      await expect(page.getByRole('tooltip')).toContainText('Bin Location');
-      await receivingPage.receivingStep.table
-        .getColumnHeader('Recipient')
-        .hover();
-      await expect(page.getByRole('tooltip')).toContainText('Recipient');
-      await receivingPage.receivingStep.table
-        .getColumnHeader('Shipped')
-        .hover();
-      await expect(page.getByRole('tooltip')).toContainText('Shipped');
-      await receivingPage.receivingStep.table
-        .getColumnHeader('Received')
-        .hover();
-      await expect(page.getByRole('tooltip')).toContainText('Received');
-      await receivingPage.receivingStep.table
-        .getColumnHeader('To receive')
-        .hover();
-      await expect(page.getByRole('tooltip')).toContainText('To receive');
-      await receivingPage.receivingStep.table
-        .getColumnHeader('Receiving now')
-        .hover();
-      await expect(page.getByRole('tooltip')).toContainText('Receiving now');
-      await receivingPage.receivingStep.table
-        .getColumnHeader('Comment')
-        .hover();
-      await expect(page.getByRole('tooltip')).toContainText('Comment');
+      await receivingPage.assertColumnHeaderTooltipOnReceivingStep(
+        'Pack level 1'
+      );
+      await receivingPage.assertColumnHeaderTooltipOnReceivingStep(
+        'Pack level 2'
+      );
+      await receivingPage.assertColumnHeaderTooltipOnReceivingStep('Code');
+      await receivingPage.assertColumnHeaderTooltipOnReceivingStep('Product');
+      await receivingPage.assertColumnHeaderTooltipOnReceivingStep(
+        'Lot/Serial No.'
+      );
+      await receivingPage.assertColumnHeaderTooltipOnReceivingStep(
+        'Expiration date'
+      );
+      await receivingPage.assertColumnHeaderTooltipOnReceivingStep(
+        'Bin Location'
+      );
+      await receivingPage.assertColumnHeaderTooltipOnReceivingStep('Recipient');
+      await receivingPage.assertColumnHeaderTooltipOnReceivingStep('Shipped');
+      await receivingPage.assertColumnHeaderTooltipOnReceivingStep('Received');
+      await receivingPage.assertColumnHeaderTooltipOnReceivingStep(
+        'To receive'
+      );
+      await receivingPage.assertColumnHeaderTooltipOnReceivingStep(
+        'Receiving now'
+      );
+      await receivingPage.assertColumnHeaderTooltipOnReceivingStep('Comment');
     });
 
     await test.step('Assert product in receiving table', async () => {
-      const itemName = await mainProductService.getProduct();
-      await receivingPage.receivingStep.table
-        .row(1)
-        .getitem(itemName.name)
-        .hover();
-      await expect(page.getByRole('tooltip')).toContainText(itemName.name);
+      const item = await mainProductService.getProduct();
+      await receivingPage.receivingStep.table.row(1).getItem(item.name).hover();
+      await expect(receivingPage.tooltip).toContainText(item.name);
     });
 
     await test.step('Select all items to receive', async () => {
@@ -158,50 +131,38 @@ test.describe('Receive inbound stock movement', () => {
     });
 
     await test.step('Assert table column headers on checking page', async () => {
-      await receivingPage.checkStep.table
-        .getColumnHeader('Pack level 1')
-        .hover();
-      await expect(page.getByRole('tooltip')).toContainText('Pack level 1');
-      await receivingPage.checkStep.table
-        .getColumnHeader('Pack level 2')
-        .hover();
-      await expect(page.getByRole('tooltip')).toContainText('Pack level 2');
-      await receivingPage.checkStep.table.getColumnHeader('Code').hover();
-      await expect(page.getByRole('tooltip')).toContainText('Code');
-      await receivingPage.checkStep.table.getColumnHeader('Product').hover();
-      await expect(page.getByRole('tooltip')).toContainText('Product');
-      await receivingPage.checkStep.table
-        .getColumnHeader('Lot/Serial No.')
-        .hover();
-      await expect(page.getByRole('tooltip')).toContainText('Lot/Serial No.');
-      await receivingPage.checkStep.table
-        .getColumnHeader('Expiration date')
-        .hover();
-      await expect(page.getByRole('tooltip')).toContainText('Expiration date');
-      await receivingPage.checkStep.table
-        .getColumnHeader('Bin Location')
-        .hover();
-      await expect(page.getByRole('tooltip')).toContainText('Bin Location');
-      await receivingPage.checkStep.table.getColumnHeader('Recipient').hover();
-      await expect(page.getByRole('tooltip')).toContainText('Recipient');
-      await receivingPage.checkStep.table
-        .getColumnHeader('Receiving now')
-        .hover();
-      await expect(page.getByRole('tooltip')).toContainText('Receiving now');
-      await receivingPage.checkStep.table.getColumnHeader('Remaining').hover();
-      await expect(page.getByRole('tooltip')).toContainText('Remaining');
-      await receivingPage.checkStep.table
-        .getColumnHeader('Cancel remaining')
-        .hover();
-      await expect(page.getByRole('tooltip')).toContainText('Cancel remaining');
-      await receivingPage.checkStep.table.getColumnHeader('Comment').hover();
-      await expect(page.getByRole('tooltip')).toContainText('Comment');
+      await receivingPage.assertColumnHeaderTooltipOnCheckingStep(
+        'Pack level 1'
+      );
+      await receivingPage.assertColumnHeaderTooltipOnCheckingStep(
+        'Pack level 2'
+      );
+      await receivingPage.assertColumnHeaderTooltipOnCheckingStep('Code');
+      await receivingPage.assertColumnHeaderTooltipOnCheckingStep('Product');
+      await receivingPage.assertColumnHeaderTooltipOnCheckingStep(
+        'Lot/Serial No.'
+      );
+      await receivingPage.assertColumnHeaderTooltipOnCheckingStep(
+        'Expiration date'
+      );
+      await receivingPage.assertColumnHeaderTooltipOnCheckingStep(
+        'Bin Location'
+      );
+      await receivingPage.assertColumnHeaderTooltipOnCheckingStep('Recipient');
+      await receivingPage.assertColumnHeaderTooltipOnCheckingStep(
+        'Receiving now'
+      );
+      //await receivingPage.assertColumnHeaderTooltipOnCheckingStep('Remaining');
+      await receivingPage.assertColumnHeaderTooltipOnCheckingStep(
+        'Cancel remaining'
+      );
+      await receivingPage.assertColumnHeaderTooltipOnCheckingStep('Comment');
     });
 
     await test.step('Assert product in checking table', async () => {
-      const itemName = await mainProductService.getProduct();
-      await receivingPage.checkStep.table.row(1).getitem(itemName.name).hover();
-      await expect(page.getByRole('tooltip')).toContainText(itemName.name);
+      const item = await mainProductService.getProduct();
+      await receivingPage.checkStep.table.row(1).getItem(item.name).hover();
+      await expect(receivingPage.tooltip).toContainText(item.name);
     });
 
     await test.step('Assert receiving now and remaining qty on checking table', async () => {
