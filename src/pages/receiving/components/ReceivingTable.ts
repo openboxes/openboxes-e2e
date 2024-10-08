@@ -19,6 +19,10 @@ class ReceivingTable extends BasePageModel {
   row(index: number) {
     return new Row(this.page, this.rows.nth(index));
   }
+
+  getColumnHeader(columnName: string) {
+    return this.table.locator('.table-header').getByText(columnName);
+  }
 }
 
 class Row extends BasePageModel {
@@ -33,6 +37,10 @@ class Row extends BasePageModel {
 
   get deleteButton() {
     return this.row.getByRole('button', { name: 'Delete' });
+  }
+
+  getItem(name: string) {
+    return this.row.getByTestId('label-field').getByText(name);
   }
 }
 

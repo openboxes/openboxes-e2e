@@ -28,6 +28,10 @@ class ReceivingPage extends BasePageModel {
     return this.page.getByRole('button', { name: 'Next' });
   }
 
+  get wizzardTitle() {
+    return this.page.getByTestId('wizardTitle');
+  }
+
   async assertHeaderIsVisible({
     origin,
     destination,
@@ -40,10 +44,25 @@ class ReceivingPage extends BasePageModel {
     description: string;
   }) {
     const regexPattern = new RegExp(
-      `Receiving | * ${origin} to ${destination}, ${date}, ${description}`
+      `Receiving .+ ${origin} to ${destination}, ${date}, ${description}`
     );
-    await expect(this.page.getByText(regexPattern)).toBeVisible();
+
+    await expect(this.wizzardTitle.getByText(regexPattern)).toBeVisible();
   }
+
+  get tooltip() {
+    return this.page.getByRole('tooltip');
+  }
+
+  assertColumnHeaderTooltipOnReceivingStep = async (columnName: string) => {
+    await this.receivingStep.table.getColumnHeader(columnName).hover();
+    await expect(this.tooltip).toContainText(columnName);
+  };
+
+  assertColumnHeaderTooltipOnCheckingStep = async (columnName: string) => {
+    await this.checkStep.table.getColumnHeader(columnName).hover();
+    await expect(this.tooltip).toContainText(columnName);
+  };
 }
 
 export default ReceivingPage;

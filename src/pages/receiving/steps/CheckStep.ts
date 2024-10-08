@@ -18,6 +18,26 @@ class CheckStep extends BasePageModel {
   get receiveShipmentButton() {
     return this.page.getByRole('button', { name: 'Receive shipment' });
   }
+
+  get shimpentInformation() {
+    return this.page.locator('.form-title');
+  }
+
+  get originField() {
+    return this.page.getByRole('textbox', { name: 'Origin' });
+  }
+
+  get destinationField() {
+    return this.page.getByRole('textbox', { name: 'Destination' });
+  }
+
+  get shippedOnField() {
+    return this.page.getByRole('textbox', { name: 'Shipped on' });
+  }
+
+  get deliveredOnField() {
+    return this.page.getByRole('textbox', { name: 'Delivered on' });
+  }
 }
 
 export default CheckStep;
