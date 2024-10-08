@@ -39,7 +39,7 @@ class Row extends BasePageModel {
     return this.row.getByRole('button', { name: 'Delete' });
   }
 
-  getitem(name: string) {
+  getItem(name: string) {
     return this.row.getByTestId('label-field').getByText(name);
   }
 }
