@@ -1,7 +1,6 @@
 import { Locator, Page } from '@playwright/test';
 
 import BasePageModel from '@/pages/BasePageModel';
-import { nth } from 'lodash';
 
 class CheckTable extends BasePageModel {
   constructor(page: Page) {
@@ -49,7 +48,7 @@ class Row extends BasePageModel {
     this.row = row;
   }
 
-  getitem(name: string) {
+  getItem(name: string) {
     return this.row.getByTestId('label-field').getByText(name);
   }
 }
