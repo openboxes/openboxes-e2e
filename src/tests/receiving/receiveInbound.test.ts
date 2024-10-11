@@ -152,7 +152,7 @@ test.describe('Receive inbound stock movement', () => {
       await receivingPage.assertColumnHeaderTooltipOnCheckingStep(
         'Receiving now'
       );
-      //await receivingPage.assertColumnHeaderTooltipOnCheckingStep('Remaining');
+      await receivingPage.assertColumnHeaderTooltipOnCheckingStep('Remaining');
       await receivingPage.assertColumnHeaderTooltipOnCheckingStep(
         'Cancel remaining'
       );
@@ -168,10 +168,10 @@ test.describe('Receive inbound stock movement', () => {
     await test.step('Assert receiving now and remaining qty on checking table', async () => {
       await receivingPage.checkStep.isLoaded();
       await expect(
-        receivingPage.checkStep.table.receivingNowColumnContent
+        receivingPage.checkStep.table.getCellValue(1, 'Receiving now')
       ).toContainText('10');
       await expect(
-        receivingPage.checkStep.table.remainingColumnContent
+        receivingPage.checkStep.table.getCellValue(1, 'Remaining')
       ).toContainText('0');
     });
 
