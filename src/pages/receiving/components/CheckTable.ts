@@ -20,23 +20,16 @@ class CheckTable extends BasePageModel {
   }
 
   getColumnHeader(columnName: string) {
-    return this.table.locator('.table-header').getByText(columnName);
+    return this.table
+      .locator('.table-header')
+      .getByText(columnName, { exact: true });
   }
 
-  get receivingNowColumnContent() {
+  getCellValue(row: number, column: string) {
     return this.table
       .getByRole('row')
-      .nth(1)
-      .locator('.table-inner-row > div')
-      .nth(8);
-  }
-
-  get remainingColumnContent() {
-    return this.table
-      .getByRole('row')
-      .nth(1)
-      .locator('.table-inner-row > div')
-      .nth(9);
+      .nth(row)
+      .getByRole('cell', { name: column, exact: true });
   }
 }
 
