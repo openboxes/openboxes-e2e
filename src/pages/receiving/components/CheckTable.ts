@@ -18,6 +18,19 @@ class CheckTable extends BasePageModel {
   row(index: number) {
     return new Row(this.page, this.rows.nth(index));
   }
+
+  getColumnHeader(columnName: string) {
+    return this.table
+      .locator('.table-header')
+      .getByText(columnName, { exact: true });
+  }
+
+  getCellValue(row: number, column: string) {
+    return this.table
+      .getByRole('row')
+      .nth(row)
+      .getByRole('cell', { name: column, exact: true });
+  }
 }
 
 class Row extends BasePageModel {
@@ -26,6 +39,10 @@ class Row extends BasePageModel {
   constructor(page: Page, row: Locator) {
     super(page);
     this.row = row;
+  }
+
+  getItem(name: string) {
+    return this.row.getByTestId('label-field').getByText(name);
   }
 }
 

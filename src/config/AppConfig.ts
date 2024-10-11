@@ -137,6 +137,8 @@ class AppConfig {
           ActivityCode.EXTERNAL,
           ActivityCode.RECEIVE_STOCK,
           ActivityCode.PARTIAL_RECEIVING,
+          ActivityCode.PICK_STOCK,
+          ActivityCode.PUTAWAY_STOCK,
         ]),
         type: LocationTypeCode.DEPOT,
         required: true,
