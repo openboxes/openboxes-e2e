@@ -24,7 +24,11 @@ class CreateInboundPage extends BasePageModel {
     this.wizzardSteps = new WizzardSteps(page, stepNames);
   }
 
-  async goToPage() {
+  async goToPage(id?: string) {
+    if (id) {
+      await this.page.goto(`./stockMovement/createInbound/${id}`);
+      return;
+    }
     await this.page.goto('./stockMovement/createInbound?direction=INBOUND');
   }
 

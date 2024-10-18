@@ -43,6 +43,8 @@ class AppConfig {
     '.authStorage'
   );
 
+  public static DOWNLOADS_DIR_PATRH = path.join(process.cwd(), 'downloads');
+
   public static TEST_DATA_FILE_PATH = path.join(process.cwd(), '.data.json');
 
   // Base URL to use in actions like `await page.goto('./dashboard')`.

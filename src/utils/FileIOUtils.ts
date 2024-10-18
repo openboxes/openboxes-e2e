@@ -20,4 +20,14 @@ const writeToFile = (path: string, data: unknown) => {
   fs.writeFileSync(path, parsedData, 'utf8');
 };
 
-export { readFile, writeToFile };
+const deleteFile = (path: string) => {
+  if (fs.existsSync(path)) {
+    fs.unlink(path, (err) => {
+        if (err) {
+            console.log(err);
+        }
+    })
+  }
+}
+
+export { deleteFile, readFile, writeToFile };

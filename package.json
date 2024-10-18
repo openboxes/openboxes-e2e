@@ -42,6 +42,7 @@
     "dotenv": "~16.4.5",
     "env-var": "~7.4.1",
     "lodash": "~4.17.21",
-    "short-unique-id": "~5.2.0"
+    "short-unique-id": "~5.2.0",
+    "xlsx": "~0.18.5"
   }
 }

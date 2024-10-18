@@ -1,14 +1,17 @@
 import { expect, Page } from '@playwright/test';
 
+import DownloadFile from '@/components/DownloadFile';
 import BasePageModel from '@/pages/BasePageModel';
 import AddItemsTable from '@/pages/inbound/create/components/AddItemsTable';
 
 class AddItemsStep extends BasePageModel {
   table: AddItemsTable;
+  download: DownloadFile;
 
   constructor(page: Page) {
     super(page);
     this.table = new AddItemsTable(page);
+    this.download = new DownloadFile(page);
   }
 
   async isLoaded() {
@@ -49,6 +52,12 @@ class AddItemsStep extends BasePageModel {
 
   get deleteAllButton() {
     return this.page.getByRole('button', { name: 'Delete All' });
+  }
+
+  async downloadTemplate() {
+    await this.download.onDownload();
+    await this.exportTemplateButton.click();
+    return await this.download.saveFile();
   }
 }
 
