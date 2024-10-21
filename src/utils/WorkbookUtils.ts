@@ -21,7 +21,7 @@ export class WorkbookUtils {
   }
 
   public static read(filePath: string) {
-    const workbook = XLSX.readFile(filePath, { type: 'string' });
+    const workbook = XLSX.readFile(filePath, { type: 'string', raw: true });
     return new WorkbookUtils(workbook, filePath);
   }
 
@@ -74,9 +74,9 @@ export class WorkbookUtils {
     return XLSX.utils.sheet_to_json(sheet, { header: 1 });
   }
 
-  public getHeaders(sheetIndex = 0) {
+  public getHeaders(sheetIndex = 0): string[] {
     const data = this.sheetToJSON(sheetIndex);
-    return data[0];
+    return data[0] as string[];
   }
 
   public getData(sheetIndex = 0) {

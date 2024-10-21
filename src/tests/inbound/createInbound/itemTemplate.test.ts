@@ -5,7 +5,7 @@ import _ from 'lodash';
 import AppConfig from '@/config/AppConfig';
 import { expect, test } from '@/fixtures/fixtures';
 import { StockMovementResponse } from '@/types';
-import { getDateByOffset } from '@/utils/DateUtils';
+import { formatDate, getDateByOffset } from '@/utils/DateUtils';
 import { WorkbookUtils } from '@/utils/WorkbookUtils';
 
 test.describe('Export items template on inbound add items page', () => {
@@ -119,6 +119,7 @@ test.describe('Export items template on inbound add items page', () => {
         await row.quantityField.numberbox.fill(data.quantity);
         await row.lotField.textbox.fill(data.lotNumber);
         await row.recipientSelect.findAndSelectOption(data.recipient);
+        await row.expirationDate.fill(data.expirationDate);
 
         // eslint-disable-next-line playwright/no-conditional-in-test
         if (i !== ROWS.length - 1) {
@@ -158,7 +159,7 @@ test.describe('Export items template on inbound add items page', () => {
         expect(documentRow[3]).toEqual(row.packLevel1);
         expect(documentRow[4]).toEqual(row.packLevel2);
         expect(documentRow[5]).toEqual(row.lotNumber);
-        expect(documentRow[6]).toBeFalsy();
+        expect(documentRow[6]).toEqual(formatDate(row.expirationDate));
         expect(_.toString(documentRow[7])).toEqual(row.quantity);
         expect(documentRow[8]).toBeTruthy();
       });
@@ -200,7 +201,7 @@ test.describe('Export items template on inbound add items page', () => {
         packLevel2: 'test-box',
         productCode: `${PRODUCT_ONE.productCode}`,
         productName: PRODUCT_ONE.name,
-        quantity: '12',
+        quantity: 12,
         lotNumber: 'E2E-lot-test',
         recipient: USER.id,
         expirationDate: getDateByOffset(new Date(), 3),
@@ -210,7 +211,7 @@ test.describe('Export items template on inbound add items page', () => {
         packLevel2: 'test-box',
         productCode: `${PRODUCT_TWO.productCode}`,
         productName: PRODUCT_TWO.name,
-        quantity: '12',
+        quantity: 13,
         lotNumber: 'E2E-lot-test',
         recipient: USER.id,
         expirationDate: getDateByOffset(new Date(), 3),
@@ -234,7 +235,7 @@ test.describe('Export items template on inbound add items page', () => {
         entry[3] = row.packLevel1;
         entry[4] = row.packLevel2;
         entry[5] = row.lotNumber;
-        entry[6] = '';
+        entry[6] = formatDate(row.expirationDate);
         entry[7] = row.quantity;
         entry[8] = row.recipient;
 
@@ -253,5 +254,40 @@ test.describe('Export items template on inbound add items page', () => {
     await test.step('Upload edited file', async () => {
       await createInboundPage.addItemsStep.uploadFile(fullFilePath);
     });
+
+    for (let i = 0; i < ROWS.length; i++) {
+      const row = createInboundPage.addItemsStep.table.row(i);
+      const rowValues = ROWS[i];
+
+      await test.step(`Assert value in pack level 1 field on row ${i}`, async () => {
+        await expect(row.packLevel1Field.textbox).toHaveValue(
+          rowValues.packLevel1
+        );
+      });
+      await test.step(`Assert value in pack level 2 field on row ${i}`, async () => {
+        await expect(row.packLevel2Field.textbox).toHaveValue(
+          rowValues.packLevel2
+        );
+      });
+      await test.step(`Assert value in product field on row ${i}`, async () => {
+        await expect(row.productSelect.selectField).toContainText(
+          rowValues.productCode
+        );
+      });
+      await test.step(`Assert value in lot field on row ${i}`, async () => {
+        await expect(row.lotField.textbox).toHaveValue(rowValues.lotNumber);
+      });
+      await test.step(`Assert value in expiry date field on row ${i}`, async () => {
+        await expect(row.expirationDate.textbox).toHaveValue(
+          formatDate(rowValues.expirationDate)
+        );
+      });
+      await test.step(`Assert value in quantity field on row ${i}`, async () => {
+        await expect(row.lotField.textbox).toHaveValue(rowValues.lotNumber);
+      });
+      await test.step(`Assert value in recipient field on row ${i}`, async () => {
+        await expect(row.recipientSelect.selectField).toContainText(USER.name);
+      });
+    }
   });
 });
