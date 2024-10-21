@@ -1,3 +1,5 @@
+import fs from 'node:fs';
+
 import XLSX from 'xlsx';
 
 import { deleteFile } from '@/utils/FileIOUtils';
@@ -23,6 +25,38 @@ export class WorkbookUtils {
     return new WorkbookUtils(workbook, filePath);
   }
 
+  private static transformDataArrayToJSON(data: unknown[][]) {
+    const headers = data[0] as string[];
+    const content = data.slice(1);
+
+    return content.map((entry) => {
+      return headers.reduce(
+        (acc, columnName, index) => ({
+          ...acc,
+          [`${columnName}`]: entry[index],
+        }),
+        {}
+      );
+    });
+  }
+
+  public static saveFile(data: unknown[][], filePath: string) {
+    const mappedDocuments = this.transformDataArrayToJSON(data);
+
+    const worksheet = XLSX.utils.json_to_sheet(mappedDocuments);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+
+    const csvContent = XLSX.write(workbook, {
+      bookType: 'csv',
+      type: 'string',
+    });
+
+    fs.writeFileSync(filePath, csvContent);
+
+    return new WorkbookUtils(workbook, filePath);
+  }
+
   public delete() {
     deleteFile(this._filePath);
   }
@@ -35,16 +69,18 @@ export class WorkbookUtils {
     return this.workbook.Sheets[this.sheetNames[sheetIndex]];
   }
 
-  public sheetToJSON(sheetIndex = 0) {
+  public sheetToJSON(sheetIndex = 0): unknown[][] {
     const sheet = this.getSheet(sheetIndex);
-    return XLSX.utils.sheet_to_json(sheet);
+    return XLSX.utils.sheet_to_json(sheet, { header: 1 });
   }
 
   public getHeaders(sheetIndex = 0) {
-    const sheet = this.getSheet(sheetIndex);
-    const data = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-
+    const data = this.sheetToJSON(sheetIndex);
     return data[0];
   }
 
+  public getData(sheetIndex = 0) {
+    const data = this.sheetToJSON(sheetIndex);
+    return data.slice(1);
+  }
 }

@@ -23,11 +23,11 @@ const writeToFile = (path: string, data: unknown) => {
 const deleteFile = (path: string) => {
   if (fs.existsSync(path)) {
     fs.unlink(path, (err) => {
-        if (err) {
-            console.log(err);
-        }
-    })
+      if (err) {
+        console.log(err);
+      }
+    });
   }
-}
+};
 
 export { deleteFile, readFile, writeToFile };

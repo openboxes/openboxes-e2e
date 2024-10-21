@@ -1,17 +1,17 @@
 import { expect, Page } from '@playwright/test';
 
-import DownloadFile from '@/components/DownloadFile';
+import FileHandler from '@/components/FileHandler';
 import BasePageModel from '@/pages/BasePageModel';
 import AddItemsTable from '@/pages/inbound/create/components/AddItemsTable';
 
 class AddItemsStep extends BasePageModel {
   table: AddItemsTable;
-  download: DownloadFile;
+  fileHandler: FileHandler;
 
   constructor(page: Page) {
     super(page);
     this.table = new AddItemsTable(page);
-    this.download = new DownloadFile(page);
+    this.fileHandler = new FileHandler(page);
   }
 
   async isLoaded() {
@@ -29,7 +29,7 @@ class AddItemsStep extends BasePageModel {
   }
 
   get importTemplateButton() {
-    return this.page.getByRole('button', { name: 'Import template' });
+    return this.page.getByText('Import template');
   }
 
   get exportTemplateButton() {
@@ -55,9 +55,15 @@ class AddItemsStep extends BasePageModel {
   }
 
   async downloadTemplate() {
-    await this.download.onDownload();
+    await this.fileHandler.onDownload();
     await this.exportTemplateButton.click();
-    return await this.download.saveFile();
+    return await this.fileHandler.saveFile();
+  }
+
+  async uploadFile(path: string) {
+    await this.fileHandler.onFileChooser();
+    await this.importTemplateButton.click();
+    return await this.fileHandler.uploadFile(path);
   }
 }
 
