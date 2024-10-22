@@ -4,7 +4,10 @@ import _ from 'lodash';
 
 import AppConfig from '@/config/AppConfig';
 import { expect, test } from '@/fixtures/fixtures';
-import { StockMovementResponse } from '@/types';
+import {
+  CreateInboundAddItemsTableEntity,
+  StockMovementResponse,
+} from '@/types';
 import { formatDate, getDateByOffset } from '@/utils/DateUtils';
 import { WorkbookUtils } from '@/utils/WorkbookUtils';
 
@@ -380,5 +383,109 @@ test.describe('Import template with data', () => {
     await createInboundPage.addItemsStep.isLoaded();
 
     await createInboundPage.addItemsStep.assertTableRows(NEW_ROWS);
+  });
+
+  test('Add new row to with existing items in the table', async ({
+    createInboundPage,
+    otherProductService,
+    mainProductService,
+    altUserService,
+    mainUserService,
+  }) => {
+    let filePath: string;
+    let downloadedTemplateFile: WorkbookUtils;
+
+    await test.step('Go to inbound list page', async () => {
+      await createInboundPage.goToPage(STOCK_MOVEMENT.id);
+      await createInboundPage.addItemsStep.isLoaded();
+    });
+
+    let ROW: CreateInboundAddItemsTableEntity;
+    await test.step('Add items to table', async () => {
+      const PRODUCT_ONE = await mainProductService.getProduct();
+      const USER = await mainUserService.getUser();
+
+      ROW = {
+        packLevel1: 'test-pallet',
+        packLevel2: 'test-box',
+        product: {
+          productCode: PRODUCT_ONE.productCode,
+          productName: PRODUCT_ONE.name,
+        },
+        quantity: '12',
+        lotNumber: 'E2E-lot-test',
+        recipient: USER,
+        expirationDate: getDateByOffset(new Date(), 3),
+      };
+
+      await createInboundPage.addItemsStep.addItems([ROW]);
+    });
+
+    await test.step('Download template', async () => {
+      const { fullFilePath } =
+        await createInboundPage.addItemsStep.downloadTemplate();
+      filePath = fullFilePath;
+    });
+
+    await test.step('Read downloaded template file', async () => {
+      downloadedTemplateFile = WorkbookUtils.read(filePath);
+      workbooks.push(downloadedTemplateFile);
+    });
+
+    let parsedDocumentData: unknown[][];
+    await test.step('Parse csv document to json', async () => {
+      parsedDocumentData = downloadedTemplateFile.sheetToJSON();
+    });
+
+    const PRODUCT_TWO = await otherProductService.getProduct();
+    const ALT_USER = await altUserService.getUser();
+
+    const NEW_ROW = {
+      packLevel1: 'new test-pallet',
+      packLevel2: 'new test-box',
+      product: {
+        productCode: PRODUCT_TWO.productCode,
+        productName: PRODUCT_TWO.name,
+      },
+      quantity: '19',
+      lotNumber: 'edited E2E-lot-test',
+      recipient: ALT_USER,
+      expirationDate: getDateByOffset(new Date(), 3),
+    };
+
+    await test.step('Update data on exported template', async () => {
+      const newRowValues = [
+        '',
+        NEW_ROW.product?.productCode,
+        NEW_ROW.product?.productName,
+        NEW_ROW.packLevel1,
+        NEW_ROW.packLevel2,
+        NEW_ROW.lotNumber,
+        formatDate(NEW_ROW.expirationDate),
+        NEW_ROW.quantity,
+        NEW_ROW.recipient.id,
+      ];
+
+      parsedDocumentData.push(newRowValues);
+    });
+
+    const fileName = 'edited.csv';
+    const fullFilePath = path.join(AppConfig.DOWNLOADS_DIR_PATRH, fileName);
+
+    await test.step('Save file', async () => {
+      const savedFile = WorkbookUtils.saveFile(
+        parsedDocumentData,
+        fullFilePath
+      );
+      workbooks.push(savedFile);
+    });
+
+    await test.step('Upload edited file', async () => {
+      await createInboundPage.addItemsStep.uploadFile(fullFilePath);
+    });
+
+    await test.step('Assert table row values', async () => {
+      await createInboundPage.addItemsStep.assertTableRows([ROW, NEW_ROW]);
+    });
   });
 });
