@@ -261,7 +261,7 @@ test.describe('Import template with data', () => {
     }
 
     const fileName = 'modified.csv';
-    const fullFilePath = path.join(AppConfig.DOWNLOADS_DIR_PATRH, fileName);
+    const fullFilePath = path.join(AppConfig.LOCAL_FILES_DIR_PATRH, fileName);
 
     await test.step('Save file', async () => {
       const savedFile = WorkbookUtils.saveFile(data, fullFilePath);
@@ -363,8 +363,8 @@ test.describe('Import template with data', () => {
       parsedRowValues[8] = row.recipient.id;
     });
 
-    const fileName = 'edited.csv';
-    const fullFilePath = path.join(AppConfig.DOWNLOADS_DIR_PATRH, fileName);
+    const fileName = `${STOCK_MOVEMENT.identifier}-update-values.csv`;
+    const fullFilePath = path.join(AppConfig.LOCAL_FILES_DIR_PATRH, fileName);
 
     await test.step('Save file', async () => {
       const savedFile = WorkbookUtils.saveFile(
@@ -469,8 +469,8 @@ test.describe('Import template with data', () => {
       parsedDocumentData.push(newRowValues);
     });
 
-    const fileName = 'edited.csv';
-    const fullFilePath = path.join(AppConfig.DOWNLOADS_DIR_PATRH, fileName);
+    const fileName = `${STOCK_MOVEMENT.identifier}-added-new-value.csv`;
+    const fullFilePath = path.join(AppConfig.LOCAL_FILES_DIR_PATRH, fileName);
 
     await test.step('Save file', async () => {
       const savedFile = WorkbookUtils.saveFile(

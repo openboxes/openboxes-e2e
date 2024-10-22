@@ -43,7 +43,7 @@ class AppConfig {
     '.authStorage'
   );
 
-  public static DOWNLOADS_DIR_PATRH = path.join(process.cwd(), 'downloads');
+  public static LOCAL_FILES_DIR_PATRH = path.join(process.cwd(), 'localFiles');
 
   public static TEST_DATA_FILE_PATH = path.join(process.cwd(), '.data.json');
 

@@ -11,4 +11,4 @@ node_modules/
 /blob-report/
 /playwright/.cache/
 /.authStorage/
-/downloads
+/localFiles
