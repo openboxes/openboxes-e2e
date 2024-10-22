@@ -1,8 +1,6 @@
 import dayjs from 'dayjs';
 
 const formatDate = (date: Date, format = 'MM/DD/YYYY') => {
-  const kek = new Date();
-  kek.getDay();
   return dayjs(date).format(format);
 };
 

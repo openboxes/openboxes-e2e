@@ -1,8 +1,10 @@
-import { expect, Page } from '@playwright/test';
+import { Page } from '@playwright/test';
 
 import FileHandler from '@/components/FileHandler';
+import { expect, test } from '@/fixtures/fixtures';
 import BasePageModel from '@/pages/BasePageModel';
 import AddItemsTable from '@/pages/inbound/create/components/AddItemsTable';
+import { CreateInboundAddItemsTableEntity } from '@/types';
 
 class AddItemsStep extends BasePageModel {
   table: AddItemsTable;
@@ -64,6 +66,28 @@ class AddItemsStep extends BasePageModel {
     await this.fileHandler.onFileChooser();
     await this.importTemplateButton.click();
     return await this.fileHandler.uploadFile(path);
+  }
+
+  async addItems(items: CreateInboundAddItemsTableEntity[]) {
+    for (let i = 0; i < items.length; i++) {
+      const rowValues = items[i];
+      await test.step(`Add items to row ${i + 1}`, async () => {
+        await this.table.row(i).fillRowValues(rowValues);
+      });
+
+      if (i !== items.length - 1) {
+        await this.addLineButton.click();
+      }
+    }
+  }
+
+  async assertTableRows(items: CreateInboundAddItemsTableEntity[]) {
+    for (let i = 0; i < items.length; i++) {
+      const rowValues = items[i];
+      await test.step(`Assert items on row ${i + 1}`, async () => {
+        await this.table.row(i).assertRowValues(rowValues);
+      });
+    }
   }
 }
 
