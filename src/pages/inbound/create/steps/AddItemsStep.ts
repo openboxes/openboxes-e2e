@@ -1,14 +1,19 @@
-import { expect, Page } from '@playwright/test';
+import { Page } from '@playwright/test';
 
+import FileHandler from '@/components/FileHandler';
+import { expect, test } from '@/fixtures/fixtures';
 import BasePageModel from '@/pages/BasePageModel';
 import AddItemsTable from '@/pages/inbound/create/components/AddItemsTable';
+import { CreateInboundAddItemsTableEntity } from '@/types';
 
 class AddItemsStep extends BasePageModel {
   table: AddItemsTable;
+  fileHandler: FileHandler;
 
   constructor(page: Page) {
     super(page);
     this.table = new AddItemsTable(page);
+    this.fileHandler = new FileHandler(page);
   }
 
   async isLoaded() {
@@ -26,7 +31,7 @@ class AddItemsStep extends BasePageModel {
   }
 
   get importTemplateButton() {
-    return this.page.getByRole('button', { name: 'Import template' });
+    return this.page.getByText('Import template');
   }
 
   get exportTemplateButton() {
@@ -49,6 +54,40 @@ class AddItemsStep extends BasePageModel {
 
   get deleteAllButton() {
     return this.page.getByRole('button', { name: 'Delete All' });
+  }
+
+  async downloadTemplate() {
+    await this.fileHandler.onDownload();
+    await this.exportTemplateButton.click();
+    return await this.fileHandler.saveFile();
+  }
+
+  async uploadFile(path: string) {
+    await this.fileHandler.onFileChooser();
+    await this.importTemplateButton.click();
+    return await this.fileHandler.uploadFile(path);
+  }
+
+  async addItems(items: CreateInboundAddItemsTableEntity[]) {
+    for (let i = 0; i < items.length; i++) {
+      const rowValues = items[i];
+      await test.step(`Add items to row ${i + 1}`, async () => {
+        await this.table.row(i).fillRowValues(rowValues);
+      });
+
+      if (i !== items.length - 1) {
+        await this.addLineButton.click();
+      }
+    }
+  }
+
+  async assertTableRows(items: CreateInboundAddItemsTableEntity[]) {
+    for (let i = 0; i < items.length; i++) {
+      const rowValues = items[i];
+      await test.step(`Assert items on row ${i + 1}`, async () => {
+        await this.table.row(i).assertRowValues(rowValues);
+      });
+    }
   }
 }
 

@@ -247,3 +247,19 @@ type SendInboundPayload = {
   expectedDeliveryDate?: Date;
   shipmentType: ShipmentType;
 };
+
+type CreateInboundAddItemsTableEntity = {
+  packLevel1?: string;
+  packLevel2?: string;
+  product: {
+    productCode: string;
+    productName?: string;
+  };
+  quantity: number | string;
+  lotNumber?: string;
+  recipient?: {
+    id: string;
+    name?: string;
+  };
+  expirationDate?: Date;
+};
