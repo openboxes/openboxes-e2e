@@ -9,6 +9,7 @@ import {
   StockMovementResponse,
 } from '@/types';
 import { formatDate, getDateByOffset } from '@/utils/DateUtils';
+import { transformJsonToArrayTemplateRow } from '@/utils/templateDocumentUtils';
 import { WorkbookUtils } from '@/utils/WorkbookUtils';
 
 test.describe('Export items template on inbound add items page', () => {
@@ -242,21 +243,9 @@ test.describe('Import template with data', () => {
     });
 
     for (let i = 0; i < ROWS.length; i++) {
-      const entry: unknown[] = [];
       await test.step(`Add data to exported template on row: ${i}`, async () => {
-        const row = ROWS[i];
-
-        entry[0] = '';
-        entry[1] = row.product?.productCode;
-        entry[2] = row.product?.productName;
-        entry[3] = row.packLevel1;
-        entry[4] = row.packLevel2;
-        entry[5] = row.lotNumber;
-        entry[6] = formatDate(row.expirationDate);
-        entry[7] = row.quantity;
-        entry[8] = row.recipient.id;
-
-        data.push(entry);
+        const rowEntry = transformJsonToArrayTemplateRow(ROWS[i]);
+        data.push(rowEntry);
       });
     }
 
@@ -332,35 +321,26 @@ test.describe('Import template with data', () => {
     const PRODUCT_TWO = await otherProductService.getProduct();
     const ALT_USER = await altUserService.getUser();
 
-    const NEW_ROWS = [
-      {
-        packLevel1: 'new test-pallet',
-        packLevel2: 'new test-box',
-        product: {
-          productCode: PRODUCT_TWO.productCode,
-          productName: PRODUCT_TWO.name,
-        },
-        quantity: '19',
-        lotNumber: 'edited E2E-lot-test',
-        recipient: ALT_USER,
-        expirationDate: getDateByOffset(new Date(), 3),
+    const NEW_ROW = {
+      packLevel1: 'new test-pallet',
+      packLevel2: 'new test-box',
+      product: {
+        productCode: PRODUCT_TWO.productCode,
+        productName: PRODUCT_TWO.name,
       },
-    ];
+      quantity: '19',
+      lotNumber: 'edited E2E-lot-test',
+      recipient: ALT_USER,
+      expirationDate: getDateByOffset(new Date(), 3),
+    };
 
     await test.step('Update data on exported template', async () => {
       // first array element is a list of headers,
       // so we need a second one (index: 1) to acccess first row of values
-      const parsedRowValues = parsedDocumentData[1];
-      const row = NEW_ROWS[0];
-
-      parsedRowValues[1] = row.product?.productCode;
-      parsedRowValues[2] = row.product?.productName;
-      parsedRowValues[3] = row.packLevel1;
-      parsedRowValues[4] = row.packLevel2;
-      parsedRowValues[5] = row.lotNumber;
-      parsedRowValues[6] = formatDate(row.expirationDate);
-      parsedRowValues[7] = row.quantity;
-      parsedRowValues[8] = row.recipient.id;
+      parsedDocumentData[1] = transformJsonToArrayTemplateRow(
+        NEW_ROW,
+        parsedDocumentData[1][0] as string
+      );
     });
 
     const fileName = `${STOCK_MOVEMENT.identifier}-update-values.csv`;
@@ -382,7 +362,7 @@ test.describe('Import template with data', () => {
     await page.reload();
     await createInboundPage.addItemsStep.isLoaded();
 
-    await createInboundPage.addItemsStep.assertTableRows(NEW_ROWS);
+    await createInboundPage.addItemsStep.assertTableRows([NEW_ROW]);
   });
 
   test('Add new row to with existing items in the table', async ({
@@ -454,18 +434,7 @@ test.describe('Import template with data', () => {
     };
 
     await test.step('Update data on exported template', async () => {
-      const newRowValues = [
-        '',
-        NEW_ROW.product?.productCode,
-        NEW_ROW.product?.productName,
-        NEW_ROW.packLevel1,
-        NEW_ROW.packLevel2,
-        NEW_ROW.lotNumber,
-        formatDate(NEW_ROW.expirationDate),
-        NEW_ROW.quantity,
-        NEW_ROW.recipient.id,
-      ];
-
+      const newRowValues = transformJsonToArrayTemplateRow(NEW_ROW);
       parsedDocumentData.push(newRowValues);
     });
 
