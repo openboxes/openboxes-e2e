@@ -53,7 +53,7 @@ test.describe('Export items template on inbound add items page', () => {
       workbooks.push(downloadedTemplateFile);
     });
 
-    await test.step('Assert template doe snot have any data', async () => {
+    await test.step('Assert template does not have any data', async () => {
       expect(downloadedTemplateFile.getData()).toHaveLength(1);
       expect(downloadedTemplateFile.getData()[0]).toHaveLength(0);
     });
@@ -79,9 +79,6 @@ test.describe('Export items template on inbound add items page', () => {
     otherProductService,
     mainUserService,
   }) => {
-    let filePath: string;
-    let downloadedTemplateFile: WorkbookUtils;
-
     await test.step('Go to inbound list page', async () => {
       await createInboundPage.goToPage(STOCK_MOVEMENT.id);
       await createInboundPage.addItemsStep.isLoaded();
@@ -120,19 +117,15 @@ test.describe('Export items template on inbound add items page', () => {
 
     await createInboundPage.addItemsStep.addItems(ROWS);
 
-    await test.step('Download template', async () => {
+    let parsedDocumentData: unknown[][];
+
+    await test.step('Download and read template file', async () => {
       const { fullFilePath } =
         await createInboundPage.addItemsStep.downloadTemplate();
-      filePath = fullFilePath;
-    });
 
-    await test.step('Read downloaded template file', async () => {
-      downloadedTemplateFile = WorkbookUtils.read(filePath);
+      const downloadedTemplateFile = WorkbookUtils.read(fullFilePath);
       workbooks.push(downloadedTemplateFile);
-    });
 
-    let parsedDocumentData: unknown[][];
-    await test.step('Parse csv document to json', async () => {
       parsedDocumentData = downloadedTemplateFile.getData();
     });
 
@@ -186,22 +179,17 @@ test.describe('Import template with data', () => {
     otherProductService,
     mainUserService,
   }) => {
-    let filePath: string;
-    let downloadedTemplateFile: WorkbookUtils;
-
     await test.step('Go to inbound list page', async () => {
       await createInboundPage.goToPage(STOCK_MOVEMENT.id);
       await createInboundPage.addItemsStep.isLoaded();
     });
 
-    await test.step('Download template', async () => {
+    let downloadedTemplateFile: WorkbookUtils;
+    await test.step('Download and read template', async () => {
       const { fullFilePath } =
         await createInboundPage.addItemsStep.downloadTemplate();
-      filePath = fullFilePath;
-    });
 
-    await test.step('Read downloaded template file', async () => {
-      downloadedTemplateFile = WorkbookUtils.read(filePath);
+      downloadedTemplateFile = WorkbookUtils.read(fullFilePath);
       workbooks.push(downloadedTemplateFile);
     });
 
@@ -271,9 +259,6 @@ test.describe('Import template with data', () => {
     altUserService,
     mainUserService,
   }) => {
-    let filePath: string;
-    let downloadedTemplateFile: WorkbookUtils;
-
     await test.step('Go to inbound list page', async () => {
       await createInboundPage.goToPage(STOCK_MOVEMENT.id);
       await createInboundPage.addItemsStep.isLoaded();
@@ -301,14 +286,12 @@ test.describe('Import template with data', () => {
       await createInboundPage.addItemsStep.addItems(ROWS);
     });
 
-    await test.step('Download template', async () => {
+    let downloadedTemplateFile: WorkbookUtils;
+    await test.step('Download and read template', async () => {
       const { fullFilePath } =
         await createInboundPage.addItemsStep.downloadTemplate();
-      filePath = fullFilePath;
-    });
 
-    await test.step('Read downloaded template file', async () => {
-      downloadedTemplateFile = WorkbookUtils.read(filePath);
+      downloadedTemplateFile = WorkbookUtils.read(fullFilePath);
       workbooks.push(downloadedTemplateFile);
     });
 
@@ -367,9 +350,6 @@ test.describe('Import template with data', () => {
     altUserService,
     mainUserService,
   }) => {
-    let filePath: string;
-    let downloadedTemplateFile: WorkbookUtils;
-
     await test.step('Go to inbound list page', async () => {
       await createInboundPage.goToPage(STOCK_MOVEMENT.id);
       await createInboundPage.addItemsStep.isLoaded();
@@ -396,19 +376,16 @@ test.describe('Import template with data', () => {
       await createInboundPage.addItemsStep.addItems([ROW]);
     });
 
+    let downloadedTemplateFile: WorkbookUtils;
+    let parsedDocumentData: unknown[][];
+
     await test.step('Download template', async () => {
       const { fullFilePath } =
         await createInboundPage.addItemsStep.downloadTemplate();
-      filePath = fullFilePath;
-    });
 
-    await test.step('Read downloaded template file', async () => {
-      downloadedTemplateFile = WorkbookUtils.read(filePath);
+      downloadedTemplateFile = WorkbookUtils.read(fullFilePath);
       workbooks.push(downloadedTemplateFile);
-    });
 
-    let parsedDocumentData: unknown[][];
-    await test.step('Parse csv document to json', async () => {
       parsedDocumentData = downloadedTemplateFile.sheetToJSON();
     });
 
