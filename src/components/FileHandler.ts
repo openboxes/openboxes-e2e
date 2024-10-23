@@ -26,7 +26,7 @@ class FileHandler extends BasePageModel {
 
     const fileName = props?.fileName || download.suggestedFilename();
 
-    const fullFilePath = path.join(AppConfig.LOCAL_FILES_DIR_PATRH, fileName);
+    const fullFilePath = path.join(AppConfig.LOCAL_FILES_DIR_PATH, fileName);
 
     await download.saveAs(fullFilePath);
     return { fileName, fullFilePath };
