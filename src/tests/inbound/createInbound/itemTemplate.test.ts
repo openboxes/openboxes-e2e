@@ -270,7 +270,6 @@ test.describe('Import template with data', () => {
     mainProductService,
     altUserService,
     mainUserService,
-    page,
   }) => {
     let filePath: string;
     let downloadedTemplateFile: WorkbookUtils;
@@ -357,10 +356,6 @@ test.describe('Import template with data', () => {
     await test.step('Upload edited file', async () => {
       await createInboundPage.addItemsStep.uploadFile(fullFilePath);
     });
-
-    // FIXME
-    await page.reload();
-    await createInboundPage.addItemsStep.isLoaded();
 
     await createInboundPage.addItemsStep.assertTableRows([NEW_ROW]);
   });
