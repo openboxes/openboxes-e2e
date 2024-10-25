@@ -35,6 +35,10 @@ class Row extends BasePageModel {
     this.receivingNowField = new TextField(page, 'Receiving now', row);
   }
 
+  get checkbox() {
+    return this.row.getByRole('checkbox');
+  }
+
   get deleteButton() {
     return this.row.getByRole('button', { name: 'Delete' });
   }

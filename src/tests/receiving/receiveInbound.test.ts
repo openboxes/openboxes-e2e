@@ -1,3 +1,4 @@
+import AppConfig from '@/config/AppConfig';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
 import { StockMovementResponse } from '@/types';
@@ -37,7 +38,14 @@ test.describe('Receive inbound stock movement', () => {
 
   test.afterEach(async ({ stockMovementShowPage, stockMovementService }) => {
     await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
-    await stockMovementShowPage.rollbackLastReceiptButton.click();
+    const isButtonVisible =
+      await stockMovementShowPage.rollbackLastReceiptButton.isVisible();
+
+    // due to failed test, shipment might not be received which will not show the button
+    if (isButtonVisible) {
+      await stockMovementShowPage.rollbackLastReceiptButton.click();
+    }
+
     await stockMovementShowPage.rollbackButton.click();
 
     await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
@@ -196,6 +204,85 @@ test.describe('Receive inbound stock movement', () => {
       await receivingPage.checkStep.isLoaded();
       await receivingPage.checkStep.receiveShipmentButton.click();
       await stockMovementShowPage.isLoaded();
+    });
+  });
+
+  test('Receving should be available from location that is specfied as destination location', async ({
+    stockMovementShowPage,
+    receivingPage,
+  }) => {
+    await test.step('Go to stock movement show page', async () => {
+      await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
+      await stockMovementShowPage.isLoaded();
+    });
+
+    await test.step('Go to shipment receiving page', async () => {
+      await stockMovementShowPage.receiveButton.click();
+    });
+
+    await test.step('Assert that receing page is loaded', async () => {
+      await receivingPage.receivingStep.isLoaded();
+    });
+
+    await test.step('Check first item to be received', async () => {
+      await receivingPage.receivingStep.table.row(1).checkbox.check();
+    });
+
+    await test.step('Go to check page', async () => {
+      await receivingPage.nextButton.click();
+      await receivingPage.checkStep.isLoaded();
+    });
+
+    await test.step('Receive shipment', async () => {
+      await receivingPage.checkStep.receiveShipmentButton.click();
+      await stockMovementShowPage.isLoaded();
+    });
+  });
+
+  test.describe('Receive from differnt locations', () => {
+    test.afterEach(async ({ authService }) => {
+      await authService.changeLocation(AppConfig.instance.locations.main.id);
+    });
+
+    test('Receving should not be available from other location than which is specfied as destination location', async ({
+      stockMovementShowPage,
+      depotLocationService,
+      navbar,
+      locationChooser,
+    }) => {
+      const OTHER_LOCATION = await depotLocationService.getLocation();
+
+      await test.step('Go to stock movement show page', async () => {
+        await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
+        await stockMovementShowPage.isLoaded();
+      });
+
+      await test.step('switch locations', async () => {
+        await navbar.locationChooserButton.click();
+        await locationChooser
+          .getOrganization(OTHER_LOCATION.organization?.name as string)
+          .click();
+        await locationChooser.getLocation(OTHER_LOCATION.name).click();
+      });
+
+      await test.step('Assert location in location chooser button should be updated', async () => {
+        await expect(navbar.locationChooserButton).toContainText(
+          OTHER_LOCATION.name
+        );
+        await stockMovementShowPage.isLoaded();
+      });
+
+      await test.step('Start receving process', async () => {
+        await stockMovementShowPage.receiveButton.click();
+      });
+
+      await test.step('Assert error on stock movement show page', async () => {
+        await stockMovementShowPage.isLoaded();
+        await expect(stockMovementShowPage.errorMessage).toBeVisible();
+        await expect(stockMovementShowPage.errorMessage).toContainText(
+          'To receive this Stock Movement, please log in to the destination location'
+        );
+      });
     });
   });
 });
