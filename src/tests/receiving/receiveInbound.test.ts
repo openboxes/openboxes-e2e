@@ -38,7 +38,14 @@ test.describe('Receive inbound stock movement', () => {
 
   test.afterEach(async ({ stockMovementShowPage, stockMovementService }) => {
     await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
-    await stockMovementShowPage.rollbackLastReceiptButton.click();
+    const isButtonVisible =
+      await stockMovementShowPage.rollbackLastReceiptButton.isVisible();
+
+    // due to failed test, shipment might not be received which will not show the button
+    if (isButtonVisible) {
+      await stockMovementShowPage.rollbackLastReceiptButton.click();
+    }
+
     await stockMovementShowPage.rollbackButton.click();
 
     await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
@@ -231,86 +238,51 @@ test.describe('Receive inbound stock movement', () => {
       await stockMovementShowPage.isLoaded();
     });
   });
-});
 
-test.describe('Receive from differnt locations', () => {
-  let STOCK_MOVEMENT: StockMovementResponse;
-
-  test.beforeEach(
-    async ({
-      supplierLocationService,
-      stockMovementService,
-      mainProductService,
-    }) => {
-      const supplierLocation = await supplierLocationService.getLocation();
-      STOCK_MOVEMENT = await stockMovementService.createInbound({
-        originId: supplierLocation.id,
-        description: 'some description',
-        dateRequested: getToday(),
-      });
-
-      const product = await mainProductService.getProduct();
-
-      await stockMovementService.addItemsToInboundStockMovement(
-        STOCK_MOVEMENT.id,
-        [{ productId: product.id, quantity: 10 }]
-      );
-
-      await stockMovementService.sendInboundStockMovement(STOCK_MOVEMENT.id, {
-        shipmentType: ShipmentType.AIR,
-      });
-    }
-  );
-
-  test.afterEach(
-    async ({ stockMovementShowPage, stockMovementService, authService }) => {
+  test.describe('Receive from differnt locations', () => {
+    test.afterEach(async ({ authService }) => {
       await authService.changeLocation(AppConfig.instance.locations.main.id);
-
-      await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
-
-      await stockMovementShowPage.rollbackButton.click();
-      await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
-    }
-  );
-
-  test('Receving should not be available from other location than which is specfied as destination location', async ({
-    stockMovementShowPage,
-    depotLocationService,
-    navbar,
-    locationChooser,
-  }) => {
-    const OTHER_LOCATION = await depotLocationService.getLocation();
-
-    await test.step('Go to stock movement show page', async () => {
-      await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
-      await stockMovementShowPage.isLoaded();
     });
 
-    await test.step('switch locations', async () => {
-      await navbar.locationChooserButton.click();
-      await locationChooser
-        .getOrganization(OTHER_LOCATION.organization?.name as string)
-        .click();
-      await locationChooser.getLocation(OTHER_LOCATION.name).click();
-    });
+    test('Receving should not be available from other location than which is specfied as destination location', async ({
+      stockMovementShowPage,
+      depotLocationService,
+      navbar,
+      locationChooser,
+    }) => {
+      const OTHER_LOCATION = await depotLocationService.getLocation();
 
-    await test.step('Assert location in location chooser button should be updated', async () => {
-      await expect(navbar.locationChooserButton).toContainText(
-        OTHER_LOCATION.name
-      );
-      await stockMovementShowPage.isLoaded();
-    });
+      await test.step('Go to stock movement show page', async () => {
+        await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
+        await stockMovementShowPage.isLoaded();
+      });
 
-    await test.step('Start receving process', async () => {
-      await stockMovementShowPage.receiveButton.click();
-    });
+      await test.step('switch locations', async () => {
+        await navbar.locationChooserButton.click();
+        await locationChooser
+          .getOrganization(OTHER_LOCATION.organization?.name as string)
+          .click();
+        await locationChooser.getLocation(OTHER_LOCATION.name).click();
+      });
 
-    await test.step('Assert error on stock movement show page', async () => {
-      await stockMovementShowPage.isLoaded();
-      await expect(stockMovementShowPage.errorMessage).toBeVisible();
-      await expect(stockMovementShowPage.errorMessage).toContainText(
-        'To receive this Stock Movement, please log in to the destination location'
-      );
+      await test.step('Assert location in location chooser button should be updated', async () => {
+        await expect(navbar.locationChooserButton).toContainText(
+          OTHER_LOCATION.name
+        );
+        await stockMovementShowPage.isLoaded();
+      });
+
+      await test.step('Start receving process', async () => {
+        await stockMovementShowPage.receiveButton.click();
+      });
+
+      await test.step('Assert error on stock movement show page', async () => {
+        await stockMovementShowPage.isLoaded();
+        await expect(stockMovementShowPage.errorMessage).toBeVisible();
+        await expect(stockMovementShowPage.errorMessage).toContainText(
+          'To receive this Stock Movement, please log in to the destination location'
+        );
+      });
     });
   });
 });
