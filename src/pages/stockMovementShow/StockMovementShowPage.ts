@@ -79,6 +79,10 @@ class StockMovementShowPage extends BasePageModel {
   get synchronizeButton() {
     return this.page.getByRole('link', { name: 'Synchronize' });
   }
+
+  get errorMessage() {
+    return this.page.locator('div.error');
+  }
 }
 
 export default StockMovementShowPage;
