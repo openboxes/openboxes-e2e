@@ -1,0 +1,54 @@
+name: Playwright Tests
+on:
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  test:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '14'
+    
+    - name: Install dependencies
+      run: npm install
+    
+    - name: Install Playwright browsers
+      run: npx playwright install
+
+    - name: Set environment variables
+      env:
+        APP_BASE_URL: ${{ secrets.APP_BASE_URL }}
+        CI: true
+        USER_MAIN_USERNAME: ${{ secrets.USER_MAIN_USERNAME }}
+        USER_MAIN_PASSWORD: ${{ secrets.USER_MAIN_PASSWORD }}
+        USER_ALT_USERNAME: ${{ secrets.USER_ALT_USERNAME }}
+        USER_ALT_PASSWORD: ${{ secrets.USER_ALT_PASSWORD }}
+        USER_MANAGER_USERNAME: ${{ secrets.USER_MANAGER_USERNAME }}
+        USER_MANAGER_PASSWORD: ${{ secrets.USER_MANAGER_PASSWORD }}
+        LOCATION_MAIN: ${{ secrets.LOCATION_MAIN }}
+        LOCATION_NO_MANAGE_INVENOTRY_DEPOT: ${{ secrets.LOCATION_NO_MANAGE_INVENOTRY_DEPOT }}
+        LOCATION_SUPPLIER: ${{ secrets.LOCATION_SUPPLIER }}
+        LOCATION_SUPPLIER_ALT: ${{ secrets.LOCATION_SUPPLIER_ALT }}
+        LOCATION_DEPOT: ${{ secrets.LOCATION_DEPOT }}
+        LOCATION_WARD: ${{ secrets.LOCATION_WARD }}
+        PRODUCT_ONE: ${{ secrets.PRODUCT_ONE }}
+        PRODUCT_TWO: ${{ secrets.PRODUCT_TWO }}
+      run: echo "Environment variables set"
+
+    - name: Run Playwright tests
+      run: npx playwright test
+
+    - name: Save test report
+    - uses: actions/upload-artifact@v4
+      if: ${{ !cancelled() }}
+      with:
+        name: playwright-report
+        path: playwright-report/
+        retention-days: 30

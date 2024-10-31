@@ -14,7 +14,7 @@ appConfig.initialize();
 export default defineConfig({
   testDir: './src/tests',
   /* Run tests in files in parallel */
-  fullyParallel: true,
+  fullyParallel: false,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!appConfig.isCI,
   /* Retry on CI only */
@@ -31,7 +31,7 @@ export default defineConfig({
     baseURL: appConfig.appURL,
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: 'on-first-retry',
+    trace: 'retain-on-failure',
     
     launchOptions: {
     // slowMo: 1000,
