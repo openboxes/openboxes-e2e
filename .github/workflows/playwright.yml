@@ -29,7 +29,7 @@ jobs:
     - name: Install Playwright browsers
       run: npx playwright install
 
-    - name: Set environment variables
+    - name: Run Playwright tests
       env:
         APP_BASE_URL: ${{ secrets.APP_BASE_URL }}
         CI: true
@@ -47,9 +47,6 @@ jobs:
         LOCATION_WARD: ${{ secrets.LOCATION_WARD }}
         PRODUCT_ONE: ${{ secrets.PRODUCT_ONE }}
         PRODUCT_TWO: ${{ secrets.PRODUCT_TWO }}
-      run: echo "Environment variables set"
-
-    - name: Run Playwright tests
       run: npx playwright test
 
     - name: Save test report
