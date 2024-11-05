@@ -31,7 +31,9 @@ For detailed information on the required environment variables, please refer to 
 4. [⚙️ Application Configuration](/documentation/ApplicationConfiguration.md)
 5. [🛡️ User Authentication](/documentation/Authentication.md)
 6. [⚓ Fixtures](/documentation/Fixtures.md)
-7. [🧰 Data Setup](/documentation/DataSetup.md)
+7. [📍 Locators](/documentation/Locators.md)
+8. [🧰 Data Setup](/documentation/DataSetup.md)
+9. [🚀 DCI/CD](/documentation/CICD.md)
 
 
 # 🗒️ Scripts

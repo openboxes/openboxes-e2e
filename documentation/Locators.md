@@ -1,6 +1,7 @@
 
 [↩️ Back to README](/README.md)
 
+# 📍 Locators
 To implement a locator we have many different approaches. but the most common are: 
 - **Test Ids**
 - **Accessabiulity Attributes**
