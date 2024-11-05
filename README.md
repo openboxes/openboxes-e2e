@@ -1,5 +1,9 @@
 # 📦 Openboxes E2E tests
-End to end testing for OpenBoxes 
+End to end testing for OpenBoxes
+
+[![Playwright Tests](https://img.shields.io/badge/Latest_E2E_run-report-blue)](https://openboxes.github.io/openboxes-e2e/)
+&nbsp;
+[![Playwright Tests](https://github.com/openboxes/openboxes-e2e/actions/workflows/playwright.yml/badge.svg?branch=main)](https://github.com/openboxes/openboxes-e2e/actions/workflows/playwright.yml)
 
 ## 🧰 Setup
 ### Required
@@ -27,7 +31,9 @@ For detailed information on the required environment variables, please refer to 
 4. [⚙️ Application Configuration](/documentation/ApplicationConfiguration.md)
 5. [🛡️ User Authentication](/documentation/Authentication.md)
 6. [⚓ Fixtures](/documentation/Fixtures.md)
-7. [🧰 Data Setup](/documentation/DataSetup.md)
+7. [📍 Locators](/documentation/Locators.md)
+8. [🧰 Data Setup](/documentation/DataSetup.md)
+9. [🚀 DCI/CD](/documentation/CICD.md)
 
 
 # 🗒️ Scripts
