@@ -15,18 +15,22 @@ jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+      pages: write
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-      
+
     - name: Set up Node.js
       uses: actions/setup-node@v4
       with:
         node-version: '14'
-    
+
     - name: Install dependencies
       run: npm install
-    
+
     - name: Install Playwright browsers
       run: npx playwright install
 
@@ -57,9 +61,17 @@ jobs:
         name: playwright-report
         path: playwright-report/
 
-    - name: Deploy Report to GitHub Pages
+    - name: Save Pages
       if: ${{ always() }}
-      uses: peaceiris/actions-gh-pages@v3
+      uses: actions/configure-pages@v2
+
+    - name: Upload artifact
+      if: ${{ always() }}
+      uses: actions/upload-pages-artifact@v1
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: playwright-report
+        path: playwright-report/
+
+    - name: Deploy to Github Pages
+      if: ${{ always() }}
+      id: deployment
+      uses: actions/deploy-pages@v1
