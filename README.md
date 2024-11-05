@@ -1,5 +1,9 @@
 # 📦 Openboxes E2E tests
-End to end testing for OpenBoxes 
+End to end testing for OpenBoxes
+
+[![Playwright Tests](https://img.shields.io/badge/Latest_E2E_run-report-blue)](https://openboxes.github.io/openboxes-e2e/)
+&nbsp;
+[![Playwright Tests](https://github.com/openboxes/openboxes-e2e/actions/workflows/playwright.yml/badge.svg?branch=main)](https://github.com/openboxes/openboxes-e2e/actions/workflows/playwright.yml)
 
 ## 🧰 Setup
 ### Required
