@@ -13,7 +13,7 @@ import UniqueIdentifier from '@/utils/UniqueIdentifier';
 export enum USER_KEY {
   MAIN = 'main',
   ALTERNATIVE = 'alternative',
-  MANAGER = 'maganer',
+  MANAGER = 'manager',
 }
 
 export enum LOCATION_KEY {
@@ -115,11 +115,11 @@ class AppConfig {
           RoleType.ROLE_PURCHASE_APPROVER,
         ]),
       }),
-      maganer: new TestUserConfig({
+      manager: new TestUserConfig({
         key: USER_KEY.MANAGER,
         username: env.get('USER_MANAGER_USERNAME').required().asString(),
         password: env.get('USER_MANAGER_PASSWORD').required().asString(),
-        storageFileName: '.auth-storage-ALT-USER.json',
+        storageFileName: '.auth-storage-MANAGER-USER.json',
         requiredRoles: new Set([RoleType.ROLE_MANAGER]),
       }),
     };

@@ -179,7 +179,7 @@ export const test = baseTest.extend<Fixtures>({
 
   managerUserContext: async ({ browser }, use) => {
     const newCtx = await browser.newContext({
-      storageState: AppConfig.instance.users.maganer.storagePath,
+      storageState: AppConfig.instance.users.manager.storagePath,
     });
 
     await use(newCtx);

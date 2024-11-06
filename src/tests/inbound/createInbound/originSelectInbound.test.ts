@@ -53,7 +53,7 @@ test.describe('Assert locations on origin select in inbound stock movement', () 
     });
   });
 
-  test('Assert depots and wards for maganers', async ({
+  test('Assert depots and wards for managers', async ({
     managerUserContext,
   }) => {
     const managerUserPage = await managerUserContext.newPage();
