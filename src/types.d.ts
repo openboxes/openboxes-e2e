@@ -55,7 +55,7 @@ type CreateLocationPayload = {
   active: boolean;
   name: string;
   locationType?: LocationType;
-  organization: { id: string };
+  organization?: { id: string };
   supportedActivities?: string[] | Set<string>;
 };
 

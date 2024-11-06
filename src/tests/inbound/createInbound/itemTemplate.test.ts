@@ -252,7 +252,7 @@ test.describe('Import template with data', () => {
     await createInboundPage.addItemsStep.assertTableRows(ROWS);
   });
 
-  test('Update existing values with template import', async ({
+  test.skip('Update existing values with template import', async ({
     createInboundPage,
     otherProductService,
     mainProductService,

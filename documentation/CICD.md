@@ -36,3 +36,16 @@ The test results are collected and deployed to GitHub Pages, ensuring continuous
 - **Artifact Upload:** The `actions/upload-artifact@v3` step saves the test reports as artifacts.
 - **GitHub Pages Configuration:** The workflow configures GitHub Pages using actions/configure-pages@v2 and uploads the test report artifact.
 - **Deployment:** Finally, the `actions/deploy-pages@v1` step deploys the test reports to https://openboxes.github.io/openboxes-e2e/.
+
+## Viewing Reports Locally
+
+To view the Playwright test report locally, you can download the generated artifact from the GitHub Actions workflow run. Once the artifact (which contains the `playwright-report` folder) is downloaded and extracted, you can use the following command to display the report:
+```bash
+npx playwright show-report playwright-report
+```
+
+This will open a detailed, interactive HTML report in your browser, allowing you to investigate the results of your test run. Note that this command requires Playwright to be installed locally.
+
+### Viewing Trace Files without Local Playwright Installation
+
+If you do not have Playwright installed locally, you can still inspect failed test traces. Within the report artifact, there is a `data/` folder that contains trace `.zip` files for tests that encountered errors. You can upload these trace files to https://trace.playwright.dev/, a website dedicated to visualizing Playwright traces. This approach lets you analyze the sequence of events leading up to test failures, including network activity, console logs, and screenshots, all without needing to install Playwright on your local system.
