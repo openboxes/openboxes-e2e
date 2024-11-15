@@ -119,6 +119,10 @@ class StockMovementService extends BaseServiceModel {
         quantityRequested: it.quantity.toString(),
         sortOrder: 100,
         product: { id: it.productId },
+        lotNumber: it?.lotNumber,
+        expirationDate: it?.expirationDate
+          ? formatDate(it?.expirationDate)
+          : undefined,
       })),
     });
     await this.updateStatusStockMovement(id, { status: 'CHECKING' });

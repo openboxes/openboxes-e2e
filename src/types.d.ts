@@ -240,7 +240,12 @@ type CreateInboundPayload = {
   dateRequested?: Date;
 };
 
-type LineItemsPayload = { productId: string; quantity: number }[];
+type LineItemsPayload = {
+  productId: string;
+  quantity: number;
+  lotNumber?: string;
+  expirationDate?: Date;
+}[];
 
 type SendInboundPayload = {
   dateShipped?: Date;
