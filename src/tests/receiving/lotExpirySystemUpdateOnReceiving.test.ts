@@ -4,8 +4,6 @@ import { StockMovementResponse } from '@/types';
 import { formatDate, getDateByOffset, getToday } from '@/utils/DateUtils';
 import UniqueIdentifier from '@/utils/UniqueIdentifier';
 
-const uniqueIdentifier = new UniqueIdentifier();
-
 test.describe('Lot number system expiry date modification on receving workflow', () => {
   const STOCK_MOVEMENTS: StockMovementResponse[] = [];
 
@@ -43,14 +41,16 @@ test.describe('Lot number system expiry date modification on receving workflow',
     productShowPage,
     supplierLocationService,
   }) => {
+    const uniqueIdentifier = new UniqueIdentifier();
+
     let STOCK_MOVEMENT: StockMovementResponse;
 
-    const TEST_LOT = {
+    const TEST_INPUT_STOCK_NEW_LOT = {
       lotNumber: uniqueIdentifier.generateUniqueString('lot'),
-      expirationDate: getDateByOffset(getToday(), 4),
+      expirationDate: getDateByOffset(getToday(), 1),
     };
 
-    const UPDATED_EXPIRY_DATE = getDateByOffset(getToday(), 2);
+    const UPDATED_EXPIRY_DATE_NEW_LOT = getDateByOffset(getToday(), 2);
 
     const product = await mainProductService.getProduct();
 
@@ -59,7 +59,7 @@ test.describe('Lot number system expiry date modification on receving workflow',
       await productShowPage.recordStockButton.click();
       await expect(
         productShowPage.recordStock.lineItemsTable.table
-      ).not.toContainText(TEST_LOT.lotNumber);
+      ).not.toContainText(TEST_INPUT_STOCK_NEW_LOT.lotNumber);
     });
 
     await test.step('Create inbound stock movement', async () => {
@@ -77,8 +77,8 @@ test.describe('Lot number system expiry date modification on receving workflow',
           {
             productId: product.id,
             quantity: 10,
-            lotNumber: TEST_LOT.lotNumber,
-            expirationDate: TEST_LOT.expirationDate,
+            lotNumber: TEST_INPUT_STOCK_NEW_LOT.lotNumber,
+            expirationDate: TEST_INPUT_STOCK_NEW_LOT.expirationDate,
           },
         ]
       );
@@ -109,7 +109,7 @@ test.describe('Lot number system expiry date modification on receving workflow',
     await test.step('Update expiration date of selected item lot', async () => {
       await receivingPage.receivingStep.editModal.table
         .row(0)
-        .expiryDatePickerField.fill(UPDATED_EXPIRY_DATE);
+        .expiryDatePickerField.fill(UPDATED_EXPIRY_DATE_NEW_LOT);
 
       await receivingPage.receivingStep.editModal.saveButton.click();
     });
@@ -143,22 +143,25 @@ test.describe('Lot number system expiry date modification on receving workflow',
       await productShowPage.recordStockButton.click();
       await expect(
         productShowPage.recordStock.lineItemsTable.table
-      ).toContainText(TEST_LOT.lotNumber);
+      ).toContainText(TEST_INPUT_STOCK_NEW_LOT.lotNumber);
     });
 
     await test.step('Ensure that lot has updated expiration date', async () => {
       await expect(
-        productShowPage.recordStock.lineItemsTable.getRowByLot(
-          TEST_LOT.lotNumber
-        ).first()
-      ).toContainText(formatDate(UPDATED_EXPIRY_DATE, 'DD/MMM/YYYY'));
+        productShowPage.recordStock.lineItemsTable
+          .getRowByLot(TEST_INPUT_STOCK_NEW_LOT.lotNumber)
+          .first()
+      ).toContainText(formatDate(UPDATED_EXPIRY_DATE_NEW_LOT, 'DD/MMM/YYYY'));
     });
   });
 
   test.describe('Update existing lot', () => {
-    let TEST_LOT: { lotNumber: string; expirationDate: Date }
+    const TEST_INPUT_STOCK_EXISTING_LOT = {
+      lotNumber: 'lot',
+      expirationDate: getDateByOffset(getToday(), 3),
+    };
 
-    let UPDATED_EXPIRY_DATE: Date;
+    const UPDATED_EXPIRY_DATE = getDateByOffset(getToday(), 4);
 
     test.beforeEach(
       async ({
@@ -169,23 +172,21 @@ test.describe('Lot number system expiry date modification on receving workflow',
         productShowPage,
         supplierLocationService,
       }) => {
+        const uniqueIdentifier = new UniqueIdentifier();
+
         let STOCK_MOVEMENT: StockMovementResponse;
 
         const product = await mainProductService.getProduct();
 
-         TEST_LOT = {
-          lotNumber: uniqueIdentifier.generateUniqueString('lot'),
-          expirationDate: getDateByOffset(getToday(), 4),
-        };
-
-        UPDATED_EXPIRY_DATE = getDateByOffset(getToday(), 2);
+        TEST_INPUT_STOCK_EXISTING_LOT.lotNumber =
+          uniqueIdentifier.generateUniqueString('lot');
 
         await test.step('Ensure that lot number does not exist in product stock', async () => {
           await productShowPage.goToPage(product.id);
           await productShowPage.recordStockButton.click();
           await expect(
             productShowPage.recordStock.lineItemsTable.table
-          ).not.toContainText(TEST_LOT.lotNumber);
+          ).not.toContainText(TEST_INPUT_STOCK_EXISTING_LOT.lotNumber);
         });
 
         await test.step('Create inbound stock movement', async () => {
@@ -203,8 +204,8 @@ test.describe('Lot number system expiry date modification on receving workflow',
               {
                 productId: product.id,
                 quantity: 10,
-                lotNumber: TEST_LOT.lotNumber,
-                expirationDate: TEST_LOT.expirationDate,
+                lotNumber: TEST_INPUT_STOCK_EXISTING_LOT.lotNumber,
+                expirationDate: TEST_INPUT_STOCK_EXISTING_LOT.expirationDate,
               },
             ]
           );
@@ -249,7 +250,7 @@ test.describe('Lot number system expiry date modification on receving workflow',
           await productShowPage.recordStockButton.click();
           await expect(
             productShowPage.recordStock.lineItemsTable.table
-          ).toContainText(TEST_LOT.lotNumber);
+          ).toContainText(TEST_INPUT_STOCK_EXISTING_LOT.lotNumber);
         });
       }
     );
@@ -281,8 +282,8 @@ test.describe('Lot number system expiry date modification on receving workflow',
             {
               productId: product.id,
               quantity: 10,
-              lotNumber: TEST_LOT.lotNumber,
-              expirationDate: TEST_LOT.expirationDate,
+              lotNumber: TEST_INPUT_STOCK_EXISTING_LOT.lotNumber,
+              expirationDate: TEST_INPUT_STOCK_EXISTING_LOT.expirationDate,
             },
           ]
         );
@@ -353,13 +354,18 @@ test.describe('Lot number system expiry date modification on receving workflow',
         await productShowPage.recordStockButton.click();
         await expect(
           productShowPage.recordStock.lineItemsTable.table
-        ).toContainText(TEST_LOT.lotNumber);
+        ).toContainText(TEST_INPUT_STOCK_EXISTING_LOT.lotNumber);
 
         await expect(
-          productShowPage.recordStock.lineItemsTable.getRowByLot(
-            TEST_LOT.lotNumber
-          ).first()
-        ).toContainText(formatDate(TEST_LOT.expirationDate, 'DD/MMM/YYYY'));
+          productShowPage.recordStock.lineItemsTable
+            .getRowByLot(TEST_INPUT_STOCK_EXISTING_LOT.lotNumber)
+            .first()
+        ).toContainText(
+          formatDate(
+            TEST_INPUT_STOCK_EXISTING_LOT.expirationDate,
+            'DD/MMM/YYYY'
+          )
+        );
       });
     });
 
@@ -390,8 +396,8 @@ test.describe('Lot number system expiry date modification on receving workflow',
             {
               productId: product.id,
               quantity: 10,
-              lotNumber: TEST_LOT.lotNumber,
-              expirationDate: TEST_LOT.expirationDate,
+              lotNumber: TEST_INPUT_STOCK_EXISTING_LOT.lotNumber,
+              expirationDate: TEST_INPUT_STOCK_EXISTING_LOT.expirationDate,
             },
           ]
         );
@@ -462,12 +468,12 @@ test.describe('Lot number system expiry date modification on receving workflow',
         await productShowPage.recordStockButton.click();
         await expect(
           productShowPage.recordStock.lineItemsTable.table
-        ).toContainText(TEST_LOT.lotNumber);
+        ).toContainText(TEST_INPUT_STOCK_EXISTING_LOT.lotNumber);
 
         await expect(
-          productShowPage.recordStock.lineItemsTable.getRowByLot(
-            TEST_LOT.lotNumber
-          ).first()
+          productShowPage.recordStock.lineItemsTable
+            .getRowByLot(TEST_INPUT_STOCK_EXISTING_LOT.lotNumber)
+            .first()
         ).toContainText(formatDate(UPDATED_EXPIRY_DATE, 'DD/MMM/YYYY'));
       });
     });
