@@ -16,7 +16,7 @@ import LocationData from '@/utils/LocationData';
 import UniqueIdentifier from '@/utils/UniqueIdentifier';
 
 test.describe('Check if depot location is present in location chooser', () => {
-  const uniqueIdentifier = new UniqueIdentifier();
+  const uniqueIdentifier = new UniqueIdentifier({ separator: ' ' });
   const ORGANIZATION_NAME =
     uniqueIdentifier.generateUniqueString('test-Organization');
   const GROUP_NAME = uniqueIdentifier.generateUniqueString('test-Group');
@@ -144,9 +144,7 @@ test.describe('Check if depot location is present in location chooser', () => {
     });
 
     await test.step('Delete created location group', async () => {
-      await navbar.configurationButton.click();
-      await navbar.locationGroup.click();
-      await locationGroupsListPage.getPaginationItem('3').click();
+      await locationGroupsListPage.goToPage({ max: 200 });
       await locationGroupsListPage.getLocationGroupnToEdit(GROUP_NAME).click();
       await editLocationGroupPage.clickDeleteLocationGroup();
     });

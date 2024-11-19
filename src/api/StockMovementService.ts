@@ -51,6 +51,17 @@ class StockMovementService extends BaseServiceModel {
     }
   }
 
+  async getStockMovement(
+    id: string
+  ): Promise<ApiResponse<StockMovementResponse>> {
+    try {
+      const apiResponse = await this.request.get(`./api/stockMovements/${id}`);
+      return await parseRequestToJSON(apiResponse);
+    } catch (error) {
+      throw new Error('Problem deleting stock movement');
+    }
+  }
+
   async updateItems(
     id: string,
     payload: UpdateStockMovementItemsPayload

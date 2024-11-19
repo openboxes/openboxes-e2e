@@ -1,5 +1,6 @@
 import { Page } from '@playwright/test';
 
+import FileHandler from '@/components/FileHandler';
 import BasePageModel from '@/pages/BasePageModel';
 import InboundListFilters from '@/pages/inbound/list/InboundListFilters';
 import InboundStockMovementTable from '@/pages/inbound/list/InboundStockMovementTable';
@@ -7,11 +8,21 @@ import InboundStockMovementTable from '@/pages/inbound/list/InboundStockMovement
 class InboundListPage extends BasePageModel {
   filters: InboundListFilters;
   table: InboundStockMovementTable;
+  fileHandler: FileHandler;
 
   constructor(page: Page) {
     super(page);
     this.filters = new InboundListFilters(page);
     this.table = new InboundStockMovementTable(page);
+    this.fileHandler = new FileHandler(page);
+  }
+
+  get exportDropdownButton() {
+    return this.page.getByRole('button', { name: 'Export' });
+  }
+
+  get exportAllIncomingItemsButton() {
+    return this.page.getByRole('link', { name: 'Export all incoming items' });
   }
 
   async goToPage() {
@@ -38,6 +49,13 @@ class InboundListPage extends BasePageModel {
       this.waitForResponse(),
       this.filters.clearButton.click(),
     ]);
+  }
+
+  async downloadAllIncomingItems() {
+    await this.fileHandler.onDownload();
+    await this.exportDropdownButton.click();
+    await this.exportAllIncomingItemsButton.click();
+    return await this.fileHandler.saveFile();
   }
 }
 

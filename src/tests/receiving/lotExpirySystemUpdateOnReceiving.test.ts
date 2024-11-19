@@ -10,7 +10,7 @@ test.describe('Lot number system expiry date modification on receving workflow',
   test.afterEach(async ({ stockMovementShowPage, stockMovementService }) => {
     while (STOCK_MOVEMENTS.length > 0) {
       const STOCK_MOVEMENT = STOCK_MOVEMENTS.pop() as StockMovementResponse;
-      
+
       await test.step(`Go to stock movement "${STOCK_MOVEMENT.id}" show page`, async () => {
         await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
         await stockMovementShowPage.waitForUrl();
