@@ -11,6 +11,10 @@ class ProductShowPage extends BasePageModel {
     this.recordStock = new RecordStockSection(page);
   }
 
+  async goToPage(id: string) {
+    await this.page.goto(`./inventoryItem/showStockCard/${id}`);
+  }
+
   get showStockCardButton() {
     return this.page.getByRole('link', { name: 'Show stock card' });
   }
