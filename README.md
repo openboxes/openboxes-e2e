@@ -8,12 +8,12 @@ End to end testing for OpenBoxes
 ## 🧰 Setup
 ### Required
 - NPM 6.14.6
-- Node 14+
+- Node 14.21.x
 
 ### Install Dependencies
 
 ```
-npm run install
+npm install
 
 npx playwright install
 ```
