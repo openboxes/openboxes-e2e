@@ -167,8 +167,8 @@ class AppConfig {
         type: LocationTypeCode.DEPOT,
       }),
       supplier: new LocationConfig({
-        id: env.get(LOCATION_KEY.SUPPLIER).asString(),
-        key: 'supplier',
+        id: env.get('LOCATION_SUPPLIER').asString(),
+        key: LOCATION_KEY.SUPPLIER,
         name: this.uniqueIdentifier.generateUniqueString('supplier'),
         requiredActivityCodes: new Set([
           ActivityCode.FULFILL_ORDER,
