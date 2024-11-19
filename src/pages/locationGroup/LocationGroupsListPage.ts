@@ -10,6 +10,10 @@ class LocationGroupsListPage extends BasePageModel {
     return this.page.getByText('Add Location group');
   }
 
+  async goToPage(params: { max: number }) {
+    this.page.goto(`./locationGroup/list?max=${params.max}`);
+  }
+
   getPaginationItem(pageNumber: string) {
     return this.page
       .getByLabel('pagination')
