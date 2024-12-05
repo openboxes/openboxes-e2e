@@ -11,8 +11,8 @@ on:
       environment:
         description: 'Select environment'
         required: true
-        type: string
-        default: 'obdev3' # Default to staging
+        type: choice
+        default: 'obdev3'
         options:
           - obdev3
           - stg
