@@ -7,6 +7,15 @@ on:
     branches:
       - main  # Trigger on pushes to the main branch
   workflow_dispatch: # Allow manual triggering of the workflow
+    inputs:
+      environment:
+        description: 'Select environment'
+        required: true
+        type: choice
+        default: 'obdev3'
+        options:
+          - obdev3
+          - stg
   pull_request:
     branches:
       - main  # Trigger when a pull request targets the main branch
@@ -19,6 +28,7 @@ jobs:
       id-token: write
       contents: read
       pages: write
+    environment: ${{ inputs.environment }} # Assign environment dynamically
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
