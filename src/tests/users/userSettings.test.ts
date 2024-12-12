@@ -1,5 +1,8 @@
 import LocationChooser from '@/components/LocationChooser';
+import Navbar from '@/components/Navbar';
 import { expect, test } from '@/fixtures/fixtures';
+import CreateInvoicePage from '@/pages/invoice/CreateInvoicePage';
+import InvoiceListPage from '@/pages/invoice/InvoiceListPage';
 import LoginPage from '@/pages/LoginPage';
 import { CreateUserType } from '@/types';
 import UniqueIdentifier from '@/utils/UniqueIdentifier';
@@ -151,4 +154,46 @@ test('Add requestor permission to non manage inventory depot', async ({
     .click();
   await expect(newUserLocationChooser.getLocation(location.name)).toBeVisible();
   await newUserLocationChooser.getLocation(location.name).click();
+});
+
+test('Add new user with invoice permission', async ({
+  editUserPage,
+  mainLocationService,
+  emptyUserContext,
+}) => {
+  await test.step('Select role "Admin"', async () => {
+    await editUserPage.authorizationTabSection.defaultRoleSelect.click();
+    await editUserPage.authorizationTabSection.getUserRole('Admin').click();
+    await editUserPage.authorizationTabSection.defaultRoleSelect.click();
+    await editUserPage.authorizationTabSection
+      .getUserRole('Invoice user')
+      .click();
+    await editUserPage.authorizationTabSection.saveButton.click();
+  });
+
+  const location = await mainLocationService.getLocation();
+  const newUserPage = await emptyUserContext.newPage();
+  const newUserLoginPage = new LoginPage(newUserPage);
+  const newUserLocationChooser = new LocationChooser(newUserPage);
+  const newUserCreateInvoicePage = new CreateInvoicePage(newUserPage);
+  const newUserListInvoicePage = new InvoiceListPage(newUserPage);
+
+  await test.step('Login as new user', async () => {
+    await newUserLoginPage.goToPage();
+    await newUserLoginPage.fillLoginForm(formData.username, formData.password);
+    await newUserLoginPage.loginButton.click();
+  });
+
+  await newUserLocationChooser
+    .getOrganization(location.organization?.name)
+    .click();
+  await expect(newUserLocationChooser.getLocation(location.name)).toBeVisible();
+  await newUserLocationChooser.getLocation(location.name).click();
+
+  await test.step('Assert access to invoice pages', async () => {
+    await newUserCreateInvoicePage.goToPage();
+    await expect(newUserPage.getByText('Vendor Invoice Number')).toBeVisible();
+    await newUserListInvoicePage.goToPage();
+    await expect(newUserListInvoicePage.invoiceListHeader).toBeVisible();
+  });
 });
