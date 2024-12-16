@@ -48,6 +48,10 @@ class SendStep extends BasePageModel {
     return this.page.getByRole('button', { name: 'Send shipment' });
   }
 
+  get saveAndExitButton() {
+    return this.page.getByRole('button', { name: 'Save and Exit' });
+  }
+
   async isLoaded() {
     await expect(this.originField.textbox).toBeVisible();
     await expect(this.destinationSelect.selectField).toBeVisible();
