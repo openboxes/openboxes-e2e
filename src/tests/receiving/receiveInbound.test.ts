@@ -207,7 +207,7 @@ test.describe('Receive inbound stock movement', () => {
     });
   });
 
-  test('Receving should be available from location that is specfied as destination location', async ({
+  test('Receiving should be available from location that is specfied as destination location', async ({
     stockMovementShowPage,
     receivingPage,
   }) => {
@@ -220,7 +220,7 @@ test.describe('Receive inbound stock movement', () => {
       await stockMovementShowPage.receiveButton.click();
     });
 
-    await test.step('Assert that receing page is loaded', async () => {
+    await test.step('Assert that receiving page is loaded', async () => {
       await receivingPage.receivingStep.isLoaded();
     });
 
@@ -239,12 +239,12 @@ test.describe('Receive inbound stock movement', () => {
     });
   });
 
-  test.describe('Receive from differnt locations', () => {
+  test.describe('Receive from different locations', () => {
     test.afterEach(async ({ authService }) => {
       await authService.changeLocation(AppConfig.instance.locations.main.id);
     });
 
-    test('Receving should not be available from other location than which is specfied as destination location', async ({
+    test('Receiving should not be available from other location than which is specfied as destination location', async ({
       stockMovementShowPage,
       depotLocationService,
       navbar,
@@ -257,7 +257,7 @@ test.describe('Receive inbound stock movement', () => {
         await stockMovementShowPage.isLoaded();
       });
 
-      await test.step('switch locations', async () => {
+      await test.step('Switch locations', async () => {
         await navbar.locationChooserButton.click();
         await locationChooser
           .getOrganization(OTHER_LOCATION.organization?.name as string)
