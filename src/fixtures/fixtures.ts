@@ -33,6 +33,8 @@ import UserListPage from '@/pages/user/UserListPage';
 import LocationData from '@/utils/LocationData';
 import ProductData from '@/utils/ProductData';
 import UserData from '@/utils/UserData';
+import CreateInvoicePage from '@/pages/invoice/CreateInvoicePage';
+import InvoiceListPage from '@/pages/invoice/InvoiceListPage';
 
 type Fixtures = {
   // PAGES
@@ -54,6 +56,8 @@ type Fixtures = {
   createInboundPage: CreateInbound;
   inboundListPage: InboundListPage;
   receivingPage: ReceivingPage;
+  createInvoicePage: CreateInvoicePage;
+  invoiceListPage: InvoiceListPage;
   // COMPONENTS
   navbar: Navbar;
   locationChooser: LocationChooser;
@@ -111,6 +115,8 @@ export const test = baseTest.extend<Fixtures>({
     use(new StockMovementShowPage(page)),
   createProductPage: async ({ page }, use) => use(new CreateProductPage(page)),
   productShowPage: async ({ page }, use) => use(new ProductShowPage(page)),
+  createInvoicePage: async ({ page }, use) => use(new CreateInvoicePage(page)),
+  invoiceListPage: async ({ page }, use) => use(new InvoiceListPage(page)),
   // COMPONENTS
   navbar: async ({ page }, use) => use(new Navbar(page)),
   locationChooser: async ({ page }, use) => use(new LocationChooser(page)),
