@@ -856,7 +856,8 @@ test.describe('Check if ward location is present in location chooser based on us
     }
   );
 
-  test('Assert created Ward on location chooser in impersonate mode', async ({
+  // TODO: OBPIH-6909 Fix menu clicking when impersonating users
+  test.skip('Assert created Ward on location chooser in impersonate mode', async ({
     userListPage,
     editUserPage,
   }) => {

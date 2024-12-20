@@ -4,10 +4,11 @@ import { StockMovementResponse } from '@/types';
 import { formatDate, getDateByOffset, getToday } from '@/utils/DateUtils';
 import UniqueIdentifier from '@/utils/UniqueIdentifier';
 
-test.describe('Lot number system expiry date modification on receving workflow', () => {
+test.describe('Lot number system expiry date modification on receiving workflow', () => {
   const STOCK_MOVEMENTS: StockMovementResponse[] = [];
 
   test.afterEach(async ({ stockMovementShowPage, stockMovementService }) => {
+    // TODO: Improve this one, it is prone to getting stuck if there are not deleted SMs in the tested location
     while (STOCK_MOVEMENTS.length > 0) {
       const STOCK_MOVEMENT = STOCK_MOVEMENTS.pop() as StockMovementResponse;
 

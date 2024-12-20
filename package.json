@@ -8,6 +8,7 @@
     "lint-fix": "eslint . --fix",
     "format": "npx prettier --write .",
     "test": "npx playwright test",
+    "ui": "npx playwright test --ui",
     "report": "npx playwright show-report"
   },
   "repository": {
