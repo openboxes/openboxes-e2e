@@ -12,9 +12,10 @@ on:
         description: 'Select environment'
         required: true
         type: choice
-        default: 'obdev3'
+        default: 'obdev5'
         options:
           - obdev3
+          - obdev5
           - stg
   pull_request:
     branches:
@@ -62,7 +63,9 @@ jobs:
         LOCATION_WARD: ${{ secrets.LOCATION_WARD }}
         PRODUCT_ONE: ${{ secrets.PRODUCT_ONE }}
         PRODUCT_TWO: ${{ secrets.PRODUCT_TWO }}
-      run: npx playwright test
+      run: |
+        echo "Running playwright tests on the ${{ inputs.environment || 'obdev5' }} server"
+        npx playwright test
 
     - name: Upload Playwright Report to Artifacts
       if: ${{ always() }}
