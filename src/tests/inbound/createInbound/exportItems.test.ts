@@ -4,6 +4,7 @@ import { WorkbookUtils } from '@/utils/WorkbookUtils';
 
 test.describe('Export all incoming items', () => {
   let INBOUND_ID: string;
+  let INBOUND2_ID: string;
   const workbooks: WorkbookUtils[] = [];
 
   test.beforeEach(
@@ -13,19 +14,20 @@ test.describe('Export all incoming items', () => {
       mainProductService,
       mainUserService,
       otherProductService,
-      stockMovementShowPage
+      stockMovementShowPage,
+      inboundListPage,
     }) => {
       const ORIGIN = await supplierLocationService.getLocation();
       const DESCRIPTION = 'some description';
       const USER = await mainUserService.getUser();
       const TODAY = getToday();
-  
+
       const PRODUCT_ONE = await mainProductService.getProduct();
       const PRODUCT_TWO = await otherProductService.getProduct();
       const SHIPMENT_TYPE = 'Land';
       const EXPECTED_DELIVERY_DATE = getDateByOffset(TODAY, 1);
-  
-      const ROWS = [
+
+      const ROWS1 = [
         {
           product: {
             productCode: PRODUCT_ONE.productCode,
@@ -42,83 +44,195 @@ test.describe('Export all incoming items', () => {
         },
       ];
 
-      await test.step('Go to create stock movement', async () => {
-        await createInboundPage.goToPage();
-        await createInboundPage.createStep.isLoaded();
-      });
-  
-      await test.step('Create Stock Movement step', async () => {
-        await createInboundPage.createStep.originSelect.findAndSelectOption(
-          ORIGIN.name
-        );
-        await createInboundPage.createStep.requestedBySelect.findAndSelectOption(
-          USER.name
-        );
-        await createInboundPage.createStep.dateRequestedDatePicker.fill(TODAY);
-        await createInboundPage.createStep.descriptionField.textbox.fill(
-          DESCRIPTION
-        );
-      });
-  
-      await test.step('Go next step (Add items)', async () => {
-        await createInboundPage.nextButton.click();
-        await createInboundPage.addItemsStep.isLoaded();
-      });
-  
-      INBOUND_ID = createInboundPage.getId();
-  
-      await createInboundPage.addItemsStep.addItems(ROWS);
-  
-      await test.step('Go to next step (Send)', async () => {
-        await createInboundPage.nextButton.click();
-        await createInboundPage.sendStep.isLoaded();
-      });
-  
-      await test.step('Fill shipment fields (Send)', async () => {
-        await createInboundPage.sendStep.shipmentTypeSelect.findAndSelectOption(
-          SHIPMENT_TYPE
-        );
-        await createInboundPage.sendStep.expectedDeliveryDatePicker.fill(
-          EXPECTED_DELIVERY_DATE
-        );
-      });
+      const ROWS2 = [
+        {
+          product: {
+            productCode: PRODUCT_ONE.productCode,
+            productName: PRODUCT_ONE.name,
+          },
+          quantity: '10',
+        },
+      ];
 
-      await test.step('Send shipment', async () => {
-        await createInboundPage.sendStep.sendShipmentButton.click();
-        await stockMovementShowPage.waitForUrl();
-        await stockMovementShowPage.isLoaded();
-      });
+      await inboundListPage.goToPage();
+      const ifInboundListPageIsEmpty =
+        await inboundListPage.table.emptyInboundList.isVisible();
+      const ifInboundListPageIsNotEmpty =
+        await inboundListPage.table.emptyInboundList.isHidden();
+      if (ifInboundListPageIsEmpty) {
+        await test.step('Create and ship stock movement when inbound list is empty', async () => {
+          await createInboundPage.goToPage();
+          await createInboundPage.createStep.originSelect.findAndSelectOption(
+            ORIGIN.name
+          );
+          await createInboundPage.createStep.requestedBySelect.findAndSelectOption(
+            USER.name
+          );
+          await createInboundPage.createStep.dateRequestedDatePicker.fill(
+            TODAY
+          );
+          await createInboundPage.createStep.descriptionField.textbox.fill(
+            DESCRIPTION
+          );
+          await createInboundPage.nextButton.click();
+          await createInboundPage.addItemsStep.isLoaded();
+          await createInboundPage.wizzardSteps.assertActiveStep('Add items');
 
+          INBOUND2_ID = createInboundPage.getId();
+
+          await createInboundPage.addItemsStep.addItems(ROWS2);
+          await createInboundPage.nextButton.click();
+          await createInboundPage.sendStep.isLoaded();
+
+          await createInboundPage.sendStep.shipmentTypeSelect.findAndSelectOption(
+            SHIPMENT_TYPE
+          );
+          await createInboundPage.sendStep.expectedDeliveryDatePicker.fill(
+            EXPECTED_DELIVERY_DATE
+          );
+          await createInboundPage.sendStep.sendShipmentButton.click();
+          await stockMovementShowPage.waitForUrl();
+          await stockMovementShowPage.isLoaded();
+        });
+
+        await test.step('Go to create stock movement', async () => {
+          await createInboundPage.goToPage();
+          await createInboundPage.createStep.isLoaded();
+        });
+
+        await test.step('Create Stock Movement step', async () => {
+          await createInboundPage.createStep.originSelect.findAndSelectOption(
+            ORIGIN.name
+          );
+          await createInboundPage.createStep.requestedBySelect.findAndSelectOption(
+            USER.name
+          );
+          await createInboundPage.createStep.dateRequestedDatePicker.fill(
+            TODAY
+          );
+          await createInboundPage.createStep.descriptionField.textbox.fill(
+            DESCRIPTION
+          );
+        });
+
+        await test.step('Go next step (Add items)', async () => {
+          await createInboundPage.nextButton.click();
+          await createInboundPage.addItemsStep.isLoaded();
+        });
+
+        INBOUND_ID = createInboundPage.getId();
+
+        await createInboundPage.addItemsStep.addItems(ROWS1);
+
+        await test.step('Go to next step (Send)', async () => {
+          await createInboundPage.nextButton.click();
+          await createInboundPage.sendStep.isLoaded();
+        });
+
+        await test.step('Fill shipment fields (Send)', async () => {
+          await createInboundPage.sendStep.shipmentTypeSelect.findAndSelectOption(
+            SHIPMENT_TYPE
+          );
+          await createInboundPage.sendStep.expectedDeliveryDatePicker.fill(
+            EXPECTED_DELIVERY_DATE
+          );
+        });
+
+        await test.step('Send shipment', async () => {
+          await createInboundPage.sendStep.sendShipmentButton.click();
+          await stockMovementShowPage.waitForUrl();
+          await stockMovementShowPage.isLoaded();
+        });
+      }
+
+      if (ifInboundListPageIsNotEmpty) {
+        await test.step('Go to create stock movement', async () => {
+          await createInboundPage.goToPage();
+          await createInboundPage.createStep.isLoaded();
+        });
+
+        await test.step('Create Stock Movement step', async () => {
+          await createInboundPage.createStep.originSelect.findAndSelectOption(
+            ORIGIN.name
+          );
+          await createInboundPage.createStep.requestedBySelect.findAndSelectOption(
+            USER.name
+          );
+          await createInboundPage.createStep.dateRequestedDatePicker.fill(
+            TODAY
+          );
+          await createInboundPage.createStep.descriptionField.textbox.fill(
+            DESCRIPTION
+          );
+        });
+
+        await test.step('Go next step (Add items)', async () => {
+          await createInboundPage.nextButton.click();
+          await createInboundPage.addItemsStep.isLoaded();
+        });
+
+        INBOUND_ID = createInboundPage.getId();
+
+        await createInboundPage.addItemsStep.addItems(ROWS1);
+
+        await test.step('Go to next step (Send)', async () => {
+          await createInboundPage.nextButton.click();
+          await createInboundPage.sendStep.isLoaded();
+        });
+
+        await test.step('Fill shipment fields (Send)', async () => {
+          await createInboundPage.sendStep.shipmentTypeSelect.findAndSelectOption(
+            SHIPMENT_TYPE
+          );
+          await createInboundPage.sendStep.expectedDeliveryDatePicker.fill(
+            EXPECTED_DELIVERY_DATE
+          );
+        });
+
+        await test.step('Send shipment', async () => {
+          await createInboundPage.sendStep.sendShipmentButton.click();
+          await stockMovementShowPage.waitForUrl();
+          await stockMovementShowPage.isLoaded();
+        });
+      }
     }
   );
 
-  test.afterEach(async ({ stockMovementService, stockMovementShowPage }) => {
-    await stockMovementShowPage.goToPage(INBOUND_ID);
-    await stockMovementShowPage.isLoaded();
-    const isRollbackLastReceiptButtonVisible =
-      await stockMovementShowPage.rollbackLastReceiptButton.isVisible();
-    const isRollbackButtonVisible =
-      await stockMovementShowPage.rollbackButton.isVisible();
+  test.afterEach(
+    async ({ stockMovementService, stockMovementShowPage, page }) => {
+      await stockMovementShowPage.goToPage(INBOUND_ID);
+      await stockMovementShowPage.isLoaded();
+      const isRollbackLastReceiptButtonVisible =
+        await stockMovementShowPage.rollbackLastReceiptButton.isVisible();
+      const isRollbackButtonVisible =
+        await stockMovementShowPage.rollbackButton.isVisible();
 
-    // due to failed test, shipment might not be received which will not show the button
-    if (isRollbackLastReceiptButtonVisible) {
-      await stockMovementShowPage.rollbackLastReceiptButton.click();
+      // due to failed test, shipment might not be received which will not show the button
+      if (isRollbackLastReceiptButtonVisible) {
+        await stockMovementShowPage.rollbackLastReceiptButton.click();
+      }
+
+      if (isRollbackButtonVisible) {
+        await stockMovementShowPage.rollbackButton.click();
+      }
+
+      await stockMovementService.deleteStockMovement(INBOUND_ID);
+
+      for (const workbook of workbooks) {
+        workbook.delete();
+      }
+
+      if (INBOUND2_ID) {
+        await stockMovementShowPage.goToPage(INBOUND2_ID);
+        await stockMovementShowPage.isLoaded();
+        await stockMovementShowPage.rollbackButton.click();
+        await stockMovementService.deleteStockMovement(INBOUND2_ID);
+      }
     }
-
-    if (isRollbackButtonVisible) {
-      await stockMovementShowPage.rollbackButton.click();
-    }
-
-    await stockMovementService.deleteStockMovement(INBOUND_ID);
-
-    for (const workbook of workbooks) {
-      workbook.delete();
-    }
-  });
+  );
 
   test('Export all incoming items should include shipped items', async ({
     inboundListPage,
-    stockMovementShowPage,
     stockMovementService,
   }) => {
     await test.step('Go to inbound list page', async () => {
@@ -211,7 +325,7 @@ test.describe('Export all incoming items', () => {
   });
 
   // TODO: Adjust to rely on the empty database (on empty db it fails, because there is 404 No shipment items found)
-  test.skip('Export all incoming items should not include received items', async ({
+  test('Export all incoming items should not include received items', async ({
     inboundListPage,
     stockMovementShowPage,
     stockMovementService,
@@ -233,8 +347,8 @@ test.describe('Export all incoming items', () => {
     await test.step('Select item to receive', async () => {
       await receivingPage.receivingStep.isLoaded();
       await receivingPage.receivingStep.table
-      .row(1)
-      .receivingNowField.textbox.fill('12');
+        .row(1)
+        .receivingNowField.textbox.fill('12');
       await receivingPage.receivingStep.table
         .row(2)
         .receivingNowField.textbox.fill('12');
@@ -274,6 +388,4 @@ test.describe('Export all incoming items', () => {
       expect(stockMovementItemsFromFile).toHaveLength(0);
     });
   });
-
-
 });
