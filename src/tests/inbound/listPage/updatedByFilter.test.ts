@@ -29,7 +29,7 @@ test.describe('Use "Updated By" filter', () => {
     await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
   });
 
-  test.skip('Only show stock movements updated by filtered user', async ({
+  test('Only show stock movements updated by filtered user', async ({
     altUserContext,
     inboundListPage,
     mainProductService,
