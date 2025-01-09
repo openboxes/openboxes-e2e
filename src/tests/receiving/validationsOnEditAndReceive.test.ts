@@ -160,6 +160,11 @@ test.describe('Validations on edit and receive inbound stock movement', () => {
         'Cannot edit received shipment'
       );
     });
+
+    await test.step('Rollback shipment received in 2 receipts', async () => {
+      await stockMovementShowPage.isLoaded();
+      await stockMovementShowPage.rollbackLastReceiptButton.click();
+    });
   });
 
   test('Assert unable to receive already received inbounds', async ({
