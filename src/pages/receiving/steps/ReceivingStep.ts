@@ -30,6 +30,18 @@ class ReceivingStep extends BasePageModel {
   get autofillQuantitiesButton() {
     return this.page.getByRole('button', { name: 'Autofill quantities' });
   }
+
+  get confirmReceivingDialog() {
+    return this.page.locator('.react-confirm-alert-body');
+  }
+
+  get rejectConfirmReceivingDialog() {
+    return this.confirmReceivingDialog.getByRole('button', { name: 'No' });
+  }
+
+  get acceptConfirmReceivingDialog() {
+    return this.confirmReceivingDialog.getByRole('button', { name: 'Yes' });
+  }
 }
 
 export default ReceivingStep;
