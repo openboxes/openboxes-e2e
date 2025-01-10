@@ -66,7 +66,7 @@ test.afterEach(async ({ stockMovementService }) => {
 
 test('Create Inbound stock movement field validations', async ({
   createInboundPage,
-  stockMovementShowPage
+  stockMovementShowPage,
 }) => {
   await test.step('Go to create inbound page', async () => {
     await createInboundPage.goToPage();
@@ -132,7 +132,6 @@ test('Create Inbound stock movement field validations', async ({
   await test.step('Go to next step (Create -> Add Items)', async () => {
     await createInboundPage.nextButton.click();
   });
-
 
   await test.step('Assert next button should be disabled on empty table (Add Items)', async () => {
     await expect(createInboundPage.nextButton).toBeDisabled();
@@ -237,8 +236,5 @@ test('Create Inbound stock movement field validations', async ({
     await stockMovementShowPage.waitForUrl();
     await stockMovementShowPage.isLoaded();
     await stockMovementShowPage.clickDeleteShipment();
-  }); 
-
-
-
+  });
 });
