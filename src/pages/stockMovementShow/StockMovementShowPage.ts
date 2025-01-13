@@ -3,15 +3,18 @@ import { expect, Page } from '@playwright/test';
 import BasePageModel from '@/pages/BasePageModel';
 import AuditingTable from '@/pages/stockMovementShow/components/AuditingTable';
 import PackingListTable from '@/pages/stockMovementShow/components/PackingListTable';
+import ReceiptsListTable from './components/ReceiptsTable';
 
 class StockMovementShowPage extends BasePageModel {
   auditingTable: AuditingTable;
   packingListTable: PackingListTable;
+  receiptListTable: ReceiptsListTable;
 
   constructor(page: Page) {
     super(page);
     this.auditingTable = new AuditingTable(page);
     this.packingListTable = new PackingListTable(page);
+    this.receiptListTable = new ReceiptsListTable(page);
   }
 
   async goToPage(id: string) {
@@ -41,6 +44,10 @@ class StockMovementShowPage extends BasePageModel {
 
   get receiptTab() {
     return this.page.getByRole('tab', { name: 'Receipt' });
+  }
+
+  get emptyReceiptTab() {
+    return this.page.getByText('Shipment has not been received yet');
   }
 
   get documentTab() {
