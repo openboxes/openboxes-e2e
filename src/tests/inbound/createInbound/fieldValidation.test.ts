@@ -66,6 +66,7 @@ test.afterEach(async ({ stockMovementService }) => {
 
 test('Create Inbound stock movement field validations', async ({
   createInboundPage,
+  stockMovementShowPage,
 }) => {
   await test.step('Go to create inbound page', async () => {
     await createInboundPage.goToPage();
@@ -226,5 +227,14 @@ test('Create Inbound stock movement field validations', async ({
     ).toContainText(
       'Please verify timeline. Delivery date cannot be before Ship date.'
     );
+  });
+
+  await test.step('Save and exit and delete shipment', async () => {
+    await createInboundPage.sendStep.saveAndExitButton.click();
+    await createInboundPage.sendStep.validationPopup.assertPopupVisible();
+    await createInboundPage.sendStep.acceptConfirmExitDialog.click();
+    await stockMovementShowPage.waitForUrl();
+    await stockMovementShowPage.isLoaded();
+    await stockMovementShowPage.clickDeleteShipment();
   });
 });
