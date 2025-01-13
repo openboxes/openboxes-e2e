@@ -14,6 +14,8 @@ import AppConfig, {
 } from '@/config/AppConfig';
 import CreateInbound from '@/pages/inbound/create/CreateInboundPage';
 import InboundListPage from '@/pages/inbound/list/InboundListPage';
+import CreateInvoicePage from '@/pages/invoice/CreateInvoicePage';
+import InvoiceListPage from '@/pages/invoice/InvoiceListPage';
 import CreateLocationPage from '@/pages/location/createLocation/CreateLocationPage';
 import LocationListPage from '@/pages/location/LocationListPage';
 import CreateLocationGroupPage from '@/pages/locationGroup/CreateLocationGroupPage';
@@ -33,8 +35,6 @@ import UserListPage from '@/pages/user/UserListPage';
 import LocationData from '@/utils/LocationData';
 import ProductData from '@/utils/ProductData';
 import UserData from '@/utils/UserData';
-import CreateInvoicePage from '@/pages/invoice/CreateInvoicePage';
-import InvoiceListPage from '@/pages/invoice/InvoiceListPage';
 
 type Fixtures = {
   // PAGES
