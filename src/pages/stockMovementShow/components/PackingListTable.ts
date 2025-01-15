@@ -30,51 +30,51 @@ class Row extends BasePageModel {
   }
 
   get recalled() {
-    return this.row.getByRole('gridcell', { name: 'Recalled' });
+    return this.row.locator('td').nth(0);
   }
 
   get details() {
-    return this.row.getByRole('gridcell', { name: 'Details' });
+    return this.row.locator('td').nth(1);
   }
 
   get productCode() {
-    return this.row.getByRole('gridcell', { name: 'Product Code' });
+    return this.row.locator('td').nth(2);
   }
 
   get product() {
-    return this.row.getByRole('gridcell', { name: 'Product' });
+    return this.row.locator('td').nth(3);
   }
 
   get binLocation() {
-    return this.row.getByRole('gridcell', { name: 'Bin Location' });
+    return this.row.locator('td').nth(4);
   }
 
   get lotNumber() {
-    return this.row.getByRole('gridcell', { name: 'Lot Number' });
+    return this.row.locator('td').nth(5);
   }
 
   get expirationDate() {
-    return this.row.getByRole('gridcell', { name: 'Expiration Date' });
+    return this.row.locator('td').nth(6);
   }
 
   get quantityShipped() {
-    return this.row.getByRole('gridcell', { name: 'Quantity Shipped' });
+    return this.row.locator('td').nth(7);
   }
 
   get unitOfMeasure() {
-    return this.row.getByRole('gridcell', { name: 'Unit Of Measure' });
+    return this.row.locator('td').nth(8);
   }
 
   get recipient() {
-    return this.row.getByRole('gridcell', { name: 'Recipient' });
+    return this.row.locator('td').nth(9);
   }
 
   get comment() {
-    return this.row.getByRole('gridcell', { name: 'Comment' });
+    return this.row.locator('td').nth(10);
   }
 
   get isFullyReceived() {
-    return this.row.getByRole('gridcell', { name: 'Is Fully Received' });
+    return this.row.locator('td').nth(11);
   }
 }
 
