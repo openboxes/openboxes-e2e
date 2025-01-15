@@ -4,17 +4,20 @@ import BasePageModel from '@/pages/BasePageModel';
 import AuditingTable from '@/pages/stockMovementShow/components/AuditingTable';
 import PackingListTable from '@/pages/stockMovementShow/components/PackingListTable';
 import ReceiptsListTable from './components/ReceiptsTable';
+import DetailsTable from './components/DetailsTable';
 
 class StockMovementShowPage extends BasePageModel {
   auditingTable: AuditingTable;
   packingListTable: PackingListTable;
   receiptListTable: ReceiptsListTable;
+  detailsListTable: DetailsTable;
 
   constructor(page: Page) {
     super(page);
     this.auditingTable = new AuditingTable(page);
     this.packingListTable = new PackingListTable(page);
     this.receiptListTable = new ReceiptsListTable(page);
+    this.detailsListTable = new DetailsTable(page);
   }
 
   async goToPage(id: string) {
