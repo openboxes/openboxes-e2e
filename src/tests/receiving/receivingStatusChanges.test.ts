@@ -1,6 +1,5 @@
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
-import InboundListPage from '@/pages/inbound/list/InboundListPage';
 import StockMovementShowPage from '@/pages/stockMovementShow/StockMovementShowPage';
 import { StockMovementResponse } from '@/types';
 import { getToday } from '@/utils/DateUtils';
@@ -100,7 +99,6 @@ test.describe('Status changes on sm view page when receive shipment', () => {
     await test.step('Assert statuses on stock movmenent show page in new tab when receipt in progress', async () => {
       const newPage = await browser.newPage();
       const newStockMovementShowPage = new StockMovementShowPage(newPage);
-      const newInboundListPage = new InboundListPage(newPage);
       await newStockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
       await newStockMovementShowPage.isLoaded();
       await expect(newStockMovementShowPage.statusTag).toHaveText('Shipped');
