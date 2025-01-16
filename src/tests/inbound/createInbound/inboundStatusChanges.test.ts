@@ -381,7 +381,7 @@ test.describe('Status changes for inbound sm on view sm and inbound list page', 
       await stockMovementShowPage.isLoaded();
     });
 
-    await test.step('Assert Pending status on inbound list page ', async () => {
+    await test.step('Assert Shipped status on inbound list page ', async () => {
       const newPage = await browser.newPage();
       const newStockMovementShowPage = new StockMovementShowPage(newPage);
       const newInboundListPage = new InboundListPage(newPage);

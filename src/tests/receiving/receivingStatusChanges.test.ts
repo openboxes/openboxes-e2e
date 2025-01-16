@@ -1,5 +1,6 @@
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
+import InboundListPage from '@/pages/inbound/list/InboundListPage';
 import StockMovementShowPage from '@/pages/stockMovementShow/StockMovementShowPage';
 import { StockMovementResponse } from '@/types';
 import { getToday } from '@/utils/DateUtils';
@@ -348,6 +349,213 @@ test.describe('Status changes on sm view page when receive shipment', () => {
       await expect(
         stockMovementShowPage.receiptListTable.row(3).quantityReceived
       ).toHaveText('5');
+    });
+
+    await test.step('Rollback shipment received in 2 receipts', async () => {
+      await stockMovementShowPage.isLoaded();
+      await stockMovementShowPage.rollbackLastReceiptButton.click();
+    });
+  });
+
+  test('Assert status changes on inbound list when receive 1 item partially', async ({
+    stockMovementShowPage,
+    receivingPage,
+    browser,
+  }) => {
+    await test.step('Go to stock movement show page', async () => {
+      await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
+      await stockMovementShowPage.isLoaded();
+    });
+
+    await test.step('Assert Shipped status on inbound list page ', async () => {
+      const newPage = await browser.newPage();
+      const newStockMovementShowPage = new StockMovementShowPage(newPage);
+      const newInboundListPage = new InboundListPage(newPage);
+      await newStockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
+      const inboundShipmentIdentifier =
+        await newStockMovementShowPage.detailsListTable.identifierValue.textContent();
+      await newInboundListPage.goToPage();
+      await newInboundListPage.filters.searchField.textbox.fill(
+        `${inboundShipmentIdentifier}`.toString().trim()
+      );
+      await newInboundListPage.search();
+      await expect(newInboundListPage.table.row(0).status).toHaveText(
+        'Shipped'
+      );
+      await newPage.close();
+    });
+
+    await test.step('Go to shipment receiving page', async () => {
+      await stockMovementShowPage.receiveButton.click();
+      await receivingPage.receivingStep.isLoaded();
+    });
+
+    await test.step('Select item to receive partially', async () => {
+      await receivingPage.receivingStep.isLoaded();
+      await receivingPage.receivingStep.table
+        .row(1)
+        .receivingNowField.textbox.fill('10');
+    });
+
+    await test.step('Go to check page and receive item', async () => {
+      await receivingPage.nextButton.click();
+      await receivingPage.checkStep.isLoaded();
+      await receivingPage.checkStep.receiveShipmentButton.click();
+      await stockMovementShowPage.isLoaded();
+    });
+
+    await test.step('Assert Receiving status on inbound list page ', async () => {
+      const newPage = await browser.newPage();
+      const newStockMovementShowPage = new StockMovementShowPage(newPage);
+      const newInboundListPage = new InboundListPage(newPage);
+      await newStockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
+      const inboundShipmentIdentifier =
+        await newStockMovementShowPage.detailsListTable.identifierValue.textContent();
+      await newInboundListPage.goToPage();
+      await newInboundListPage.filters.searchField.textbox.fill(
+        `${inboundShipmentIdentifier}`.toString().trim()
+      );
+      await newInboundListPage.search();
+      await expect(newInboundListPage.table.row(0).status).toHaveText(
+        'Receiving'
+      );
+      await newPage.close();
+    });
+  });
+
+  test('Assert status changes on inbound list when receive 1 item fully', async ({
+    stockMovementShowPage,
+    receivingPage,
+    browser,
+  }) => {
+    await test.step('Go to stock movement show page', async () => {
+      await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
+      await stockMovementShowPage.isLoaded();
+    });
+
+    await test.step('Go to shipment receiving page', async () => {
+      await stockMovementShowPage.receiveButton.click();
+      await receivingPage.receivingStep.isLoaded();
+    });
+
+    await test.step('Select item to receive fully', async () => {
+      await receivingPage.receivingStep.isLoaded();
+      await receivingPage.receivingStep.table
+        .row(1)
+        .receivingNowField.textbox.fill('20');
+    });
+
+    await test.step('Go to check page and receive item', async () => {
+      await receivingPage.nextButton.click();
+      await receivingPage.checkStep.isLoaded();
+      await receivingPage.checkStep.receiveShipmentButton.click();
+      await stockMovementShowPage.isLoaded();
+    });
+
+    await test.step('Assert Receiving status on inbound list page ', async () => {
+      const newPage = await browser.newPage();
+      const newStockMovementShowPage = new StockMovementShowPage(newPage);
+      const newInboundListPage = new InboundListPage(newPage);
+      await newStockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
+      const inboundShipmentIdentifier =
+        await newStockMovementShowPage.detailsListTable.identifierValue.textContent();
+      await newInboundListPage.goToPage();
+      await newInboundListPage.filters.searchField.textbox.fill(
+        `${inboundShipmentIdentifier}`.toString().trim()
+      );
+      await newInboundListPage.search();
+      await expect(newInboundListPage.table.row(0).status).toHaveText(
+        'Receiving'
+      );
+      await newPage.close();
+    });
+  });
+
+  test('Assert status changes on inbound list when receive 1 item fully and 1 partially', async ({
+    stockMovementShowPage,
+    receivingPage,
+    browser,
+  }) => {
+    await test.step('Go to stock movement show page', async () => {
+      await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
+      await stockMovementShowPage.isLoaded();
+    });
+
+    await test.step('Go to shipment receiving page', async () => {
+      await stockMovementShowPage.receiveButton.click();
+      await receivingPage.receivingStep.isLoaded();
+    });
+
+    await test.step('Select items to receive', async () => {
+      await receivingPage.receivingStep.isLoaded();
+      await receivingPage.receivingStep.table
+        .row(1)
+        .receivingNowField.textbox.fill('20');
+      await receivingPage.receivingStep.table
+        .row(2)
+        .receivingNowField.textbox.fill('5');
+    });
+
+    await test.step('Go to check page and receive item', async () => {
+      await receivingPage.nextButton.click();
+      await receivingPage.checkStep.isLoaded();
+      await receivingPage.checkStep.receiveShipmentButton.click();
+      await stockMovementShowPage.isLoaded();
+    });
+
+    await test.step('Assert Receiving status on inbound list page ', async () => {
+      const newPage = await browser.newPage();
+      const newStockMovementShowPage = new StockMovementShowPage(newPage);
+      const newInboundListPage = new InboundListPage(newPage);
+      await newStockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
+      const inboundShipmentIdentifier =
+        await newStockMovementShowPage.detailsListTable.identifierValue.textContent();
+      await newInboundListPage.goToPage();
+      await newInboundListPage.filters.searchField.textbox.fill(
+        `${inboundShipmentIdentifier}`.toString().trim()
+      );
+      await newInboundListPage.search();
+      await expect(newInboundListPage.table.row(0).status).toHaveText(
+        'Receiving'
+      );
+      await newPage.close();
+    });
+
+    await test.step('Go to shipment receiving page', async () => {
+      await stockMovementShowPage.receiveButton.click();
+      await receivingPage.receivingStep.isLoaded();
+    });
+
+    await test.step('Select item fully in 2nd receipt', async () => {
+      await receivingPage.receivingStep.isLoaded();
+      await receivingPage.receivingStep.table
+        .row(2)
+        .receivingNowField.textbox.fill('5');
+    });
+
+    await test.step('Go to check page and receive shipment', async () => {
+      await receivingPage.nextButton.click();
+      await receivingPage.checkStep.isLoaded();
+      await receivingPage.checkStep.receiveShipmentButton.click();
+      await stockMovementShowPage.isLoaded();
+    });
+
+    await test.step('Assert Received status on inbound list page ', async () => {
+      const newPage = await browser.newPage();
+      const newStockMovementShowPage = new StockMovementShowPage(newPage);
+      const newInboundListPage = new InboundListPage(newPage);
+      await newStockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
+      const inboundShipmentIdentifier =
+        await newStockMovementShowPage.detailsListTable.identifierValue.textContent();
+      await newInboundListPage.goToPage();
+      await newInboundListPage.filters.searchField.textbox.fill(
+        `${inboundShipmentIdentifier}`.toString().trim()
+      );
+      await newInboundListPage.search();
+      await expect(newInboundListPage.table.row(0).status).toHaveText(
+        'Received'
+      );
+      await newPage.close();
     });
 
     await test.step('Rollback shipment received in 2 receipts', async () => {
