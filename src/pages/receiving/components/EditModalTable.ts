@@ -35,6 +35,10 @@ class Row extends BasePageModel {
     this.expiryDatePickerField = new DatePicker(page, 'Expiry', row);
     this.quantityShippedField = new TextField(page, 'Quantity shipped', row);
   }
+
+  get quantityShipped() {
+    return this.row.getByRole('spinbutton');
+  }
 }
 
 export default EditModalTable;
