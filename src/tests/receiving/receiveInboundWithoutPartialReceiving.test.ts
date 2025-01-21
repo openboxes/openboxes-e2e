@@ -43,27 +43,25 @@ test.describe('Receive inbound stock movement in location without partial receiv
     }
   );
 
-  test.afterEach(
-    async ({ stockMovementShowPage, stockMovementService, authService }) => {
-      await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
-      const isRollbackLastReceiptButtonVisible =
-        await stockMovementShowPage.rollbackLastReceiptButton.isVisible();
-      const isRollbackButtonVisible =
-        await stockMovementShowPage.rollbackButton.isVisible();
+  test.afterEach(async ({ stockMovementShowPage, authService }) => {
+    await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
+    const isRollbackLastReceiptButtonVisible =
+      await stockMovementShowPage.rollbackLastReceiptButton.isVisible();
+    const isRollbackButtonVisible =
+      await stockMovementShowPage.rollbackButton.isVisible();
 
-      // due to failed test, shipment might not be received which will not show the button
-      if (isRollbackLastReceiptButtonVisible) {
-        await stockMovementShowPage.rollbackLastReceiptButton.click();
-      }
-
-      if (isRollbackButtonVisible) {
-        await stockMovementShowPage.rollbackButton.click();
-      }
-
-      await authService.changeLocation(AppConfig.instance.locations.main.id);
-      await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
+    // due to failed test, shipment might not be received which will not show the button
+    if (isRollbackLastReceiptButtonVisible) {
+      await stockMovementShowPage.rollbackLastReceiptButton.click();
     }
-  );
+
+    if (isRollbackButtonVisible) {
+      await stockMovementShowPage.rollbackButton.click();
+    }
+
+    await stockMovementShowPage.clickDeleteShipment();
+    await authService.changeLocation(AppConfig.instance.locations.main.id);
+  });
 
   test('Assert Confirm receiving dialog and select No, receive 1 item fully', async ({
     stockMovementShowPage,
