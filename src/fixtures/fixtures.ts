@@ -74,6 +74,7 @@ type Fixtures = {
   supplierAltLocationService: LocationData;
   depotLocationService: LocationData;
   wardLocationService: LocationData;
+  noPickAndPutawayStockDepotService: LocationData;
   // PRODUCT DATA
   mainProductService: ProductData;
   otherProductService: ProductData;
@@ -142,6 +143,8 @@ export const test = baseTest.extend<Fixtures>({
     use(new LocationData(LOCATION_KEY.DEPOT, page.request)),
   wardLocationService: async ({ page }, use) =>
     use(new LocationData(LOCATION_KEY.WARD, page.request)),
+  noPickAndPutawayStockDepotService: async ({ page }, use) =>
+    use(new LocationData(LOCATION_KEY.NO_PICK_AND_PUTAWAY_STOCK, page.request)),  
   // PRODUCTS
   mainProductService: async ({ page }, use) =>
     use(new ProductData(PRODUCT_KEY.ONE, page.request)),

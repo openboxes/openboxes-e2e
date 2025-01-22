@@ -23,6 +23,7 @@ export enum LOCATION_KEY {
   NO_MANAGER_INENTORY = 'noManageInventoryDepot',
   DEPOT = 'depot',
   WARD = 'ward',
+  NO_PICK_AND_PUTAWAY_STOCK = 'noPickAndPutawayStockDepot',
 }
 
 export enum PRODUCT_KEY {
@@ -219,6 +220,29 @@ class AppConfig {
         required: false,
         type: LocationTypeCode.WARD,
       }),
+
+      noPickAndPutawayStockDepot: new LocationConfig({
+        id: env.get('LOCATION_NO_PICK_AND_PUTAWAY_STOCK_DEPOT').asString(),
+        key: LOCATION_KEY.NO_PICK_AND_PUTAWAY_STOCK,
+        name: this.uniqueIdentifier.generateUniqueString('no-pickandputawaystock-depot'),
+        requiredActivityCodes: new Set([
+          ActivityCode.MANAGE_INVENTORY,
+          ActivityCode.DYNAMIC_CREATION,
+          ActivityCode.AUTOSAVE,
+          ActivityCode.SUBMIT_REQUEST,
+          ActivityCode.SEND_STOCK,
+          ActivityCode.PLACE_REQUEST,
+          ActivityCode.FULFILL_REQUEST,
+          ActivityCode.EXTERNAL,
+          ActivityCode.RECEIVE_STOCK,
+          ActivityCode.PARTIAL_RECEIVING,
+        ]),
+        required: false,
+        type: LocationTypeCode.DEPOT,
+      }),
+
+
+
     };
 
     this.products = {
