@@ -61,6 +61,7 @@ jobs:
         LOCATION_SUPPLIER_ALT: ${{ secrets.LOCATION_SUPPLIER_ALT }}
         LOCATION_DEPOT: ${{ secrets.LOCATION_DEPOT }}
         LOCATION_WARD: ${{ secrets.LOCATION_WARD }}
+        LOCATION_NO_PICK_AND_PUTAWAY_STOCK_DEPOT: ${{ secrets.LOCATION_NO_PICK_AND_PUTAWAY_STOCK_DEPOT }}
         PRODUCT_ONE: ${{ secrets.PRODUCT_ONE }}
         PRODUCT_TWO: ${{ secrets.PRODUCT_TWO }}
       run: |
