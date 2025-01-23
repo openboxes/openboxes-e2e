@@ -3,6 +3,7 @@ import { Locator, Page } from '@playwright/test';
 import DatePicker from '@/components/DatePicker';
 import TextField from '@/components/TextField';
 import BasePageModel from '@/pages/BasePageModel';
+import { filter } from 'lodash';
 
 class EditModalTable extends BasePageModel {
   constructor(page: Page) {
@@ -34,10 +35,6 @@ class Row extends BasePageModel {
     this.lotNumberField = new TextField(page, 'Lot', row);
     this.expiryDatePickerField = new DatePicker(page, 'Expiry', row);
     this.quantityShippedField = new TextField(page, 'Quantity shipped', row);
-  }
-
-  get quantityShipped() {
-    return this.row.getByRole('spinbutton');
   }
 }
 
