@@ -3,7 +3,6 @@ import { Locator, Page } from '@playwright/test';
 import DatePicker from '@/components/DatePicker';
 import TextField from '@/components/TextField';
 import BasePageModel from '@/pages/BasePageModel';
-import { filter } from 'lodash';
 
 class EditModalTable extends BasePageModel {
   constructor(page: Page) {
