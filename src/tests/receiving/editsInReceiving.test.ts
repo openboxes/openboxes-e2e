@@ -84,7 +84,7 @@ test.describe('Edit items in the middle of receipt', () => {
       await receivingPage.receivingStep.editModal.isLoaded();
       await receivingPage.receivingStep.editModal.table
         .row(0)
-        .quantityShipped.fill('50');
+        .quantityShippedField.numberbox.fill('50');
       await receivingPage.receivingStep.editModal.informationAboutEditedQtyNotMatchingShippedQty.isVisible();
       await receivingPage.receivingStep.editModal.saveButton.click();
       await receivingPage.receivingStep.isLoaded();
@@ -95,7 +95,7 @@ test.describe('Edit items in the middle of receipt', () => {
       await receivingPage.receivingStep.editModal.isLoaded();
       await receivingPage.receivingStep.editModal.table
         .row(0)
-        .quantityShipped.fill('2');
+        .quantityShippedField.numberbox.fill('2');
       await receivingPage.receivingStep.editModal.informationAboutEditedQtyNotMatchingShippedQty.isVisible();
       await receivingPage.receivingStep.editModal.saveButton.click();
       await receivingPage.receivingStep.isLoaded();
@@ -212,10 +212,10 @@ test.describe('Edit items in the middle of receipt', () => {
       await receivingPage.receivingStep.editModal.addLineButton.click();
       await receivingPage.receivingStep.editModal.table
         .row(0)
-        .quantityShipped.fill('10');
+        .quantityShippedField.numberbox.fill('10');
       await receivingPage.receivingStep.editModal.table
         .row(1)
-        .quantityShipped.fill('10');
+        .quantityShippedField.numberbox.fill('10');
       await receivingPage.receivingStep.editModal.table
         .row(1)
         .expiryDatePickerField.fill(getDateByOffset(new Date(), 5));
@@ -310,7 +310,7 @@ test.describe('Edit items in the middle of receipt', () => {
       await receivingPage.receivingStep.editModal.addLineButton.click();
       await receivingPage.receivingStep.editModal.table
         .row(0)
-        .quantityShipped.fill('15');
+        .quantityShippedField.numberbox.fill('15');
       await receivingPage.receivingStep.editModal.table
         .row(1)
         .lotNumberField.textbox.fill(lot);
@@ -319,7 +319,7 @@ test.describe('Edit items in the middle of receipt', () => {
         .expiryDatePickerField.fill(expDate);
       await receivingPage.receivingStep.editModal.table
         .row(1)
-        .quantityShipped.fill('5');
+        .quantityShippedField.numberbox.fill('5');
       await receivingPage.receivingStep.editModal.saveButton.click();
       await receivingPage.receivingStep.isLoaded();
     });
