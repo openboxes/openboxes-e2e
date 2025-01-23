@@ -23,6 +23,13 @@ class ReceivingTable extends BasePageModel {
   getColumnHeader(columnName: string) {
     return this.table.locator('.table-header').getByText(columnName);
   }
+
+  getCellValue(row: number, column: string) {
+    return this.table
+      .getByRole('row')
+      .nth(row)
+      .getByRole('cell', { name: column });
+  }
 }
 
 class Row extends BasePageModel {
