@@ -6,6 +6,7 @@ import Select from '@/components/Select';
 import TextField from '@/components/TextField';
 import BasePageModel from '@/pages/BasePageModel';
 import SendPageTable from '@/pages/inbound/create/components/SendPageTable';
+import FileHandler from '@/components/FileHandler';
 
 class SendStep extends BasePageModel {
   table: SendPageTable;
@@ -20,6 +21,7 @@ class SendStep extends BasePageModel {
   commentField: TextField;
 
   validationPopup: AlertPopup;
+  fileHandler: FileHandler;
 
   constructor(page: Page) {
     super(page);
@@ -42,6 +44,7 @@ class SendStep extends BasePageModel {
       'Continue (lose unsaved work)',
       'Correct error'
     );
+    this.fileHandler = new FileHandler(page);
   }
 
   get sendShipmentButton() {
@@ -54,6 +57,16 @@ class SendStep extends BasePageModel {
 
   get acceptConfirmExitDialog() {
     return this.page.getByRole('button', { name: 'Yes' });
+  }
+
+  get downloadButton() {
+    return this.page.getByRole('button', { name: 'Download' });
+  }
+
+  getDocuments(documentName: string) {
+    return this.page
+      .locator('.dropdown-content')
+      .getByText(documentName, { exact: true });
   }
 
   async isLoaded() {
