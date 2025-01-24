@@ -180,17 +180,6 @@ test.describe('Download documents from inbound send page', () => {
       `Shipment ` +
       `${inboundShipmentIdentifier}`.toString().trim() +
       ` - Packing List.xls`;
-    const packingListFileName =
-      `Packing List - ` +
-      `${ORIGIN.locationNumber}` +
-      `-` +
-      `${CURRENT_LOCATION.name}-` +
-      `${formatDate(TODAY, 'DDMMMYYYY')}-` +
-      `${DESCRIPTION}`.replace(' ', '') +
-      `.xls`;
-    //assertion on packingListFileName might not be stable always and it's based on data so might require adjustments
-    //if origin doesn't have locationNumber it would use origin name
-    //it might also fail when locations have very long names
 
     await test.step('Download Certificate of Donation file', async () => {
       const popupPromise = page.waitForEvent('popup');
@@ -229,7 +218,9 @@ test.describe('Download documents from inbound send page', () => {
       const downloadPromise = popup.waitForEvent('download');
       const download = await downloadPromise;
       await popup.close();
-      await expect(download.suggestedFilename()).toBe(packingListFileName);
+      await expect(download.suggestedFilename()).toMatch(
+        /^Packing List - .*\.xls(x)?$/
+      );
     });
   });
 });
