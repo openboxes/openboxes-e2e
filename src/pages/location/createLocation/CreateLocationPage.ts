@@ -4,7 +4,8 @@ import { expect } from '@/fixtures/fixtures';
 import BasePageModel from '@/pages/BasePageModel';
 import LocationConfigurationTabSection from '@/pages/location/createLocation/tabs/LocationConfigurationTabSection';
 import LocationDetailsTabSection from '@/pages/location/createLocation/tabs/LocationDetailsTabSection';
-import BinLocationsTabSection from './tabs/BinLocationsTabSection';
+import BinLocationsTabSection from '@/pages/location/createLocation/tabs/BinLocationsTabSection';
+
 
 class CreateLocationPage extends BasePageModel {
   locationDetailsTabSection: LocationDetailsTabSection;
