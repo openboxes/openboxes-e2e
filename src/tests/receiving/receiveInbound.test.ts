@@ -239,6 +239,75 @@ test.describe('Receive inbound stock movement', () => {
     });
   });
 
+  test('Use Save button in receiving and assert saved qty', async ({
+    stockMovementShowPage,
+    receivingPage,
+  }) => {
+    await test.step('Go to stock movement show page', async () => {
+      await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
+      await stockMovementShowPage.isLoaded();
+    });
+
+    await test.step('Go to shipment receiving page', async () => {
+      await stockMovementShowPage.receiveButton.click();
+      await receivingPage.receivingStep.isLoaded();
+    });
+
+    await test.step('Check first item to be received', async () => {
+      await receivingPage.receivingStep.table
+        .row(1)
+        .receivingNowField.textbox.fill('8');
+    });
+
+    await test.step('Click on Save button', async () => {
+      await receivingPage.receivingStep.saveButton.click();
+      await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
+      await stockMovementShowPage.isLoaded();
+    });
+
+    await test.step('Return to receive page and assert qty input', async () => {
+      await stockMovementShowPage.receiveButton.click();
+      await receivingPage.receivingStep.isLoaded();
+      await expect(
+        receivingPage.receivingStep.table.row(1).receivingNowField.textbox
+      ).toHaveValue('8');
+    });
+  });
+
+  test('Use Save and Exit button in receiving and assert saved qty', async ({
+    stockMovementShowPage,
+    receivingPage,
+  }) => {
+    await test.step('Go to stock movement show page', async () => {
+      await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
+      await stockMovementShowPage.isLoaded();
+    });
+
+    await test.step('Go to shipment receiving page', async () => {
+      await stockMovementShowPage.receiveButton.click();
+      await receivingPage.receivingStep.isLoaded();
+    });
+
+    await test.step('Check first item to be received', async () => {
+      await receivingPage.receivingStep.table
+        .row(1)
+        .receivingNowField.textbox.fill('2');
+    });
+
+    await test.step('Click on Save and Exit button', async () => {
+      await receivingPage.receivingStep.saveAndExitButton.click();
+      await stockMovementShowPage.isLoaded();
+    });
+
+    await test.step('Return to receive page and assert qty input', async () => {
+      await stockMovementShowPage.receiveButton.click();
+      await receivingPage.receivingStep.isLoaded();
+      await expect(
+        receivingPage.receivingStep.table.row(1).receivingNowField.textbox
+      ).toHaveValue('2');
+    });
+  });
+
   test.describe('Receive from different locations', () => {
     test.afterEach(async ({ authService }) => {
       await authService.changeLocation(AppConfig.instance.locations.main.id);
