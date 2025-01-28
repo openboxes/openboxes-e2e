@@ -2,13 +2,24 @@ import { expect, Page } from '@playwright/test';
 
 import BasePageModel from '@/pages/BasePageModel';
 import CheckTable from '@/pages/receiving/components/CheckTable';
+import DatePicker from '@/components/DatePicker';
+import AlertPopup from '@/components/AlertPopup';
 
 class CheckStep extends BasePageModel {
   table: CheckTable;
 
+  deliveredOnDateField: DatePicker;
+  validationOnDeliveredOnPastDatePopup: AlertPopup;
+
   constructor(page: Page) {
     super(page);
     this.table = new CheckTable(page);
+    this.deliveredOnDateField = new DatePicker(page, 'Delivered on');
+    this.validationOnDeliveredOnPastDatePopup = new AlertPopup(
+      page,
+      'Bad request',
+      'Must occur on or after Actual Shipping Date'
+    );
   }
 
   async isLoaded() {
