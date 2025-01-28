@@ -1,6 +1,6 @@
 import BasePageModel from '@/pages/BasePageModel';
 import { expect, Page } from '@playwright/test';
-import AddBinLocationDialog from '../components/AddBinLocationDialog';
+import AddBinLocationDialog from '@/pages/location/createLocation/components/AddBinLocationDialog';
 
 class BinLocationsTabSection extends BasePageModel {
   addBinLocationDialog: AddBinLocationDialog;
