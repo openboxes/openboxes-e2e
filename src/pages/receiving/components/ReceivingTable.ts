@@ -53,6 +53,17 @@ class Row extends BasePageModel {
   getItem(name: string) {
     return this.row.getByTestId('label-field').getByText(name);
   }
+
+  get binLocationSelect() {
+    return this.row.getByRole('cell', { name: 'Bin Location' });
+  }
+
+  getBinLocation(binLocation: string) {
+    return this.page
+      .getByTestId('custom-select-dropdown-menu')
+      .getByRole('listitem')
+      .getByText(binLocation, { exact: true });
+  }
 }
 
 export default ReceivingTable;

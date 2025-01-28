@@ -4,10 +4,13 @@ import { expect } from '@/fixtures/fixtures';
 import BasePageModel from '@/pages/BasePageModel';
 import LocationConfigurationTabSection from '@/pages/location/createLocation/tabs/LocationConfigurationTabSection';
 import LocationDetailsTabSection from '@/pages/location/createLocation/tabs/LocationDetailsTabSection';
+import BinLocationsTabSection from '@/pages/location/createLocation/tabs/BinLocationsTabSection';
+
 
 class CreateLocationPage extends BasePageModel {
   locationDetailsTabSection: LocationDetailsTabSection;
   locationConfigurationTabSection: LocationConfigurationTabSection;
+  binLocationTabSection: BinLocationsTabSection;
 
   constructor(page: Page) {
     super(page);
@@ -15,6 +18,7 @@ class CreateLocationPage extends BasePageModel {
     this.locationConfigurationTabSection = new LocationConfigurationTabSection(
       page
     );
+    this.binLocationTabSection = new BinLocationsTabSection(page);
   }
 
   async gotToPage() {
@@ -27,6 +31,10 @@ class CreateLocationPage extends BasePageModel {
 
   get locationConfigurationTab() {
     return this.page.getByRole('link', { name: 'Configuration' });
+  }
+
+  get binLocationTab() {
+    return this.page.getByRole('link', { name: 'Bin Locations' });
   }
 
   get actionButton() {
