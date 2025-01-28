@@ -38,6 +38,10 @@ class CheckStep extends BasePageModel {
   get deliveredOnField() {
     return this.page.getByRole('textbox', { name: 'Delivered on' });
   }
+
+  get cancelAllRemainingButton() {
+    return this.page.getByRole('button', { name: 'Cancel all remaining' });
+  }
 }
 
 export default CheckStep;
