@@ -245,6 +245,8 @@ type LineItemsPayload = {
   quantity: number;
   lotNumber?: string;
   expirationDate?: Date;
+  packLevel1?: string;
+  packLevel2?: string;
 }[];
 
 type SendInboundPayload = {

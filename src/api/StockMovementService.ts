@@ -134,6 +134,8 @@ class StockMovementService extends BaseServiceModel {
         expirationDate: it?.expirationDate
           ? formatDate(it?.expirationDate)
           : undefined,
+        packLevel1: it?.packLevel1,
+        packLevel2: it?.packLevel2,  
       })),
     });
     await this.updateStatusStockMovement(id, { status: 'CHECKING' });
