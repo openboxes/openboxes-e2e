@@ -89,14 +89,15 @@ test.describe('Validations on edit Deliver On Date when receiving shipment', () 
     await test.step('Edit Delivered on Date on check page to past date', async () => {
       await receivingPage.checkStep.isLoaded();
       await receivingPage.checkStep.deliveredOnField.click();
-      await receivingPage.checkStep.previousMonthOnDatePicker.click();
-      await receivingPage.checkStep.getDayOnDatePicker('1').nth(0).click();
-      await receivingPage.checkStep.deliveredOnField.click();
-      await receivingPage.checkStep.previousMonthOnDatePicker.click();
-      await receivingPage.checkStep.getDayOnDatePicker('1').nth(0).click();
+      await receivingPage.checkStep.deliveredOnDateField.fillWithFormat(
+        getDateByOffset(new Date(), -5),
+        'MM/DD/YYYY HH:mm:ss Z'
+      );
       await receivingPage.checkStep.isLoaded();
       await receivingPage.checkStep.receiveShipmentButton.click();
-      await receivingPage.checkStep.validationOnDeliveredOnPastDatePopup.assertvalidationDialogVisible();
+      await expect(
+        receivingPage.checkStep.validationOnDeliveredOnPastDatePopup
+      ).toBeVisible();
     });
   });
 });
