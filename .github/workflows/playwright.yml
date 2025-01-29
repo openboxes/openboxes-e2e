@@ -64,6 +64,14 @@ jobs:
         LOCATION_NO_PICK_AND_PUTAWAY_STOCK_DEPOT: ${{ secrets.LOCATION_NO_PICK_AND_PUTAWAY_STOCK_DEPOT }}
         PRODUCT_ONE: ${{ secrets.PRODUCT_ONE }}
         PRODUCT_TWO: ${{ secrets.PRODUCT_TWO }}
+        PRODUCT_THREE: ${{ secrets.PRODUCT_THREE }}
+        PRODUCT_FOUR: ${{ secrets.PRODUCT_FOUR }}
+        PRODUCT_FIVE: ${{ secrets.PRODUCT_FIVE }}
+        PRODUCT_SIX: ${{ secrets.PRODUCT_SIX }}
+        PRODUCT_SEVEN: ${{ secrets.PRODUCT_SEVEN }}
+        PRODUCT_EIGHT: ${{ secrets.PRODUCT_EIGHT }}
+        PRODUCT_NINE: ${{ secrets.PRODUCT_NINE }}
+        PRODUCT_TEN: ${{ secrets.PRODUCT_TEN }}
       run: |
         echo "Running playwright tests on the ${{ inputs.environment || 'obdev5' }} server"
         npx playwright test
