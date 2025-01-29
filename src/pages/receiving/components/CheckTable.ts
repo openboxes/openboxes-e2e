@@ -44,6 +44,10 @@ class Row extends BasePageModel {
   getItem(name: string) {
     return this.row.getByTestId('label-field').getByText(name);
   }
+
+  get cancelRemainingCheckbox() {
+    return this.row.getByTestId('checkbox');
+  }
 }
 
 export default CheckTable;
