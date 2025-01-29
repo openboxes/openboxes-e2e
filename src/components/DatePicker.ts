@@ -14,6 +14,13 @@ class DatePicker extends FormField {
     await this.textbox.fill(formatDate(date));
     await this.page.keyboard.press('Enter');
   }
+
+  async fillWithFormat(date: Date, format: string) {
+    await this.page.waitForTimeout(1000);
+    await this.textbox.fill(formatDate(date, format));
+    await this.page.keyboard.press('Enter');
+    await this.page.waitForTimeout(1000);
+  }
 }
 
 export default DatePicker;
