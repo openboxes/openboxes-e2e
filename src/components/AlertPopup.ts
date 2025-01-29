@@ -31,14 +31,6 @@ class AlertPopup extends BasePageModel {
   async assertPopupHiddent() {
     await expect(this.dialog).toBeHidden();
   }
-
-  get validationDialog() {
-    return this.page.locator('.s-alert-box-inner');
-  }
-
-  async assertvalidationDialogVisible() {
-    await expect(this.validationDialog).toBeVisible();
-  }
 }
 
 export default AlertPopup;

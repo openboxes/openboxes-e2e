@@ -9,17 +9,11 @@ class CheckStep extends BasePageModel {
   table: CheckTable;
 
   deliveredOnDateField: DatePicker;
-  validationOnDeliveredOnPastDatePopup: AlertPopup;
 
   constructor(page: Page) {
     super(page);
     this.table = new CheckTable(page);
     this.deliveredOnDateField = new DatePicker(page, 'Delivered on');
-    this.validationOnDeliveredOnPastDatePopup = new AlertPopup(
-      page,
-      'Bad request',
-      'Must occur on or after Actual Shipping Date'
-    );
   }
 
   async isLoaded() {
@@ -52,6 +46,12 @@ class CheckStep extends BasePageModel {
 
   get cancelAllRemainingButton() {
     return this.page.getByRole('button', { name: 'Cancel all remaining' });
+  }
+
+  get validationOnDeliveredOnPastDatePopup() {
+    return this.page
+      .locator('.s-alert-box-inner')
+      .getByText('Must occur on or after Actual Shipping Date');
   }
 }
 
