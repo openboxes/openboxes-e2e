@@ -3,8 +3,6 @@ import { expect, Page } from '@playwright/test';
 import BasePageModel from '@/pages/BasePageModel';
 import CheckTable from '@/pages/receiving/components/CheckTable';
 import DatePicker from '@/components/DatePicker';
-import AlertPopup from '@/components/AlertPopup';
-
 class CheckStep extends BasePageModel {
   table: CheckTable;
 
@@ -38,10 +36,6 @@ class CheckStep extends BasePageModel {
 
   get shippedOnField() {
     return this.page.getByRole('textbox', { name: 'Shipped on' });
-  }
-
-  get deliveredOnField() {
-    return this.page.getByRole('textbox', { name: 'Delivered on' });
   }
 
   get cancelAllRemainingButton() {
