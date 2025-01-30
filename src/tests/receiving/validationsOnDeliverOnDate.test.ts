@@ -57,8 +57,9 @@ test.describe('Validations on edit Deliver On Date when receiving shipment', () 
 
     await test.step('Edit Delivered on Date on check page to future date', async () => {
       await receivingPage.checkStep.isLoaded();
-      await receivingPage.checkStep.deliveredOnDateField.fill(
-        getDateByOffset(new Date(), 5)
+      await receivingPage.checkStep.deliveredOnDateField.fillWithFormat(
+        getDateByOffset(new Date(), 1),
+        'MM/DD/YYYY HH:mm:ss Z'
       );
       await receivingPage.checkStep.deliveredOnDateField.assertHasError();
       await expect(
@@ -88,9 +89,8 @@ test.describe('Validations on edit Deliver On Date when receiving shipment', () 
 
     await test.step('Edit Delivered on Date on check page to past date', async () => {
       await receivingPage.checkStep.isLoaded();
-      await receivingPage.checkStep.deliveredOnField.click();
       await receivingPage.checkStep.deliveredOnDateField.fillWithFormat(
-        getDateByOffset(new Date(), -5),
+        getDateByOffset(new Date(), -1),
         'MM/DD/YYYY HH:mm:ss Z'
       );
       await receivingPage.checkStep.isLoaded();
