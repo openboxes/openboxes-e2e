@@ -152,7 +152,7 @@ export const test = baseTest.extend<Fixtures>({
   wardLocationService: async ({ page }, use) =>
     use(new LocationData(LOCATION_KEY.WARD, page.request)),
   noPickAndPutawayStockDepotService: async ({ page }, use) =>
-    use(new LocationData(LOCATION_KEY.NO_PICK_AND_PUTAWAY_STOCK, page.request)),  
+    use(new LocationData(LOCATION_KEY.NO_PICK_AND_PUTAWAY_STOCK, page.request)),
   // PRODUCTS
   mainProductService: async ({ page }, use) =>
     use(new ProductData(PRODUCT_KEY.ONE, page.request)),
@@ -169,11 +169,11 @@ export const test = baseTest.extend<Fixtures>({
   seventhProductService: async ({ page }, use) =>
     use(new ProductData(PRODUCT_KEY.SEVEN, page.request)),
   eighthProductService: async ({ page }, use) =>
-    use(new ProductData(PRODUCT_KEY.EIGHT, page.request)), 
+    use(new ProductData(PRODUCT_KEY.EIGHT, page.request)),
   ninthProductService: async ({ page }, use) =>
     use(new ProductData(PRODUCT_KEY.NINE, page.request)),
   tenthProductService: async ({ page }, use) =>
-    use(new ProductData(PRODUCT_KEY.TEN, page.request)),                         
+    use(new ProductData(PRODUCT_KEY.TEN, page.request)),
   // USERS
   mainUserService: async ({ page }, use) =>
     use(new UserData(USER_KEY.MAIN, page.request)),

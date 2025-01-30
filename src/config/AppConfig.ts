@@ -232,7 +232,9 @@ class AppConfig {
       noPickAndPutawayStockDepot: new LocationConfig({
         id: env.get('LOCATION_NO_PICK_AND_PUTAWAY_STOCK_DEPOT').asString(),
         key: LOCATION_KEY.NO_PICK_AND_PUTAWAY_STOCK,
-        name: this.uniqueIdentifier.generateUniqueString('no-pickandputawaystock-depot'),
+        name: this.uniqueIdentifier.generateUniqueString(
+          'no-pickandputawaystock-depot'
+        ),
         requiredActivityCodes: new Set([
           ActivityCode.MANAGE_INVENTORY,
           ActivityCode.DYNAMIC_CREATION,
@@ -248,9 +250,6 @@ class AppConfig {
         required: false,
         type: LocationTypeCode.DEPOT,
       }),
-
-
-
     };
 
     this.products = {
@@ -324,8 +323,6 @@ class AppConfig {
         quantity: 128,
         required: false,
       }),
-
-
     };
   }
 }
