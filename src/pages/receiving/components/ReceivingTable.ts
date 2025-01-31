@@ -66,6 +66,13 @@ class Row extends BasePageModel {
       .getByRole('listitem')
       .getByText(binLocation, { exact: true });
   }
+
+  getZoneLocation(zoneLocation: string) {
+    return this.page
+      .getByTestId('custom-select-dropdown-menu')
+      .locator('.css-5ih5ya-group react-select__group-heading')
+      .getByText(zoneLocation, { exact: true });
+  }
 }
 
 export default ReceivingTable;
