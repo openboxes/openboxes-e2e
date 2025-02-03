@@ -81,11 +81,6 @@ type Fixtures = {
   thirdProductService: ProductData;
   fourthProductService: ProductData;
   fifthProductService: ProductData;
-  sixthProductService: ProductData;
-  seventhProductService: ProductData;
-  eighthProductService: ProductData;
-  ninthProductService: ProductData;
-  tenthProductService: ProductData;
   // USERS DATA
   mainUserService: UserData;
   altUserService: UserData;
@@ -164,16 +159,6 @@ export const test = baseTest.extend<Fixtures>({
     use(new ProductData(PRODUCT_KEY.FOUR, page.request)),
   fifthProductService: async ({ page }, use) =>
     use(new ProductData(PRODUCT_KEY.FIVE, page.request)),
-  sixthProductService: async ({ page }, use) =>
-    use(new ProductData(PRODUCT_KEY.SIX, page.request)),
-  seventhProductService: async ({ page }, use) =>
-    use(new ProductData(PRODUCT_KEY.SEVEN, page.request)),
-  eighthProductService: async ({ page }, use) =>
-    use(new ProductData(PRODUCT_KEY.EIGHT, page.request)),
-  ninthProductService: async ({ page }, use) =>
-    use(new ProductData(PRODUCT_KEY.NINE, page.request)),
-  tenthProductService: async ({ page }, use) =>
-    use(new ProductData(PRODUCT_KEY.TEN, page.request)),
   // USERS
   mainUserService: async ({ page }, use) =>
     use(new UserData(USER_KEY.MAIN, page.request)),

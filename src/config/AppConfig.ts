@@ -32,11 +32,6 @@ export enum PRODUCT_KEY {
   THREE = 'productThree',
   FOUR = 'productFour',
   FIVE = 'productFive',
-  SIX = 'productSix',
-  SEVEN = 'productSeven',
-  EIGHT = 'productEight',
-  NINE = 'productNine',
-  TEN = 'productTen',
 }
 
 /**
@@ -286,41 +281,6 @@ class AppConfig {
         key: PRODUCT_KEY.FIVE,
         name: this.uniqueIdentifier.generateUniqueString('product-five'),
         quantity: 160,
-        required: false,
-      }),
-      productSix: new ProductConfig({
-        id: env.get('PRODUCT_SIX').asString(),
-        key: PRODUCT_KEY.SIX,
-        name: this.uniqueIdentifier.generateUniqueString('product-six'),
-        quantity: 190,
-        required: false,
-      }),
-      productSeven: new ProductConfig({
-        id: env.get('PRODUCT_SEVEN').asString(),
-        key: PRODUCT_KEY.SEVEN,
-        name: this.uniqueIdentifier.generateUniqueString('product-seven'),
-        quantity: 120,
-        required: false,
-      }),
-      productEight: new ProductConfig({
-        id: env.get('PRODUCT_EIGHT').asString(),
-        key: PRODUCT_KEY.EIGHT,
-        name: this.uniqueIdentifier.generateUniqueString('product-eight'),
-        quantity: 128,
-        required: false,
-      }),
-      productNine: new ProductConfig({
-        id: env.get('PRODUCT_NINE').asString(),
-        key: PRODUCT_KEY.NINE,
-        name: this.uniqueIdentifier.generateUniqueString('product-nine'),
-        quantity: 148,
-        required: false,
-      }),
-      productTen: new ProductConfig({
-        id: env.get('PRODUCT_TEN').asString(),
-        key: PRODUCT_KEY.TEN,
-        name: this.uniqueIdentifier.generateUniqueString('product-ten'),
-        quantity: 128,
         required: false,
       }),
     };
