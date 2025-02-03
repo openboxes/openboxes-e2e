@@ -21,8 +21,8 @@ class ProductData {
   async getProduct() {
     const id = this.productConfig.readId();
 
-    const { data } = await this.productService.getDemand(id);
-    return data?.product;
+    const { data } = await this.productService.get(id);
+    return data;
   }
 
   async getProductDemand() {
