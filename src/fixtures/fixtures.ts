@@ -78,6 +78,9 @@ type Fixtures = {
   // PRODUCT DATA
   mainProductService: ProductData;
   otherProductService: ProductData;
+  thirdProductService: ProductData;
+  fourthProductService: ProductData;
+  fifthProductService: ProductData;
   // USERS DATA
   mainUserService: UserData;
   altUserService: UserData;
@@ -144,12 +147,18 @@ export const test = baseTest.extend<Fixtures>({
   wardLocationService: async ({ page }, use) =>
     use(new LocationData(LOCATION_KEY.WARD, page.request)),
   noPickAndPutawayStockDepotService: async ({ page }, use) =>
-    use(new LocationData(LOCATION_KEY.NO_PICK_AND_PUTAWAY_STOCK, page.request)),  
+    use(new LocationData(LOCATION_KEY.NO_PICK_AND_PUTAWAY_STOCK, page.request)),
   // PRODUCTS
   mainProductService: async ({ page }, use) =>
     use(new ProductData(PRODUCT_KEY.ONE, page.request)),
   otherProductService: async ({ page }, use) =>
     use(new ProductData(PRODUCT_KEY.TWO, page.request)),
+  thirdProductService: async ({ page }, use) =>
+    use(new ProductData(PRODUCT_KEY.THREE, page.request)),
+  fourthProductService: async ({ page }, use) =>
+    use(new ProductData(PRODUCT_KEY.FOUR, page.request)),
+  fifthProductService: async ({ page }, use) =>
+    use(new ProductData(PRODUCT_KEY.FIVE, page.request)),
   // USERS
   mainUserService: async ({ page }, use) =>
     use(new UserData(USER_KEY.MAIN, page.request)),

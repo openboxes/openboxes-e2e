@@ -35,11 +35,13 @@ class ReceivingTable extends BasePageModel {
 class Row extends BasePageModel {
   row: Locator;
   receivingNowField: TextField;
+  commentField: TextField;
 
   constructor(page: Page, row: Locator) {
     super(page);
     this.row = row;
     this.receivingNowField = new TextField(page, 'Receiving now', row);
+    this.commentField = new TextField(page, 'Comment', row);
   }
 
   get checkbox() {

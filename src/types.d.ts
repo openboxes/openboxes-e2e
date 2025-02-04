@@ -245,6 +245,8 @@ type LineItemsPayload = {
   quantity: number;
   lotNumber?: string;
   expirationDate?: Date;
+  palletName?: string;
+  boxName?: string;
 }[];
 
 type SendInboundPayload = {
@@ -254,8 +256,8 @@ type SendInboundPayload = {
 };
 
 type CreateInboundAddItemsTableEntity = {
-  packLevel1?: string;
-  packLevel2?: string;
+  palletName?: string;
+  boxName?: string;
   product: {
     productCode: string;
     productName?: string;
