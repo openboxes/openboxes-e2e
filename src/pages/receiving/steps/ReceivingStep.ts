@@ -42,6 +42,14 @@ class ReceivingStep extends BasePageModel {
   get acceptConfirmReceivingDialog() {
     return this.confirmReceivingDialog.getByRole('button', { name: 'Yes' });
   }
+
+  get saveButton() {
+    return this.page.getByRole('button', { name: 'Save', exact: true });
+  }
+
+  get saveAndExitButton() {
+    return this.page.getByRole('button').getByText('Save and Exit');
+  }
 }
 
 export default ReceivingStep;
