@@ -23,10 +23,6 @@ class InStockTabSection extends BasePageModel {
   row(index: number) {
     return new Row(this.page, this.rows.nth(index));
   }
-
-  get holdBinInformation() {
-    return this.page.getByText('This bin has been restricted');
-  }
 }
 
 class Row extends BasePageModel {
