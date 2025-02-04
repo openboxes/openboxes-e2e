@@ -16,6 +16,7 @@ class DatePicker extends FormField {
   }
 
   async fillWithFormat(date: Date, format: string) {
+    // TODO: This is temporary solution until we figure out the sluggishness of the date picker
     await this.page.waitForTimeout(1000);
     await this.textbox.fill(formatDate(date, format));
     await this.page.keyboard.press('Enter');
