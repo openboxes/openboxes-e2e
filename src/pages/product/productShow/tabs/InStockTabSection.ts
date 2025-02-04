@@ -23,6 +23,10 @@ class InStockTabSection extends BasePageModel {
   row(index: number) {
     return new Row(this.page, this.rows.nth(index));
   }
+
+  get holdBinInformation() {
+    return this.page.getByText('This bin has been restricted');
+  }
 }
 
 class Row extends BasePageModel {
@@ -45,6 +49,10 @@ class Row extends BasePageModel {
 
   get zoneLocation() {
     return this.row.locator('.line').locator('.line-base').getByRole('link');
+  }
+
+  get inventoryInformation() {
+    return this.row.locator('td').nth(6);
   }
 }
 
