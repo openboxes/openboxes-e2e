@@ -43,6 +43,14 @@ class LocationDetailsTabSection extends BasePageModel {
   get saveButton() {
     return this.section.getByRole('button', { name: 'Save' });
   }
+
+  get zoneLocationSelect() {
+    return this.page.getByTestId('zone-select');
+  }
+
+  getZoneLocation(name: string) {
+    return this.page.getByRole('listitem').getByText(name, { exact: true });
+  }
 }
 
 export default LocationDetailsTabSection;

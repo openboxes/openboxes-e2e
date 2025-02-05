@@ -55,11 +55,11 @@ class Row extends BasePageModel {
 
   async fillRowValues(rowValues: CreateInboundAddItemsTableEntity) {
     await test.step('Add item to row (Add items)', async () => {
-      if (!_.isNil(rowValues.packLevel1)) {
-        await this.packLevel1Field.textbox.fill(rowValues.packLevel1);
+      if (!_.isNil(rowValues.palletName)) {
+        await this.packLevel1Field.textbox.fill(rowValues.palletName);
       }
-      if (!_.isNil(rowValues.packLevel2)) {
-        await this.packLevel2Field.textbox.fill(rowValues.packLevel2);
+      if (!_.isNil(rowValues.boxName)) {
+        await this.packLevel2Field.textbox.fill(rowValues.boxName);
       }
       if (!_.isNil(rowValues.product?.productName)) {
         await this.productSelect.findAndSelectOption(
@@ -84,18 +84,18 @@ class Row extends BasePageModel {
   }
 
   async assertRowValues(rowValues: CreateInboundAddItemsTableEntity) {
-    if (!_.isNil(rowValues.packLevel1)) {
+    if (!_.isNil(rowValues.palletName)) {
       await test.step('Assert value in pack level 1 field', async () => {
         await expect(this.packLevel1Field.textbox).toHaveValue(
-          rowValues.packLevel1 as string
+          rowValues.palletName as string
         );
       });
     }
 
-    if (!_.isNil(rowValues.packLevel2)) {
+    if (!_.isNil(rowValues.boxName)) {
       await test.step('Assert value in pack level 2 field', async () => {
         await expect(this.packLevel2Field.textbox).toHaveValue(
-          rowValues.packLevel2 as string
+          rowValues.boxName as string
         );
       });
     }

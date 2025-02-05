@@ -31,6 +31,10 @@ class BinLocationsTabSection extends BasePageModel {
   get deleteBinButton() {
     return this.page.getByRole('link', { name: 'Delete' });
   }
+
+  get editBinButton() {
+    return this.page.getByRole('link', { name: 'Edit', exact: true });
+  }
 }
 
 export default BinLocationsTabSection;

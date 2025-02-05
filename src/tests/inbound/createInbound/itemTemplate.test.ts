@@ -90,8 +90,8 @@ test.describe('Export items template on inbound add items page', () => {
 
     const ROWS = [
       {
-        packLevel1: 'test-pallet',
-        packLevel2: 'test-box',
+        palletName: 'test-pallet',
+        boxName: 'test-box',
         product: {
           productCode: PRODUCT_ONE.productCode,
           productName: PRODUCT_ONE.name,
@@ -102,8 +102,8 @@ test.describe('Export items template on inbound add items page', () => {
         expirationDate: getDateByOffset(new Date(), 3),
       },
       {
-        packLevel1: 'test-pallet',
-        packLevel2: 'test-box',
+        palletName: 'test-pallet',
+        boxName: 'test-box',
         product: {
           productCode: PRODUCT_TWO.productCode,
           productName: PRODUCT_TWO.name,
@@ -141,8 +141,8 @@ test.describe('Export items template on inbound add items page', () => {
         expect(documentRow[0]).toBeTruthy();
         expect(_.toString(documentRow[1])).toEqual(row.product?.productCode);
         expect(documentRow[2]).toEqual(row.product?.productName);
-        expect(documentRow[3]).toEqual(row.packLevel1);
-        expect(documentRow[4]).toEqual(row.packLevel2);
+        expect(documentRow[3]).toEqual(row.palletName);
+        expect(documentRow[4]).toEqual(row.boxName);
         expect(documentRow[5]).toEqual(row.lotNumber);
         expect(documentRow[6]).toEqual(formatDate(row.expirationDate));
         expect(_.toString(documentRow[7])).toEqual(row.quantity);
@@ -199,8 +199,8 @@ test.describe('Import template with data', () => {
 
     const ROWS = [
       {
-        packLevel1: 'test-pallet',
-        packLevel2: 'test-box',
+        palletName: 'test-pallet',
+        boxName: 'test-box',
         product: {
           productCode: `${PRODUCT_ONE.productCode}`,
           productName: PRODUCT_ONE.name,
@@ -211,8 +211,8 @@ test.describe('Import template with data', () => {
         expirationDate: getDateByOffset(new Date(), 3),
       },
       {
-        packLevel1: 'test-pallet',
-        packLevel2: 'test-box',
+        palletName: 'test-pallet',
+        boxName: 'test-box',
         product: {
           productCode: `${PRODUCT_TWO.productCode}`,
           productName: PRODUCT_TWO.name,
@@ -270,8 +270,8 @@ test.describe('Import template with data', () => {
 
       const ROWS = [
         {
-          packLevel1: 'test-pallet',
-          packLevel2: 'test-box',
+          palletName: 'test-pallet',
+          boxName: 'test-box',
           product: {
             productCode: PRODUCT_ONE.productCode,
             productName: PRODUCT_ONE.name,
@@ -304,8 +304,8 @@ test.describe('Import template with data', () => {
     const ALT_USER = await altUserService.getUser();
 
     const NEW_ROW = {
-      packLevel1: 'new test-pallet',
-      packLevel2: 'new test-box',
+      palletName: 'new test-pallet',
+      boxName: 'new test-box',
       product: {
         productCode: PRODUCT_TWO.productCode,
         productName: PRODUCT_TWO.name,
@@ -361,8 +361,8 @@ test.describe('Import template with data', () => {
       const USER = await mainUserService.getUser();
 
       ROW = {
-        packLevel1: 'test-pallet',
-        packLevel2: 'test-box',
+        palletName: 'test-pallet',
+        boxName: 'test-box',
         product: {
           productCode: PRODUCT_ONE.productCode,
           productName: PRODUCT_ONE.name,
@@ -393,8 +393,8 @@ test.describe('Import template with data', () => {
     const ALT_USER = await altUserService.getUser();
 
     const NEW_ROW = {
-      packLevel1: 'new test-pallet',
-      packLevel2: 'new test-box',
+      palletName: 'new test-pallet',
+      boxName: 'new test-box',
       product: {
         productCode: PRODUCT_TWO.productCode,
         productName: PRODUCT_TWO.name,

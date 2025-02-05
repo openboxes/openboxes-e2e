@@ -5,12 +5,13 @@ import BasePageModel from '@/pages/BasePageModel';
 import LocationConfigurationTabSection from '@/pages/location/createLocation/tabs/LocationConfigurationTabSection';
 import LocationDetailsTabSection from '@/pages/location/createLocation/tabs/LocationDetailsTabSection';
 import BinLocationsTabSection from '@/pages/location/createLocation/tabs/BinLocationsTabSection';
-
+import ZoneLocationsTabSection from '@/pages/location/createLocation/tabs/ZoneLocationTabSection';
 
 class CreateLocationPage extends BasePageModel {
   locationDetailsTabSection: LocationDetailsTabSection;
   locationConfigurationTabSection: LocationConfigurationTabSection;
   binLocationTabSection: BinLocationsTabSection;
+  zoneLocationTabSection: ZoneLocationsTabSection;
 
   constructor(page: Page) {
     super(page);
@@ -19,6 +20,7 @@ class CreateLocationPage extends BasePageModel {
       page
     );
     this.binLocationTabSection = new BinLocationsTabSection(page);
+    this.zoneLocationTabSection = new ZoneLocationsTabSection(page);
   }
 
   async gotToPage() {
@@ -35,6 +37,10 @@ class CreateLocationPage extends BasePageModel {
 
   get binLocationTab() {
     return this.page.getByRole('link', { name: 'Bin Locations' });
+  }
+
+  get zoneLocationTab() {
+    return this.page.getByRole('link', { name: 'Zone Locations' });
   }
 
   get actionButton() {

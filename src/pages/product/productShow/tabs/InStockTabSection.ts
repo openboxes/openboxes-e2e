@@ -37,7 +37,14 @@ class Row extends BasePageModel {
   }
 
   get binLocation() {
-    return this.row.locator('.line').getByRole('link');
+    return this.row
+      .locator('.line')
+      .locator('.line-extension')
+      .getByRole('link');
+  }
+
+  get zoneLocation() {
+    return this.row.locator('.line').locator('.line-base').getByRole('link');
   }
 }
 
