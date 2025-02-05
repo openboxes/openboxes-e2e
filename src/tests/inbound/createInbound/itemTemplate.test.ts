@@ -361,8 +361,8 @@ test.describe('Import template with data', () => {
       const USER = await mainUserService.getUser();
 
       ROW = {
-        packLevel1: 'test-pallet',
-        packLevel2: 'test-box',
+        palletName: 'test-pallet',
+        boxName: 'test-box',
         product: {
           productCode: PRODUCT_ONE.productCode,
           productName: PRODUCT_ONE.name,
