@@ -4,6 +4,7 @@ import { StockMovementResponse } from '@/types';
 import UniqueIdentifier from '@/utils/UniqueIdentifier';
 
 test.describe('Edit Bin Location when receive inbound stock movement', () => {
+  test.describe.configure({ timeout: 60000 });
   let STOCK_MOVEMENT: StockMovementResponse;
   const uniqueIdentifier = new UniqueIdentifier();
   const binLocationName = uniqueIdentifier.generateUniqueString('bin');
@@ -51,7 +52,6 @@ test.describe('Edit Bin Location when receive inbound stock movement', () => {
         ).toBeVisible();
         await locationListPage.getLocationEditButton(mainLocation.name).click();
         await createLocationPage.binLocationTab.click();
-        await page.waitForTimeout(1000);
         await createLocationPage.binLocationTabSection.isLoaded();
         await createLocationPage.binLocationTabSection.addBinLocationButton.click();
         await createLocationPage.binLocationTabSection.addBinLocationDialog.binLocationNameField.fill(
@@ -88,7 +88,6 @@ test.describe('Edit Bin Location when receive inbound stock movement', () => {
         ).toBeVisible();
         await locationListPage.getLocationEditButton(mainLocation.name).click();
         await createLocationPage.binLocationTab.click();
-        await page.waitForTimeout(1000);
         await createLocationPage.binLocationTabSection.isLoaded();
         await createLocationPage.binLocationTabSection.searchField.fill(
           binLocationName
@@ -96,10 +95,8 @@ test.describe('Edit Bin Location when receive inbound stock movement', () => {
         await createLocationPage.binLocationTabSection.searchField.press(
           'Enter'
         );
-        await page.waitForTimeout(1000);
         await createLocationPage.binLocationTabSection.isLoaded();
         await createLocationPage.binLocationTabSection.deleteBinButton.click();
-        await page.waitForTimeout(1000);
         await createLocationPage.binLocationTabSection.isLoaded();
       });
     }
@@ -161,6 +158,7 @@ test.describe('Edit Bin Location when receive inbound stock movement', () => {
 });
 
 test.describe('Edit Bin Location to bin with zone when receive inbound stock movement', () => {
+  test.describe.configure({ timeout: 60000 });
   let STOCK_MOVEMENT: StockMovementResponse;
   const uniqueIdentifier = new UniqueIdentifier();
   const binLocationName = uniqueIdentifier.generateUniqueString('bin');
@@ -220,7 +218,6 @@ test.describe('Edit Bin Location to bin with zone when receive inbound stock mov
 
       await test.step('Create bin location for location and assign created zone', async () => {
         await createLocationPage.binLocationTab.click();
-        await page.waitForTimeout(1000);
         await createLocationPage.binLocationTabSection.isLoaded();
         await createLocationPage.binLocationTabSection.addBinLocationButton.click();
         await createLocationPage.binLocationTabSection.addBinLocationDialog.binLocationNameField.fill(
@@ -234,7 +231,6 @@ test.describe('Edit Bin Location to bin with zone when receive inbound stock mov
         await createLocationPage.binLocationTabSection.searchField.press(
           'Enter'
         );
-        await page.waitForTimeout(1000);
         await createLocationPage.binLocationTabSection.isLoaded();
         await createLocationPage.binLocationTabSection.editBinButton.click();
         await createLocationPage.locationDetailsTabSection.zoneLocationSelect.click();
@@ -272,7 +268,6 @@ test.describe('Edit Bin Location to bin with zone when receive inbound stock mov
         ).toBeVisible();
         await locationListPage.getLocationEditButton(mainLocation.name).click();
         await createLocationPage.binLocationTab.click();
-        await page.waitForTimeout(1000);
         await createLocationPage.binLocationTabSection.isLoaded();
         await createLocationPage.binLocationTabSection.searchField.fill(
           binLocationName
@@ -280,10 +275,8 @@ test.describe('Edit Bin Location to bin with zone when receive inbound stock mov
         await createLocationPage.binLocationTabSection.searchField.press(
           'Enter'
         );
-        await page.waitForTimeout(1000);
         await createLocationPage.binLocationTabSection.isLoaded();
         await createLocationPage.binLocationTabSection.deleteBinButton.click();
-        await page.waitForTimeout(1000);
         await createLocationPage.binLocationTabSection.isLoaded();
       });
 
@@ -341,7 +334,7 @@ test.describe('Edit Bin Location to bin with zone when receive inbound stock mov
 
     await test.step('Assert zone and bin on check page and finish receipt of item', async () => {
       await receivingPage.checkStep.isLoaded();
-      const zoneAndBin = zoneLocationName + `: ` + binLocationName;
+      const zoneAndBin = `${zoneLocationName}: ${binLocationName}`;
       await expect(
         receivingPage.checkStep.table.getCellValue(1, 'Bin Location')
       ).toHaveText(zoneAndBin);
