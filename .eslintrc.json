@@ -20,6 +20,7 @@
             "error",
             { "allow": ["constructors"] }
         ],
-        "playwright/expect-expect": ["off"]
+        "playwright/expect-expect": ["off"],
+        "@typescript-eslint/no-unused-vars" : "error"
     }
 }
