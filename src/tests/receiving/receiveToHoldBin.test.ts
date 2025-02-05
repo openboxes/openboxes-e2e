@@ -4,6 +4,8 @@ import { StockMovementResponse } from '@/types';
 import UniqueIdentifier from '@/utils/UniqueIdentifier';
 
 test.describe('Receive item into hold bin', () => {
+  test.describe.configure({ timeout: 60000 });
+  //timeout has been added for this test to make sure that the content on bin location tab will load as it can include a lot of data 
   let STOCK_MOVEMENT: StockMovementResponse;
   const uniqueIdentifier = new UniqueIdentifier();
   const binLocationName = uniqueIdentifier.generateUniqueString('holdbin');
@@ -48,7 +50,6 @@ test.describe('Receive item into hold bin', () => {
         ).toBeVisible();
         await locationListPage.getLocationEditButton(mainLocation.name).click();
         await createLocationPage.binLocationTab.click();
-        await page.waitForTimeout(1000);
         await createLocationPage.binLocationTabSection.isLoaded();
         await createLocationPage.binLocationTabSection.addBinLocationButton.click();
         await createLocationPage.binLocationTabSection.addBinLocationDialog.binLocationNameField.fill(
@@ -56,14 +57,12 @@ test.describe('Receive item into hold bin', () => {
         );
         await createLocationPage.binLocationTabSection.addBinLocationDialog.saveButton.click();
         await createLocationPage.binLocationTab.click();
-        await page.waitForTimeout(1000);
         await createLocationPage.binLocationTabSection.searchField.fill(
           binLocationName
         );
         await createLocationPage.binLocationTabSection.searchField.press(
           'Enter'
         );
-        await page.waitForTimeout(1000);
         await createLocationPage.binLocationTabSection.isLoaded();
         await createLocationPage.binLocationTabSection.editBinButton.click();
         await createLocationPage.locationConfigurationTab.click();
@@ -103,7 +102,6 @@ test.describe('Receive item into hold bin', () => {
         ).toBeVisible();
         await locationListPage.getLocationEditButton(mainLocation.name).click();
         await createLocationPage.binLocationTab.click();
-        await page.waitForTimeout(2000);
         await createLocationPage.binLocationTabSection.isLoaded();
         await createLocationPage.binLocationTabSection.searchField.fill(
           binLocationName
@@ -111,7 +109,6 @@ test.describe('Receive item into hold bin', () => {
         await createLocationPage.binLocationTabSection.searchField.press(
           'Enter'
         );
-        await page.waitForTimeout(1000);
         await createLocationPage.binLocationTabSection.isLoaded();
         await createLocationPage.binLocationTabSection.deleteBinButton.click();
         await createLocationPage.binLocationTabSection.isLoaded();
