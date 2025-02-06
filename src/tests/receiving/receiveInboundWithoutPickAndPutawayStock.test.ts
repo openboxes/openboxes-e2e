@@ -99,7 +99,7 @@ test.describe('Receive inbound stock movement in location without pick and putaw
     });
 
 
-    await test.step('Go to and assert checking page is visible ', async () => {
+    await test.step('Go to and assert checking page is visible', async () => {
       await receivingPage.nextButton.click();  
       await receivingPage.checkStep.isLoaded();
     });

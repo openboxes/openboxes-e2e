@@ -1,5 +1,6 @@
-import BasePageModel from '@/pages/BasePageModel';
 import { expect, Page } from '@playwright/test';
+
+import BasePageModel from '@/pages/BasePageModel';
 import AddZoneLocationDialog from '@/pages/location/createLocation//components/AddZoneLocationDialog';
 
 class ZoneLocationsTabSection extends BasePageModel {

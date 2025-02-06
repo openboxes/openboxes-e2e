@@ -153,7 +153,7 @@ test.describe('Receive inbound stock movement in location without partial receiv
       await receivingPage.receivingStep.rejectConfirmReceivingDialog.click();
     });
 
-    await test.step('Assert receiving page is visible ', async () => {
+    await test.step('Assert receiving page is visible', async () => {
       await receivingPage.receivingStep.isLoaded();
       await expect(
         receivingPage.receivingStep.table.row(1).receivingNowField.textbox
@@ -202,7 +202,7 @@ test.describe('Receive inbound stock movement in location without partial receiv
       await receivingPage.receivingStep.acceptConfirmReceivingDialog.click();
     });
 
-    await test.step('Assert checking page is visible ', async () => {
+    await test.step('Assert checking page is visible', async () => {
       await receivingPage.checkStep.isLoaded();
     });
 
@@ -313,10 +313,10 @@ test.describe('Receive inbound stock movement in location without partial receiv
     await test.step('Assert Confirm receiving dialog', async () => {
       await expect(
         receivingPage.receivingStep.confirmReceivingDialog
-      ).not.toBeVisible();
+      ).toBeHidden();
     });
 
-    await test.step('Assert checking page is visible ', async () => {
+    await test.step('Assert checking page is visible', async () => {
       await receivingPage.checkStep.isLoaded();
     });
 

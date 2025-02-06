@@ -2,9 +2,9 @@ import { Page } from '@playwright/test';
 
 import { expect } from '@/fixtures/fixtures';
 import BasePageModel from '@/pages/BasePageModel';
+import BinLocationsTabSection from '@/pages/location/createLocation/tabs/BinLocationsTabSection';
 import LocationConfigurationTabSection from '@/pages/location/createLocation/tabs/LocationConfigurationTabSection';
 import LocationDetailsTabSection from '@/pages/location/createLocation/tabs/LocationDetailsTabSection';
-import BinLocationsTabSection from '@/pages/location/createLocation/tabs/BinLocationsTabSection';
 import ZoneLocationsTabSection from '@/pages/location/createLocation/tabs/ZoneLocationTabSection';
 
 class CreateLocationPage extends BasePageModel {

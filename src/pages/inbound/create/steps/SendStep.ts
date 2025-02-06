@@ -2,11 +2,11 @@ import { expect, Page } from '@playwright/test';
 
 import AlertPopup from '@/components/AlertPopup';
 import DatePicker from '@/components/DatePicker';
+import FileHandler from '@/components/FileHandler';
 import Select from '@/components/Select';
 import TextField from '@/components/TextField';
 import BasePageModel from '@/pages/BasePageModel';
 import SendPageTable from '@/pages/inbound/create/components/SendPageTable';
-import FileHandler from '@/components/FileHandler';
 
 class SendStep extends BasePageModel {
   table: SendPageTable;

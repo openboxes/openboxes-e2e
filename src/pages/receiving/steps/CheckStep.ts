@@ -1,8 +1,8 @@
 import { expect, Page } from '@playwright/test';
 
+import DatePicker from '@/components/DatePicker';
 import BasePageModel from '@/pages/BasePageModel';
 import CheckTable from '@/pages/receiving/components/CheckTable';
-import DatePicker from '@/components/DatePicker';
 class CheckStep extends BasePageModel {
   table: CheckTable;
 
