@@ -306,7 +306,7 @@ test.describe('Status changes on sm view page when rollback receipts', () => {
       await stockMovementShowPage.isLoaded();
     });
 
-    await test.step('Assert Receiving status on inbound list page ', async () => {
+    await test.step('Assert Receiving status on inbound list page', async () => {
       const newPage = await browser.newPage();
       const newStockMovementShowPage = new StockMovementShowPage(newPage);
       const newInboundListPage = new InboundListPage(newPage);
@@ -377,7 +377,7 @@ test.describe('Status changes on sm view page when rollback receipts', () => {
       await stockMovementShowPage.isLoaded();
     });
 
-    await test.step('Assert Receiving status on inbound list page ', async () => {
+    await test.step('Assert Receiving status on inbound list page', async () => {
       const newPage = await browser.newPage();
       const newStockMovementShowPage = new StockMovementShowPage(newPage);
       const newInboundListPage = new InboundListPage(newPage);
@@ -399,7 +399,7 @@ test.describe('Status changes on sm view page when rollback receipts', () => {
       await stockMovementShowPage.rollbackLastReceiptButton.click();
     });
 
-    await test.step('Assert Shipped status on inbound list page ', async () => {
+    await test.step('Assert Shipped status on inbound list page', async () => {
       const newPage = await browser.newPage();
       const newStockMovementShowPage = new StockMovementShowPage(newPage);
       const newInboundListPage = new InboundListPage(newPage);
@@ -470,7 +470,7 @@ test.describe('Status changes on sm view page when rollback receipts', () => {
       await stockMovementShowPage.isLoaded();
     });
 
-    await test.step('Assert Received status on inbound list page ', async () => {
+    await test.step('Assert Received status on inbound list page', async () => {
       const newPage = await browser.newPage();
       const newStockMovementShowPage = new StockMovementShowPage(newPage);
       const newInboundListPage = new InboundListPage(newPage);
@@ -493,7 +493,7 @@ test.describe('Status changes on sm view page when rollback receipts', () => {
       await stockMovementShowPage.rollbackLastReceiptButton.click();
     });
 
-    await test.step('Assert Receiving status on inbound list page ', async () => {
+    await test.step('Assert Receiving status on inbound list page', async () => {
       const newPage = await browser.newPage();
       const newStockMovementShowPage = new StockMovementShowPage(newPage);
       const newInboundListPage = new InboundListPage(newPage);
@@ -515,7 +515,7 @@ test.describe('Status changes on sm view page when rollback receipts', () => {
       await stockMovementShowPage.rollbackLastReceiptButton.click();
     });
 
-    await test.step('Assert Shipped status on inbound list page ', async () => {
+    await test.step('Assert Shipped status on inbound list page', async () => {
       const newPage = await browser.newPage();
       const newStockMovementShowPage = new StockMovementShowPage(newPage);
       const newInboundListPage = new InboundListPage(newPage);

@@ -2,6 +2,7 @@ import { Page } from '@playwright/test';
 
 import BasePageModel from '@/pages/BasePageModel';
 import RecordStockSection from '@/pages/product/productShow/sections/RecordStockSection';
+
 import InStockTabSection from './tabs/InStockTabSection';
 
 class ProductShowPage extends BasePageModel {

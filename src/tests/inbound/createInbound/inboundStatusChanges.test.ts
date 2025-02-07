@@ -4,7 +4,6 @@ import StockMovementShowPage from '@/pages/stockMovementShow/StockMovementShowPa
 import {
   AddItemsTableRow,
   LocationResponse,
-  StockMovementResponse,
   User,
 } from '@/types';
 import { formatDate, getDateByOffset, getToday } from '@/utils/DateUtils';
@@ -16,7 +15,6 @@ test.describe('Status changes for inbound sm on view sm and inbound list page', 
   let INBOUND_ID: string;
   const DESCRIPTION = 'some description';
   let ORIGIN: LocationResponse;
-  let CURRENT_LOCATION: LocationResponse;
   let USER: User;
   const EXPECTED_DELIVERY_DATE = getDateByOffset(TODAY, 1);
   const SHIPMENT_TYPE = 'Land';
@@ -28,13 +26,11 @@ test.describe('Status changes for inbound sm on view sm and inbound list page', 
       otherProductService,
       mainUserService,
       supplierLocationService,
-      mainLocationService,
     }) => {
       const PRODUCT_ONE = await mainProductService.getProduct();
       const PRODUCT_TWO = await otherProductService.getProduct();
       USER = await mainUserService.getUser();
       ORIGIN = await supplierLocationService.getLocation();
-      CURRENT_LOCATION = await mainLocationService.getLocation();
 
       ROWS = [
         {
@@ -254,7 +250,6 @@ test.describe('Status changes for inbound sm on view sm and inbound list page', 
     createInboundPage,
     stockMovementShowPage,
     browser,
-    inboundListPage,
   }) => {
     await test.step('Go to create inbound page', async () => {
       await createInboundPage.goToPage();
@@ -313,7 +308,7 @@ test.describe('Status changes for inbound sm on view sm and inbound list page', 
       await stockMovementShowPage.isLoaded();
     });
 
-    await test.step('Assert Pending status on inbound list page ', async () => {
+    await test.step('Assert Pending status on inbound list page', async () => {
       const newPage = await browser.newPage();
       const newStockMovementShowPage = new StockMovementShowPage(newPage);
       const newInboundListPage = new InboundListPage(newPage);
@@ -355,7 +350,7 @@ test.describe('Status changes for inbound sm on view sm and inbound list page', 
       await createInboundPage.sendStep.saveAndExitButton.click();
     });
 
-    await test.step('Assert Pending status on inbound list page ', async () => {
+    await test.step('Assert Pending status on inbound list page', async () => {
       const newPage = await browser.newPage();
       const newStockMovementShowPage = new StockMovementShowPage(newPage);
       const newInboundListPage = new InboundListPage(newPage);
@@ -381,7 +376,7 @@ test.describe('Status changes for inbound sm on view sm and inbound list page', 
       await stockMovementShowPage.isLoaded();
     });
 
-    await test.step('Assert Shipped status on inbound list page ', async () => {
+    await test.step('Assert Shipped status on inbound list page', async () => {
       const newPage = await browser.newPage();
       const newStockMovementShowPage = new StockMovementShowPage(newPage);
       const newInboundListPage = new InboundListPage(newPage);
@@ -404,7 +399,7 @@ test.describe('Status changes for inbound sm on view sm and inbound list page', 
       await stockMovementShowPage.isLoaded();
     });
 
-    await test.step('Assert Pending status on inbound list page ', async () => {
+    await test.step('Assert Pending status on inbound list page', async () => {
       const newPage = await browser.newPage();
       const newStockMovementShowPage = new StockMovementShowPage(newPage);
       const newInboundListPage = new InboundListPage(newPage);

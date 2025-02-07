@@ -3,8 +3,9 @@ import { expect, Page } from '@playwright/test';
 import BasePageModel from '@/pages/BasePageModel';
 import AuditingTable from '@/pages/stockMovementShow/components/AuditingTable';
 import PackingListTable from '@/pages/stockMovementShow/components/PackingListTable';
-import ReceiptsListTable from './components/ReceiptsTable';
+
 import DetailsTable from './components/DetailsTable';
+import ReceiptsListTable from './components/ReceiptsTable';
 
 class StockMovementShowPage extends BasePageModel {
   auditingTable: AuditingTable;

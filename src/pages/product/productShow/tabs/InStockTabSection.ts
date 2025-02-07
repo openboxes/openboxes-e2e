@@ -1,5 +1,6 @@
-import BasePageModel from '@/pages/BasePageModel';
 import { expect, Locator, Page } from '@playwright/test';
+
+import BasePageModel from '@/pages/BasePageModel';
 
 class InStockTabSection extends BasePageModel {
   constructor(page: Page) {

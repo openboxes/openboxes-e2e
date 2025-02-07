@@ -1,5 +1,4 @@
 import LocationChooser from '@/components/LocationChooser';
-import Navbar from '@/components/Navbar';
 import { expect, test } from '@/fixtures/fixtures';
 import CreateInvoicePage from '@/pages/invoice/CreateInvoicePage';
 import InvoiceListPage from '@/pages/invoice/InvoiceListPage';

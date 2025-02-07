@@ -257,7 +257,7 @@ test.describe('Status changes on sm view page when receive shipment in location 
         .receivingNowField.textbox.fill('5');
     });
 
-    await test.step('Go to next page and receive shipment ', async () => {
+    await test.step('Go to next page and receive shipment', async () => {
       await receivingPage.nextButton.click();
       await receivingPage.checkStep.isLoaded();
       await receivingPage.checkStep.receiveShipmentButton.click();
@@ -334,7 +334,7 @@ test.describe('Status changes on sm view page when receive shipment in location 
         .receivingNowField.textbox.fill('5');
     });
 
-    await test.step('Go to next page and receive shipment ', async () => {
+    await test.step('Go to next page and receive shipment', async () => {
       await receivingPage.nextButton.click();
       await receivingPage.checkStep.isLoaded();
       await receivingPage.checkStep.receiveShipmentButton.click();
@@ -402,7 +402,7 @@ test.describe('Status changes on sm view page when receive shipment in location 
       await stockMovementShowPage.isLoaded();
     });
 
-    await test.step('Assert Shipped status on inbound list page ', async () => {
+    await test.step('Assert Shipped status on inbound list page', async () => {
       const newPage = await browser.newPage();
       const newStockMovementShowPage = new StockMovementShowPage(newPage);
       const newInboundListPage = new InboundListPage(newPage);
@@ -444,7 +444,7 @@ test.describe('Status changes on sm view page when receive shipment in location 
       await stockMovementShowPage.isLoaded();
     });
 
-    await test.step('Assert Received status on inbound list page ', async () => {
+    await test.step('Assert Received status on inbound list page', async () => {
       const newPage = await browser.newPage();
       const newStockMovementShowPage = new StockMovementShowPage(newPage);
       const newInboundListPage = new InboundListPage(newPage);
@@ -499,7 +499,7 @@ test.describe('Status changes on sm view page when receive shipment in location 
       await stockMovementShowPage.isLoaded();
     });
 
-    await test.step('Assert Received status on inbound list page ', async () => {
+    await test.step('Assert Received status on inbound list page', async () => {
       const newPage = await browser.newPage();
       const newStockMovementShowPage = new StockMovementShowPage(newPage);
       const newInboundListPage = new InboundListPage(newPage);
@@ -546,14 +546,14 @@ test.describe('Status changes on sm view page when receive shipment in location 
         .receivingNowField.textbox.fill('5');
     });
 
-    await test.step('Go to next page and receive shipment ', async () => {
+    await test.step('Go to next page and receive shipment', async () => {
       await receivingPage.nextButton.click();
       await receivingPage.checkStep.isLoaded();
       await receivingPage.checkStep.receiveShipmentButton.click();
       await stockMovementShowPage.isLoaded();
     });
 
-    await test.step('Assert Received status on inbound list page ', async () => {
+    await test.step('Assert Received status on inbound list page', async () => {
       const newPage = await browser.newPage();
       const newStockMovementShowPage = new StockMovementShowPage(newPage);
       const newInboundListPage = new InboundListPage(newPage);

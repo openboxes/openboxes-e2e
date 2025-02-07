@@ -1,6 +1,6 @@
 import { expect, test } from '@/fixtures/fixtures';
 import { AddItemsTableRow, LocationResponse, User } from '@/types';
-import { formatDate, getDateByOffset, getToday } from '@/utils/DateUtils';
+import { getDateByOffset, getToday } from '@/utils/DateUtils';
 import UniqueIdentifier from '@/utils/UniqueIdentifier';
 
 test.describe('Download documents from inbound send page', () => {
@@ -9,7 +9,6 @@ test.describe('Download documents from inbound send page', () => {
   let INBOUND_ID: string;
   const DESCRIPTION = 'some description';
   let ORIGIN: LocationResponse;
-  let CURRENT_LOCATION: LocationResponse;
   let USER: User;
   const EXPECTED_DELIVERY_DATE = getDateByOffset(TODAY, 1);
   const SHIPMENT_TYPE = 'Land';
@@ -20,12 +19,10 @@ test.describe('Download documents from inbound send page', () => {
       mainProductService,
       mainUserService,
       supplierLocationService,
-      mainLocationService,
     }) => {
       const PRODUCT_ONE = await mainProductService.getProduct();
       USER = await mainUserService.getUser();
       ORIGIN = await supplierLocationService.getLocation();
-      CURRENT_LOCATION = await mainLocationService.getLocation();
 
       ROWS = [
         {
@@ -112,7 +109,7 @@ test.describe('Download documents from inbound send page', () => {
       ).toBeVisible();
       await expect(
         createInboundPage.sendStep.getDocuments('Delivery Note')
-      ).not.toBeVisible();
+      ).toBeHidden();
     });
 
     await test.step('Download Certificate of Donation file', async () => {
@@ -169,17 +166,17 @@ test.describe('Download documents from inbound send page', () => {
       ).toBeVisible();
       await expect(
         createInboundPage.sendStep.getDocuments('Delivery Note')
-      ).not.toBeVisible();
+      ).toBeHidden();
     });
 
     const certificateOfDonationFileName =
-      `Certificate of Donation - ` +
+      'Certificate of Donation - ' +
       `${inboundShipmentIdentifier}`.toString().trim() +
-      `.xls`;
+      '.xls';
     const exportPackingListFileName =
-      `Shipment ` +
+      'Shipment ' +
       `${inboundShipmentIdentifier}`.toString().trim() +
-      ` - Packing List.xls`;
+      ' - Packing List.xls';
 
     await test.step('Download Certificate of Donation file', async () => {
       const popupPromise = page.waitForEvent('popup');

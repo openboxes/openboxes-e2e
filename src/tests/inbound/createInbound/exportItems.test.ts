@@ -145,7 +145,7 @@ test.describe('Export all incoming items', () => {
   );
 
   test.afterEach(
-    async ({ stockMovementService, stockMovementShowPage, page }) => {
+    async ({ stockMovementService, stockMovementShowPage }) => {
       await stockMovementShowPage.goToPage(INBOUND_ID);
       await stockMovementShowPage.isLoaded();
       const isRollbackLastReceiptButtonVisible =
