@@ -1,3 +1,4 @@
+import AppConfig from '@/config/AppConfig';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
 import CreateLocationPage from '@/pages/location/createLocation/CreateLocationPage';
@@ -5,6 +6,8 @@ import LocationListPage from '@/pages/location/LocationListPage';
 import { StockMovementResponse } from '@/types';
 
 test.describe('Assert creation of receiving bin', () => {
+  test.describe.configure({ timeout: 60000 });
+  //timeout has been added for this test to make sure that the content on bin location tab will load as it can include a lot of data
   let STOCK_MOVEMENT: StockMovementResponse;
 
   test.beforeEach(
@@ -74,13 +77,13 @@ test.describe('Assert creation of receiving bin', () => {
     });
 
     await test.step('Assert Bin location is not created yet', async () => {
-      const receivingBin = 'R-' + STOCK_MOVEMENT.identifier;
+      const receivingBin =
+        AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
       await createLocationPage.binLocationTabSection.searchField.fill(
         receivingBin
       );
       await createLocationPage.binLocationTabSection.searchField.press('Enter');
       await createLocationPage.binLocationTabSection.isLoaded();
-      await page.waitForTimeout(1000);
       await expect(
         createLocationPage.binLocationTabSection.emptyBinLocationTable
       ).toBeVisible();
@@ -114,7 +117,8 @@ test.describe('Assert creation of receiving bin', () => {
         .click();
       await newCreateLocationPage.binLocationTab.click();
       await newCreateLocationPage.binLocationTabSection.isLoaded();
-      const receivingBin = 'R-' + STOCK_MOVEMENT.identifier;
+      const receivingBin =
+        AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
       await newCreateLocationPage.binLocationTabSection.searchField.fill(
         receivingBin
       );
@@ -122,7 +126,6 @@ test.describe('Assert creation of receiving bin', () => {
         'Enter'
       );
       await newCreateLocationPage.binLocationTabSection.isLoaded();
-      await newPage.waitForTimeout(1000);
       await expect(
         newCreateLocationPage.binLocationTabSection.emptyBinLocationTable
       ).toBeHidden();
