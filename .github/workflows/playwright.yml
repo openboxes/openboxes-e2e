@@ -70,6 +70,7 @@ jobs:
         PRODUCT_THREE: ${{ secrets.PRODUCT_THREE }}
         PRODUCT_FOUR: ${{ secrets.PRODUCT_FOUR }}
         PRODUCT_FIVE: ${{ secrets.PRODUCT_FIVE }}
+        RECEIVING_BIN_PREFIX: ${{ secrets.RECEIVING_BIN_PREFIX != null && secrets.RECEIVING_BIN_PREFIX || 'R-' }}
       run: |
         echo "Running playwright tests on the ${{ inputs.environment || 'obdev5' }} server"
         npx playwright test

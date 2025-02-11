@@ -66,6 +66,9 @@ class AppConfig {
   // test products used in all of the tests
   public products!: Record<PRODUCT_KEY, ProductConfig>;
 
+  //recivingbin configurable prefix
+  public receivingBinPrefix!: string;
+
   // Private constructor to enforce singleton pattern.
   private constructor() {
     this.uniqueIdentifier = new UniqueIdentifier();
@@ -284,6 +287,11 @@ class AppConfig {
         required: false,
       }),
     };
+
+    this.receivingBinPrefix = env
+      .get('RECEIVING_BIN_PREFIX')
+      .default('R-')
+      .asString();
   }
 }
 
