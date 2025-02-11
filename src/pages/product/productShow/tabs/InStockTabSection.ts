@@ -47,6 +47,10 @@ class Row extends BasePageModel {
   get zoneLocation() {
     return this.row.locator('.line').locator('.line-base').getByRole('link');
   }
+
+  get inventoryInformation() {
+    return this.row.locator('td').nth(6);
+  }
 }
 
 export default InStockTabSection;
