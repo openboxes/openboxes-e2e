@@ -24,11 +24,7 @@ class Navbar extends BasePageModel {
   }
 
   getNavItem(name: string) {
-    return this.navbar.getByRole('link', { name: name, exact: true });
-  }
-
-  get logoutButton() {
-    return this.navbar.getByRole('menuitem', { name: 'Logout' });
+    return this.navbar.getByRole('menuitem', { name: name, exact: true });
   }
 
   get editProfileButton() {
