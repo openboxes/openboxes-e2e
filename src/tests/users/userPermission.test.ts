@@ -96,8 +96,7 @@ test('Add default location for user and auto-login to location', async ({
   await expect(newUserPage.getByText('My Dashboard')).toBeVisible();
 });
 
-// TODO: OBPIH-6909 Fix menu clicking when impersonating users
-test.skip('Impersonate created user', async ({ editUserPage }) => {
+test('Impersonate created user', async ({ editUserPage }) => {
   await test.step('Select role "Manager"', async () => {
     await editUserPage.authorizationTabSection.defaultRoleSelect.click();
     await editUserPage.authorizationTabSection.getUserRole('Manager').click();
