@@ -67,8 +67,7 @@ test.describe('Export receiving template', () => {
     receivingPage,
     mainProductService,
     otherProductService,
-    thirdProductService,
-    page,
+    thirdProductService
   }) => {
     let filePath: string;
     let downloadedExportTemplateFile: WorkbookUtils;
