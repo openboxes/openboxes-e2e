@@ -121,8 +121,6 @@ test.describe('Export receiving template', () => {
     });
 
     await test.step('Download export template', async () => {
-      //adding timeout here is a temporaty solution 
-      await page.waitForTimeout(2000);
       const { fullFilePath } =
         await receivingPage.receivingStep.downloadExportTemplate();
       filePath = fullFilePath;
@@ -199,8 +197,6 @@ test.describe('Export receiving template', () => {
     });
 
     await test.step('Download export template', async () => {
-      //adding timeout here is a temporaty solution 
-      await page.waitForTimeout(2000);
       const { fullFilePath } =
         await receivingPage.receivingStep.downloadExportTemplate();
       filePath = fullFilePath;
@@ -243,8 +239,6 @@ test.describe('Export receiving template', () => {
     });
 
     await test.step('Download export template after input data', async () => {
-      //adding timeout here is a temporaty solution 
-      await page.waitForTimeout(2000);
       const { fullFilePath } =
         await receivingPage.receivingStep.downloadExportTemplate();
       filePath = fullFilePath;
