@@ -47,6 +47,10 @@ class CheckStep extends BasePageModel {
       .locator('.s-alert-box-inner')
       .getByText('Must occur on or after Actual Shipping Date');
   }
+
+  get backToEditButton() {
+    return this.page.getByRole('button', { name: 'Back to edit' });
+  }
 }
 
 export default CheckStep;
