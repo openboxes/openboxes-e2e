@@ -136,6 +136,7 @@ class StockMovementService extends BaseServiceModel {
           : undefined,
         palletName: it?.palletName,
         boxName: it?.boxName,
+        recipient: it.recipientId ? { id: it.recipientId } : undefined,
       })),
     });
     await this.updateStatusStockMovement(id, { status: 'CHECKING' });

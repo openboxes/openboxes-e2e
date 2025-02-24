@@ -247,6 +247,7 @@ type LineItemsPayload = {
   expirationDate?: Date;
   palletName?: string;
   boxName?: string;
+  recipientId?: string;
 }[];
 
 type SendInboundPayload = {
