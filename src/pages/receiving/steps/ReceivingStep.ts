@@ -1,6 +1,7 @@
 import { expect, Page } from '@playwright/test';
 
 import AlertPopup from '@/components/AlertPopup';
+import FileHandler from '@/components/FileHandler';
 import BasePageModel from '@/pages/BasePageModel';
 import EditModal from '@/pages/receiving/components/EditModal';
 import ReceivingTable from '@/pages/receiving/components/ReceivingTable';
@@ -11,12 +12,14 @@ class ReceivingStep extends BasePageModel {
   editModal: EditModal;
 
   updateExpiryDatePopup: AlertPopup;
+  fileHandler: FileHandler;
 
   constructor(page: Page) {
     super(page);
     this.table = new ReceivingTable(page);
     this.editModal = new EditModal(page);
     this.updateExpiryDatePopup = new AlertPopup(page, 'Yes', 'No');
+    this.fileHandler = new FileHandler(page);
   }
 
   async isLoaded() {
@@ -49,6 +52,16 @@ class ReceivingStep extends BasePageModel {
 
   get saveAndExitButton() {
     return this.page.getByRole('button').getByText('Save and Exit');
+  }
+
+  get exportTemplateButton() {
+    return this.page.getByRole('button').getByText('Export template');
+  }
+
+  async downloadExportTemplate() {
+    await this.fileHandler.onDownload();
+    await this.exportTemplateButton.click();
+    return await this.fileHandler.saveFile();
   }
 }
 
