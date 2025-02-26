@@ -35,6 +35,22 @@ class Row extends BasePageModel {
     this.expiryDatePickerField = new DatePicker(page, 'Expiry', row);
     this.quantityShippedField = new TextField(page, 'Quantity shipped', row);
   }
+
+  get clearProductSelect() {
+    return this.row.locator('.react-select__clear-indicator');
+  }
+
+  async getProductSelect(name: string) {
+    await this.row
+      .getByTestId('custom-select-element')
+      .getByRole('textbox')
+      .fill(name);
+    await this.page
+      .getByTestId('custom-select-dropdown-menu')
+      .locator('.react-select__option')
+      .nth(0)
+      .click();
+  }
 }
 
 export default EditModalTable;
