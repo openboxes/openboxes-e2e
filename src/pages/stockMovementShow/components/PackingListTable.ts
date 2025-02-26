@@ -30,51 +30,59 @@ class Row extends BasePageModel {
   }
 
   get recalled() {
-    return this.row.locator('td').nth(0);
+    return this.row.getByTestId('recalled');
   }
 
   get details() {
-    return this.row.locator('td').nth(1);
+    return this.row.getByTestId('details');
   }
 
   get productCode() {
-    return this.row.locator('td').nth(2);
+    return this.row.getByTestId('product-code');
   }
 
   get product() {
-    return this.row.locator('td').nth(3);
+    return this.row.getByTestId('product');
   }
 
   get binLocation() {
-    return this.row.locator('td').nth(4);
+    return this.row.getByTestId('bin-location');
   }
 
   get lotNumber() {
-    return this.row.locator('td').nth(5);
+    return this.row.getByTestId('lot-number');
   }
 
   get expirationDate() {
-    return this.row.locator('td').nth(6);
+    return this.row.getByTestId('expiration-date');
   }
 
   get quantityShipped() {
-    return this.row.locator('td').nth(7);
+    return this.row.getByTestId('quantity-shipped');
+  }
+
+  get quantityReceived() {
+    return this.row.getByTestId('quantity-received');
+  }
+
+  get quantityCanceled() {
+    return this.row.getByTestId('quantity-canceled');
   }
 
   get unitOfMeasure() {
-    return this.row.locator('td').nth(8);
+    return this.row.getByTestId('uom');
   }
 
   get recipient() {
-    return this.row.locator('td').nth(9);
+    return this.row.getByTestId('recipient');
   }
 
   get comment() {
-    return this.row.locator('td').nth(10);
+    return this.row.getByTestId('comment');
   }
 
   get isFullyReceived() {
-    return this.row.locator('td').nth(11);
+    return this.row.getByTestId('is-fully-received');
   }
 }
 
