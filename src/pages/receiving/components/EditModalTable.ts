@@ -37,9 +37,7 @@ class Row extends BasePageModel {
   }
 
   get clearProductSelect() {
-    return this.row.locator(
-      '[class="css-16pqwjk-indicatorContainer react-select__indicator react-select__clear-indicator"]'
-    );
+    return this.row.locator('.react-select__clear-indicator');
   }
 
   async getProductSelect(name: string) {

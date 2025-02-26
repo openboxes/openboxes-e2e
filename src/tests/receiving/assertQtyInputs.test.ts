@@ -3,7 +3,7 @@ import { expect, test } from '@/fixtures/fixtures';
 import { StockMovementResponse } from '@/types';
 import { formatDate, getDateByOffset } from '@/utils/DateUtils';
 
-test.describe('Assert qty inputs when split lines', () => {
+test.describe('Assert if quantity inputs remain when split lines', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
 
   test.beforeEach(
@@ -60,7 +60,7 @@ test.describe('Assert qty inputs when split lines', () => {
     await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
   });
 
-  test('Assert qty input after split line', async ({
+  test('Assert quantity input after split line', async ({
     stockMovementShowPage,
     receivingPage,
   }) => {
@@ -77,12 +77,12 @@ test.describe('Assert qty inputs when split lines', () => {
       await receivingPage.receivingStep.isLoaded();
     });
 
-    await test.step('Autofill receiving qty', async () => {
+    await test.step('Autofill receiving quantity', async () => {
       await receivingPage.receivingStep.isLoaded();
       await receivingPage.receivingStep.autofillQuantitiesButton.click();
     });
 
-    await test.step('Open edit modal for item without qty input', async () => {
+    await test.step('Open edit modal for item and split line', async () => {
       await receivingPage.receivingStep.table.row(2).editButton.click();
       await receivingPage.receivingStep.editModal.isLoaded();
       await receivingPage.receivingStep.editModal.addLineButton.click();
@@ -106,7 +106,7 @@ test.describe('Assert qty inputs when split lines', () => {
       await receivingPage.receivingStep.isLoaded();
     });
 
-    await test.step('Assert qty input before split line', async () => {
+    await test.step('Assert quantity input before split line', async () => {
       await expect(
         receivingPage.receivingStep.table.row(1).receivingNowField.textbox
       ).toHaveValue('50');
@@ -130,7 +130,7 @@ test.describe('Assert qty inputs when split lines', () => {
       ).toContainText(formatDate(expDate, 'MM/DD/YYYY'));
     });
 
-    await test.step('Autofill qty after split line', async () => {
+    await test.step('Autofill quantity after split line', async () => {
       await receivingPage.receivingStep.isLoaded();
       await receivingPage.receivingStep.autofillQuantitiesButton.click();
       await expect(
@@ -179,7 +179,7 @@ test.describe('Assert qty inputs when split lines', () => {
     });
   });
 
-  test('Assert qty input after split line whe use save and exit', async ({
+  test('Assert quantity input after split line whe use save and exit', async ({
     stockMovementShowPage,
     receivingPage,
   }) => {
@@ -196,7 +196,7 @@ test.describe('Assert qty inputs when split lines', () => {
       await receivingPage.receivingStep.isLoaded();
     });
 
-    await test.step('Autofill qty for items', async () => {
+    await test.step('Autofill quantity for items', async () => {
       await receivingPage.receivingStep.isLoaded();
       await receivingPage.receivingStep.table
         .row(2)
@@ -221,7 +221,7 @@ test.describe('Assert qty inputs when split lines', () => {
       ).toHaveValue('100');
     });
 
-    await test.step('Open edit modal for item without qty input', async () => {
+    await test.step('Open edit modal for item without quantity input', async () => {
       await receivingPage.receivingStep.table.row(1).editButton.click();
       await receivingPage.receivingStep.editModal.isLoaded();
       await receivingPage.receivingStep.editModal.addLineButton.click();
@@ -241,7 +241,7 @@ test.describe('Assert qty inputs when split lines', () => {
       await receivingPage.receivingStep.isLoaded();
     });
 
-    await test.step('Assert qty input after split line', async () => {
+    await test.step('Assert quantity input after split line', async () => {
       await expect(
         receivingPage.receivingStep.table.row(1).receivingNowField.textbox
       ).toBeEmpty();
@@ -262,7 +262,7 @@ test.describe('Assert qty inputs when split lines', () => {
       ).toContainText(formatDate(expDate, 'MM/DD/YYYY'));
     });
 
-    await test.step('Autofill qty after split line', async () => {
+    await test.step('Autofill quantity after split line', async () => {
       await receivingPage.receivingStep.isLoaded();
       await receivingPage.receivingStep.autofillQuantitiesButton.click();
       await expect(
