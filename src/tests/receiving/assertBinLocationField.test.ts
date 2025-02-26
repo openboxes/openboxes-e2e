@@ -69,12 +69,10 @@ test.describe('Assert bin location not clearable', () => {
     });
 
     await test.step('Assert bin location cant be cleared', async () => {
-      await expect(
+            await expect(
         receivingPage.receivingStep.table
           .row(1)
-          .binLocationSelect.locator(
-            '[class="css-16pqwjk-indicatorContainer react-select__indicator react-select__clear-indicator"]'
-          )
+          .binLocationSelect.locator('.react-select__clear-indicator')
       ).toBeHidden();
     });
 
@@ -103,16 +101,12 @@ test.describe('Assert bin location not clearable', () => {
       await expect(
         receivingPage.receivingStep.table
           .row(1)
-          .binLocationSelect.locator(
-            '[class="css-16pqwjk-indicatorContainer react-select__indicator react-select__clear-indicator"]'
-          )
+          .binLocationSelect.locator('.react-select__clear-indicator')
       ).toBeHidden();
       await expect(
         receivingPage.receivingStep.table
           .row(2)
-          .binLocationSelect.locator(
-            '[class="css-16pqwjk-indicatorContainer react-select__indicator react-select__clear-indicator"]'
-          )
+          .binLocationSelect.locator('.react-select__clear-indicator')
       ).toBeHidden();
     });
   });
