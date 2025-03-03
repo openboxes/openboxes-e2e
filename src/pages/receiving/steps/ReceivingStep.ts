@@ -58,10 +58,30 @@ class ReceivingStep extends BasePageModel {
     return this.page.getByRole('button').getByText('Export template');
   }
 
+  get importTemplateButton() {
+    return this.page
+      .locator('[class="btn btn-outline-secondary btn-xs mr-3"]')
+      .getByText('Import template');
+  }
+
   async downloadExportTemplate() {
     await this.fileHandler.onDownload();
     await this.exportTemplateButton.click();
     return await this.fileHandler.saveFile();
+  }
+
+  async uploadFile(path: string) {
+    await this.fileHandler.onFileChooser();
+    await this.importTemplateButton.click();
+    return await this.fileHandler.uploadFile(path);
+  }
+
+  get validationOnEditFieldsThroughImport() {
+    return this.page
+      .locator('.s-alert-box-inner')
+      .getByText(
+        'You can only import the Receiving Now and the Comment fields. To make other changes, please use the edit line feature. You can then export and import the template again.'
+      );
   }
 }
 
