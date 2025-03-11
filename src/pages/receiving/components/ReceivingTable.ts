@@ -73,6 +73,10 @@ class Row extends BasePageModel {
       .locator('.css-5ih5ya-group react-select__group-heading')
       .getByText(zoneLocation, { exact: true });
   }
+
+  get recipientField() {
+    return this.row.getByRole('cell', { name: 'Recipient' });
+  }
 }
 
 export default ReceivingTable;
