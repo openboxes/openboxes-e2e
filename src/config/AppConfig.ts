@@ -14,6 +14,7 @@ export enum USER_KEY {
   MAIN = 'main',
   ALTERNATIVE = 'alternative',
   MANAGER = 'manager',
+  IMPERSONATOR = 'impersonator',
 }
 
 export enum LOCATION_KEY {
@@ -108,6 +109,13 @@ class AppConfig {
           RoleType.ROLE_INVOICE,
           RoleType.ROLE_PURCHASE_APPROVER,
         ]),
+      }),
+      impersonator: new TestUserConfig({
+        key: USER_KEY.IMPERSONATOR,
+        username: env.get('USER_IMPERSONATOR_USERNAME').required().asString(),
+        password: env.get('USER_IMPERSONATOR_PASSWORD').required().asString(),
+        storageFileName: '.auth-storage-IMPERSONATOR-USER.json',
+        requiredRoles: new Set([RoleType.ROLE_SUPERUSER]),
       }),
       alternative: new TestUserConfig({
         key: USER_KEY.ALTERNATIVE,

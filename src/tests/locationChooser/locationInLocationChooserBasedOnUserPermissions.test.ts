@@ -1,6 +1,7 @@
 import ImpersonateBanner from '@/components/ImpersonateBanner';
 import LocationChooser from '@/components/LocationChooser';
 import Navbar from '@/components/Navbar';
+import AppConfig from '@/config/AppConfig';
 import { ActivityCode } from '@/constants/ActivityCodes';
 import { LocationTypeCode } from '@/constants/LocationTypeCode';
 import { expect, test } from '@/fixtures/fixtures';
@@ -707,6 +708,8 @@ test.describe('Check if ward location is present in location chooser based on us
 });
 
 test.describe('Check if ward location is present in location chooser based on users permissions, location specific permission, impersonate mode', () => {
+  test.use({ storageState: AppConfig.instance.users.impersonator.storagePath });
+
   const uniqueIdentifier = new UniqueIdentifier();
 
   let TEST_USER: CreateUserType;
