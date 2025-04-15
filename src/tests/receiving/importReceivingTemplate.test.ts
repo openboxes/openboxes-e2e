@@ -13,6 +13,9 @@ test.describe('Import receiving template', () => {
   const uniqueIdentifier = new UniqueIdentifier();
   const workbooks: WorkbookUtils[] = [];
   const lot = uniqueIdentifier.generateUniqueString('lot');
+  const RECEIVING_NOW_COLUMN_IDX = 11;
+  const COMMENT_COLUMN_IDX = 12;
+  const LOT_COLUMN_IDX = 4;
 
   test.beforeEach(
     async ({
@@ -107,7 +110,7 @@ test.describe('Import receiving template', () => {
     await test.step('Input receiving now qty into template', async () => {
       const documentRow = parsedDocumentData[1];
       const row = [...documentRow];
-      (row[11] = '20'), (row[12] = 'e2e-comment');
+      (row[RECEIVING_NOW_COLUMN_IDX] = '20'), (row[COMMENT_COLUMN_IDX] = 'e2e-comment');
       data.push(row);
     });
 
@@ -146,7 +149,7 @@ test.describe('Import receiving template', () => {
     });
   });
 
-  test('Display validation when try to edit other files through import', async ({
+  test('Display validation when try to edit other fields through import', async ({
     stockMovementShowPage,
     receivingPage,
   }) => {
@@ -189,7 +192,7 @@ test.describe('Import receiving template', () => {
     await test.step('Input receiving now qty into template', async () => {
       const documentRow = parsedDocumentData[1];
       const row = [...documentRow];
-      (row[4] = 'editlot'), (row[11] = '20'), (row[12] = 'e2e-comment');
+      (row[LOT_COLUMN_IDX] = 'editlot'), (row[RECEIVING_NOW_COLUMN_IDX] = '20'), (row[COMMENT_COLUMN_IDX] = 'comment');
       data.push(row);
     });
 
