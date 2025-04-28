@@ -374,4 +374,118 @@ test.describe('Cancel qty in the middle of receipt', () => {
       ).toHaveText('5');
     });
   });
+
+  test('Assert cancel checkbox selection when going forward and backward', async ({
+    stockMovementShowPage,
+    receivingPage,
+  }) => {
+    await test.step('Go to stock movement show page', async () => {
+      await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
+      await stockMovementShowPage.isLoaded();
+    });
+
+    await test.step('Go to shipment receiving page', async () => {
+      await stockMovementShowPage.receiveButton.click();
+      await receivingPage.receivingStep.isLoaded();
+    });
+
+    await test.step('Input receiving qty for 1 item', async () => {
+      await receivingPage.receivingStep.isLoaded();
+      await receivingPage.receivingStep.table
+        .row(1)
+        .receivingNowField.textbox.fill('50');
+    });
+
+    await test.step('Go to check page', async () => {
+      await receivingPage.nextButton.click();
+      await receivingPage.checkStep.isLoaded();
+      await receivingPage.checkStep.table
+        .row(1)
+        .cancelRemainingCheckbox.click();
+    });
+
+    await test.step('Go to backward to receiving page and forward again', async () => {
+      await receivingPage.checkStep.backToEditButton.click();
+      await receivingPage.nextButton.click();
+      await receivingPage.checkStep.isLoaded();
+      await expect(
+        receivingPage.checkStep.table.row(1).cancelRemainingCheckbox
+      ).not.toBeChecked();
+      await receivingPage.checkStep.table
+        .row(1)
+        .cancelRemainingCheckbox.click();
+      await expect(
+        receivingPage.checkStep.table.row(1).cancelRemainingCheckbox
+      ).toBeChecked();
+      await receivingPage.checkStep.receiveShipmentButton.click();
+      await stockMovementShowPage.isLoaded();
+    });
+
+    await test.step('Assert canceled and received qty on stock movement show page', async () => {
+      await expect(stockMovementShowPage.statusTag).toHaveText('Receiving');
+      await stockMovementShowPage.packingListTab.click();
+      await expect(
+        stockMovementShowPage.packingListTable.row(1).quantityShipped
+      ).toHaveText('100');
+      await expect(
+        stockMovementShowPage.packingListTable.row(1).quantityReceived
+      ).toHaveText('50');
+      await expect(
+        stockMovementShowPage.packingListTable.row(1).quantityCanceled
+      ).toHaveText('50');
+    });
+
+    await test.step('Start 2nd receipt', async () => {
+      await stockMovementShowPage.receiveButton.click();
+      await receivingPage.receivingStep.isLoaded();
+    });
+
+    await test.step('Input receiving qty for 2nd item', async () => {
+      await receivingPage.receivingStep.isLoaded();
+      await receivingPage.receivingStep.table
+        .row(2)
+        .receivingNowField.textbox.fill('2');
+    });
+
+    await test.step('Go to check page and cancel qty remaining', async () => {
+      await receivingPage.nextButton.click();
+      await receivingPage.checkStep.isLoaded();
+      await receivingPage.checkStep.table
+        .row(1)
+        .cancelRemainingCheckbox.click();
+      await expect(
+        receivingPage.checkStep.table.row(1).cancelRemainingCheckbox
+      ).toBeChecked();
+    });
+
+    await test.step('Go to backward to receiving page and forward again', async () => {
+      await receivingPage.checkStep.backToEditButton.click();
+      await receivingPage.nextButton.click();
+      await receivingPage.checkStep.isLoaded();
+      await expect(
+        receivingPage.checkStep.table.row(1).cancelRemainingCheckbox
+      ).not.toBeChecked();
+      await receivingPage.checkStep.receiveShipmentButton.click();
+      await stockMovementShowPage.isLoaded();
+    });
+
+    await test.step('Assert canceled and received qty on stock movement show page', async () => {
+      await expect(stockMovementShowPage.statusTag).toHaveText('Receiving');
+      await stockMovementShowPage.packingListTab.click();
+      await expect(
+        stockMovementShowPage.packingListTable.row(2).quantityShipped
+      ).toHaveText('10');
+      await expect(
+        stockMovementShowPage.packingListTable.row(2).quantityReceived
+      ).toHaveText('2');
+      await expect(
+        stockMovementShowPage.packingListTable.row(2).quantityCanceled
+      ).toHaveText('0');
+    });
+
+    await test.step('Rollback shipment received in 2 receipts', async () => {
+      await stockMovementShowPage.isLoaded();
+      await stockMovementShowPage.rollbackLastReceiptButton.click();
+    });
+  });
 });
