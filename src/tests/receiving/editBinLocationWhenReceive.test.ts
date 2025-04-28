@@ -510,5 +510,14 @@ test.describe('Edit Bin Location when receive for all lines', () => {
       await receivingPage.checkStep.receiveShipmentButton.click();
       await stockMovementShowPage.isLoaded();
     });
+
+    await test.step('Assert edited bin on Packing list', async () => {
+      await expect(
+        stockMovementShowPage.packingListTable.row(1).binLocation
+      ).toHaveText(binLocationName);
+      await expect(
+        stockMovementShowPage.packingListTable.row(2).binLocation
+      ).toHaveText(binLocationName);
+    });
   });
 });
