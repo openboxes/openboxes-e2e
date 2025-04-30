@@ -15,6 +15,7 @@ test.describe('Receive inbound stock movement', () => {
       supplierLocationService,
       stockMovementService,
       mainProductService,
+      otherProductService,
     }) => {
       const supplierLocation = await supplierLocationService.getLocation();
       STOCK_MOVEMENT = await stockMovementService.createInbound({
@@ -24,10 +25,14 @@ test.describe('Receive inbound stock movement', () => {
       });
 
       const product = await mainProductService.getProduct();
+      const product2 = await otherProductService.getProduct();
 
       await stockMovementService.addItemsToInboundStockMovement(
         STOCK_MOVEMENT.id,
-        [{ productId: product.id, quantity: 10 }]
+        [
+          { productId: product.id, quantity: 10 },
+          { productId: product2.id, quantity: 10 },
+        ]
       );
 
       await stockMovementService.sendInboundStockMovement(STOCK_MOVEMENT.id, {
@@ -117,9 +122,7 @@ test.describe('Receive inbound stock movement', () => {
 
     await test.step('Select all items to receive', async () => {
       await receivingPage.receivingStep.isLoaded();
-      await receivingPage.receivingStep.table
-        .row(1)
-        .receivingNowField.textbox.fill('10');
+      await receivingPage.receivingStep.autofillQuantitiesButton.click();
     });
 
     await test.step('Go to Check page', async () => {
@@ -257,6 +260,9 @@ test.describe('Receive inbound stock movement', () => {
       await receivingPage.receivingStep.table
         .row(1)
         .receivingNowField.textbox.fill('8');
+      await receivingPage.receivingStep.table
+        .row(2)
+        .receivingNowField.textbox.fill('8');
     });
 
     await test.step('Click on Save button', async () => {
@@ -270,6 +276,9 @@ test.describe('Receive inbound stock movement', () => {
       await receivingPage.receivingStep.isLoaded();
       await expect(
         receivingPage.receivingStep.table.row(1).receivingNowField.textbox
+      ).toHaveValue('8');
+      await expect(
+        receivingPage.receivingStep.table.row(2).receivingNowField.textbox
       ).toHaveValue('8');
     });
   });
@@ -292,6 +301,9 @@ test.describe('Receive inbound stock movement', () => {
       await receivingPage.receivingStep.table
         .row(1)
         .receivingNowField.textbox.fill('2');
+      await receivingPage.receivingStep.table
+        .row(2)
+        .receivingNowField.textbox.fill('2');
     });
 
     await test.step('Click on Save and Exit button', async () => {
@@ -305,6 +317,46 @@ test.describe('Receive inbound stock movement', () => {
       await expect(
         receivingPage.receivingStep.table.row(1).receivingNowField.textbox
       ).toHaveValue('2');
+      await expect(
+        receivingPage.receivingStep.table.row(2).receivingNowField.textbox
+      ).toHaveValue('2');
+    });
+  });
+
+  test.skip('Use Save button after removing qty and default to 0', async ({
+    stockMovementShowPage,
+    receivingPage,
+  }) => {
+    await test.step('Go to stock movement show page', async () => {
+      await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
+      await stockMovementShowPage.isLoaded();
+    });
+
+    await test.step('Go to shipment receiving page', async () => {
+      await stockMovementShowPage.receiveButton.click();
+      await receivingPage.receivingStep.isLoaded();
+    });
+
+    await test.step('Input qty for an item to be received', async () => {
+      await receivingPage.receivingStep.table
+        .row(1)
+        .receivingNowField.textbox.fill('8');
+      await receivingPage.receivingStep.table
+        .row(2)
+        .receivingNowField.textbox.fill('10');
+    });
+
+    await test.step('Clear qty field and click on Save button', async () => {
+      await receivingPage.receivingStep.table
+        .row(1)
+        .receivingNowField.textbox.clear();
+      await receivingPage.receivingStep.saveButton.click();
+      await expect(
+        receivingPage.receivingStep.table.row(1).receivingNowField.textbox
+      ).toHaveValue('0');
+      await expect(
+        receivingPage.receivingStep.table.row(2).receivingNowField.textbox
+      ).toHaveValue('10');
     });
   });
 
