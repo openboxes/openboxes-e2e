@@ -199,6 +199,16 @@ test.describe('Edit qty of original line to 0', () => {
         stockMovementShowPage.receiptListTable.row(2).serialLotNumber
       ).not.toHaveText(lot);
     });
+
+    await test.step('Assert received lines on Packing list', async () => {
+      await stockMovementShowPage.packingListTab.click();
+      await expect(
+        stockMovementShowPage.packingListTable.row(1).lotNumber
+      ).not.toHaveText(lot);
+      await expect(
+        stockMovementShowPage.packingListTable.row(2).lotNumber
+      ).not.toHaveText(lot);
+    });
   });
 });
 

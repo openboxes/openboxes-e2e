@@ -55,7 +55,7 @@ test.describe('Assert Goods Receipt Note is created and opened', () => {
       await stockMovementShowPage.documentTab.click();
       await expect(
         stockMovementShowPage.documentsListTable
-          .row(6)
+          .row(7)
           .getDocumentName('Goods Receipt Note')
       ).toBeHidden();
     });
@@ -87,12 +87,12 @@ test.describe('Assert Goods Receipt Note is created and opened', () => {
       await stockMovementShowPage.documentTab.click();
       await expect(
         stockMovementShowPage.documentsListTable
-          .row(6)
+          .row(7)
           .getDocumentName('Goods Receipt Note')
       ).toBeVisible();
       const popupPromise = page.waitForEvent('popup');
       await stockMovementShowPage.documentsListTable
-        .row(6)
+        .row(7)
         .downloadButton.click();
       const popup = await popupPromise;
       await expect(popup.locator('.title')).toHaveText('Goods Receipt Note');
@@ -123,12 +123,12 @@ test.describe('Assert Goods Receipt Note is created and opened', () => {
       await stockMovementShowPage.documentTab.click();
       await expect(
         stockMovementShowPage.documentsListTable
-          .row(6)
+          .row(7)
           .getDocumentName('Goods Receipt Note')
       ).toBeVisible();
       const popupPromise = page.waitForEvent('popup');
       await stockMovementShowPage.documentsListTable
-        .row(6)
+        .row(7)
         .downloadButton.click();
       const popup = await popupPromise;
       await expect(popup.locator('.title')).toHaveText('Goods Receipt Note');
