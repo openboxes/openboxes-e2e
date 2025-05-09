@@ -290,7 +290,7 @@ class AppConfig {
       productFive: new ProductConfig({
         id: env.get('PRODUCT_FIVE').asString(),
         key: PRODUCT_KEY.FIVE,
-        name: this.uniqueIdentifier.generateUniqueString('product-five'),
+        name: this.uniqueIdentifier.generateUniqueString('aaproduct-five'),
         quantity: 160,
         required: false,
       }),

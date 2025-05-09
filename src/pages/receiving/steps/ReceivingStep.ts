@@ -83,6 +83,20 @@ class ReceivingStep extends BasePageModel {
         'You can only import the Receiving Now and the Comment fields. To make other changes, please use the edit line feature. You can then export and import the template again.'
       );
   }
+
+  get orderSelect() {
+    return this.page
+      .getByTestId('custom-select-element')
+      .locator('.css-16pqwjk-indicatorContainer')
+      .first();
+  }
+
+  getOrder(order: string) {
+    return this.page
+      .getByTestId('custom-select-dropdown-menu')
+      .getByRole('listitem')
+      .getByText(order, { exact: true });
+  }
 }
 
 export default ReceivingStep;
