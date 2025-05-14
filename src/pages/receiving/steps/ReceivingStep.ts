@@ -85,10 +85,7 @@ class ReceivingStep extends BasePageModel {
   }
 
   get orderSelect() {
-    return this.page
-      .getByTestId('custom-select-element')
-      .locator('.css-16pqwjk-indicatorContainer')
-      .first();
+    return this.page.getByTestId('custom-select-ordering');
   }
 
   getOrder(order: string) {
