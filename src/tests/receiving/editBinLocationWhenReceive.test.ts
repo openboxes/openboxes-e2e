@@ -98,7 +98,6 @@ test.describe('Edit Bin Location when receive inbound stock movement', () => {
         );
         await createLocationPage.binLocationTabSection.isLoaded();
         await createLocationPage.binLocationTabSection.deleteBinButton.click();
-        await createLocationPage.binLocationTabSection.isLoaded();
       });
     }
   );
@@ -279,7 +278,6 @@ test.describe('Edit Bin Location to bin with zone when receive inbound stock mov
         );
         await createLocationPage.binLocationTabSection.isLoaded();
         await createLocationPage.binLocationTabSection.deleteBinButton.click();
-        await createLocationPage.binLocationTabSection.isLoaded();
       });
 
       await test.step('Delete created zone location', async () => {
@@ -459,7 +457,6 @@ test.describe('Edit Bin Location when receive for all lines', () => {
         );
         await createLocationPage.binLocationTabSection.isLoaded();
         await createLocationPage.binLocationTabSection.deleteBinButton.click();
-        await createLocationPage.binLocationTabSection.isLoaded();
       });
     }
   );
