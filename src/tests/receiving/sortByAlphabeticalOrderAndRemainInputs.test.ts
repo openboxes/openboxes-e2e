@@ -114,6 +114,12 @@ test.describe('Apply sorting by alphabetical order and remain inputs', () => {
       const item = await fifthProductService.getProduct();
       await receivingPage.receivingStep.table.row(3).getItem(item.name).hover();
       await expect(receivingPage.tooltip).toContainText(item.name);
+      await expect(receivingPage.receivingStep.orderSelect).toBeVisible();
+      await expect(
+        receivingPage.receivingStep.orderSelect.locator(
+          '.react-select__clear-indicator'
+        )
+      ).toBeHidden();
       await receivingPage.receivingStep.orderSelect.click();
       await receivingPage.receivingStep.getOrder('Alphabetical Order').click();
       await receivingPage.receivingStep.table.row(1).getItem(item.name).hover();
