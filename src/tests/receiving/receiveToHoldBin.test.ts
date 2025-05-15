@@ -5,7 +5,7 @@ import UniqueIdentifier from '@/utils/UniqueIdentifier';
 
 test.describe('Receive item into hold bin', () => {
   test.describe.configure({ timeout: 60000 });
-  //timeout has been added for this test to make sure that the content on bin location tab will load as it can include a lot of data 
+  //timeout has been added for this test to make sure that the content on bin location tab will load as it can include a lot of data
   let STOCK_MOVEMENT: StockMovementResponse;
   const uniqueIdentifier = new UniqueIdentifier();
   const binLocationName = uniqueIdentifier.generateUniqueString('holdbin');
@@ -30,9 +30,7 @@ test.describe('Receive item into hold bin', () => {
 
       await stockMovementService.addItemsToInboundStockMovement(
         STOCK_MOVEMENT.id,
-        [
-          { productId: PRODUCT_ONE.id, quantity: 20 },
-        ]
+        [{ productId: PRODUCT_ONE.id, quantity: 20 }]
       );
 
       await stockMovementService.sendInboundStockMovement(STOCK_MOVEMENT.id, {
@@ -67,10 +65,16 @@ test.describe('Receive item into hold bin', () => {
         await createLocationPage.binLocationTabSection.editBinButton.click();
         await createLocationPage.locationConfigurationTab.click();
         await createLocationPage.locationConfigurationTabSection.useDefaultSettingsCheckbox.uncheck();
-        await createLocationPage.locationConfigurationTabSection.removeSupportedActivitiesButton('Putaway stock').click();
-        await createLocationPage.locationConfigurationTabSection.removeSupportedActivitiesButton('Pick stock').click();
+        await createLocationPage.locationConfigurationTabSection
+          .removeSupportedActivitiesButton('Putaway stock')
+          .click();
+        await createLocationPage.locationConfigurationTabSection
+          .removeSupportedActivitiesButton('Pick stock')
+          .click();
         await createLocationPage.locationConfigurationTabSection.supportedActivitiesSelect.click();
-        await createLocationPage.locationConfigurationTabSection.getSupportedActivitiesOption('Hold stock').click();
+        await createLocationPage.locationConfigurationTabSection
+          .getSupportedActivitiesOption('Hold stock')
+          .click();
         await createLocationPage.locationConfigurationTabSection.saveButton.click();
       });
     }
@@ -111,7 +115,6 @@ test.describe('Receive item into hold bin', () => {
         );
         await createLocationPage.binLocationTabSection.isLoaded();
         await createLocationPage.binLocationTabSection.deleteBinButton.click();
-        await createLocationPage.binLocationTabSection.isLoaded();
       });
     }
   );
@@ -167,8 +170,12 @@ test.describe('Receive item into hold bin', () => {
       await expect(
         productShowPage.inStockTabSection.row(2).binLocation
       ).toHaveText(binLocationName);
-      await expect(productShowPage.inStockTabSection.row(2).row).toHaveAttribute('title', 'This bin has been restricted');
-      await expect(productShowPage.inStockTabSection.row(2).inventoryInformation).toHaveText('Hold');
+      await expect(
+        productShowPage.inStockTabSection.row(2).row
+      ).toHaveAttribute('title', 'This bin has been restricted');
+      await expect(
+        productShowPage.inStockTabSection.row(2).inventoryInformation
+      ).toHaveText('Hold');
     });
   });
 });

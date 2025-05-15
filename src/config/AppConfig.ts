@@ -290,7 +290,8 @@ class AppConfig {
       productFive: new ProductConfig({
         id: env.get('PRODUCT_FIVE').asString(),
         key: PRODUCT_KEY.FIVE,
-        name: this.uniqueIdentifier.generateUniqueString('product-five'),
+        name: this.uniqueIdentifier.generateUniqueString('aa-product-five'),
+        //'aa' part was added to improve visibility of ordering products alphabetically
         quantity: 160,
         required: false,
       }),
