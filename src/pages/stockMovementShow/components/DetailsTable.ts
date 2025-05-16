@@ -22,6 +22,14 @@ class DetailsTable extends BasePageModel {
   get identifierValue() {
     return this.identifierRow.locator('.value');
   }
+
+  get destinationRow() {
+    return this.rows.filter({ hasText: 'Destination' });
+  }
+
+  get destinationValue() {
+    return this.destinationRow.locator('.value');
+  }
 }
 
 export default DetailsTable;

@@ -30,6 +30,10 @@ class InboundStockMovementTable extends BasePageModel {
   get emptyInboundList() {
     return this.table.locator('.rt-noData');
   }
+
+  get stocklistColumnHeader() {
+    return this.table.getByRole('button', { name: 'Stocklist' });
+  }
 }
 
 class Row extends BasePageModel {

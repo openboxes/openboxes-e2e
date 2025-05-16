@@ -25,6 +25,14 @@ class InboundListPage extends BasePageModel {
     return this.page.getByRole('link', { name: 'Export all incoming items' });
   }
 
+  get exportStockMovementsButton() {
+    return this.page.getByRole('button', { name: 'Export Stock Movements' });
+  }
+
+  get myStockMovementsButton() {
+    return this.page.getByRole('button', { name: 'My Stock Movements' });
+  }
+
   async goToPage() {
     await this.page.goto('./stockMovement/list?direction=INBOUND');
   }
@@ -55,6 +63,13 @@ class InboundListPage extends BasePageModel {
     await this.fileHandler.onDownload();
     await this.exportDropdownButton.click();
     await this.exportAllIncomingItemsButton.click();
+    return await this.fileHandler.saveFile();
+  }
+
+  async exportStockMovements() {
+    await this.fileHandler.onDownload();
+    await this.exportDropdownButton.click();
+    await this.exportStockMovementsButton.click();
     return await this.fileHandler.saveFile();
   }
 }
