@@ -163,6 +163,11 @@ test.describe('Create inbound stock movement', () => {
       ).toContainText(
         `${formatDate(new Date(), 'DD/MMM/YYYY')} by ${USER.name}`
       );
+      await expect(
+        stockMovementShowPage.auditingTable.dateCreatedRow
+      ).toContainText(
+        `${formatDate(new Date(), 'DD/MMM/YYYY')} by ${USER.name}`
+      );
     });
   });
 });
