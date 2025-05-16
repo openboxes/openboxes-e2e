@@ -44,6 +44,10 @@ class StockMovementShowPage extends BasePageModel {
     return this.summary.getByTestId('status-tag');
   }
 
+  get title() {
+    return this.summary.getByTestId('title');
+  }
+
   // TABS
   get packingListTab() {
     return this.page.getByRole('tab', { name: 'Packing List' });
