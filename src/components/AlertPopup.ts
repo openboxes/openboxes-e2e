@@ -28,6 +28,10 @@ class AlertPopup extends BasePageModel {
     return this.dialog.getByRole('button', { name: 'Yes' });
   }
 
+  get noButton() {
+    return this.dialog.getByRole('button', { name: 'No' });
+  }
+
   async assertPopupVisible() {
     await expect(this.dialog).toBeVisible();
   }
