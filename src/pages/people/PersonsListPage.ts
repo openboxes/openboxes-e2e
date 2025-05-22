@@ -31,7 +31,7 @@ class PersonsListPage extends BasePageModel {
   }
 
   get searchField() {
-    return this.page.locator('#q');
+    return this.page.getByTestId('person-search-field');
   }
 
   get findButton() {
