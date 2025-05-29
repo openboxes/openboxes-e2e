@@ -25,6 +25,8 @@ import LoginPage from '@/pages/LoginPage';
 import CreateOrganizationPage from '@/pages/oranization/CreateOrganizationPage';
 import EditOrganizationPage from '@/pages/oranization/EditOrganizationPage';
 import OrganizationListPage from '@/pages/oranization/OrganizationListPage';
+import CreatePersonPage from '@/pages/people/CreatePersonPage';
+import PersonsListPage from '@/pages/people/PersonsListPage';
 import CreateProductPage from '@/pages/product/CreateProductPage';
 import ProductShowPage from '@/pages/product/productShow/ProductShowPage';
 import ReceivingPage from '@/pages/receiving/ReceivingPage';
@@ -58,6 +60,8 @@ type Fixtures = {
   receivingPage: ReceivingPage;
   createInvoicePage: CreateInvoicePage;
   invoiceListPage: InvoiceListPage;
+  personsListPage: PersonsListPage;
+  createPersonPage: CreatePersonPage;
   // COMPONENTS
   navbar: Navbar;
   locationChooser: LocationChooser;
@@ -121,6 +125,8 @@ export const test = baseTest.extend<Fixtures>({
   productShowPage: async ({ page }, use) => use(new ProductShowPage(page)),
   createInvoicePage: async ({ page }, use) => use(new CreateInvoicePage(page)),
   invoiceListPage: async ({ page }, use) => use(new InvoiceListPage(page)),
+  personsListPage: async ({ page }, use) => use(new PersonsListPage(page)),
+  createPersonPage: async ({ page }, use) => use(new CreatePersonPage(page)),
   // COMPONENTS
   navbar: async ({ page }, use) => use(new Navbar(page)),
   locationChooser: async ({ page }, use) => use(new LocationChooser(page)),
