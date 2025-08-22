@@ -52,6 +52,10 @@ class AppConfig {
 
   public static TEST_DATA_FILE_PATH = path.join(process.cwd(), '.data.json');
 
+  public static DATA_IMPORT_DIRECTORY_PATH = path.join(process.cwd(), 'src/setup/dataImport');
+
+  public static PRODUCTS_IMPORT_FILE_PATH = path.join(AppConfig.DATA_IMPORT_DIRECTORY_PATH, '/products.csv');
+
   // Base URL to use in actions like `await page.goto('./dashboard')`.
   public appURL!: string;
 
