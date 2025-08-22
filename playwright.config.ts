@@ -32,7 +32,7 @@ export default defineConfig({
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'retain-on-failure',
-    
+
     launchOptions: {
     // slowMo: 1000,
     },
@@ -61,13 +61,22 @@ export default defineConfig({
       },
     },
     {
+      name: 'data-import-setup',
+      testMatch: 'dataImport.setup.ts',
+      testDir: './src/setup',
+      dependencies: ['create-data-setup'],
+      use: {
+        storageState: appConfig.users['main'].storagePath,
+      },
+    },
+    {
       name: 'chromium',
       use: {
         ...devices['Desktop Chrome'],
         viewport: { width: 1366, height: 768 },
         storageState: appConfig.users['main'].storagePath,
       },
-      dependencies: ['auth-setup', 'create-data-setup'],
+      dependencies: ['auth-setup', 'create-data-setup', 'data-import-setup'],
     },
   ],
 });
