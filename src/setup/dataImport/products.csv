@@ -1,8 +1,6 @@
 Id,ProductCode,ProductType,Name,ProductFamily,Category,GLAccount,Description,UnitOfMeasure,Tags,UnitCost,LotAndExpiryControl,ColdChain,ControlledSubstance,HazardousMaterial,Reconditioned,Manufacturer,BrandName,ManufacturerCode,ManufacturerName,Vendor,VendorCode,VendorName,UPC,NDC,Created,Updated
-,1,Default,E2E-product-one-T0SOek,,ARVS,,,,,,,,,,,,,,,,,,,,19/Dec/2024 02:43:40,19/Dec/2024 02:43:40
-,2,Default,E2E-product-two-T0SOek,,ARVS,,,,,,,,,,,,,,,,,,,,19/Dec/2024 02:43:46,19/Dec/2024 02:43:46
-,3,Default,E2E-product-three-sUuCcW,,ARVS,,,,,,,,,,,,,,,,,,,,18/Feb/2025 11:15:58,18/Feb/2025 11:15:58
-,4,Default,E2E-product-four-sUuCcW,,ARVS,,,,,,,,,,,,,,,,,,,,18/Feb/2025 11:16:03,18/Feb/2025 11:16:03
-,5,Default,E2E-product-five-sUuCcW,,ARVS,,,,,,,,,,,,,,,,,,,,18/Feb/2025 11:16:07,18/Feb/2025 11:16:07
-,10001,Default,test product 1,,Food,,,,,,,,,,,,,,,,,,,,20/Feb/2025 02:53:27,20/Feb/2025 02:53:27
-,10002,Default,test product 2,,Chronic Care,,,,,,,,,,,,,,,,,,,,20/Feb/2025 02:54:03,20/Feb/2025 02:54:03
+,1,Default,E2E-product-one,,ARVS,,,,,,,,,,,,,,,,,,,,,
+,2,Default,E2E-product-two,,ARVS,,,,,,,,,,,,,,,,,,,,,
+,3,Default,E2E-product-three,,ARVS,,,,,,,,,,,,,,,,,,,,,
+,4,Default,E2E-product-four,,ARVS,,,,,,,,,,,,,,,,,,,,,
+,5,Default,E2E-product-five,,ARVS,,,,,,,,,,,,,,,,,,,,,
