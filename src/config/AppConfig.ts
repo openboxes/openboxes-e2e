@@ -57,6 +57,8 @@ class AppConfig {
 
   public static PRODUCTS_IMPORT_FILE_PATH = path.join(AppConfig.DATA_IMPORT_DIRECTORY_PATH, '/products.csv');
 
+  public static INVENTORY_IMPORT_FILE_PATH = path.join(AppConfig.DATA_IMPORT_DIRECTORY_PATH, '/inventory.csv');
+
   // Base URL to use in actions like `await page.goto('./dashboard')`.
   public appURL!: string;
 

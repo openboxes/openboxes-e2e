@@ -1,3 +1,4 @@
+import InventoryService from '@/api/InventoryService';
 import ProductService from '@/api/ProductService';
 import AppConfig from '@/config/AppConfig';
 import { test } from '@/fixtures/fixtures';
@@ -24,5 +25,17 @@ test('import data', async ({ request }) => {
     })
   })
 
+  // INVENTORIES
+  const inventoryService = new InventoryService(request);
+
+  const inventoriesData = readCsvFile(AppConfig.INVENTORY_IMPORT_FILE_PATH);
+
+  await test.step(`importing ${inventoriesData.length} inventories`, async () => {
+    await inventoryService.importInventories(
+      inventoriesData,
+      AppConfig.instance.locations.main.id,
+      );
+  });
+
   writeToFile(AppConfig.TEST_DATA_FILE_PATH, seedData);
-});
+})
