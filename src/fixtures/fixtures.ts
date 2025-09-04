@@ -3,6 +3,7 @@ import { BrowserContext, test as baseTest } from '@playwright/test';
 import AuthService from '@/api/AuthService';
 import GenericService from '@/api/GenericService';
 import LocationService from '@/api/LocationService';
+import ReceivingService from '@/api/ReceivingService';
 import StockMovementService from '@/api/StockMovementService';
 import ImpersonateBanner from '@/components/ImpersonateBanner';
 import LocationChooser from '@/components/LocationChooser';
@@ -71,6 +72,7 @@ type Fixtures = {
   locationService: LocationService;
   authService: AuthService;
   stockMovementService: StockMovementService;
+  receivingService: ReceivingService;
   // LOCATIONS DATA
   mainLocationService: LocationData;
   noManageInventoryDepotService: LocationData;
@@ -139,6 +141,8 @@ export const test = baseTest.extend<Fixtures>({
   authService: async ({ page }, use) => use(new AuthService(page.request)),
   stockMovementService: async ({ page }, use) =>
     use(new StockMovementService(page.request)),
+  receivingService: async ({ page }, use) =>
+    use(new ReceivingService(page.request)),
   // LOCATIONS
   mainLocationService: async ({ page }, use) =>
     use(new LocationData(LOCATION_KEY.MAIN, page.request)),

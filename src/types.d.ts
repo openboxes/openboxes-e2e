@@ -226,6 +226,118 @@ type UpdateStockMovementPayload = {
   trackingNumber?: string;
 };
 
+type ReceiptResponse = {
+  receiptId: string | null;
+  receiptStatus: string;
+  shipmentId: string;
+  shipmentName: string;
+  shipmentNumber: string;
+  shipmentStatus: string;
+  originId: string;
+  originName: string;
+  destinationId: string;
+  destinationName: string;
+  dateShipped: string;
+  dateDelivered: string;
+  containers: Container[];
+  requisition: unknown;
+  description: string;
+  recipient: Recipient;
+  isShipmentFromPurchaseOrder: boolean;
+}
+
+type Container = {
+  containerId: string | null;
+  containerName: string | null;
+  parentContainerId: string | null;
+  parentContainerName: string | null;
+  containerType: string | null;
+  shipmentItems: ShipmentItem[];
+}
+
+type ContainerInfo = {
+  id: string;
+  name: string;
+  type: string;
+};
+
+type ParentContainerInfo = {
+  id: string;
+  name: string;
+};
+
+export type UnflattenContainer = {
+  container: ContainerInfo;
+  parentContainer: ParentContainerInfo;
+  shipmentItems: ShipmentItem[];
+};
+
+type ShipmentItem = {
+  receiptItemId: string | null;
+  shipmentItemId: string;
+  containerId: string | null;
+  containerName: string | null;
+  parentContainerId: string | null;
+  parentContainerName: string | null;
+  productId: string;
+  productCode: string;
+  productName: string;
+  productDisplayNames: {
+    default: string | null;
+    fr?: string;
+  };
+  productLotAndExpiryControl: unknown;
+  productHandlingIcons: string[];
+  lotNumber: string | null;
+  expirationDate: string | null;
+  binLocationId: string;
+  binLocationName: string;
+  binLocationZoneId: string | null;
+  binLocationZoneName: string | null;
+  recipientId: string | null;
+  recipientName: string | null;
+  quantityShipped: number;
+  quantityReceived: number;
+  quantityCanceled: number;
+  quantityReceiving: number | null;
+  quantityRemaining: number;
+  cancelRemaining: boolean;
+  quantityOnHand: number;
+  comment: string | null;
+  unitOfMeasure: string;
+  packSize: number;
+  packsRequested: number;
+  original?: boolean,
+}
+
+type Recipient = {
+  id: string;
+  name: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  username: string;
+  roles: string[];
+}
+
+type ReceivingItemPayload = {
+  shipmentItemId: string,
+  quantityReceiving?: number,
+  quantityShipped?: number,
+  comment?: string,
+  binLocationId?: string,
+  lotNumber?: string,
+  expirationDate?: string,
+  original?: boolean,
+  newLine?: boolean,
+  receiptItemId?: string | null,
+}
+
+type ReceiptPayload = Omit<ReceiptResponse, 'containers' | 'recipient'> & {
+  containers: UnflattenContainer[];
+  recipient: string;
+};
+
 type AppContextResponse = {
   location: LocationResponse;
   user: User;
