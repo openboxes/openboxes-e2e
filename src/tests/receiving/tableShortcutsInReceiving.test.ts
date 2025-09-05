@@ -13,18 +13,18 @@ test.describe('Use table shortcuts on receiving page', () => {
     async ({
       supplierLocationService,
       stockMovementService,
-      mainProductService,
-      otherProductService,
-      thirdProductService,
-      fourthProductService,
-      fifthProductService,
+      productService,
     }) => {
       const supplierLocation = await supplierLocationService.getLocation();
-      const PRODUCT_ONE = await mainProductService.getProduct();
-      const PRODUCT_TWO = await otherProductService.getProduct();
-      const PRODUCT_THREE = await thirdProductService.getProduct();
-      const PRODUCT_FOUR = await fourthProductService.getProduct();
-      const PRODUCT_FIVE = await fifthProductService.getProduct();
+      const PRODUCT_ONE = await productService.getProduct();
+      productService.setProduct('2');
+      const PRODUCT_TWO = await productService.getProduct();
+      productService.setProduct('3');
+      const PRODUCT_THREE = await productService.getProduct();
+      productService.setProduct('4');
+      const PRODUCT_FOUR = await productService.getProduct();
+      productService.setProduct('5');
+      const PRODUCT_FIVE = await productService.getProduct();
 
       STOCK_MOVEMENT = await stockMovementService.createInbound({
         originId: supplierLocation.id,

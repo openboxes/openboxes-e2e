@@ -11,9 +11,8 @@ test.describe('Export all incoming items', () => {
     async ({
       supplierLocationService,
       createInboundPage,
-      mainProductService,
+      productService,
       mainUserService,
-      otherProductService,
       stockMovementShowPage,
       inboundListPage,
     }) => {
@@ -22,8 +21,9 @@ test.describe('Export all incoming items', () => {
       const USER = await mainUserService.getUser();
       const TODAY = getToday();
 
-      const PRODUCT_ONE = await mainProductService.getProduct();
-      const PRODUCT_TWO = await otherProductService.getProduct();
+      const PRODUCT_ONE = await productService.getProduct();
+      productService.setProduct('2');
+      const PRODUCT_TWO = await productService.getProduct();
       const SHIPMENT_TYPE = 'Land';
       const EXPECTED_DELIVERY_DATE = getDateByOffset(TODAY, 1);
 

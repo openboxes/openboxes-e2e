@@ -18,13 +18,13 @@ test.describe('Select person in requested by', () => {
 
   test.beforeEach(
     async ({
-      mainProductService,
+      productService,
       supplierLocationService,
       page,
       personsListPage,
       createPersonPage,
     }) => {
-      const PRODUCT_ONE = await mainProductService.getProduct();
+      const PRODUCT_ONE = await productService.getProduct();
       ORIGIN = await supplierLocationService.getLocation();
 
       ROWS = [

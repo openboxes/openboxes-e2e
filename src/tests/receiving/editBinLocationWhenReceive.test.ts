@@ -15,16 +15,16 @@ test.describe('Edit Bin Location when receive inbound stock movement', () => {
       supplierLocationService,
       mainLocationService,
       stockMovementService,
-      mainProductService,
-      otherProductService,
+      productService,
       page,
       locationListPage,
       createLocationPage,
     }) => {
       const supplierLocation = await supplierLocationService.getLocation();
       const mainLocation = await mainLocationService.getLocation();
-      const PRODUCT_ONE = await mainProductService.getProduct();
-      const PRODUCT_TWO = await otherProductService.getProduct();
+      const PRODUCT_ONE = await productService.getProduct();
+      productService.setProduct('2');
+      const PRODUCT_TWO = await productService.getProduct();
 
       STOCK_MOVEMENT = await stockMovementService.createInbound({
         originId: supplierLocation.id,
@@ -170,16 +170,16 @@ test.describe('Edit Bin Location to bin with zone when receive inbound stock mov
       supplierLocationService,
       mainLocationService,
       stockMovementService,
-      mainProductService,
-      otherProductService,
+      productService,
       page,
       locationListPage,
       createLocationPage,
     }) => {
       const supplierLocation = await supplierLocationService.getLocation();
       const mainLocation = await mainLocationService.getLocation();
-      const PRODUCT_ONE = await mainProductService.getProduct();
-      const PRODUCT_TWO = await otherProductService.getProduct();
+      const PRODUCT_ONE = await productService.getProduct();
+      productService.setProduct('2');
+      const PRODUCT_TWO = await productService.getProduct();
 
       STOCK_MOVEMENT = await stockMovementService.createInbound({
         originId: supplierLocation.id,
@@ -374,16 +374,16 @@ test.describe('Edit Bin Location when receive for all lines', () => {
       supplierLocationService,
       mainLocationService,
       stockMovementService,
-      mainProductService,
-      otherProductService,
+      productService,
       page,
       locationListPage,
       createLocationPage,
     }) => {
       const supplierLocation = await supplierLocationService.getLocation();
       const mainLocation = await mainLocationService.getLocation();
-      const PRODUCT_ONE = await mainProductService.getProduct();
-      const PRODUCT_TWO = await otherProductService.getProduct();
+      const PRODUCT_ONE = await productService.getProduct();
+      productService.setProduct('2');
+      const PRODUCT_TWO = await productService.getProduct();
 
       STOCK_MOVEMENT = await stockMovementService.createInbound({
         originId: supplierLocation.id,
