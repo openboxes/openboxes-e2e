@@ -11,12 +11,12 @@ let ORIGIN: LocationResponse;
 
 test.beforeEach(
   async ({
-    mainProductService,
+    productService,
     mainUserService,
     createInboundPage,
     supplierLocationService,
   }) => {
-    const PRODUCT_ONE = await mainProductService.getProduct();
+    const PRODUCT_ONE = await productService.getProduct();
     USER = await mainUserService.getUser();
     ORIGIN = await supplierLocationService.getLocation();
 

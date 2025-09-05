@@ -2,6 +2,7 @@ import AppConfig from '@/config/AppConfig';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
 import { StockMovementResponse } from '@/types';
+import productService from '@/api/ProductService';
 
 test.describe('Edit destination from send page', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
@@ -10,12 +11,13 @@ test.describe('Edit destination from send page', () => {
     async ({
       supplierLocationService,
       stockMovementService,
-      otherProductService,
-      thirdProductService,
+      productService,
     }) => {
       const supplierLocation = await supplierLocationService.getLocation();
-      const PRODUCT_TWO = await otherProductService.getProduct();
-      const PRODUCT_THREE = await thirdProductService.getProduct();
+      productService.setProduct('2');
+      const PRODUCT_TWO = await productService.getProduct();
+      productService.setProduct('3')
+      const PRODUCT_THREE = await productService.getProduct();
 
       STOCK_MOVEMENT = await stockMovementService.createInbound({
         originId: supplierLocation.id,

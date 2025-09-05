@@ -32,9 +32,9 @@ test.describe('Use "Updated By" filter', () => {
   test('Only show stock movements updated by filtered user', async ({
     altUserContext,
     inboundListPage,
-    mainProductService,
+    productService,
   }) => {
-    const product = await mainProductService.getProduct();
+    const product = await productService.getProduct();
 
     await test.step('Go to inbound list page', async () => {
       await inboundListPage.goToPage();

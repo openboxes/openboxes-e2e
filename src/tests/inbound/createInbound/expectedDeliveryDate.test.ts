@@ -1,6 +1,7 @@
 import { expect, test } from '@/fixtures/fixtures';
 import { StockMovementResponse, User } from '@/types';
 import { formatDate, getDateByOffset } from '@/utils/DateUtils';
+import productService from '@/api/ProductService';
 
 test.describe('Expected delivery date tests', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
@@ -12,13 +13,14 @@ test.describe('Expected delivery date tests', () => {
       supplierLocationService,
       mainUserService,
       stockMovementService,
-      thirdProductService,
-      fourthProductService,
+      productService,
     }) => {
       const supplierLocation = await supplierLocationService.getLocation();
       USER = await mainUserService.getUser();
-      const PRODUCT_THREE = await thirdProductService.getProduct();
-      const PRODUCT_FOUR = await fourthProductService.getProduct();
+      productService.setProduct('3');
+      const PRODUCT_THREE = await productService.getProduct();
+      productService.setProduct('4');
+      const PRODUCT_FOUR = await productService.getProduct();
 
       STOCK_MOVEMENT = await stockMovementService.createInbound({
         originId: supplierLocation.id,

@@ -14,8 +14,7 @@ test.describe('Receive inbound stock movement', () => {
     async ({
       supplierLocationService,
       stockMovementService,
-      mainProductService,
-      otherProductService,
+      productService,
     }) => {
       const supplierLocation = await supplierLocationService.getLocation();
       STOCK_MOVEMENT = await stockMovementService.createInbound({
@@ -24,8 +23,9 @@ test.describe('Receive inbound stock movement', () => {
         dateRequested,
       });
 
-      const product = await mainProductService.getProduct();
-      const product2 = await otherProductService.getProduct();
+      const product = await productService.getProduct();
+      productService.setProduct('2');
+      const product2 = await productService.getProduct();
 
       await stockMovementService.addItemsToInboundStockMovement(
         STOCK_MOVEMENT.id,
@@ -61,7 +61,7 @@ test.describe('Receive inbound stock movement', () => {
     receivingPage,
     supplierLocationService,
     mainLocationService,
-    mainProductService,
+    productService,
   }) => {
     await test.step('Go to stock movement show page', async () => {
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
@@ -115,7 +115,7 @@ test.describe('Receive inbound stock movement', () => {
     });
 
     await test.step('Assert product in receiving table', async () => {
-      const item = await mainProductService.getProduct();
+      const item = await productService.getProduct();
       await receivingPage.receivingStep.table.row(1).getItem(item.name).hover();
       await expect(receivingPage.tooltip).toContainText(item.name);
     });
@@ -171,7 +171,7 @@ test.describe('Receive inbound stock movement', () => {
     });
 
     await test.step('Assert product in checking table', async () => {
-      const item = await mainProductService.getProduct();
+      const item = await productService.getProduct();
       await receivingPage.checkStep.table.row(1).getItem(item.name).hover();
       await expect(receivingPage.tooltip).toContainText(item.name);
     });
