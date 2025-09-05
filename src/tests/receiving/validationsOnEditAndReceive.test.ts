@@ -14,7 +14,7 @@ test.describe('Assert validation on try to receive not yet shipped inbound', () 
     async ({
       supplierLocationService,
       stockMovementService,
-      mainProductService,
+      productService,
     }) => {
       const supplierLocation = await supplierLocationService.getLocation();
       STOCK_MOVEMENT = await stockMovementService.createInbound({
@@ -23,7 +23,7 @@ test.describe('Assert validation on try to receive not yet shipped inbound', () 
         dateRequested,
       });
 
-      const product = await mainProductService.getProduct();
+      const product = await productService.getProduct();
 
       await stockMovementService.addItemsToInboundStockMovement(
         STOCK_MOVEMENT.id,

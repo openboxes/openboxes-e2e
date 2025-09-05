@@ -13,14 +13,14 @@ test.describe('Receive inbound stock movement in location without partial receiv
     async ({
       supplierLocationService,
       stockMovementService,
-      mainProductService,
-      otherProductService,
+      productService,
       depotLocationService,
     }) => {
       const supplierLocation = await supplierLocationService.getLocation();
       const depotLocation = await depotLocationService.getLocation();
-      const PRODUCT_ONE = await mainProductService.getProduct();
-      const PRODUCT_TWO = await otherProductService.getProduct();
+      const PRODUCT_ONE = await productService.getProduct();
+      productService.setProduct('2');
+      const PRODUCT_TWO = await productService.getProduct();
 
       STOCK_MOVEMENT = await stockMovementService.createInbound({
         originId: supplierLocation.id,
@@ -67,8 +67,7 @@ test.describe('Receive inbound stock movement in location without partial receiv
     receivingPage,
     supplierLocationService,
     depotLocationService,
-    mainProductService,
-    otherProductService,
+    productService,
     authService,
   }) => {
     await test.step('Go to stock movement show page', async () => {
@@ -120,8 +119,9 @@ test.describe('Receive inbound stock movement in location without partial receiv
     });
 
     await test.step('Assert product in receiving table', async () => {
-      const item = await mainProductService.getProduct();
-      const item2 = await otherProductService.getProduct();
+      const item = await productService.getProduct();
+      productService.setProduct('2');
+      const item2 = await productService.getProduct();
       await receivingPage.receivingStep.table.row(1).getItem(item.name).hover();
       await expect(receivingPage.tooltip).toContainText(item.name);
       await receivingPage.receivingStep.table
@@ -165,8 +165,7 @@ test.describe('Receive inbound stock movement in location without partial receiv
     receivingPage,
     supplierLocationService,
     depotLocationService,
-    mainProductService,
-    otherProductService,
+    productService,
     authService,
   }) => {
     await test.step('Go to stock movement show page', async () => {
@@ -244,8 +243,9 @@ test.describe('Receive inbound stock movement in location without partial receiv
     });
 
     await test.step('Assert product in checking table', async () => {
-      const item = await mainProductService.getProduct();
-      const item2 = await otherProductService.getProduct();
+      const item = await productService.getProduct();
+      productService.setProduct('2');
+      const item2 = await productService.getProduct();
       await receivingPage.checkStep.table.row(1).getItem(item.name).hover();
       await expect(receivingPage.tooltip).toContainText(item.name);
       await receivingPage.receivingStep.table

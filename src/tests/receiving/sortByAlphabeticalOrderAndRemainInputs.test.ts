@@ -3,6 +3,7 @@ import { expect, test } from '@/fixtures/fixtures';
 import { StockMovementResponse } from '@/types';
 import BinLocationUtils from '@/utils/BinLocationUtils';
 import { getDateByOffset, getToday } from '@/utils/DateUtils';
+import productService from '@/api/ProductService';
 
 test.describe('Apply sorting by alphabetical order and remain inputs', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
@@ -14,12 +15,13 @@ test.describe('Apply sorting by alphabetical order and remain inputs', () => {
     async ({
       supplierLocationService,
       stockMovementService,
-      thirdProductService,
-      fourthProductService,
+      productService,
     }) => {
       const supplierLocation = await supplierLocationService.getLocation();
-      const PRODUCT_THREE = await thirdProductService.getProduct();
-      const PRODUCT_FOUR = await fourthProductService.getProduct();
+      productService.setProduct('3');
+      const PRODUCT_THREE = await productService.getProduct();
+      productService.setProduct('4');
+      const PRODUCT_FOUR = await productService.getProduct();
 
       STOCK_MOVEMENT = await stockMovementService.createInbound({
         originId: supplierLocation.id,
@@ -75,7 +77,7 @@ test.describe('Apply sorting by alphabetical order and remain inputs', () => {
   test('Apply sorting by alphabetical order and remain inputs', async ({
     stockMovementShowPage,
     receivingPage,
-    fifthProductService,
+    productService,
     createInboundPage,
   }) => {
     await test.step('Go to stock movement show page', async () => {
@@ -99,7 +101,8 @@ test.describe('Apply sorting by alphabetical order and remain inputs', () => {
       await createInboundPage.addItemsStep.confirmReloadPopup.yesButton.click();
       await createInboundPage.addItemsStep.isLoaded();
       await createInboundPage.addItemsStep.addLineButton.click();
-      const item = await fifthProductService.getProduct();
+      productService.setProduct('5');
+      const item = await productService.getProduct();
       const row = createInboundPage.addItemsStep.table.row(2);
       await row.productSelect.findAndSelectOption(item.name);
       await row.quantityField.numberbox.fill('100');
@@ -131,7 +134,8 @@ test.describe('Apply sorting by alphabetical order and remain inputs', () => {
     });
 
     await test.step('Change ordering to alphabetical and assert order', async () => {
-      const item = await fifthProductService.getProduct();
+      productService.setProduct('5');
+      const item = await productService.getProduct();
       await receivingPage.receivingStep.table.row(3).getItem(item.name).hover();
       await expect(receivingPage.tooltip).toContainText(item.name);
       await expect(receivingPage.receivingStep.orderSelect).toBeVisible();
@@ -156,7 +160,8 @@ test.describe('Apply sorting by alphabetical order and remain inputs', () => {
     });
 
     await test.step('Go to check page and assert applied order', async () => {
-      const item = await fifthProductService.getProduct();
+      productService.setProduct('5');
+      const item = await productService.getProduct();
       await receivingPage.nextButton.click();
       await receivingPage.checkStep.isLoaded();
       await receivingPage.checkStep.table.row(1).getItem(item.name).hover();
@@ -164,7 +169,8 @@ test.describe('Apply sorting by alphabetical order and remain inputs', () => {
     });
 
     await test.step('Go back to receive page and change order to shipment', async () => {
-      const item = await fifthProductService.getProduct();
+      productService.setProduct('5');
+      const item = await productService.getProduct();
       await receivingPage.checkStep.backToEditButton.click();
       await receivingPage.receivingStep.isLoaded();
       await receivingPage.receivingStep.orderSelect.click();

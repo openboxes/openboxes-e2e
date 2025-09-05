@@ -59,7 +59,7 @@ test.describe('Lot number system expiry date modification on receiving workflow'
     stockMovementShowPage,
     receivingPage,
     stockMovementService,
-    mainProductService,
+    productService,
     productShowPage,
     supplierLocationService,
   }) => {
@@ -74,7 +74,7 @@ test.describe('Lot number system expiry date modification on receiving workflow'
 
     const UPDATED_EXPIRY_DATE_NEW_LOT = getDateByOffset(getToday(), 2);
 
-    const product = await mainProductService.getProduct();
+    const product = await productService.getProduct();
 
     await test.step('Ensure that lot number does not exist in product stock', async () => {
       await productShowPage.goToPage(product.id);
@@ -190,7 +190,7 @@ test.describe('Lot number system expiry date modification on receiving workflow'
         stockMovementShowPage,
         receivingPage,
         stockMovementService,
-        mainProductService,
+        productService,
         productShowPage,
         supplierLocationService,
       }) => {
@@ -198,7 +198,7 @@ test.describe('Lot number system expiry date modification on receiving workflow'
 
         let STOCK_MOVEMENT: StockMovementResponse;
 
-        const product = await mainProductService.getProduct();
+        const product = await productService.getProduct();
 
         TEST_INPUT_STOCK_EXISTING_LOT.lotNumber =
           uniqueIdentifier.generateUniqueString('lot');
@@ -281,13 +281,13 @@ test.describe('Lot number system expiry date modification on receiving workflow'
       stockMovementShowPage,
       receivingPage,
       stockMovementService,
-      mainProductService,
+      productService,
       productShowPage,
       supplierLocationService,
     }) => {
       let STOCK_MOVEMENT_2: StockMovementResponse;
 
-      const product = await mainProductService.getProduct();
+      const product = await productService.getProduct();
 
       await test.step('Create second inbound stock movement', async () => {
         const supplierLocation = await supplierLocationService.getLocation();
@@ -395,13 +395,13 @@ test.describe('Lot number system expiry date modification on receiving workflow'
       stockMovementShowPage,
       receivingPage,
       stockMovementService,
-      mainProductService,
+      productService,
       productShowPage,
       supplierLocationService,
     }) => {
       let STOCK_MOVEMENT_2: StockMovementResponse;
 
-      const product = await mainProductService.getProduct();
+      const product = await productService.getProduct();
 
       await test.step('Create second inbound stock movement', async () => {
         const supplierLocation = await supplierLocationService.getLocation();
