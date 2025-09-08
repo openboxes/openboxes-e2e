@@ -1,7 +1,6 @@
 import { expect, test } from '@/fixtures/fixtures';
 import { StockMovementResponse } from '@/types';
 import { getDateByOffset, getToday } from '@/utils/DateUtils';
-import productService from '@/api/ProductService';
 
 test.describe('Apply sorting by alphabetical order and remain inputs', () => {
   let STOCK_MOVEMENT: StockMovementResponse;

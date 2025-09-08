@@ -2,7 +2,6 @@ import AppConfig from '@/config/AppConfig';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
 import { StockMovementResponse } from '@/types';
-import productService from '@/api/ProductService';
 
 test.describe('Edit destination from send page', () => {
   let STOCK_MOVEMENT: StockMovementResponse;

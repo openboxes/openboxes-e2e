@@ -1,7 +1,6 @@
 import { expect, test } from '@/fixtures/fixtures';
 import { StockMovementResponse, User } from '@/types';
 import { formatDate, getDateByOffset } from '@/utils/DateUtils';
-import productService from '@/api/ProductService';
 
 test.describe('Expected delivery date tests', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
