@@ -37,7 +37,7 @@ class ProductService extends BaseServiceModel {
 
       return await parseRequestToJSON(apiResponse);
     } catch (error) {
-      throw new Error('Problem importing products');
+      throw new Error(`Problem importing products: ${error instanceof Error ? error.message : String(error)}`);
     }
   }
 }
