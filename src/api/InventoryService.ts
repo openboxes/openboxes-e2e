@@ -2,11 +2,11 @@ import BaseServiceModel from '@/api/BaseServiceModel';
 import { jsonToCsv } from '@/utils/ServiceUtils';
 
 class InventoryService extends BaseServiceModel {
-  async importInventories(data: Record<string, string>[], locationId: string): Promise<void> {
+  async importInventories(data: Record<string, string>[], facilityId: string): Promise<void> {
     try {
       const csvContent = jsonToCsv(data);
 
-      const response = await this.request.post(`./api/locations/${locationId}/inventories/import`, {
+      const response = await this.request.post(`./api/facilities/${facilityId}/inventories/import`, {
         data: csvContent,
         headers: { 'Content-Type': 'text/csv' },
       });
