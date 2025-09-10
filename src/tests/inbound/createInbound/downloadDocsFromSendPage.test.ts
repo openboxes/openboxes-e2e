@@ -20,6 +20,7 @@ test.describe('Download documents from inbound send page', () => {
       mainUserService,
       supplierLocationService,
     }) => {
+      productService.setProduct('1');
       const PRODUCT_ONE = await productService.getProduct();
       USER = await mainUserService.getUser();
       ORIGIN = await supplierLocationService.getLocation();

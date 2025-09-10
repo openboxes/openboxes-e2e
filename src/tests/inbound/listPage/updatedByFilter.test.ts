@@ -34,6 +34,7 @@ test.describe('Use "Updated By" filter', () => {
     inboundListPage,
     productService,
   }) => {
+    productService.setProduct('1');
     const product = await productService.getProduct();
 
     await test.step('Go to inbound list page', async () => {

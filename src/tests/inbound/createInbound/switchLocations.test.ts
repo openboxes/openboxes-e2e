@@ -15,6 +15,7 @@ test.describe('Switching location on inbound stock movement', () => {
       createInboundPage,
       supplierLocationService,
     }) => {
+      productService.setProduct('1');
       const PRODUCT_ONE = await productService.getProduct();
       const USER = await mainUserService.getUser();
       const ORIGIN = await supplierLocationService.getLocation();

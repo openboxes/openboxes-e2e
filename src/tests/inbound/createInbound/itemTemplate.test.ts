@@ -86,6 +86,7 @@ test.describe('Export items template on inbound add items page', () => {
       await createInboundPage.addItemsStep.isLoaded();
     });
 
+    productService.setProduct('1');
     const PRODUCT_ONE = await productService.getProduct();
     productService.setProduct('2');
     const PRODUCT_TWO = await productService.getProduct();
@@ -197,6 +198,7 @@ test.describe('Import template with data', () => {
       workbooks.push(downloadedTemplateFile);
     });
 
+    productService.setProduct('1');
     const PRODUCT_ONE = await productService.getProduct();
     productService.setProduct('2');
     const PRODUCT_TWO = await productService.getProduct();
@@ -271,6 +273,7 @@ test.describe('Import template with data', () => {
     });
 
     await test.step('Add items to table', async () => {
+      productService.setProduct('1');
       const PRODUCT_ONE = await productService.getProduct();
       const USER = await mainUserService.getUser();
 
@@ -364,6 +367,7 @@ test.describe('Import template with data', () => {
 
     let ROW: CreateInboundAddItemsTableEntity;
     await test.step('Add items to table', async () => {
+      productService.setProduct('1');
       const PRODUCT_ONE = await productService.getProduct();
       const USER = await mainUserService.getUser();
 

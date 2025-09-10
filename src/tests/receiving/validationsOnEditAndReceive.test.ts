@@ -23,6 +23,7 @@ test.describe('Assert validation on try to receive not yet shipped inbound', () 
         dateRequested,
       });
 
+      productService.setProduct('1');
       const product = await productService.getProduct();
 
       await stockMovementService.addItemsToInboundStockMovement(
