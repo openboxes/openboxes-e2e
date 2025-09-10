@@ -26,6 +26,7 @@ test.describe('Status changes for inbound sm on view sm and inbound list page', 
       mainUserService,
       supplierLocationService,
     }) => {
+      productService.setProduct('1');
       const PRODUCT_ONE = await productService.getProduct();
       productService.setProduct('2');
       const PRODUCT_TWO = await productService.getProduct();

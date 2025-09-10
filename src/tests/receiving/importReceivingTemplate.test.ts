@@ -24,6 +24,7 @@ test.describe('Import receiving template', () => {
       productService,
     }) => {
       const supplierLocation = await supplierLocationService.getLocation();
+      productService.setProduct('1');
       const PRODUCT_ONE = await productService.getProduct();
 
       STOCK_MOVEMENT = await stockMovementService.createInbound({

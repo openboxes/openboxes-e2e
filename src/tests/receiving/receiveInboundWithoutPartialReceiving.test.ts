@@ -18,6 +18,7 @@ test.describe('Receive inbound stock movement in location without partial receiv
     }) => {
       const supplierLocation = await supplierLocationService.getLocation();
       const depotLocation = await depotLocationService.getLocation();
+      productService.setProduct('1');
       const PRODUCT_ONE = await productService.getProduct();
       productService.setProduct('2');
       const PRODUCT_TWO = await productService.getProduct();
@@ -120,6 +121,7 @@ test.describe('Receive inbound stock movement in location without partial receiv
     });
 
     await test.step('Assert product in receiving table', async () => {
+      productService.setProduct('1');
       const item = await productService.getProduct();
       productService.setProduct('2');
       const item2 = await productService.getProduct();
@@ -244,6 +246,7 @@ test.describe('Receive inbound stock movement in location without partial receiv
     });
 
     await test.step('Assert product in checking table', async () => {
+      productService.setProduct('1');
       const item = await productService.getProduct();
       productService.setProduct('2');
       const item2 = await productService.getProduct();

@@ -22,6 +22,7 @@ test.describe('Receive item into hold bin', () => {
     }) => {
       const supplierLocation = await supplierLocationService.getLocation();
       const mainLocation = await mainLocationService.getLocation();
+      productService.setProduct('1');
       const PRODUCT_ONE = await productService.getProduct();
 
       STOCK_MOVEMENT = await stockMovementService.createInbound({

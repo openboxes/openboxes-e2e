@@ -23,6 +23,7 @@ test.describe('Receive inbound stock movement', () => {
         dateRequested,
       });
 
+      productService.setProduct('1');
       const product = await productService.getProduct();
       productService.setProduct('2');
       const product2 = await productService.getProduct();
@@ -115,6 +116,7 @@ test.describe('Receive inbound stock movement', () => {
     });
 
     await test.step('Assert product in receiving table', async () => {
+      productService.setProduct('1');
       const item = await productService.getProduct();
       await receivingPage.receivingStep.table.row(1).getItem(item.name).hover();
       await expect(receivingPage.tooltip).toContainText(item.name);
@@ -171,6 +173,7 @@ test.describe('Receive inbound stock movement', () => {
     });
 
     await test.step('Assert product in checking table', async () => {
+      productService.setProduct('1');
       const item = await productService.getProduct();
       await receivingPage.checkStep.table.row(1).getItem(item.name).hover();
       await expect(receivingPage.tooltip).toContainText(item.name);

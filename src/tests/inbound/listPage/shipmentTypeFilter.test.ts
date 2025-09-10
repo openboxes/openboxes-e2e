@@ -20,6 +20,7 @@ test.describe('Shipment type filter', () => {
       stockMovementService,
     }) => {
       const supplierLocation = await supplierLocationService.getLocation();
+      productService.setProduct('1');
       const product = await productService.getProduct();
 
       STOCK_MOVEMENT = await stockMovementService.createInbound({
@@ -111,6 +112,7 @@ test.describe('Multiple shipment types', () => {
       stockMovementService,
     }) => {
       const supplierLocation = await supplierLocationService.getLocation();
+      productService.setProduct('1');
       const product = await productService.getProduct();
 
       STOCK_MOVEMENT_LAND = await stockMovementService.createInbound({

@@ -17,6 +17,7 @@ test.describe('Validations on edit Deliver On Date when receiving shipment', () 
         originId: supplierLocation.id,
       });
 
+      productService.setProduct('1');
       const product = await productService.getProduct();
 
       await stockMovementService.addItemsToInboundStockMovement(

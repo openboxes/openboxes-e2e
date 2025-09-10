@@ -18,6 +18,7 @@ test.describe('Receive inbound stock movement in location without pick and putaw
     }) => {
       const supplierLocation = await supplierLocationService.getLocation();
       const noPickAndPutawayStockDepot= await noPickAndPutawayStockDepotService.getLocation();
+      productService.setProduct('1');
       const PRODUCT_ONE = await productService.getProduct();
 
       STOCK_MOVEMENT = await stockMovementService.createInbound({

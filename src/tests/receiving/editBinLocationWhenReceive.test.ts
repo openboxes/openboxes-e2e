@@ -22,6 +22,7 @@ test.describe('Edit Bin Location when receive inbound stock movement', () => {
     }) => {
       const supplierLocation = await supplierLocationService.getLocation();
       const mainLocation = await mainLocationService.getLocation();
+      productService.setProduct('1');
       const PRODUCT_ONE = await productService.getProduct();
       productService.setProduct('2');
       const PRODUCT_TWO = await productService.getProduct();
@@ -73,7 +74,14 @@ test.describe('Edit Bin Location when receive inbound stock movement', () => {
       createLocationPage,
     }) => {
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
-      await stockMovementShowPage.rollbackLastReceiptButton.click();
+
+      const hasRollbackLastReceipt =
+        await stockMovementShowPage.rollbackLastReceiptButton.isVisible().catch(() => false);
+
+      if (hasRollbackLastReceipt) {
+        await stockMovementShowPage.rollbackLastReceiptButton.click();
+      }
+
       await stockMovementShowPage.rollbackButton.click();
       await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
 
@@ -177,6 +185,7 @@ test.describe('Edit Bin Location to bin with zone when receive inbound stock mov
     }) => {
       const supplierLocation = await supplierLocationService.getLocation();
       const mainLocation = await mainLocationService.getLocation();
+      productService.setProduct('1');
       const PRODUCT_ONE = await productService.getProduct();
       productService.setProduct('2');
       const PRODUCT_TWO = await productService.getProduct();
@@ -381,6 +390,7 @@ test.describe('Edit Bin Location when receive for all lines', () => {
     }) => {
       const supplierLocation = await supplierLocationService.getLocation();
       const mainLocation = await mainLocationService.getLocation();
+      productService.setProduct('1');
       const PRODUCT_ONE = await productService.getProduct();
       productService.setProduct('2');
       const PRODUCT_TWO = await productService.getProduct();

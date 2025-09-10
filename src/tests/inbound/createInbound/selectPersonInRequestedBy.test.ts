@@ -24,6 +24,7 @@ test.describe('Select person in requested by', () => {
       personsListPage,
       createPersonPage,
     }) => {
+      productService.setProduct('1');
       const PRODUCT_ONE = await productService.getProduct();
       ORIGIN = await supplierLocationService.getLocation();
 

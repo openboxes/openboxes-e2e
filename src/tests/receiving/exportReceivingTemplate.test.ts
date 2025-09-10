@@ -21,6 +21,7 @@ test.describe('Export receiving template', () => {
       productService,
     }) => {
       const supplierLocation = await supplierLocationService.getLocation();
+      productService.setProduct('1');
       const PRODUCT_ONE = await productService.getProduct();
       productService.setProduct('2');
       const PRODUCT_TWO = await productService.getProduct();
@@ -70,6 +71,7 @@ test.describe('Export receiving template', () => {
     let filePath: string;
     let downloadedExportTemplateFile: WorkbookUtils;
 
+    productService.setProduct('1');
     const PRODUCT_ONE = await productService.getProduct();
     productService.setProduct('2');
     const PRODUCT_TWO = await productService.getProduct();

@@ -17,6 +17,7 @@ test.describe('Assert creation of receiving bin', () => {
       productService,
     }) => {
       const supplierLocation = await supplierLocationService.getLocation();
+      productService.setProduct('1');
       const PRODUCT_ONE = await productService.getProduct();
       productService.setProduct('2');
       const PRODUCT_TWO = await productService.getProduct();

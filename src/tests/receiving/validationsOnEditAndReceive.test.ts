@@ -21,6 +21,7 @@ test.describe('Validations on edit and receive inbound stock movement', () => {
         dateRequested,
       });
 
+      productService.setProduct('1');
       const product = await productService.getProduct();
 
       await stockMovementService.addItemsToInboundStockMovement(

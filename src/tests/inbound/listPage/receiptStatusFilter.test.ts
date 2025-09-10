@@ -60,6 +60,7 @@ test.describe('Filter by "Shipped" status', () => {
         originId: supplierLocation.id,
       });
 
+      productService.setProduct('1');
       const product = await productService.getProduct();
 
       await stockMovementService.addItemsToInboundStockMovement(
@@ -125,6 +126,7 @@ test.describe('Filter by "Received" status', () => {
         originId: supplierLocation.id,
       });
 
+      productService.setProduct('1');
       const product = await productService.getProduct();
 
       await stockMovementService.addItemsToInboundStockMovement(
@@ -216,6 +218,7 @@ test.describe('Filter by "Receiving" status', () => {
         originId: supplierLocation.id,
       });
 
+      productService.setProduct('1');
       const product = await productService.getProduct();
       productService.setProduct('2');
       const productTwo = await productService.getProduct();
@@ -315,6 +318,7 @@ test.describe('Filter by multiple statuses - "Pending" and "Shipped"', () => {
         originId: supplierLocation.id,
       });
 
+      productService.setProduct('1');
       const product = await productService.getProduct();
 
       await stockMovementService.addItemsToInboundStockMovement(
