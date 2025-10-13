@@ -5,7 +5,8 @@ import BaseServiceModel from '@/api/BaseServiceModel';
 import { PartialReceiptStatus } from '@/constants/PartialReceiptStatus';
 import {
   ApiResponse,
-  Container, ReceiptPayload,
+  Container,
+  ReceiptPayload,
   ReceiptResponse,
   ReceivingItemPayload,
   ShipmentItem,
@@ -52,7 +53,7 @@ class ReceivingService extends BaseServiceModel {
     try {
       await this.changeReceiptStatus(id, PartialReceiptStatus.ROLLBACK);
     } catch (error) {
-      throw new Error('Problem rolling back partial receipt')
+      throw new Error('Problem rolling back partial receipt');
     }
   }
 
@@ -78,17 +79,21 @@ class ReceivingService extends BaseServiceModel {
   */
   async updateReceivingItems(
     id: string,
-    items: ReceivingItemPayload[],
+    items: ReceivingItemPayload[]
   ): Promise<void> {
     try {
       const receipt = await this.getReceipt(id);
       const shipmentItemsToUpdate = this.extractShipmentItemIds(items);
-      const containers = this.buildUpdatedContainers(receipt.data.containers, items, shipmentItemsToUpdate);
+      const containers = this.buildUpdatedContainers(
+        receipt.data.containers,
+        items,
+        shipmentItemsToUpdate
+      );
       const payload: ReceiptPayload = {
         ...receipt.data,
         containers: containers,
         recipient: receipt?.data?.recipient?.id,
-      }
+      };
       await this.request.post(`./api/partialReceiving/${id}`, {
         data: payload,
       });
@@ -133,14 +138,19 @@ class ReceivingService extends BaseServiceModel {
   async splitReceivingLine(
     id: string,
     originalReceiptItemId: string,
-    newLines: ReceivingItemPayload[],
+    newLines: ReceivingItemPayload[]
   ) {
     try {
       const receipt = await this.getReceipt(id);
 
-      const originalShipmentItem = this.findOriginalShipmentItem(receipt.data.containers, originalReceiptItemId);
+      const originalShipmentItem = this.findOriginalShipmentItem(
+        receipt.data.containers,
+        originalReceiptItemId
+      );
       if (!originalShipmentItem) {
-        throw new Error(`Original shipment item with ID ${originalReceiptItemId} not found`);
+        throw new Error(
+          `Original shipment item with ID ${originalReceiptItemId} not found`
+        );
       }
 
       this.validateQuantity(originalShipmentItem.quantityShipped, newLines);
@@ -159,17 +169,26 @@ class ReceivingService extends BaseServiceModel {
     }
   }
 
-  private findOriginalShipmentItem(containers: Container[], receiptItemId: string): ShipmentItem | undefined {
-    return _.flatten(containers.map(c => c.shipmentItems))
-      .find(item => item.receiptItemId === receiptItemId);
+  private findOriginalShipmentItem(
+    containers: Container[],
+    receiptItemId: string
+  ): ShipmentItem | undefined {
+    return _.flatten(containers.map((c) => c.shipmentItems)).find(
+      (item) => item.receiptItemId === receiptItemId
+    );
   }
 
-  private validateQuantity(originalQuantityShipped: number | undefined, newLines: ReceivingItemPayload[]) {
+  private validateQuantity(
+    originalQuantityShipped: number | undefined,
+    newLines: ReceivingItemPayload[]
+  ) {
     const sumOfQuantityShipped = _.sumBy(newLines, 'quantityShipped');
     const originalQty = originalQuantityShipped || 0;
 
     if (originalQty < sumOfQuantityShipped) {
-      throw new Error('Sum of quantity shipped is greater than the original quantity shipped');
+      throw new Error(
+        'Sum of quantity shipped is greater than the original quantity shipped'
+      );
     }
   }
 
@@ -178,40 +197,44 @@ class ReceivingService extends BaseServiceModel {
     originalReceiptItemId: string,
     newLines: ReceivingItemPayload[]
   ): UnflattenContainer[] {
-    const splittedItem = newLines.find(line => line.receiptItemId === originalReceiptItemId);
-    const linesToSave = newLines.filter(line => !line.receiptItemId);
+    const splittedItem = newLines.find(
+      (line) => line.receiptItemId === originalReceiptItemId
+    );
+    const linesToSave = newLines.filter((line) => !line.receiptItemId);
 
-    return containers.map(container => {
+    return containers.map((container) => {
       const updatedShipmentItems = _.flatten(
         container.shipmentItems.map((shipmentItem: ShipmentItem) => {
           if (shipmentItem.receiptItemId === originalReceiptItemId) {
-            return [
-              { ...shipmentItem, ...splittedItem },
-              ...linesToSave
-            ];
+            return [{ ...shipmentItem, ...splittedItem }, ...linesToSave];
           }
           return shipmentItem;
         })
       );
 
-      return unflatten({ ...container, shipmentItems: updatedShipmentItems }) as UnflattenContainer;
+      return unflatten({
+        ...container,
+        shipmentItems: updatedShipmentItems,
+      }) as UnflattenContainer;
     });
   }
 
-  private buildPayload(receiptData: ReceiptResponse, containers: UnflattenContainer[]): ReceiptPayload {
+  private buildPayload(
+    receiptData: ReceiptResponse,
+    containers: UnflattenContainer[]
+  ): ReceiptPayload {
     return {
       ...receiptData,
       containers,
-      recipient: receiptData.recipient.id
+      recipient: receiptData.recipient.id,
     };
   }
 
   private async saveSplitLines(id: string, payload: ReceiptPayload) {
     await this.request.post(`./api/partialReceiving/${id}`, {
-      data: payload
+      data: payload,
     });
   }
-
 
   private async changeReceiptStatus(
     id: string,
@@ -233,42 +256,47 @@ class ReceivingService extends BaseServiceModel {
   private buildUpdatedContainers(
     containers: Container[],
     items: ReceivingItemPayload[],
-    shipmentItemsToUpdate: string[],
+    shipmentItemsToUpdate: string[]
   ): UnflattenContainer[] {
     return containers.map((container) => {
       return unflatten({
         ...container,
-        shipmentItems: container.shipmentItems.map((shipmentItem: ShipmentItem) => {
-          if (shipmentItemsToUpdate.includes(shipmentItem.shipmentItemId)) {
-            const updatedItem = this.findItemToUpdate(items, shipmentItem.shipmentItemId);
-            return this.mergeShipmentItem(shipmentItem, updatedItem);
-          }
+        shipmentItems: container.shipmentItems.map(
+          (shipmentItem: ShipmentItem) => {
+            if (shipmentItemsToUpdate.includes(shipmentItem.shipmentItemId)) {
+              const updatedItem = this.findItemToUpdate(
+                items,
+                shipmentItem.shipmentItemId
+              );
+              return this.mergeShipmentItem(shipmentItem, updatedItem);
+            }
 
-          return shipmentItem;
-        }),
+            return shipmentItem;
+          }
+        ),
       }) as UnflattenContainer;
     });
   }
 
   private findItemToUpdate(
     items: ReceivingItemPayload[],
-    shipmentItemId: string,
+    shipmentItemId: string
   ): ReceivingItemPayload | undefined {
     return items.find((item) => item.shipmentItemId === shipmentItemId);
   }
 
   private mergeShipmentItem(
     original: ShipmentItem,
-    update?: ReceivingItemPayload,
+    update?: ReceivingItemPayload
   ): ShipmentItem {
     return {
       ...original,
-      binLocationId: update?.binLocationId ?? original.binLocationId,
-      quantityReceiving: update?.quantityReceiving ?? original.quantityReceiving,
+      'binLocation.name': update?.binLocationName ?? original.binLocationName,
+      quantityReceiving:
+        update?.quantityReceiving ?? original.quantityReceiving,
       comment: update?.comment ?? original.comment,
     };
   }
-
 }
 
 export default ReceivingService;
