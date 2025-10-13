@@ -103,6 +103,28 @@ class ReceivingService extends BaseServiceModel {
   }
 
   /*
+    As arguments take the shipment id and the receipt object. It should be called before updating items
+    to create a receiving bin.
+  */
+  async createReceivingBin(
+    id: string,
+    receipt: ReceiptResponse,
+  ): Promise<void> {
+    try {
+      const payload: ReceiptPayload = {
+        ...receipt,
+        containers: this.createEmptyContainers(receipt?.containers),
+        recipient: receipt.recipient?.id,
+      };
+      await this.request.post(`./api/partialReceiving/${id}`, {
+        data: payload,
+      });
+    } catch (error) {
+      throw new Error('Problem creating receiving bin');
+    }
+  }
+
+  /*
     As arguments take the shipment id, id of receipt item that needs to be split,
     new lines are an array filled with new items, including the original one, that is split.
     The sum of all quantities in that batch should be equal to the quantity of the original item.
@@ -167,6 +189,20 @@ class ReceivingService extends BaseServiceModel {
     } catch (error) {
       throw new Error('Problem splitting lines');
     }
+  }
+
+  private createEmptyContainers(
+    containers: Container[]
+  ): Container[] {
+    return containers?.map((container) => {
+      return {
+        ...container,
+        shipmentItems: container?.shipmentItems?.map(shipmentItem => ({
+          ...shipmentItem,
+          quantityReceiving: 0,
+        }))
+      }
+    })
   }
 
   private findOriginalShipmentItem(

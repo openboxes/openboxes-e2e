@@ -342,7 +342,7 @@ type ReceivingItemPayload = {
 };
 
 type ReceiptPayload = Omit<ReceiptResponse, 'containers' | 'recipient'> & {
-  containers: UnflattenContainer[];
+  containers: UnflattenContainer[] | Container[];
   recipient: string;
 };
 
