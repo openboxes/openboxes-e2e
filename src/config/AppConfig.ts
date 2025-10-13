@@ -25,6 +25,7 @@ export enum LOCATION_KEY {
   DEPOT = 'depot',
   WARD = 'ward',
   NO_PICK_AND_PUTAWAY_STOCK = 'noPickAndPutawayStockDepot',
+  BIN_LOCATION = 'internalLocation',
 }
 
 export enum PRODUCT_KEY {
@@ -256,6 +257,19 @@ class AppConfig {
         required: false,
         type: LocationTypeCode.DEPOT,
       }),
+
+      internalLocation: new LocationConfig({
+        id: env.get('LOCATION_INTERNAL').asString(),
+        key: LOCATION_KEY.BIN_LOCATION,
+        name: this.uniqueIdentifier.generateUniqueString('bin-location'),
+        requiredActivityCodes: new Set([
+          ActivityCode.PICK_STOCK,
+          ActivityCode.PUTAWAY_STOCK,
+        ]),
+        required: false,
+        type: LocationTypeCode.BIN_LOCATION,
+        parentLocation: env.get('LOCATION_MAIN').required().asString(),
+      }),
     };
 
     this.products = {
@@ -292,7 +306,7 @@ class AppConfig {
         key: PRODUCT_KEY.FIVE,
         name: this.uniqueIdentifier.generateUniqueString('aa-product-five'),
         //'aa' part was added to improve visibility of ordering products alphabetically
-        quantity: 160,
+        quantity: 0,
         required: false,
       }),
     };
