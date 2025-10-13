@@ -67,6 +67,7 @@ jobs:
         LOCATION_DEPOT: ${{ secrets.LOCATION_DEPOT }}
         LOCATION_WARD: ${{ secrets.LOCATION_WARD }}
         LOCATION_NO_PICK_AND_PUTAWAY_STOCK_DEPOT: ${{ secrets.LOCATION_NO_PICK_AND_PUTAWAY_STOCK_DEPOT }}
+        LOCATION_INTERNAL: ${{ secrets.LOCATION_INTERNAL }}
         PRODUCT_ONE: ${{ secrets.PRODUCT_ONE }}
         PRODUCT_TWO: ${{ secrets.PRODUCT_TWO }}
         PRODUCT_THREE: ${{ secrets.PRODUCT_THREE }}
