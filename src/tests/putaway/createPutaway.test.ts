@@ -1,4 +1,4 @@
-//import AppConfig from '@/config/AppConfig';
+import AppConfig from '@/config/AppConfig';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
 import { StockMovementResponse } from '@/types';
@@ -34,14 +34,16 @@ test.describe('Putaway received inbound shipment', () => {
         await stockMovementService.getStockMovement(STOCK_MOVEMENT.id);
       const shipmentId = getShipmentId(stockMovement);
       const { data: receipt } = await receivingService.getReceipt(shipmentId);
-      // const receivingBin =
-      //   AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
+      const receivingBin =
+        AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
+
+      await receivingService.createReceivingBin(shipmentId, receipt);
 
       await receivingService.updateReceivingItems(shipmentId, [
         {
           shipmentItemId: getShipmentItemId(receipt, 0, 0),
           quantityReceiving: 10,
-          binLocationName: 'R-804CSX',
+          binLocationName: receivingBin,
         },
       ]);
       await receivingService.completeReceipt(shipmentId);
@@ -131,7 +133,6 @@ test.describe('Putaway received inbound shipment', () => {
         .row(1)
         .getProductName(product.name)
         .click();
-      //console.log(row);
       await productShowPage.inStockTab.click();
       await productShowPage.inStockTabSection.isLoaded();
       const internalLocation = await internalLocationService.getLocation();
