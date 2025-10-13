@@ -9,6 +9,7 @@ type LocationConfigProps = {
   key: string;
   requiredActivityCodes: Set<ActivityCode>;
   type: LocationTypeCode;
+  parentLocation?: string;
 } & (
   | {
       id: string;
@@ -29,6 +30,7 @@ class LocationConfig {
   type: LocationTypeCode;
   required: boolean;
   key: string;
+  parentLocation?: string;
 
   constructor({
     key,
@@ -37,6 +39,7 @@ class LocationConfig {
     requiredActivityCodes,
     type,
     required,
+    parentLocation,
   }: LocationConfigProps) {
     this.id = id || '';
     this.name = name || '';
@@ -44,6 +47,7 @@ class LocationConfig {
     this.type = type;
     this.required = required ?? false;
     this.key = key;
+    this.parentLocation = parentLocation || '';
   }
 
   /** Should create a new location for testing
