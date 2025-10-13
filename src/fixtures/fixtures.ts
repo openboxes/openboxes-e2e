@@ -30,8 +30,12 @@ import CreatePersonPage from '@/pages/people/CreatePersonPage';
 import PersonsListPage from '@/pages/people/PersonsListPage';
 import CreateProductPage from '@/pages/product/CreateProductPage';
 import ProductShowPage from '@/pages/product/productShow/ProductShowPage';
+import CreatePutawayPage from '@/pages/putaway/CreatePutawayPage';
+import PutawayDetailsPage from '@/pages/putaway/putawayDetails/PutawayDetailsPage';
 import ReceivingPage from '@/pages/receiving/ReceivingPage';
+import OldViewShipmentPage from '@/pages/stockMovementShow/OldViewShipmentPage';
 import StockMovementShowPage from '@/pages/stockMovementShow/StockMovementShowPage';
+import TransactionListPage from '@/pages/transactions/TransactionListPage';
 import CreateUserPage from '@/pages/user/CreateUserPage';
 import EditUserPage from '@/pages/user/editUser/EditUserPage';
 import UserListPage from '@/pages/user/UserListPage';
@@ -63,6 +67,10 @@ type Fixtures = {
   invoiceListPage: InvoiceListPage;
   personsListPage: PersonsListPage;
   createPersonPage: CreatePersonPage;
+  createPutawayPage: CreatePutawayPage;
+  putawayDetailsPage: PutawayDetailsPage;
+  transactionListPage: TransactionListPage;
+  oldViewShipmentPage: OldViewShipmentPage;
   // COMPONENTS
   navbar: Navbar;
   locationChooser: LocationChooser;
@@ -81,6 +89,7 @@ type Fixtures = {
   depotLocationService: LocationData;
   wardLocationService: LocationData;
   noPickAndPutawayStockDepotService: LocationData;
+  internalLocationService: LocationData;
   // PRODUCT DATA
   mainProductService: ProductData;
   otherProductService: ProductData;
@@ -129,6 +138,13 @@ export const test = baseTest.extend<Fixtures>({
   invoiceListPage: async ({ page }, use) => use(new InvoiceListPage(page)),
   personsListPage: async ({ page }, use) => use(new PersonsListPage(page)),
   createPersonPage: async ({ page }, use) => use(new CreatePersonPage(page)),
+  createPutawayPage: async ({ page }, use) => use(new CreatePutawayPage(page)),
+  putawayDetailsPage: async ({ page }, use) =>
+    use(new PutawayDetailsPage(page)),
+  transactionListPage: async ({ page }, use) =>
+    use(new TransactionListPage(page)),
+  oldViewShipmentPage: async ({ page }, use) =>
+    use(new OldViewShipmentPage(page)),
   // COMPONENTS
   navbar: async ({ page }, use) => use(new Navbar(page)),
   locationChooser: async ({ page }, use) => use(new LocationChooser(page)),
@@ -158,6 +174,8 @@ export const test = baseTest.extend<Fixtures>({
     use(new LocationData(LOCATION_KEY.WARD, page.request)),
   noPickAndPutawayStockDepotService: async ({ page }, use) =>
     use(new LocationData(LOCATION_KEY.NO_PICK_AND_PUTAWAY_STOCK, page.request)),
+  internalLocationService: async ({ page }, use) =>
+    use(new LocationData(LOCATION_KEY.BIN_LOCATION, page.request)),
   // PRODUCTS
   mainProductService: async ({ page }, use) =>
     use(new ProductData(PRODUCT_KEY.ONE, page.request)),
