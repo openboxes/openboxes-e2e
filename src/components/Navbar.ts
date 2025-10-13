@@ -31,6 +31,10 @@ class Navbar extends BasePageModel {
     return this.navbar.getByRole('menuitem', { name: 'Edit Profile' });
   }
 
+  get refreshCachesButton() {
+    return this.navbar.getByRole('menuitem', { name: 'Refresh Caches' });
+  }
+
   // Nav Items
   get dashboard() {
     return this.getNavItem('Dashboard');
@@ -78,6 +82,18 @@ class Navbar extends BasePageModel {
 
   get listProducts() {
     return this.getNavItem('List Products');
+  }
+
+  get inbound() {
+    return this.getNavItem('Inbound');
+  }
+
+  get createPutaway() {
+    return this.getNavItem('Create Putaway');
+  }
+
+  get transactions() {
+    return this.getNavItem('Transactions');
   }
 }
 
