@@ -8,7 +8,7 @@ class SummaryTable extends BasePageModel {
   }
 
   get table() {
-    return this.page.getByRole('table');
+    return this.page.getByRole('table', { name: 'Summary' });
   }
 
   get rows() {
@@ -27,11 +27,8 @@ class Row extends BasePageModel {
     this.row = row;
   }
 
-  getProductName(name: string) {
-    return this.row
-      .locator('[class="order-item even dataRow"]')
-      .getByRole('link')
-      .getByText(name);
+  get productName() {
+    return this.row.getByTestId('product-name');
   }
 }
 

@@ -5,10 +5,11 @@ import BasePageModel from '@/pages/BasePageModel';
 import SummaryTable from './components/SummaryTable';
 
 class PutawayDetailsPage extends BasePageModel {
-  table: SummaryTable;
+  summaryTable: SummaryTable;
+
   constructor(page: Page) {
     super(page);
-    this.table = new SummaryTable(page);
+    this.summaryTable = new SummaryTable(page);
   }
 
   async isLoaded() {
