@@ -13,18 +13,19 @@ test.describe('Edit qty of original line to 0', () => {
     async ({
       supplierLocationService,
       stockMovementService,
-      mainProductService,
-      otherProductService,
-      thirdProductService,
-      fourthProductService,
-      fifthProductService,
+      productService,
     }) => {
       const supplierLocation = await supplierLocationService.getLocation();
-      const PRODUCT_ONE = await mainProductService.getProduct();
-      const PRODUCT_TWO = await otherProductService.getProduct();
-      const PRODUCT_THREE = await thirdProductService.getProduct();
-      const PRODUCT_FOUR = await fourthProductService.getProduct();
-      const PRODUCT_FIVE = await fifthProductService.getProduct();
+      productService.setProduct('1');
+      const PRODUCT_ONE = await productService.getProduct();
+      productService.setProduct('2');
+      const PRODUCT_TWO = await productService.getProduct();
+      productService.setProduct('3');
+      const PRODUCT_THREE = await productService.getProduct();
+      productService.setProduct('4')
+      const PRODUCT_FOUR = await productService.getProduct();
+      productService.setProduct('5')
+      const PRODUCT_FIVE = await productService.getProduct();
 
       STOCK_MOVEMENT = await stockMovementService.createInbound({
         originId: supplierLocation.id,
@@ -219,10 +220,11 @@ test.describe('Edit original line to other product in the middle of receipt', ()
     async ({
       supplierLocationService,
       stockMovementService,
-      fourthProductService,
+      productService,
     }) => {
       const supplierLocation = await supplierLocationService.getLocation();
-      const PRODUCT_FOUR = await fourthProductService.getProduct();
+      productService.setProduct('4');
+      const PRODUCT_FOUR = await productService.getProduct();
 
       STOCK_MOVEMENT = await stockMovementService.createInbound({
         originId: supplierLocation.id,
@@ -261,8 +263,7 @@ test.describe('Edit original line to other product in the middle of receipt', ()
   test('Edit qty of original line to 0 and edit product to other', async ({
     stockMovementShowPage,
     receivingPage,
-    fifthProductService,
-    fourthProductService,
+    productService,
   }) => {
     await test.step('Go to stock movement show page', async () => {
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
@@ -275,7 +276,8 @@ test.describe('Edit original line to other product in the middle of receipt', ()
     });
 
     await test.step('Open edit modal for item', async () => {
-      const PRODUCT_FIVE = await fifthProductService.getProduct();
+      productService.setProduct('5');
+      const PRODUCT_FIVE = await productService.getProduct();
       await receivingPage.receivingStep.table.row(1).editButton.click();
       await receivingPage.receivingStep.editModal.isLoaded();
       await receivingPage.receivingStep.editModal.addLineButton.click();
@@ -296,8 +298,10 @@ test.describe('Edit original line to other product in the middle of receipt', ()
     });
 
     await test.step('Assert line with qty 0 is disabled', async () => {
-      const PRODUCT_FOUR = await fourthProductService.getProduct();
-      const PRODUCT_FIVE = await fifthProductService.getProduct();
+      productService.setProduct('4');
+      const PRODUCT_FOUR = await productService.getProduct();
+      productService.setProduct('5')
+      const PRODUCT_FIVE = await productService.getProduct();
       await expect(
         receivingPage.receivingStep.table.row(1).checkbox
       ).toBeDisabled();
@@ -337,7 +341,8 @@ test.describe('Edit original line to other product in the middle of receipt', ()
     });
 
     await test.step('Assert product name on check step', async () => {
-      const PRODUCT_FIVE = await fifthProductService.getProduct();
+      productService.setProduct('5');
+      const PRODUCT_FIVE = await productService.getProduct();
       await receivingPage.nextButton.click();
       await receivingPage.checkStep.isLoaded();
       await expect(
@@ -352,8 +357,10 @@ test.describe('Edit original line to other product in the middle of receipt', ()
     });
 
     await test.step('Assert received product on stock movement show page', async () => {
-      const PRODUCT_FOUR = await fourthProductService.getProduct();
-      const PRODUCT_FIVE = await fifthProductService.getProduct();
+      productService.setProduct('4');
+      const PRODUCT_FOUR = await productService.getProduct();
+      productService.setProduct('5');
+      const PRODUCT_FIVE = await productService.getProduct();
       await stockMovementShowPage.packingListTab.isVisible();
       await expect(
         stockMovementShowPage.packingListTable.row(1).product

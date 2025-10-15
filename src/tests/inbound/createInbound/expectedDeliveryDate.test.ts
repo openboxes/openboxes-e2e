@@ -12,13 +12,14 @@ test.describe('Expected delivery date tests', () => {
       supplierLocationService,
       mainUserService,
       stockMovementService,
-      thirdProductService,
-      fourthProductService,
+      productService,
     }) => {
       const supplierLocation = await supplierLocationService.getLocation();
       USER = await mainUserService.getUser();
-      const PRODUCT_THREE = await thirdProductService.getProduct();
-      const PRODUCT_FOUR = await fourthProductService.getProduct();
+      productService.setProduct('3');
+      const PRODUCT_THREE = await productService.getProduct();
+      productService.setProduct('4');
+      const PRODUCT_FOUR = await productService.getProduct();
 
       STOCK_MOVEMENT = await stockMovementService.createInbound({
         originId: supplierLocation.id,

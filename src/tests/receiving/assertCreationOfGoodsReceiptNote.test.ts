@@ -9,12 +9,13 @@ test.describe('Assert Goods Receipt Note is created and opened', () => {
     async ({
       supplierLocationService,
       stockMovementService,
-      mainProductService,
-      thirdProductService,
+      productService,
     }) => {
       const supplierLocation = await supplierLocationService.getLocation();
-      const PRODUCT_ONE = await mainProductService.getProduct();
-      const PRODUCT_THREE = await thirdProductService.getProduct();
+      productService.setProduct('1');
+      const PRODUCT_ONE = await productService.getProduct();
+      productService.setProduct('3');
+      const PRODUCT_THREE = await productService.getProduct();
 
       STOCK_MOVEMENT = await stockMovementService.createInbound({
         originId: supplierLocation.id,
