@@ -1,18 +1,57 @@
 import AppConfig from '@/config/AppConfig';
 import { test } from '@/fixtures/fixtures';
 import { readFile, writeToFile } from '@/utils/FileIOUtils';
+import { parseUrl } from '@/utils/UrlUtils';
 
 test('create data', async ({
+  page,
+  createProductPage,
+  productShowPage,
   locationService,
   mainLocationService,
 }) => {
   // eslint-disable-next-line playwright/no-conditional-in-test
   const data = readFile(AppConfig.TEST_DATA_FILE_PATH) || {};
 
-  const seedData: Record<'locations', Record<string, string>> = {
+  const seedData: Record<'products' | 'locations', Record<string, string>> = {
     ...data,
+    products: {},
     locations: {},
   };
+
+  // // PRODUCST
+  const products = Object.values(AppConfig.instance.products).filter(
+    (product) => product.isCreateNew
+  );
+
+  for (const product of products) {
+    await test.step(`create product ${product.key}`, async () => {
+      await createProductPage.goToPage();
+      await createProductPage.waitForUrl();
+      await createProductPage.productDetails.nameField.fill(product.name);
+      await createProductPage.productDetails.categorySelect.click();
+      await createProductPage.productDetails.categorySelectDropdown
+        .getByRole('listitem')
+        .first()
+        .click();
+      await createProductPage.saveButton.click();
+
+      await productShowPage.recordStockButton.click();
+
+      await productShowPage.recordStock.lineItemsTable
+        .row(1)
+        .newQuantity.getByRole('textbox')
+        .fill(`${product.quantity}`);
+      await productShowPage.recordStock.lineItemsTable.saveButton.click();
+      await productShowPage.showStockCardButton.click();
+
+      const productUrl = parseUrl(
+        page.url(),
+        '/openboxes/inventoryItem/showStockCard/$id'
+      );
+      seedData.products[`${product.key}`] = productUrl.id;
+    });
+  }
 
   // LOCATIONS
   const { organization } = await mainLocationService.getLocation();

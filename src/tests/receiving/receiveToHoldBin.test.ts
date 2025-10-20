@@ -15,15 +15,14 @@ test.describe('Receive item into hold bin', () => {
       supplierLocationService,
       mainLocationService,
       stockMovementService,
-      productService,
+      mainProductService,
       page,
       locationListPage,
       createLocationPage,
     }) => {
       const supplierLocation = await supplierLocationService.getLocation();
       const mainLocation = await mainLocationService.getLocation();
-      productService.setProduct('1');
-      const PRODUCT_ONE = await productService.getProduct();
+      const PRODUCT_ONE = await mainProductService.getProduct();
 
       STOCK_MOVEMENT = await stockMovementService.createInbound({
         originId: supplierLocation.id,

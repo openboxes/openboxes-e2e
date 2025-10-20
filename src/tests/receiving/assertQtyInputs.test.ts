@@ -10,15 +10,14 @@ test.describe('Assert if quantity inputs remain when split lines', () => {
     async ({
       supplierLocationService,
       stockMovementService,
-      productService,
+      mainProductService,
+      otherProductService,
+      thirdProductService,
     }) => {
       const supplierLocation = await supplierLocationService.getLocation();
-      productService.setProduct('1');
-      const PRODUCT_ONE = await productService.getProduct();
-      productService.setProduct('2');
-      const PRODUCT_TWO = await productService.getProduct();
-      productService.setProduct('3');
-      const PRODUCT_THREE = await productService.getProduct();
+      const PRODUCT_ONE = await mainProductService.getProduct();
+      const PRODUCT_TWO = await otherProductService.getProduct();
+      const PRODUCT_THREE = await thirdProductService.getProduct();
 
       STOCK_MOVEMENT = await stockMovementService.createInbound({
         originId: supplierLocation.id,

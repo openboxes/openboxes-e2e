@@ -10,11 +10,10 @@ test.describe('Assert bin location not clearable', () => {
     async ({
       supplierLocationService,
       stockMovementService,
-      productService,
+      fourthProductService,
     }) => {
       const supplierLocation = await supplierLocationService.getLocation();
-      productService.setProduct('4');
-      const PRODUCT_FOUR = await productService.getProduct();
+      const PRODUCT_FOUR = await fourthProductService.getProduct();
 
       STOCK_MOVEMENT = await stockMovementService.createInbound({
         originId: supplierLocation.id,

@@ -8,7 +8,6 @@ import TestUserConfig from '@/config/TestUserConfig';
 import { ActivityCode } from '@/constants/ActivityCodes';
 import { LocationTypeCode } from '@/constants/LocationTypeCode';
 import RoleType from '@/constants/RoleTypes';
-import { readCsvFile } from '@/utils/FileIOUtils';
 import UniqueIdentifier from '@/utils/UniqueIdentifier';
 
 export enum USER_KEY {
@@ -53,12 +52,6 @@ class AppConfig {
 
   public static TEST_DATA_FILE_PATH = path.join(process.cwd(), '.data.json');
 
-  public static DATA_IMPORT_DIRECTORY_PATH = path.join(process.cwd(), 'src/setup/dataImport');
-
-  public static PRODUCTS_IMPORT_FILE_PATH = path.join(AppConfig.DATA_IMPORT_DIRECTORY_PATH, '/products.csv');
-
-  public static INVENTORY_IMPORT_FILE_PATH = path.join(AppConfig.DATA_IMPORT_DIRECTORY_PATH, '/inventory.csv');
-
   // Base URL to use in actions like `await page.goto('./dashboard')`.
   public appURL!: string;
 
@@ -72,7 +65,7 @@ class AppConfig {
   public locations!: Record<LOCATION_KEY, LocationConfig>;
 
   // test products used in all of the tests
-  public products: Record<string, ProductConfig> = {};
+  public products!: Record<PRODUCT_KEY, ProductConfig>;
 
   //recivingbin configurable prefix
   public receivingBinPrefix!: string;
@@ -265,16 +258,44 @@ class AppConfig {
       }),
     };
 
-    // Fulfill products data in app config dynamically based on the products.csv
-    const productsData = readCsvFile(AppConfig.PRODUCTS_IMPORT_FILE_PATH);
-    productsData.forEach((productData) => {
-      this.products[productData['ProductCode']] = new ProductConfig({
-        key: productData['ProductCode'],
-        name: productData['Name'],
-        quantity: parseInt(productData['Quantity']),
+    this.products = {
+      productOne: new ProductConfig({
+        id: env.get('PRODUCT_ONE').asString(),
+        key: PRODUCT_KEY.ONE,
+        name: this.uniqueIdentifier.generateUniqueString('product-one'),
+        quantity: 122,
         required: false,
-      })
-    })
+      }),
+      productTwo: new ProductConfig({
+        id: env.get('PRODUCT_TWO').asString(),
+        key: PRODUCT_KEY.TWO,
+        name: this.uniqueIdentifier.generateUniqueString('product-two'),
+        quantity: 123,
+        required: false,
+      }),
+      productThree: new ProductConfig({
+        id: env.get('PRODUCT_THREE').asString(),
+        key: PRODUCT_KEY.THREE,
+        name: this.uniqueIdentifier.generateUniqueString('product-three'),
+        quantity: 150,
+        required: false,
+      }),
+      productFour: new ProductConfig({
+        id: env.get('PRODUCT_FOUR').asString(),
+        key: PRODUCT_KEY.FOUR,
+        name: this.uniqueIdentifier.generateUniqueString('product-four'),
+        quantity: 100,
+        required: false,
+      }),
+      productFive: new ProductConfig({
+        id: env.get('PRODUCT_FIVE').asString(),
+        key: PRODUCT_KEY.FIVE,
+        name: this.uniqueIdentifier.generateUniqueString('aa-product-five'),
+        //'aa' part was added to improve visibility of ordering products alphabetically
+        quantity: 160,
+        required: false,
+      }),
+    };
 
     this.receivingBinPrefix = env
       .get('RECEIVING_BIN_PREFIX')

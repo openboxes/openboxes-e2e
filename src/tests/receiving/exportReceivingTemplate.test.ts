@@ -18,15 +18,14 @@ test.describe('Export receiving template', () => {
     async ({
       supplierLocationService,
       stockMovementService,
-      productService,
+      mainProductService,
+      otherProductService,
+      thirdProductService,
     }) => {
       const supplierLocation = await supplierLocationService.getLocation();
-      productService.setProduct('1');
-      const PRODUCT_ONE = await productService.getProduct();
-      productService.setProduct('2');
-      const PRODUCT_TWO = await productService.getProduct();
-      productService.setProduct('3');
-      const PRODUCT_THREE = await productService.getProduct();
+      const PRODUCT_ONE = await mainProductService.getProduct();
+      const PRODUCT_TWO = await otherProductService.getProduct();
+      const PRODUCT_THREE = await thirdProductService.getProduct();
 
       STOCK_MOVEMENT = await stockMovementService.createInbound({
         originId: supplierLocation.id,
@@ -66,17 +65,16 @@ test.describe('Export receiving template', () => {
   test('Export receiving template', async ({
     stockMovementShowPage,
     receivingPage,
-    productService,
+    mainProductService,
+    otherProductService,
+    thirdProductService
   }) => {
     let filePath: string;
     let downloadedExportTemplateFile: WorkbookUtils;
 
-    productService.setProduct('1');
-    const PRODUCT_ONE = await productService.getProduct();
-    productService.setProduct('2');
-    const PRODUCT_TWO = await productService.getProduct();
-    productService.setProduct('3');
-    const PRODUCT_THREE = await productService.getProduct();
+    const PRODUCT_ONE = await mainProductService.getProduct();
+    const PRODUCT_TWO = await otherProductService.getProduct();
+    const PRODUCT_THREE = await thirdProductService.getProduct();
 
     const ROWS = [
       {

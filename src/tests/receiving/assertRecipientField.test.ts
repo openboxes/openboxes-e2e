@@ -9,14 +9,13 @@ test.describe('Assert recipient field when receive', () => {
     async ({
       supplierLocationService,
       stockMovementService,
-      productService,
+      fourthProductService,
+      fifthProductService,
       mainUserService,
     }) => {
       const supplierLocation = await supplierLocationService.getLocation();
-      productService.setProduct('4');
-      const PRODUCT_FOUR = await productService.getProduct();
-      productService.setProduct('5');
-      const PRODUCT_FIVE = await productService.getProduct();
+      const PRODUCT_FOUR = await fourthProductService.getProduct();
+      const PRODUCT_FIVE = await fifthProductService.getProduct();
       const USER = await mainUserService.getUser();
 
       STOCK_MOVEMENT = await stockMovementService.createInbound({
