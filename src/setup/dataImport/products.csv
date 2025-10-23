@@ -1,6 +1,0 @@
-Id,ProductCode,ProductType,Name,ProductFamily,Category,GLAccount,Description,UnitOfMeasure,Tags,UnitCost,LotAndExpiryControl,ColdChain,ControlledSubstance,HazardousMaterial,Reconditioned,Manufacturer,BrandName,ManufacturerCode,ManufacturerName,Vendor,VendorCode,VendorName,UPC,NDC,Created,Updated
-,1,Default,E2E-product-one,,ARVS,,,,,,,,,,,,,,,,,,,,,
-,2,Default,E2E-product-two,,ARVS,,,,,,,,,,,,,,,,,,,,,
-,3,Default,E2E-product-three,,ARVS,,,,,,,,,,,,,,,,,,,,,
-,4,Default,E2E-product-four,,ARVS,,,,,,,,,,,,,,,,,,,,,
-,5,Default,E2E-product-five,,ARVS,,,,,,,,,,,,,,,,,,,,,

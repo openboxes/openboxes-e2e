@@ -21,11 +21,10 @@ test.describe('Import receiving template', () => {
     async ({
       supplierLocationService,
       stockMovementService,
-      productService,
+      mainProductService,
     }) => {
       const supplierLocation = await supplierLocationService.getLocation();
-      productService.setProduct('1');
-      const PRODUCT_ONE = await productService.getProduct();
+      const PRODUCT_ONE = await mainProductService.getProduct();
 
       STOCK_MOVEMENT = await stockMovementService.createInbound({
         originId: supplierLocation.id,

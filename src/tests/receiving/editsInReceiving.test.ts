@@ -14,13 +14,12 @@ test.describe('Edit items in the middle of receipt', () => {
     async ({
       supplierLocationService,
       stockMovementService,
-      productService,
+      mainProductService,
+      otherProductService,
     }) => {
       const supplierLocation = await supplierLocationService.getLocation();
-      productService.setProduct('1');
-      const PRODUCT_ONE = await productService.getProduct();
-      productService.setProduct('2');
-      const PRODUCT_TWO = await productService.getProduct();
+      const PRODUCT_ONE = await mainProductService.getProduct();
+      const PRODUCT_TWO = await otherProductService.getProduct();
 
       STOCK_MOVEMENT = await stockMovementService.createInbound({
         originId: supplierLocation.id,

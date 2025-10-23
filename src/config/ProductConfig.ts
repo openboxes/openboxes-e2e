@@ -44,7 +44,7 @@ class ProductConfig {
    * @returns {boolean}
    */
   get isCreateNew() {
-    return !this.readId();
+    return !this.id;
   }
 
   /**

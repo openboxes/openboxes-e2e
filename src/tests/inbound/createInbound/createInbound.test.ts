@@ -18,15 +18,14 @@ test.describe('Create inbound stock movement', () => {
 
   test.beforeEach(
     async ({
-      productService,
+      mainProductService,
+      otherProductService,
       mainUserService,
       supplierLocationService,
       mainLocationService,
     }) => {
-      productService.setProduct('1');
-      const PRODUCT_ONE = await productService.getProduct();
-      productService.setProduct('2');
-      const PRODUCT_TWO = await productService.getProduct();
+      const PRODUCT_ONE = await mainProductService.getProduct();
+      const PRODUCT_TWO = await otherProductService.getProduct();
       USER = await mainUserService.getUser();
       ORIGIN = await supplierLocationService.getLocation();
       CURRENT_LOCATION = await mainLocationService.getLocation();
@@ -189,16 +188,15 @@ test.describe('Values persistance between steps', () => {
 
   test.beforeEach(
     async ({
-      productService,
+      mainProductService,
+      otherProductService,
       mainUserService,
       createInboundPage,
       mainLocationService,
       supplierLocationService,
     }) => {
-      productService.setProduct('1');
-      const PRODUCT_ONE = await productService.getProduct();
-      productService.setProduct('2');
-      const PRODUCT_TWO = await productService.getProduct();
+      const PRODUCT_ONE = await mainProductService.getProduct();
+      const PRODUCT_TWO = await otherProductService.getProduct();
       USER = await mainUserService.getUser();
       CURRENT_LOCATION = await mainLocationService.getLocation();
       ORIGIN = await supplierLocationService.getLocation();

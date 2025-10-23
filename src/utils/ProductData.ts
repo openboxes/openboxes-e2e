@@ -10,15 +10,12 @@ class ProductData {
   private productConfig: ProductConfig;
 
   constructor(
+    productType: keyof AppConfig['products'],
     request: APIRequestContext
   ) {
     this.productService = new ProductService(request);
 
-    this.productConfig = AppConfig.instance.products['1'];
-  }
-
-  setProduct(productCode: string) {
-    this.productConfig = AppConfig.instance.products[productCode];
+    this.productConfig = AppConfig.instance.products[productType];
   }
 
   async getProduct() {

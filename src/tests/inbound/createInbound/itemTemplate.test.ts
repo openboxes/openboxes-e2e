@@ -75,7 +75,8 @@ test.describe('Export items template on inbound add items page', () => {
 
   test('Downloaded template should contain all added items', async ({
     createInboundPage,
-    productService,
+    mainProductService,
+    otherProductService,
     mainUserService,
   }) => {
     await test.step('Go to inbound list page', async () => {
@@ -83,10 +84,8 @@ test.describe('Export items template on inbound add items page', () => {
       await createInboundPage.addItemsStep.isLoaded();
     });
 
-    productService.setProduct('1');
-    const PRODUCT_ONE = await productService.getProduct();
-    productService.setProduct('2');
-    const PRODUCT_TWO = await productService.getProduct();
+    const PRODUCT_ONE = await mainProductService.getProduct();
+    const PRODUCT_TWO = await otherProductService.getProduct();
     const USER = await mainUserService.getUser();
 
     const ROWS = [
@@ -176,7 +175,8 @@ test.describe('Import template with data', () => {
 
   test('Import filled template on an empty table', async ({
     createInboundPage,
-    productService,
+    mainProductService,
+    otherProductService,
     mainUserService,
   }) => {
     await test.step('Go to inbound list page', async () => {
@@ -193,10 +193,8 @@ test.describe('Import template with data', () => {
       workbooks.push(downloadedTemplateFile);
     });
 
-    productService.setProduct('1');
-    const PRODUCT_ONE = await productService.getProduct();
-    productService.setProduct('2');
-    const PRODUCT_TWO = await productService.getProduct();
+    const PRODUCT_ONE = await mainProductService.getProduct();
+    const PRODUCT_TWO = await otherProductService.getProduct();
     const USER = await mainUserService.getUser();
 
     const ROWS = [
@@ -256,7 +254,8 @@ test.describe('Import template with data', () => {
 
   test.skip('Update existing values with template import', async ({
     createInboundPage,
-    productService,
+    otherProductService,
+    mainProductService,
     altUserService,
     mainUserService,
   }) => {
@@ -266,8 +265,7 @@ test.describe('Import template with data', () => {
     });
 
     await test.step('Add items to table', async () => {
-      productService.setProduct('1');
-      const PRODUCT_ONE = await productService.getProduct();
+      const PRODUCT_ONE = await mainProductService.getProduct();
       const USER = await mainUserService.getUser();
 
       const ROWS = [
@@ -302,8 +300,7 @@ test.describe('Import template with data', () => {
       parsedDocumentData = downloadedTemplateFile.sheetToJSON();
     });
 
-    productService.setProduct('2');
-    const PRODUCT_TWO = await productService.getProduct();
+    const PRODUCT_TWO = await otherProductService.getProduct();
     const ALT_USER = await altUserService.getUser();
 
     const NEW_ROW = {
@@ -348,7 +345,8 @@ test.describe('Import template with data', () => {
 
   test('Add new row to with existing items in the table', async ({
     createInboundPage,
-    productService,
+    otherProductService,
+    mainProductService,
     altUserService,
     mainUserService,
   }) => {
@@ -359,8 +357,7 @@ test.describe('Import template with data', () => {
 
     let ROW: CreateInboundAddItemsTableEntity;
     await test.step('Add items to table', async () => {
-      productService.setProduct('1');
-      const PRODUCT_ONE = await productService.getProduct();
+      const PRODUCT_ONE = await mainProductService.getProduct();
       const USER = await mainUserService.getUser();
 
       ROW = {
@@ -392,8 +389,7 @@ test.describe('Import template with data', () => {
       parsedDocumentData = downloadedTemplateFile.sheetToJSON();
     });
 
-    productService.setProduct('2')
-    const PRODUCT_TWO = await productService.getProduct();
+    const PRODUCT_TWO = await otherProductService.getProduct();
     const ALT_USER = await altUserService.getUser();
 
     const NEW_ROW = {

@@ -10,13 +10,12 @@ test.describe('Switching location on inbound stock movement', () => {
 
   test.beforeEach(
     async ({
-      productService,
+      mainProductService,
       mainUserService,
       createInboundPage,
       supplierLocationService,
     }) => {
-      productService.setProduct('1');
-      const PRODUCT_ONE = await productService.getProduct();
+      const PRODUCT_ONE = await mainProductService.getProduct();
       const USER = await mainUserService.getUser();
       const ORIGIN = await supplierLocationService.getLocation();
       const DESCRIPTION = 'some description';

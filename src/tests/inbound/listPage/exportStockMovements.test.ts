@@ -14,13 +14,12 @@ test.describe('Export stock movements', () => {
     async ({
       supplierLocationService,
       stockMovementService,
-      productService,
+      mainProductService,
+      otherProductService,
     }) => {
       const supplierLocation = await supplierLocationService.getLocation();
-      productService.setProduct('1');
-      const PRODUCT_ONE = await productService.getProduct();
-      productService.setProduct('2');
-      const PRODUCT_TWO = await productService.getProduct();
+      const PRODUCT_ONE = await mainProductService.getProduct();
+      const PRODUCT_TWO = await otherProductService.getProduct();
 
       INBOUND1 = await stockMovementService.createInbound({
         originId: supplierLocation.id,

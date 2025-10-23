@@ -16,12 +16,11 @@ test.describe('Download documents from inbound send page', () => {
 
   test.beforeEach(
     async ({
-      productService,
+      mainProductService,
       mainUserService,
       supplierLocationService,
     }) => {
-      productService.setProduct('1');
-      const PRODUCT_ONE = await productService.getProduct();
+      const PRODUCT_ONE = await mainProductService.getProduct();
       USER = await mainUserService.getUser();
       ORIGIN = await supplierLocationService.getLocation();
 

@@ -10,15 +10,14 @@ test.describe('Validations on edit Deliver On Date when receiving shipment', () 
     async ({
       supplierLocationService,
       stockMovementService,
-      productService,
+      mainProductService,
     }) => {
       const supplierLocation = await supplierLocationService.getLocation();
       STOCK_MOVEMENT = await stockMovementService.createInbound({
         originId: supplierLocation.id,
       });
 
-      productService.setProduct('1');
-      const product = await productService.getProduct();
+      const product = await mainProductService.getProduct();
 
       await stockMovementService.addItemsToInboundStockMovement(
         STOCK_MOVEMENT.id,
