@@ -13,6 +13,10 @@ class LocationConfigurationTabSection extends BasePageModel {
     return this.section.getByLabel('Use Default Settings');
   }
 
+  get activeCheckbox() {
+    return this.section.getByRole('checkbox').first();
+  }
+
   get saveButton() {
     return this.section.getByRole('button', { name: 'Save' });
   }
