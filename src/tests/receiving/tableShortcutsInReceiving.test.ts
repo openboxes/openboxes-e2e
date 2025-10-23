@@ -95,6 +95,7 @@ test.describe('Use table shortcuts on receiving page', () => {
       await receivingPage.receivingStep.table
         .row(1)
         .receivingNowField.textbox.fill('10');
+      await receivingPage.receivingStep.table.row(1).receivingNowField.textbox.focus();  
       await page.keyboard.press('Control+ArrowDown');
       await page.keyboard.press('Control+ArrowDown');
       await page.keyboard.press('Control+ArrowDown');
@@ -116,6 +117,7 @@ test.describe('Use table shortcuts on receiving page', () => {
       await receivingPage.receivingStep.table
         .row(1)
         .commentField.textbox.fill(comment1);
+      await receivingPage.receivingStep.table.row(1).commentField.textbox.focus();  
       await page.keyboard.press('Control+ArrowDown');
       await page.keyboard.press('Control+ArrowDown');
       await page.keyboard.press('Control+ArrowDown');
@@ -137,6 +139,7 @@ test.describe('Use table shortcuts on receiving page', () => {
       await receivingPage.receivingStep.table
         .row(5)
         .receivingNowField.textbox.fill('5');
+      await receivingPage.receivingStep.table.row(5).receivingNowField.textbox.focus();  
       await page.keyboard.press('Control+ArrowDown');
       await expect(
         receivingPage.receivingStep.table.row(6).receivingNowField.textbox
@@ -144,6 +147,7 @@ test.describe('Use table shortcuts on receiving page', () => {
       await receivingPage.receivingStep.table
         .row(5)
         .commentField.textbox.fill(comment2);
+      await receivingPage.receivingStep.table.row(5).commentField.textbox.focus();    
       await page.keyboard.press('Control+ArrowDown');
       await expect(
         receivingPage.receivingStep.table.row(6).commentField.textbox
