@@ -94,7 +94,7 @@ test.describe('Receive item into hold bin', () => {
       await stockMovementShowPage.rollbackButton.click();
       await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
 
-      await test.step('Delete created bin location', async () => {
+      await test.step('Deatitave created bin location', async () => {
         const mainLocation = await mainLocationService.getLocation();
         await page.goto('./location/list');
         await locationListPage.searchByLocationNameField.fill(
@@ -114,7 +114,10 @@ test.describe('Receive item into hold bin', () => {
           'Enter'
         );
         await createLocationPage.binLocationTabSection.isLoaded();
-        await createLocationPage.binLocationTabSection.deleteBinButton.click();
+        await createLocationPage.binLocationTabSection.editBinButton.click();
+        await createLocationPage.locationConfigurationTab.click();
+        await createLocationPage.locationConfigurationTabSection.activeCheckbox.uncheck();
+        await createLocationPage.locationConfigurationTabSection.saveButton.click();
       });
     }
   );
