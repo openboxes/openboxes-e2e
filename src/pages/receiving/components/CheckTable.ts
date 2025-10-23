@@ -46,7 +46,7 @@ class Row extends BasePageModel {
   }
 
   get cancelRemainingCheckbox() {
-    return this.row.getByTestId('checkbox');
+    return this.row.getByTestId('form-field').getByTestId('checkbox');
   }
 }
 
