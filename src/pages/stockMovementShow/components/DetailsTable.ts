@@ -30,6 +30,14 @@ class DetailsTable extends BasePageModel {
   get destinationValue() {
     return this.destinationRow.locator('.value');
   }
+
+  get shipmentRow() {
+    return this.rows.filter({ hasText: 'Shipment' });
+  }
+
+  get oldViewShipmentPage() {
+    return this.shipmentRow.locator('.value').getByRole('link');
+  }
 }
 
 export default DetailsTable;

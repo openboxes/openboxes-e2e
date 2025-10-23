@@ -44,7 +44,7 @@ class CreateLocationPage extends BasePageModel {
   }
 
   get actionButton() {
-    return this.page.getByRole('button', { name: 'action' });
+    return this.page.getByRole('button', { name: 'Action' });
   }
 
   get deleteLocationButton() {

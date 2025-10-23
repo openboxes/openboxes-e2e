@@ -72,6 +72,11 @@ class InboundListPage extends BasePageModel {
     await this.exportStockMovementsButton.click();
     return await this.fileHandler.saveFile();
   }
+
+  async waitForNetworkIdle() {
+    // eslint-disable-next-line playwright/no-networkidle
+    await this.page.waitForLoadState('networkidle');
+  }
 }
 
 export default InboundListPage;

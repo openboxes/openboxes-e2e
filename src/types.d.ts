@@ -49,6 +49,7 @@ type LocationResponse = {
     name: string;
     code: string;
   };
+  parentLocation?: string;
 };
 
 type CreateLocationPayload = {
@@ -201,6 +202,11 @@ type StockMovementResponse = {
   requestType: unknown;
   sourceType: unknown;
   picklist: { id: string };
+  associations: {
+    shipment: {
+      id: string;
+    };
+  };
 };
 
 type UpdateStockMovementItemsPayload = {
@@ -244,7 +250,7 @@ type ReceiptResponse = {
   description: string;
   recipient: Recipient;
   isShipmentFromPurchaseOrder: boolean;
-}
+};
 
 type Container = {
   containerId: string | null;
@@ -253,7 +259,7 @@ type Container = {
   parentContainerName: string | null;
   containerType: string | null;
   shipmentItems: ShipmentItem[];
-}
+};
 
 type ContainerInfo = {
   id: string;
@@ -307,8 +313,9 @@ type ShipmentItem = {
   unitOfMeasure: string;
   packSize: number;
   packsRequested: number;
-  original?: boolean,
-}
+  original?: boolean;
+  'binLocation.name': string;
+};
 
 type Recipient = {
   id: string;
@@ -318,23 +325,24 @@ type Recipient = {
   email: string;
   username: string;
   roles: string[];
-}
+};
 
 type ReceivingItemPayload = {
-  shipmentItemId: string,
-  quantityReceiving?: number,
-  quantityShipped?: number,
-  comment?: string,
-  binLocationId?: string,
-  lotNumber?: string,
-  expirationDate?: string,
-  original?: boolean,
-  newLine?: boolean,
-  receiptItemId?: string | null,
-}
+  shipmentItemId: string;
+  quantityReceiving?: number;
+  quantityShipped?: number;
+  comment?: string;
+  binLocationId?: string;
+  lotNumber?: string;
+  expirationDate?: string;
+  original?: boolean;
+  newLine?: boolean;
+  receiptItemId?: string | null;
+  binLocationName?: string;
+};
 
 type ReceiptPayload = Omit<ReceiptResponse, 'containers' | 'recipient'> & {
-  containers: UnflattenContainer[];
+  containers: UnflattenContainer[] | Container[];
   recipient: string;
 };
 

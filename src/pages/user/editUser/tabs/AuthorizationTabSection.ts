@@ -33,7 +33,7 @@ class AuthorizationTabSection extends BasePageModel {
   }
 
   get addLocationRolesButton() {
-    return this.section.getByRole('button', { name: 'Add Location Roles' });
+    return this.section.getByRole('cell').getByRole('button', { name: 'Add Location Roles' });
   }
 
   get defaultLocationSelect() {

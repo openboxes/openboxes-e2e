@@ -77,7 +77,7 @@ test.describe('Edit Bin Location when receive inbound stock movement', () => {
       await stockMovementShowPage.rollbackButton.click();
       await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
 
-      await test.step('Delete created bin location', async () => {
+      await test.step('Deactivate created bin location', async () => {
         const mainLocation = await mainLocationService.getLocation();
         await page.goto('./location/list');
         await locationListPage.searchByLocationNameField.fill(
@@ -97,7 +97,10 @@ test.describe('Edit Bin Location when receive inbound stock movement', () => {
           'Enter'
         );
         await createLocationPage.binLocationTabSection.isLoaded();
-        await createLocationPage.binLocationTabSection.deleteBinButton.click();
+        await createLocationPage.binLocationTabSection.editBinButton.click();
+        await createLocationPage.locationConfigurationTab.click();
+        await createLocationPage.locationConfigurationTabSection.activeCheckbox.uncheck();
+        await createLocationPage.locationConfigurationTabSection.saveButton.click();
       });
     }
   );
@@ -257,7 +260,7 @@ test.describe('Edit Bin Location to bin with zone when receive inbound stock mov
       await stockMovementShowPage.rollbackButton.click();
       await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
 
-      await test.step('Delete created bin location', async () => {
+      await test.step('Deactivate created bin location', async () => {
         const mainLocation = await mainLocationService.getLocation();
         await page.goto('./location/list');
         await locationListPage.searchByLocationNameField.fill(
@@ -277,10 +280,13 @@ test.describe('Edit Bin Location to bin with zone when receive inbound stock mov
           'Enter'
         );
         await createLocationPage.binLocationTabSection.isLoaded();
-        await createLocationPage.binLocationTabSection.deleteBinButton.click();
+        await createLocationPage.binLocationTabSection.editBinButton.click();
+        await createLocationPage.locationConfigurationTab.click();
+        await createLocationPage.locationConfigurationTabSection.activeCheckbox.uncheck();
+        await createLocationPage.locationConfigurationTabSection.saveButton.click();
       });
 
-      await test.step('Delete created zone location', async () => {
+      await test.step('Deactivate created zone location', async () => {
         await createLocationPage.zoneLocationTab.click();
         await createLocationPage.zoneLocationTabSection.isLoaded();
         await createLocationPage.zoneLocationTabSection.searchField.fill(
@@ -290,8 +296,10 @@ test.describe('Edit Bin Location to bin with zone when receive inbound stock mov
           'Enter'
         );
         await createLocationPage.zoneLocationTabSection.isLoaded();
-        await createLocationPage.zoneLocationTabSection.deleteZoneButton.click();
-        await createLocationPage.zoneLocationTabSection.isLoaded();
+        await createLocationPage.zoneLocationTabSection.editZoneButton.click();
+        await createLocationPage.locationConfigurationTab.click();
+        await createLocationPage.locationConfigurationTabSection.activeCheckbox.uncheck();
+        await createLocationPage.locationConfigurationTabSection.saveButton.click();
       });
     }
   );
@@ -436,7 +444,7 @@ test.describe('Edit Bin Location when receive for all lines', () => {
       await stockMovementShowPage.rollbackButton.click();
       await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
 
-      await test.step('Delete created bin location', async () => {
+      await test.step('Deactivate created bin location', async () => {
         const mainLocation = await mainLocationService.getLocation();
         await page.goto('./location/list');
         await locationListPage.searchByLocationNameField.fill(
@@ -456,7 +464,10 @@ test.describe('Edit Bin Location when receive for all lines', () => {
           'Enter'
         );
         await createLocationPage.binLocationTabSection.isLoaded();
-        await createLocationPage.binLocationTabSection.deleteBinButton.click();
+        await createLocationPage.binLocationTabSection.editBinButton.click();
+        await createLocationPage.locationConfigurationTab.click();
+        await createLocationPage.locationConfigurationTabSection.activeCheckbox.uncheck();
+        await createLocationPage.locationConfigurationTabSection.saveButton.click();
       });
     }
   );

@@ -144,38 +144,36 @@ test.describe('Export all incoming items', () => {
     }
   );
 
-  test.afterEach(
-    async ({ stockMovementService, stockMovementShowPage }) => {
-      await stockMovementShowPage.goToPage(INBOUND_ID);
-      await stockMovementShowPage.isLoaded();
-      const isRollbackLastReceiptButtonVisible =
-        await stockMovementShowPage.rollbackLastReceiptButton.isVisible();
-      const isRollbackButtonVisible =
-        await stockMovementShowPage.rollbackButton.isVisible();
+  test.afterEach(async ({ stockMovementService, stockMovementShowPage }) => {
+    await stockMovementShowPage.goToPage(INBOUND_ID);
+    await stockMovementShowPage.isLoaded();
+    const isRollbackLastReceiptButtonVisible =
+      await stockMovementShowPage.rollbackLastReceiptButton.isVisible();
+    const isRollbackButtonVisible =
+      await stockMovementShowPage.rollbackButton.isVisible();
 
-      // due to failed test, shipment might not be received which will not show the button
-      if (isRollbackLastReceiptButtonVisible) {
-        await stockMovementShowPage.rollbackLastReceiptButton.click();
-      }
-
-      if (isRollbackButtonVisible) {
-        await stockMovementShowPage.rollbackButton.click();
-      }
-
-      await stockMovementService.deleteStockMovement(INBOUND_ID);
-
-      for (const workbook of workbooks) {
-        workbook.delete();
-      }
-
-      if (INBOUND2_ID) {
-        await stockMovementShowPage.goToPage(INBOUND2_ID);
-        await stockMovementShowPage.isLoaded();
-        await stockMovementShowPage.rollbackButton.click();
-        await stockMovementService.deleteStockMovement(INBOUND2_ID);
-      }
+    // due to failed test, shipment might not be received which will not show the button
+    if (isRollbackLastReceiptButtonVisible) {
+      await stockMovementShowPage.rollbackLastReceiptButton.click();
     }
-  );
+
+    if (isRollbackButtonVisible) {
+      await stockMovementShowPage.rollbackButton.click();
+    }
+
+    await stockMovementService.deleteStockMovement(INBOUND_ID);
+
+    for (const workbook of workbooks) {
+      workbook.delete();
+    }
+
+    if (INBOUND2_ID) {
+      await stockMovementShowPage.goToPage(INBOUND2_ID);
+      await stockMovementShowPage.isLoaded();
+      await stockMovementShowPage.rollbackButton.click();
+      await stockMovementService.deleteStockMovement(INBOUND2_ID);
+    }
+  });
 
   test('Export all incoming items should include shipped items', async ({
     inboundListPage,
@@ -189,6 +187,7 @@ test.describe('Export all incoming items', () => {
     let downloadedTemplateFile: WorkbookUtils;
 
     await test.step('Download file', async () => {
+      await inboundListPage.waitForNetworkIdle();
       const { fullFilePath } = await inboundListPage.downloadAllIncomingItems();
       filePath = fullFilePath;
     });
@@ -250,6 +249,7 @@ test.describe('Export all incoming items', () => {
     });
 
     await test.step('Download file', async () => {
+      await inboundListPage.waitForNetworkIdle();
       const { fullFilePath } = await inboundListPage.downloadAllIncomingItems();
       filePath = fullFilePath;
     });
@@ -315,6 +315,7 @@ test.describe('Export all incoming items', () => {
     });
 
     await test.step('Download file', async () => {
+      await inboundListPage.waitForNetworkIdle();
       const { fullFilePath } = await inboundListPage.downloadAllIncomingItems();
       filePath = fullFilePath;
     });
