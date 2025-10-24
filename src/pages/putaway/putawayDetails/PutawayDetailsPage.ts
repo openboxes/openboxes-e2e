@@ -51,7 +51,7 @@ class PutawayDetailsPage extends BasePageModel {
   }
 
   get editButton() {
-    return this.page.getByRole('button', { name: 'Edit Putaway' });
+    return this.page.getByRole('link', { name: 'Edit Putaway' });
   }
 }
 
