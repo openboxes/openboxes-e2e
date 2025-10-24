@@ -19,6 +19,10 @@ class StartStep extends BasePageModel {
   get nextButton() {
     return this.page.getByTestId('next-button');
   }
+
+  get saveButton() {
+    return this.page.getByTestId('save-button');
+  }
 }
 
 export default StartStep;
