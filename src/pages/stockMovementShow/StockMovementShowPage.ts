@@ -102,6 +102,10 @@ class StockMovementShowPage extends BasePageModel {
     return this.page.locator('div.error');
   }
 
+  get informationMessage() {
+    return this.page.getByRole('status', { name: 'message' });
+  }
+
   async clickDeleteShipment() {
     this.page.once('dialog', (dialog) => dialog.accept());
     await this.deleteButton.click();
