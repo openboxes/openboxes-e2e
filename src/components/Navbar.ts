@@ -92,6 +92,10 @@ class Navbar extends BasePageModel {
     return this.getNavItem('Create Putaway');
   }
 
+  get listPutaways() {
+    return this.getNavItem('List Putaways');
+  }
+
   get transactions() {
     return this.getNavItem('Transactions');
   }
