@@ -13,12 +13,10 @@ class PutawayListPage extends BasePageModel {
     this.table = new PutawayListTable(page);
   }
 
-  async goToPage() {
-    await this.page.goto('./order/list?orderType=PUTAWAY_ORDER&status=PENDING');
-  }
-
-  async waitForResponse() {
-    await this.page.waitForResponse('./api/stockMovements?**');
+  async goToPage(status = 'PENDING') {
+    await this.page.goto(
+      './order/list?orderType=PUTAWAY_ORDER&status=' + `${status}`
+    );
   }
 
   async isLoaded() {

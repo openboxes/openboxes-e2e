@@ -102,7 +102,7 @@ class StockMovementShowPage extends BasePageModel {
     return this.page.locator('div.error');
   }
 
-  get informationMessage() {
+  get rollbackReceiptInformationMessage() {
     return this.page.getByRole('status', { name: 'message' });
   }
 

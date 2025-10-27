@@ -122,6 +122,14 @@ test.describe('Rollback last receipt behavior when putaway created', () => {
       await stockMovementShowPage.isLoaded();
       await expect(stockMovementShowPage.statusTag).toHaveText('Received');
       await stockMovementShowPage.rollbackLastReceiptButton.click();
+      await expect(
+        stockMovementShowPage.rollbackReceiptInformationMessage
+      ).toBeVisible();
+      await expect(
+        stockMovementShowPage.rollbackReceiptInformationMessage
+      ).toContainText(
+        'Successfully rolled back last receipt in stock movement '
+      );
       await expect(stockMovementShowPage.statusTag).toHaveText('Shipped');
     });
 
@@ -169,10 +177,12 @@ test.describe('Rollback last receipt behavior when putaway created', () => {
       await stockMovementShowPage.isLoaded();
       await expect(stockMovementShowPage.statusTag).toHaveText('Received');
       await stockMovementShowPage.rollbackLastReceiptButton.click();
-      await expect(stockMovementShowPage.informationMessage).toBeVisible();
-      await expect(stockMovementShowPage.informationMessage).toContainText(
-        'Unable to rollback last receipt in stock movement'
-      );
+      await expect(
+        stockMovementShowPage.rollbackReceiptInformationMessage
+      ).toBeVisible();
+      await expect(
+        stockMovementShowPage.rollbackReceiptInformationMessage
+      ).toContainText('Unable to rollback last receipt in stock movement');
       await expect(stockMovementShowPage.statusTag).toHaveText('Received');
     });
   });
