@@ -1,9 +1,10 @@
+import AppConfig from '@/config/AppConfig';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
 import { StockMovementResponse } from '@/types';
 import { getToday } from '@/utils/DateUtils';
 
-test.describe('Validations on edit and receive inbound stock movement', () => {
+test.describe('Assert validation on try to receive not yet shipped inbound', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
   const description = 'some description';
   const dateRequested = getToday();
@@ -36,20 +37,6 @@ test.describe('Validations on edit and receive inbound stock movement', () => {
 
   test.afterEach(async ({ stockMovementShowPage, stockMovementService }) => {
     await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
-    const isRollbackLastReceiptButtonVisible =
-      await stockMovementShowPage.rollbackLastReceiptButton.isVisible();
-    const isRollbackButtonVisible =
-      await stockMovementShowPage.rollbackButton.isVisible();
-
-    // due to failed test, shipment might not be received which will not show the button
-    if (isRollbackLastReceiptButtonVisible) {
-      await stockMovementShowPage.rollbackLastReceiptButton.click();
-    }
-
-    if (isRollbackButtonVisible) {
-      await stockMovementShowPage.rollbackButton.click();
-    }
-
     await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
   });
 
@@ -74,6 +61,91 @@ test.describe('Validations on edit and receive inbound stock movement', () => {
       );
     });
   });
+});
+
+test.describe('Validations on edit and receive inbound stock movement', () => {
+  let STOCK_MOVEMENT: StockMovementResponse;
+  const description = 'some description';
+  const dateRequested = getToday();
+
+  test.beforeEach(
+    async ({
+      supplierLocationService,
+      stockMovementService,
+      mainProductService,
+    }) => {
+      const supplierLocation = await supplierLocationService.getLocation();
+      STOCK_MOVEMENT = await stockMovementService.createInbound({
+        originId: supplierLocation.id,
+        description,
+        dateRequested,
+      });
+
+      const product = await mainProductService.getProduct();
+
+      await stockMovementService.addItemsToInboundStockMovement(
+        STOCK_MOVEMENT.id,
+        [{ productId: product.id, quantity: 10 }]
+      );
+
+      await stockMovementService.sendInboundStockMovement(STOCK_MOVEMENT.id, {
+        shipmentType: ShipmentType.AIR,
+      });
+    }
+  );
+
+  test.afterEach(
+    async ({
+      stockMovementShowPage,
+      stockMovementService,
+      mainLocationService,
+      page,
+      locationListPage,
+      createLocationPage,
+    }) => {
+      await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
+      const isRollbackLastReceiptButtonVisible =
+        await stockMovementShowPage.rollbackLastReceiptButton.isVisible();
+      const isRollbackButtonVisible =
+        await stockMovementShowPage.rollbackButton.isVisible();
+
+      // due to failed test, shipment might not be received which will not show the button
+      if (isRollbackLastReceiptButtonVisible) {
+        await stockMovementShowPage.rollbackLastReceiptButton.click();
+      }
+
+      if (isRollbackButtonVisible) {
+        await stockMovementShowPage.rollbackButton.click();
+      }
+
+      await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
+
+      await test.step('Deactivate receiving bin', async () => {
+        const mainLocation = await mainLocationService.getLocation();
+        const receivingBin =
+          AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
+        await page.goto('./location/list');
+        await locationListPage.searchByLocationNameField.fill(
+          mainLocation.name
+        );
+        await locationListPage.findButton.click();
+        await locationListPage.getLocationEditButton(mainLocation.name).click();
+        await createLocationPage.binLocationTab.click();
+        await createLocationPage.binLocationTabSection.isLoaded();
+        await createLocationPage.binLocationTabSection.searchField.fill(
+          receivingBin
+        );
+        await createLocationPage.binLocationTabSection.searchField.press(
+          'Enter'
+        );
+        await createLocationPage.binLocationTabSection.isLoaded();
+        await createLocationPage.binLocationTabSection.editBinButton.click();
+        await createLocationPage.locationConfigurationTab.click();
+        await createLocationPage.locationConfigurationTabSection.activeCheckbox.uncheck();
+        await createLocationPage.locationConfigurationTabSection.saveButton.click();
+      });
+    }
+  );
 
   test('Assert access to Edit page for partially received and received inbounds', async ({
     stockMovementShowPage,

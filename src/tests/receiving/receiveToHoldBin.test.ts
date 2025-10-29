@@ -1,3 +1,4 @@
+import AppConfig from '@/config/AppConfig';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
 import { StockMovementResponse } from '@/types';
@@ -89,13 +90,15 @@ test.describe('Receive item into hold bin', () => {
       mainLocationService,
       createLocationPage,
     }) => {
+      const mainLocation = await mainLocationService.getLocation();
+      const receivingBin =
+        AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
       await stockMovementShowPage.rollbackLastReceiptButton.click();
       await stockMovementShowPage.rollbackButton.click();
       await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
 
       await test.step('Deatitave created bin location', async () => {
-        const mainLocation = await mainLocationService.getLocation();
         await page.goto('./location/list');
         await locationListPage.searchByLocationNameField.fill(
           mainLocation.name
@@ -109,6 +112,22 @@ test.describe('Receive item into hold bin', () => {
         await createLocationPage.binLocationTabSection.isLoaded();
         await createLocationPage.binLocationTabSection.searchField.fill(
           binLocationName
+        );
+        await createLocationPage.binLocationTabSection.searchField.press(
+          'Enter'
+        );
+        await createLocationPage.binLocationTabSection.isLoaded();
+        await createLocationPage.binLocationTabSection.editBinButton.click();
+        await createLocationPage.locationConfigurationTab.click();
+        await createLocationPage.locationConfigurationTabSection.activeCheckbox.uncheck();
+        await createLocationPage.locationConfigurationTabSection.saveButton.click();
+      });
+
+      await test.step('Deactivate receiving bin', async () => {
+        await createLocationPage.binLocationTab.click();
+        await createLocationPage.binLocationTabSection.isLoaded();
+        await createLocationPage.binLocationTabSection.searchField.fill(
+          receivingBin
         );
         await createLocationPage.binLocationTabSection.searchField.press(
           'Enter'

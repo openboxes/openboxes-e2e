@@ -1,3 +1,4 @@
+import AppConfig from '@/config/AppConfig';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
 import { StockMovementResponse } from '@/types';
@@ -34,12 +35,46 @@ test.describe('Assert Goods Receipt Note is created and opened', () => {
     }
   );
 
-  test.afterEach(async ({ stockMovementShowPage, stockMovementService }) => {
-    await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
-    await stockMovementShowPage.rollbackLastReceiptButton.click();
-    await stockMovementShowPage.rollbackButton.click();
-    await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
-  });
+  test.afterEach(
+    async ({
+      stockMovementShowPage,
+      stockMovementService,
+      mainLocationService,
+      page,
+      locationListPage,
+      createLocationPage,
+    }) => {
+      await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
+      await stockMovementShowPage.rollbackLastReceiptButton.click();
+      await stockMovementShowPage.rollbackButton.click();
+      await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
+      
+      await test.step('Deactivate receiving bin', async () => {
+        const mainLocation = await mainLocationService.getLocation();
+        const receivingBin =
+          AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
+        await page.goto('./location/list');
+        await locationListPage.searchByLocationNameField.fill(
+          mainLocation.name
+        );
+        await locationListPage.findButton.click();
+        await locationListPage.getLocationEditButton(mainLocation.name).click();
+        await createLocationPage.binLocationTab.click();
+        await createLocationPage.binLocationTabSection.isLoaded();
+        await createLocationPage.binLocationTabSection.searchField.fill(
+          receivingBin
+        );
+        await createLocationPage.binLocationTabSection.searchField.press(
+          'Enter'
+        );
+        await createLocationPage.binLocationTabSection.isLoaded();
+        await createLocationPage.binLocationTabSection.editBinButton.click();
+        await createLocationPage.locationConfigurationTab.click();
+        await createLocationPage.locationConfigurationTabSection.activeCheckbox.uncheck();
+        await createLocationPage.locationConfigurationTabSection.saveButton.click();
+      });
+    }
+  );
 
   test('Assert Goods Receipt note is created', async ({
     stockMovementShowPage,

@@ -48,24 +48,58 @@ test.describe('Import receiving template', () => {
     }
   );
 
-  test.afterEach(async ({ stockMovementShowPage, stockMovementService }) => {
-    await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
-    const isButtonVisible =
-      await stockMovementShowPage.rollbackLastReceiptButton.isVisible();
+  test.afterEach(
+    async ({
+      stockMovementShowPage,
+      stockMovementService,
+      mainLocationService,
+      page,
+      locationListPage,
+      createLocationPage,
+    }) => {
+      await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
+      const isButtonVisible =
+        await stockMovementShowPage.rollbackLastReceiptButton.isVisible();
 
-    // due to failed test, shipment might not be received which will not show the button
-    if (isButtonVisible) {
-      await stockMovementShowPage.rollbackLastReceiptButton.click();
+      // due to failed test, shipment might not be received which will not show the button
+      if (isButtonVisible) {
+        await stockMovementShowPage.rollbackLastReceiptButton.click();
+      }
+
+      await stockMovementShowPage.rollbackButton.click();
+
+      await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
+
+      for (const workbook of workbooks) {
+        workbook.delete();
+      }
+
+      await test.step('Deactivate receiving bin', async () => {
+        const mainLocation = await mainLocationService.getLocation();
+        const receivingBin =
+          AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
+        await page.goto('./location/list');
+        await locationListPage.searchByLocationNameField.fill(
+          mainLocation.name
+        );
+        await locationListPage.findButton.click();
+        await locationListPage.getLocationEditButton(mainLocation.name).click();
+        await createLocationPage.binLocationTab.click();
+        await createLocationPage.binLocationTabSection.isLoaded();
+        await createLocationPage.binLocationTabSection.searchField.fill(
+          receivingBin
+        );
+        await createLocationPage.binLocationTabSection.searchField.press(
+          'Enter'
+        );
+        await createLocationPage.binLocationTabSection.isLoaded();
+        await createLocationPage.binLocationTabSection.editBinButton.click();
+        await createLocationPage.locationConfigurationTab.click();
+        await createLocationPage.locationConfigurationTabSection.activeCheckbox.uncheck();
+        await createLocationPage.locationConfigurationTabSection.saveButton.click();
+      });
     }
-
-    await stockMovementShowPage.rollbackButton.click();
-
-    await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
-
-    for (const workbook of workbooks) {
-      workbook.delete();
-    }
-  });
+  );
 
   test('Receive shipment using import receiving template', async ({
     stockMovementShowPage,
@@ -110,7 +144,8 @@ test.describe('Import receiving template', () => {
     await test.step('Input receiving now qty into template', async () => {
       const documentRow = parsedDocumentData[1];
       const row = [...documentRow];
-      (row[RECEIVING_NOW_COLUMN_IDX] = '20'), (row[COMMENT_COLUMN_IDX] = 'e2e-comment');
+      (row[RECEIVING_NOW_COLUMN_IDX] = '20'),
+        (row[COMMENT_COLUMN_IDX] = 'e2e-comment');
       data.push(row);
     });
 
@@ -192,7 +227,9 @@ test.describe('Import receiving template', () => {
     await test.step('Input receiving now qty into template', async () => {
       const documentRow = parsedDocumentData[1];
       const row = [...documentRow];
-      (row[LOT_COLUMN_IDX] = 'editlot'), (row[RECEIVING_NOW_COLUMN_IDX] = '20'), (row[COMMENT_COLUMN_IDX] = 'comment');
+      (row[LOT_COLUMN_IDX] = 'editlot'),
+        (row[RECEIVING_NOW_COLUMN_IDX] = '20'),
+        (row[COMMENT_COLUMN_IDX] = 'comment');
       data.push(row);
     });
 
