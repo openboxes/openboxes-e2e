@@ -54,6 +54,10 @@ class Row extends BasePageModel {
       .getByRole('listitem')
       .getByText(putawayBin, { exact: true });
   }
+
+  getCurrentBin(currentBin: string) {
+    return this.row.getByTestId('cell-0-currentBin').getByText(currentBin);
+  }
 }
 
 export default StartPutawayTable;

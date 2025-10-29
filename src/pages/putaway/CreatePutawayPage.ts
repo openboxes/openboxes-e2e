@@ -30,8 +30,31 @@ class CreatePutawayPage extends BasePageModel {
     ).toBeVisible();
   }
 
+  async goToPage() {
+    await this.page.goto('./putAway/create');
+  }
+
   get startPutawayButton() {
     return this.page.getByTestId('start-putaway').nth(0);
+  }
+
+  get showByStockMovementFilter() {
+    return this.page.getByTestId('show-by-button');
+  }
+
+  get linesInPendingPutawayFilter() {
+    return this.page
+      .locator('#select-id_1 div')
+      .filter({ hasText: 'Exclude' })
+      .nth(1);
+  }
+
+  get includeLinesInPedningPutawayFilter() {
+    return this.page.getByRole('listitem').filter({ hasText: 'Include' });
+  }
+
+  get emptyCreatePageInformation() {
+    return this.page.locator('.rt-noData').getByText('No rows found');
   }
 }
 
