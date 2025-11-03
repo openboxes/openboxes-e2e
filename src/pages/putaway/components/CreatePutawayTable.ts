@@ -38,7 +38,7 @@ class Row extends BasePageModel {
       .getByText(binLocation);
   }
 
-  getproductName(name: string) {
+  getProductName(name: string) {
     return this.row.getByTestId('table-cell').getByText(name);
   }
 }

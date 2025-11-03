@@ -70,10 +70,9 @@ test.describe('Create putaway for more than 1 item, separate putaways', () => {
     }) => {
       await navbar.configurationButton.click();
       await navbar.transactions.click();
-      await transactionListPage.getDeleteTransaction(1);
-      await transactionListPage.getDeleteTransaction(1);
-      await transactionListPage.getDeleteTransaction(1);
-      await transactionListPage.getDeleteTransaction(1);
+      for (let n = 1; n < 4; n++) {
+        await transactionListPage.deleteTransaction(1);
+      }
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
       await stockMovementShowPage.detailsListTable.oldViewShipmentPage.click();
       await oldViewShipmentPage.undoStatusChangeButton.click();
@@ -121,10 +120,10 @@ test.describe('Create putaway for more than 1 item, separate putaways', () => {
         .getExpandBinLocation(receivingBin)
         .click();
       await expect(
-        createPutawayPage.table.row(1).getproductName(product.name)
+        createPutawayPage.table.row(1).getProductName(product.name)
       ).toBeVisible();
       await expect(
-        createPutawayPage.table.row(2).getproductName(product2.name)
+        createPutawayPage.table.row(2).getProductName(product2.name)
       ).toBeVisible();
       await createPutawayPage.table.row(1).checkbox.click();
       await createPutawayPage.startPutawayButton.click();
@@ -146,16 +145,16 @@ test.describe('Create putaway for more than 1 item, separate putaways', () => {
     await test.step('Change default fileting on create putaway page to include lines in pending putaways', async () => {
       await createPutawayPage.goToPage();
       await createPutawayPage.linesInPendingPutawayFilter.click();
-      await createPutawayPage.includeLinesInPedningPutawayFilter.click();
+      await createPutawayPage.includeLinesInPendingPutawayFilter.click();
       await createPutawayPage.table
         .row(0)
         .getExpandBinLocation(receivingBin)
         .click();
       await expect(
-        createPutawayPage.table.row(1).getproductName(product2.name)
+        createPutawayPage.table.row(1).getProductName(product2.name)
       ).toBeVisible();
       await expect(
-        createPutawayPage.table.row(2).getproductName(product.name)
+        createPutawayPage.table.row(2).getProductName(product.name)
       ).toBeVisible();
       await expect(createPutawayPage.table.row(2).checkbox).toBeDisabled();
     });
@@ -193,7 +192,7 @@ test.describe('Create putaway for more than 1 item, separate putaways', () => {
         .getExpandBinLocation(receivingBin)
         .click();
       await expect(
-        createPutawayPage.table.row(1).getproductName(product2.name)
+        createPutawayPage.table.row(1).getProductName(product2.name)
       ).toBeVisible();
       await createPutawayPage.table.row(1).checkbox.click();
       await createPutawayPage.startPutawayButton.click();
@@ -303,8 +302,8 @@ test.describe('Putaway 2 items in the same putaway', () => {
     }) => {
       await navbar.configurationButton.click();
       await navbar.transactions.click();
-      await transactionListPage.getDeleteTransaction(1);
-      await transactionListPage.getDeleteTransaction(1);
+      await transactionListPage.deleteTransaction(1);
+      await transactionListPage.deleteTransaction(1);
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
       await stockMovementShowPage.detailsListTable.oldViewShipmentPage.click();
       await oldViewShipmentPage.undoStatusChangeButton.click();
@@ -351,10 +350,10 @@ test.describe('Putaway 2 items in the same putaway', () => {
         .getExpandBinLocation(receivingBin)
         .click();
       await expect(
-        createPutawayPage.table.row(1).getproductName(product.name)
+        createPutawayPage.table.row(1).getProductName(product.name)
       ).toBeVisible();
       await expect(
-        createPutawayPage.table.row(2).getproductName(product2.name)
+        createPutawayPage.table.row(2).getProductName(product2.name)
       ).toBeVisible();
       await createPutawayPage.table.row(1).checkbox.click();
       await createPutawayPage.table.row(2).checkbox.click();

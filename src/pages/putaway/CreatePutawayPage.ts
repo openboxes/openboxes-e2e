@@ -49,7 +49,7 @@ class CreatePutawayPage extends BasePageModel {
       .nth(1);
   }
 
-  get includeLinesInPedningPutawayFilter() {
+  get includeLinesInPendingPutawayFilter() {
     return this.page.getByRole('listitem').filter({ hasText: 'Include' });
   }
 
