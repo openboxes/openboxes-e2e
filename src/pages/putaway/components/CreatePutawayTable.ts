@@ -31,6 +31,16 @@ class Row extends BasePageModel {
   get checkbox() {
     return this.row.getByRole('checkbox');
   }
+
+  getExpandBinLocation(binLocation: string) {
+    return this.row
+      .getByTestId('cell-undefined-undefined')
+      .getByText(binLocation);
+  }
+
+  getProductName(name: string) {
+    return this.row.getByTestId('table-cell').getByText(name);
+  }
 }
 
 export default CreatePutawayTable;

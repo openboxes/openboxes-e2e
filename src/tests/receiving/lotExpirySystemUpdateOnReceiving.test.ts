@@ -122,7 +122,7 @@ test.describe('Lot number system expiry date modification on receiving workflow'
 
     await test.step('Warning popup should not be visible after save', async () => {
       await expect(
-        receivingPage.receivingStep.updateExpiryDatePopup.dialog
+        receivingPage.receivingStep.updateExpiryDatePopup.tableDialog
       ).toBeHidden();
     });
 
@@ -326,14 +326,14 @@ test.describe('Lot number system expiry date modification on receiving workflow'
 
       await test.step('Warning popup should be visible after save', async () => {
         await expect(
-          receivingPage.receivingStep.updateExpiryDatePopup.dialog
+          receivingPage.receivingStep.updateExpiryDatePopup.tableDialog
         ).toBeVisible();
       });
 
       await test.step('Cancel update expiry date popup', async () => {
-        await receivingPage.receivingStep.updateExpiryDatePopup.cancelButton.click();
+        await receivingPage.receivingStep.updateExpiryDatePopup.noButton.click();
         await expect(
-          receivingPage.receivingStep.updateExpiryDatePopup.dialog
+          receivingPage.receivingStep.updateExpiryDatePopup.tableDialog
         ).toBeHidden();
       });
 
@@ -440,14 +440,14 @@ test.describe('Lot number system expiry date modification on receiving workflow'
 
       await test.step('Warning popup should be visible after save', async () => {
         await expect(
-          receivingPage.receivingStep.updateExpiryDatePopup.dialog
+          receivingPage.receivingStep.updateExpiryDatePopup.tableDialog
         ).toBeVisible();
       });
 
       await test.step('Confirm update expiry date popup', async () => {
-        await receivingPage.receivingStep.updateExpiryDatePopup.confirmButton.click();
+        await receivingPage.receivingStep.updateExpiryDatePopup.yesButton.click();
         await expect(
-          receivingPage.receivingStep.updateExpiryDatePopup.dialog
+          receivingPage.receivingStep.updateExpiryDatePopup.tableDialog
         ).toBeHidden();
       });
 
