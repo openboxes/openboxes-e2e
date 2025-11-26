@@ -1,6 +1,8 @@
+import AppConfig from '@/config/AppConfig';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
 import { StockMovementResponse } from '@/types';
+import BinLocationUtils from '@/utils/BinLocationUtils';
 import { formatDate, getDateByOffset } from '@/utils/DateUtils';
 
 test.describe('Assert if quantity inputs remain when split lines', () => {
@@ -41,24 +43,42 @@ test.describe('Assert if quantity inputs remain when split lines', () => {
     }
   );
 
-  test.afterEach(async ({ stockMovementShowPage, stockMovementService }) => {
-    await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
-    const isRollbackLastReceiptButtonVisible =
-      await stockMovementShowPage.rollbackLastReceiptButton.isVisible();
-    const isRollbackButtonVisible =
-      await stockMovementShowPage.rollbackButton.isVisible();
+  test.afterEach(
+    async ({
+      stockMovementShowPage,
+      stockMovementService,
+      mainLocationService,
+      page,
+      locationListPage,
+      createLocationPage,
+    }) => {
+      await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
+      const isRollbackLastReceiptButtonVisible =
+        await stockMovementShowPage.rollbackLastReceiptButton.isVisible();
+      const isRollbackButtonVisible =
+        await stockMovementShowPage.rollbackButton.isVisible();
 
-    // due to failed test, shipment might not be received which will not show the button
-    if (isRollbackLastReceiptButtonVisible) {
-      await stockMovementShowPage.rollbackLastReceiptButton.click();
+      if (isRollbackLastReceiptButtonVisible) {
+        await stockMovementShowPage.rollbackLastReceiptButton.click();
+      }
+
+      if (isRollbackButtonVisible) {
+        await stockMovementShowPage.rollbackButton.click();
+      }
+
+      await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
+
+      const receivingBin =
+        AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
+      await BinLocationUtils.deactivateReceivingBin({
+        mainLocationService,
+        locationListPage,
+        createLocationPage,
+        page,
+        receivingBin,
+      });
     }
-
-    if (isRollbackButtonVisible) {
-      await stockMovementShowPage.rollbackButton.click();
-    }
-
-    await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
-  });
+  );
 
   test('Assert quantity input after split line', async ({
     stockMovementShowPage,

@@ -1,6 +1,8 @@
+import AppConfig from '@/config/AppConfig';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
 import { StockMovementResponse } from '@/types';
+import BinLocationUtils from '@/utils/BinLocationUtils';
 
 test.describe('Assert Goods Receipt Note is created and opened', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
@@ -34,12 +36,30 @@ test.describe('Assert Goods Receipt Note is created and opened', () => {
     }
   );
 
-  test.afterEach(async ({ stockMovementShowPage, stockMovementService }) => {
-    await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
-    await stockMovementShowPage.rollbackLastReceiptButton.click();
-    await stockMovementShowPage.rollbackButton.click();
-    await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
-  });
+  test.afterEach(
+    async ({
+      stockMovementShowPage,
+      stockMovementService,
+      mainLocationService,
+      page,
+      locationListPage,
+      createLocationPage,
+    }) => {
+      await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
+      await stockMovementShowPage.rollbackLastReceiptButton.click();
+      await stockMovementShowPage.rollbackButton.click();
+      await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
+      const receivingBin =
+        AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
+      await BinLocationUtils.deactivateReceivingBin({
+        mainLocationService,
+        locationListPage,
+        createLocationPage,
+        page,
+        receivingBin,
+      });
+    }
+  );
 
   test('Assert Goods Receipt note is created', async ({
     stockMovementShowPage,

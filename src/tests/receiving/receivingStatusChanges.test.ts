@@ -1,8 +1,10 @@
+import AppConfig from '@/config/AppConfig';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
 import InboundListPage from '@/pages/inbound/list/InboundListPage';
 import StockMovementShowPage from '@/pages/stockMovementShow/StockMovementShowPage';
 import { StockMovementResponse } from '@/types';
+import BinLocationUtils from '@/utils/BinLocationUtils';
 import { getToday } from '@/utils/DateUtils';
 
 test.describe('Status changes on sm view page when receive shipment', () => {
@@ -41,24 +43,41 @@ test.describe('Status changes on sm view page when receive shipment', () => {
     }
   );
 
-  test.afterEach(async ({ stockMovementShowPage, stockMovementService }) => {
-    await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
-    const isRollbackLastReceiptButtonVisible =
-      await stockMovementShowPage.rollbackLastReceiptButton.isVisible();
-    const isRollbackButtonVisible =
-      await stockMovementShowPage.rollbackButton.isVisible();
+  test.afterEach(
+    async ({
+      stockMovementShowPage,
+      stockMovementService,
+      mainLocationService,
+      page,
+      locationListPage,
+      createLocationPage,
+    }) => {
+      await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
+      const isRollbackLastReceiptButtonVisible =
+        await stockMovementShowPage.rollbackLastReceiptButton.isVisible();
+      const isRollbackButtonVisible =
+        await stockMovementShowPage.rollbackButton.isVisible();
 
-    // due to failed test, shipment might not be received which will not show the button
-    if (isRollbackLastReceiptButtonVisible) {
-      await stockMovementShowPage.rollbackLastReceiptButton.click();
+      if (isRollbackLastReceiptButtonVisible) {
+        await stockMovementShowPage.rollbackLastReceiptButton.click();
+      }
+
+      if (isRollbackButtonVisible) {
+        await stockMovementShowPage.rollbackButton.click();
+      }
+
+      await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
+      const receivingBin =
+        AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
+      await BinLocationUtils.deactivateReceivingBin({
+        mainLocationService,
+        locationListPage,
+        createLocationPage,
+        page,
+        receivingBin,
+      });
     }
-
-    if (isRollbackButtonVisible) {
-      await stockMovementShowPage.rollbackButton.click();
-    }
-
-    await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
-  });
+  );
 
   test('Assert status changes on view page and receipt tab when receive 1 item partially', async ({
     stockMovementShowPage,

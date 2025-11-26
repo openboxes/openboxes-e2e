@@ -1,6 +1,8 @@
+import AppConfig from '@/config/AppConfig';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
 import { StockMovementResponse } from '@/types';
+import BinLocationUtils from '@/utils/BinLocationUtils';
 import { getDateByOffset } from '@/utils/DateUtils';
 
 test.describe('Validations on edit Deliver On Date when receiving shipment', () => {
@@ -30,11 +32,30 @@ test.describe('Validations on edit Deliver On Date when receiving shipment', () 
     }
   );
 
-  test.afterEach(async ({ stockMovementShowPage, stockMovementService }) => {
-    await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
-    await stockMovementShowPage.rollbackButton.click();
-    await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
-  });
+  test.afterEach(
+    async ({
+      stockMovementShowPage,
+      stockMovementService,
+      mainLocationService,
+      page,
+      locationListPage,
+      createLocationPage,
+    }) => {
+      await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
+      await stockMovementShowPage.rollbackButton.click();
+      await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
+
+      const receivingBin =
+        AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
+      await BinLocationUtils.deactivateReceivingBin({
+        mainLocationService,
+        locationListPage,
+        createLocationPage,
+        page,
+        receivingBin,
+      });
+    }
+  );
 
   test('Assert validation on try to edit Delivered on Date to future date', async ({
     stockMovementShowPage,

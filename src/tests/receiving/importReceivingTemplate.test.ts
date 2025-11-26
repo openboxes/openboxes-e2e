@@ -4,6 +4,7 @@ import AppConfig from '@/config/AppConfig';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
 import { StockMovementResponse } from '@/types';
+import BinLocationUtils from '@/utils/BinLocationUtils';
 import { getDateByOffset } from '@/utils/DateUtils';
 import UniqueIdentifier from '@/utils/UniqueIdentifier';
 import { WorkbookUtils } from '@/utils/WorkbookUtils';
@@ -48,24 +49,42 @@ test.describe('Import receiving template', () => {
     }
   );
 
-  test.afterEach(async ({ stockMovementShowPage, stockMovementService }) => {
-    await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
-    const isButtonVisible =
-      await stockMovementShowPage.rollbackLastReceiptButton.isVisible();
+  test.afterEach(
+    async ({
+      stockMovementShowPage,
+      stockMovementService,
+      mainLocationService,
+      page,
+      locationListPage,
+      createLocationPage,
+    }) => {
+      await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
+      const isButtonVisible =
+        await stockMovementShowPage.rollbackLastReceiptButton.isVisible();
 
-    // due to failed test, shipment might not be received which will not show the button
-    if (isButtonVisible) {
-      await stockMovementShowPage.rollbackLastReceiptButton.click();
+      if (isButtonVisible) {
+        await stockMovementShowPage.rollbackLastReceiptButton.click();
+      }
+
+      await stockMovementShowPage.rollbackButton.click();
+
+      await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
+
+      for (const workbook of workbooks) {
+        workbook.delete();
+      }
+
+      const receivingBin =
+        AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
+      await BinLocationUtils.deactivateReceivingBin({
+        mainLocationService,
+        locationListPage,
+        createLocationPage,
+        page,
+        receivingBin,
+      });
     }
-
-    await stockMovementShowPage.rollbackButton.click();
-
-    await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
-
-    for (const workbook of workbooks) {
-      workbook.delete();
-    }
-  });
+  );
 
   test('Receive shipment using import receiving template', async ({
     stockMovementShowPage,
@@ -110,7 +129,8 @@ test.describe('Import receiving template', () => {
     await test.step('Input receiving now qty into template', async () => {
       const documentRow = parsedDocumentData[1];
       const row = [...documentRow];
-      (row[RECEIVING_NOW_COLUMN_IDX] = '20'), (row[COMMENT_COLUMN_IDX] = 'e2e-comment');
+      (row[RECEIVING_NOW_COLUMN_IDX] = '20'),
+        (row[COMMENT_COLUMN_IDX] = 'e2e-comment');
       data.push(row);
     });
 
@@ -192,7 +212,9 @@ test.describe('Import receiving template', () => {
     await test.step('Input receiving now qty into template', async () => {
       const documentRow = parsedDocumentData[1];
       const row = [...documentRow];
-      (row[LOT_COLUMN_IDX] = 'editlot'), (row[RECEIVING_NOW_COLUMN_IDX] = '20'), (row[COMMENT_COLUMN_IDX] = 'comment');
+      (row[LOT_COLUMN_IDX] = 'editlot'),
+        (row[RECEIVING_NOW_COLUMN_IDX] = '20'),
+        (row[COMMENT_COLUMN_IDX] = 'comment');
       data.push(row);
     });
 

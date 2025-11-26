@@ -52,7 +52,6 @@ test.describe('Status changes on sm view page when receive shipment in location 
     const isRollbackButtonVisible =
       await stockMovementShowPage.rollbackButton.isVisible();
 
-    // due to failed test, shipment might not be received which will not show the button
     if (isRollbackLastReceiptButtonVisible) {
       await stockMovementShowPage.rollbackLastReceiptButton.click();
     }

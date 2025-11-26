@@ -1,6 +1,8 @@
+import AppConfig from '@/config/AppConfig';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
 import { StockMovementResponse } from '@/types';
+import BinLocationUtils from '@/utils/BinLocationUtils';
 import UniqueIdentifier from '@/utils/UniqueIdentifier';
 
 test.describe('Edit Bin Location when receive inbound stock movement', () => {
@@ -72,13 +74,15 @@ test.describe('Edit Bin Location when receive inbound stock movement', () => {
       mainLocationService,
       createLocationPage,
     }) => {
+      const mainLocation = await mainLocationService.getLocation();
+      const receivingBin =
+        AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
       await stockMovementShowPage.rollbackLastReceiptButton.click();
       await stockMovementShowPage.rollbackButton.click();
       await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
 
       await test.step('Deactivate created bin location', async () => {
-        const mainLocation = await mainLocationService.getLocation();
         await page.goto('./location/list');
         await locationListPage.searchByLocationNameField.fill(
           mainLocation.name
@@ -101,6 +105,14 @@ test.describe('Edit Bin Location when receive inbound stock movement', () => {
         await createLocationPage.locationConfigurationTab.click();
         await createLocationPage.locationConfigurationTabSection.activeCheckbox.uncheck();
         await createLocationPage.locationConfigurationTabSection.saveButton.click();
+      });
+
+      await BinLocationUtils.deactivateReceivingBin({
+        mainLocationService,
+        locationListPage,
+        createLocationPage,
+        page,
+        receivingBin,
       });
     }
   );
@@ -255,13 +267,15 @@ test.describe('Edit Bin Location to bin with zone when receive inbound stock mov
       mainLocationService,
       createLocationPage,
     }) => {
+      const mainLocation = await mainLocationService.getLocation();
+      const receivingBin =
+        AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
       await stockMovementShowPage.rollbackLastReceiptButton.click();
       await stockMovementShowPage.rollbackButton.click();
       await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
 
       await test.step('Deactivate created bin location', async () => {
-        const mainLocation = await mainLocationService.getLocation();
         await page.goto('./location/list');
         await locationListPage.searchByLocationNameField.fill(
           mainLocation.name
@@ -300,6 +314,14 @@ test.describe('Edit Bin Location to bin with zone when receive inbound stock mov
         await createLocationPage.locationConfigurationTab.click();
         await createLocationPage.locationConfigurationTabSection.activeCheckbox.uncheck();
         await createLocationPage.locationConfigurationTabSection.saveButton.click();
+      });
+
+      await BinLocationUtils.deactivateReceivingBin({
+        mainLocationService,
+        locationListPage,
+        createLocationPage,
+        page,
+        receivingBin,
       });
     }
   );
@@ -439,13 +461,15 @@ test.describe('Edit Bin Location when receive for all lines', () => {
       mainLocationService,
       createLocationPage,
     }) => {
+      const mainLocation = await mainLocationService.getLocation();
+      const receivingBin =
+        AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
       await stockMovementShowPage.rollbackLastReceiptButton.click();
       await stockMovementShowPage.rollbackButton.click();
       await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
 
       await test.step('Deactivate created bin location', async () => {
-        const mainLocation = await mainLocationService.getLocation();
         await page.goto('./location/list');
         await locationListPage.searchByLocationNameField.fill(
           mainLocation.name
@@ -468,6 +492,14 @@ test.describe('Edit Bin Location when receive for all lines', () => {
         await createLocationPage.locationConfigurationTab.click();
         await createLocationPage.locationConfigurationTabSection.activeCheckbox.uncheck();
         await createLocationPage.locationConfigurationTabSection.saveButton.click();
+      });
+
+      await BinLocationUtils.deactivateReceivingBin({
+        mainLocationService,
+        locationListPage,
+        createLocationPage,
+        page,
+        receivingBin,
       });
     }
   );

@@ -1,39 +1,59 @@
+import AppConfig from '@/config/AppConfig';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
 import { StockMovementResponse } from '@/types';
+import BinLocationUtils from '@/utils/BinLocationUtils';
 import { formatDate, getDateByOffset, getToday } from '@/utils/DateUtils';
 import UniqueIdentifier from '@/utils/UniqueIdentifier';
 
 test.describe('Lot number system expiry date modification on receiving workflow', () => {
   const STOCK_MOVEMENTS: StockMovementResponse[] = [];
 
-  test.afterEach(async ({ stockMovementShowPage, stockMovementService }) => {
-    // TODO: Improve this one, it is prone to getting stuck if there are not deleted SMs in the tested location
-    while (STOCK_MOVEMENTS.length > 0) {
-      const STOCK_MOVEMENT = STOCK_MOVEMENTS.pop() as StockMovementResponse;
+  test.afterEach(
+    async ({
+      stockMovementShowPage,
+      stockMovementService,
+      mainLocationService,
+      page,
+      locationListPage,
+      createLocationPage,
+    }) => {
+      // TODO: Improve this one, it is prone to getting stuck if there are not deleted SMs in the tested location
+      while (STOCK_MOVEMENTS.length > 0) {
+        const STOCK_MOVEMENT = STOCK_MOVEMENTS.pop() as StockMovementResponse;
 
-      await test.step(`Go to stock movement "${STOCK_MOVEMENT.id}" show page`, async () => {
-        await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
-        await stockMovementShowPage.waitForUrl();
-        await stockMovementShowPage.isLoaded();
-      });
+        await test.step(`Go to stock movement "${STOCK_MOVEMENT.id}" show page`, async () => {
+          await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
+          await stockMovementShowPage.waitForUrl();
+          await stockMovementShowPage.isLoaded();
+        });
 
-      const isButtonVisible =
-        await stockMovementShowPage.rollbackLastReceiptButton.isVisible();
-      // due to failed test, shipment might not be received which will not show the button
-      if (isButtonVisible) {
-        await stockMovementShowPage.rollbackLastReceiptButton.click();
+        const isButtonVisible =
+          await stockMovementShowPage.rollbackLastReceiptButton.isVisible();
+        if (isButtonVisible) {
+          await stockMovementShowPage.rollbackLastReceiptButton.click();
+        }
+
+        await test.step('Rollback shipment', async () => {
+          await stockMovementShowPage.rollbackButton.click();
+        });
+
+        await test.step(`Delete stock movement "${STOCK_MOVEMENT.id}"`, async () => {
+          await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
+        });
+
+        const receivingBin =
+          AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
+        await BinLocationUtils.deactivateReceivingBin({
+          mainLocationService,
+          locationListPage,
+          createLocationPage,
+          page,
+          receivingBin,
+        });
       }
-
-      await test.step('Rollback shipment', async () => {
-        await stockMovementShowPage.rollbackButton.click();
-      });
-
-      await test.step(`Delete stock movement "${STOCK_MOVEMENT.id}"`, async () => {
-        await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
-      });
     }
-  });
+  );
 
   test('Edit lot expiration date on a new lot does not render a confirmation modal', async ({
     stockMovementShowPage,

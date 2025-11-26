@@ -4,6 +4,7 @@ import AppConfig from '@/config/AppConfig';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
 import { StockMovementResponse } from '@/types';
+import BinLocationUtils from '@/utils/BinLocationUtils';
 import { formatDate, getDateByOffset } from '@/utils/DateUtils';
 import UniqueIdentifier from '@/utils/UniqueIdentifier';
 import { WorkbookUtils } from '@/utils/WorkbookUtils';
@@ -51,23 +52,42 @@ test.describe('Export receiving template', () => {
     }
   );
 
-  test.afterEach(async ({ stockMovementShowPage, stockMovementService }) => {
-    await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
-    await stockMovementShowPage.rollbackLastReceiptButton.click();
-    await stockMovementShowPage.rollbackButton.click();
-    await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
+  test.afterEach(
+    async ({
+      stockMovementShowPage,
+      stockMovementService,
+      mainLocationService,
+      page,
+      locationListPage,
+      createLocationPage,
+    }) => {
+      await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
+      await stockMovementShowPage.rollbackLastReceiptButton.click();
+      await stockMovementShowPage.rollbackButton.click();
+      await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
 
-    for (const workbook of workbooks) {
-      workbook.delete();
+      for (const workbook of workbooks) {
+        workbook.delete();
+      }
+
+      const receivingBin =
+        AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
+      await BinLocationUtils.deactivateReceivingBin({
+        mainLocationService,
+        locationListPage,
+        createLocationPage,
+        page,
+        receivingBin,
+      });
     }
-  });
+  );
 
   test('Export receiving template', async ({
     stockMovementShowPage,
     receivingPage,
     mainProductService,
     otherProductService,
-    thirdProductService
+    thirdProductService,
   }) => {
     let filePath: string;
     let downloadedExportTemplateFile: WorkbookUtils;

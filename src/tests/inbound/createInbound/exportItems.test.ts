@@ -152,7 +152,6 @@ test.describe('Export all incoming items', () => {
     const isRollbackButtonVisible =
       await stockMovementShowPage.rollbackButton.isVisible();
 
-    // due to failed test, shipment might not be received which will not show the button
     if (isRollbackLastReceiptButtonVisible) {
       await stockMovementShowPage.rollbackLastReceiptButton.click();
     }

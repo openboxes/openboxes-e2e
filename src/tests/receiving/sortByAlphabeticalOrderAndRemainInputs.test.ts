@@ -1,5 +1,7 @@
+import AppConfig from '@/config/AppConfig';
 import { expect, test } from '@/fixtures/fixtures';
 import { StockMovementResponse } from '@/types';
+import BinLocationUtils from '@/utils/BinLocationUtils';
 import { getDateByOffset, getToday } from '@/utils/DateUtils';
 
 test.describe('Apply sorting by alphabetical order and remain inputs', () => {
@@ -33,24 +35,42 @@ test.describe('Apply sorting by alphabetical order and remain inputs', () => {
     }
   );
 
-  test.afterEach(async ({ stockMovementShowPage, stockMovementService }) => {
-    await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
-    const isRollbackLastReceiptButtonVisible =
-      await stockMovementShowPage.rollbackLastReceiptButton.isVisible();
-    const isRollbackButtonVisible =
-      await stockMovementShowPage.rollbackButton.isVisible();
+  test.afterEach(
+    async ({
+      stockMovementShowPage,
+      stockMovementService,
+      mainLocationService,
+      page,
+      locationListPage,
+      createLocationPage,
+    }) => {
+      await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
+      const isRollbackLastReceiptButtonVisible =
+        await stockMovementShowPage.rollbackLastReceiptButton.isVisible();
+      const isRollbackButtonVisible =
+        await stockMovementShowPage.rollbackButton.isVisible();
 
-    // due to failed test, shipment might not be received which will not show the button
-    if (isRollbackLastReceiptButtonVisible) {
-      await stockMovementShowPage.rollbackLastReceiptButton.click();
+      if (isRollbackLastReceiptButtonVisible) {
+        await stockMovementShowPage.rollbackLastReceiptButton.click();
+      }
+
+      if (isRollbackButtonVisible) {
+        await stockMovementShowPage.rollbackButton.click();
+      }
+
+      await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
+
+      const receivingBin =
+        AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
+      await BinLocationUtils.deactivateReceivingBin({
+        mainLocationService,
+        locationListPage,
+        createLocationPage,
+        page,
+        receivingBin,
+      });
     }
-
-    if (isRollbackButtonVisible) {
-      await stockMovementShowPage.rollbackButton.click();
-    }
-
-    await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
-  });
+  );
 
   test('Apply sorting by alphabetical order and remain inputs', async ({
     stockMovementShowPage,

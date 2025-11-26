@@ -1,6 +1,8 @@
+import AppConfig from '@/config/AppConfig';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
 import { StockMovementResponse } from '@/types';
+import BinLocationUtils from '@/utils/BinLocationUtils';
 
 test.describe('Cancel qty in the middle of receipt', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
@@ -37,24 +39,41 @@ test.describe('Cancel qty in the middle of receipt', () => {
     }
   );
 
-  test.afterEach(async ({ stockMovementShowPage, stockMovementService }) => {
-    await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
-    const isRollbackLastReceiptButtonVisible =
-      await stockMovementShowPage.rollbackLastReceiptButton.isVisible();
-    const isRollbackButtonVisible =
-      await stockMovementShowPage.rollbackButton.isVisible();
+  test.afterEach(
+    async ({
+      stockMovementShowPage,
+      stockMovementService,
+      mainLocationService,
+      page,
+      locationListPage,
+      createLocationPage,
+    }) => {
+      await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
+      const isRollbackLastReceiptButtonVisible =
+        await stockMovementShowPage.rollbackLastReceiptButton.isVisible();
+      const isRollbackButtonVisible =
+        await stockMovementShowPage.rollbackButton.isVisible();
 
-    // due to failed test, shipment might not be received which will not show the button
-    if (isRollbackLastReceiptButtonVisible) {
-      await stockMovementShowPage.rollbackLastReceiptButton.click();
+      if (isRollbackLastReceiptButtonVisible) {
+        await stockMovementShowPage.rollbackLastReceiptButton.click();
+      }
+
+      if (isRollbackButtonVisible) {
+        await stockMovementShowPage.rollbackButton.click();
+      }
+
+      await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
+      const receivingBin =
+        AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
+      await BinLocationUtils.deactivateReceivingBin({
+        mainLocationService,
+        locationListPage,
+        createLocationPage,
+        page,
+        receivingBin,
+      });
     }
-
-    if (isRollbackButtonVisible) {
-      await stockMovementShowPage.rollbackButton.click();
-    }
-
-    await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
-  });
+  );
 
   test('Cancel remaining qty when receive item partially', async ({
     stockMovementShowPage,

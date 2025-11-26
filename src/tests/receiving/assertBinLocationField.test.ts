@@ -2,6 +2,7 @@ import AppConfig from '@/config/AppConfig';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
 import { StockMovementResponse } from '@/types';
+import BinLocationUtils from '@/utils/BinLocationUtils';
 
 test.describe('Assert bin location not clearable', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
@@ -35,24 +36,41 @@ test.describe('Assert bin location not clearable', () => {
     }
   );
 
-  test.afterEach(async ({ stockMovementShowPage, stockMovementService }) => {
-    await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
-    const isRollbackLastReceiptButtonVisible =
-      await stockMovementShowPage.rollbackLastReceiptButton.isVisible();
-    const isRollbackButtonVisible =
-      await stockMovementShowPage.rollbackButton.isVisible();
+  test.afterEach(
+    async ({
+      stockMovementShowPage,
+      stockMovementService,
+      mainLocationService,
+      page,
+      locationListPage,
+      createLocationPage,
+    }) => {
+      await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
+      const isRollbackLastReceiptButtonVisible =
+        await stockMovementShowPage.rollbackLastReceiptButton.isVisible();
+      const isRollbackButtonVisible =
+        await stockMovementShowPage.rollbackButton.isVisible();
 
-    // due to failed test, shipment might not be received which will not show the button
-    if (isRollbackLastReceiptButtonVisible) {
-      await stockMovementShowPage.rollbackLastReceiptButton.click();
+      if (isRollbackLastReceiptButtonVisible) {
+        await stockMovementShowPage.rollbackLastReceiptButton.click();
+      }
+
+      if (isRollbackButtonVisible) {
+        await stockMovementShowPage.rollbackButton.click();
+      }
+
+      await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
+      const receivingBin =
+        AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
+      await BinLocationUtils.deactivateReceivingBin({
+        mainLocationService,
+        locationListPage,
+        createLocationPage,
+        page,
+        receivingBin,
+      });
     }
-
-    if (isRollbackButtonVisible) {
-      await stockMovementShowPage.rollbackButton.click();
-    }
-
-    await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
-  });
+  );
 
   test('Assert bin location not clearable', async ({
     stockMovementShowPage,
@@ -69,7 +87,7 @@ test.describe('Assert bin location not clearable', () => {
     });
 
     await test.step('Assert bin location cant be cleared', async () => {
-            await expect(
+      await expect(
         receivingPage.receivingStep.table
           .row(1)
           .binLocationSelect.locator('.react-select__clear-indicator')
@@ -89,7 +107,7 @@ test.describe('Assert bin location not clearable', () => {
       await receivingPage.receivingStep.editModal.saveButton.click();
     });
 
-    await test.step('Assertbin location field content after split linw', async () => {
+    await test.step('Assert bin location field content after split line', async () => {
       const receivingBin =
         AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
       await expect(

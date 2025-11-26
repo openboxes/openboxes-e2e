@@ -1,8 +1,10 @@
+import AppConfig from '@/config/AppConfig';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
 import InboundListPage from '@/pages/inbound/list/InboundListPage';
 import StockMovementShowPage from '@/pages/stockMovementShow/StockMovementShowPage';
 import { StockMovementResponse } from '@/types';
+import BinLocationUtils from '@/utils/BinLocationUtils';
 import { getToday } from '@/utils/DateUtils';
 
 test.describe('Status changes on sm view page when rollback receipts', () => {
@@ -41,11 +43,30 @@ test.describe('Status changes on sm view page when rollback receipts', () => {
     }
   );
 
-  test.afterEach(async ({ stockMovementShowPage, stockMovementService }) => {
-    await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
-    await stockMovementShowPage.rollbackButton.click();
-    await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
-  });
+  test.afterEach(
+    async ({
+      stockMovementShowPage,
+      stockMovementService,
+      mainLocationService,
+      page,
+      locationListPage,
+      createLocationPage,
+    }) => {
+      await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
+      await stockMovementShowPage.rollbackButton.click();
+      await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
+
+      const receivingBin =
+        AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
+      await BinLocationUtils.deactivateReceivingBin({
+        mainLocationService,
+        locationListPage,
+        createLocationPage,
+        page,
+        receivingBin,
+      });
+    }
+  );
 
   test('Assert status changes on view page and receipt tab when rollback partial receipt of 1 item', async ({
     stockMovementShowPage,

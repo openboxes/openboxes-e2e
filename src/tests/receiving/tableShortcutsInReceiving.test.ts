@@ -1,6 +1,8 @@
+import AppConfig from '@/config/AppConfig';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
 import { StockMovementResponse } from '@/types';
+import BinLocationUtils from '@/utils/BinLocationUtils';
 
 test.describe('Use table shortcuts on receiving page', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
@@ -57,24 +59,42 @@ test.describe('Use table shortcuts on receiving page', () => {
     }
   );
 
-  test.afterEach(async ({ stockMovementShowPage, stockMovementService }) => {
-    await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
-    const isRollbackLastReceiptButtonVisible =
-      await stockMovementShowPage.rollbackLastReceiptButton.isVisible();
-    const isRollbackButtonVisible =
-      await stockMovementShowPage.rollbackButton.isVisible();
+  test.afterEach(
+    async ({
+      stockMovementShowPage,
+      stockMovementService,
+      mainLocationService,
+      page,
+      locationListPage,
+      createLocationPage,
+    }) => {
+      await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
+      const isRollbackLastReceiptButtonVisible =
+        await stockMovementShowPage.rollbackLastReceiptButton.isVisible();
+      const isRollbackButtonVisible =
+        await stockMovementShowPage.rollbackButton.isVisible();
 
-    // due to failed test, shipment might not be received which will not show the button
-    if (isRollbackLastReceiptButtonVisible) {
-      await stockMovementShowPage.rollbackLastReceiptButton.click();
+      if (isRollbackLastReceiptButtonVisible) {
+        await stockMovementShowPage.rollbackLastReceiptButton.click();
+      }
+
+      if (isRollbackButtonVisible) {
+        await stockMovementShowPage.rollbackButton.click();
+      }
+
+      await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
+
+      const receivingBin =
+        AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
+      await BinLocationUtils.deactivateReceivingBin({
+        mainLocationService,
+        locationListPage,
+        createLocationPage,
+        page,
+        receivingBin,
+      });
     }
-
-    if (isRollbackButtonVisible) {
-      await stockMovementShowPage.rollbackButton.click();
-    }
-
-    await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
-  });
+  );
 
   test('Use Ctrl+ArrowDown to copy cell shortcut on receiving now and comment fields', async ({
     stockMovementShowPage,
@@ -95,7 +115,9 @@ test.describe('Use table shortcuts on receiving page', () => {
       await receivingPage.receivingStep.table
         .row(1)
         .receivingNowField.textbox.fill('10');
-      await receivingPage.receivingStep.table.row(1).receivingNowField.textbox.focus();  
+      await receivingPage.receivingStep.table
+        .row(1)
+        .receivingNowField.textbox.focus();
       await page.keyboard.press('Control+ArrowDown');
       await page.keyboard.press('Control+ArrowDown');
       await page.keyboard.press('Control+ArrowDown');
@@ -117,7 +139,9 @@ test.describe('Use table shortcuts on receiving page', () => {
       await receivingPage.receivingStep.table
         .row(1)
         .commentField.textbox.fill(comment1);
-      await receivingPage.receivingStep.table.row(1).commentField.textbox.focus();  
+      await receivingPage.receivingStep.table
+        .row(1)
+        .commentField.textbox.focus();
       await page.keyboard.press('Control+ArrowDown');
       await page.keyboard.press('Control+ArrowDown');
       await page.keyboard.press('Control+ArrowDown');
@@ -139,7 +163,9 @@ test.describe('Use table shortcuts on receiving page', () => {
       await receivingPage.receivingStep.table
         .row(5)
         .receivingNowField.textbox.fill('5');
-      await receivingPage.receivingStep.table.row(5).receivingNowField.textbox.focus();  
+      await receivingPage.receivingStep.table
+        .row(5)
+        .receivingNowField.textbox.focus();
       await page.keyboard.press('Control+ArrowDown');
       await expect(
         receivingPage.receivingStep.table.row(6).receivingNowField.textbox
@@ -147,7 +173,9 @@ test.describe('Use table shortcuts on receiving page', () => {
       await receivingPage.receivingStep.table
         .row(5)
         .commentField.textbox.fill(comment2);
-      await receivingPage.receivingStep.table.row(5).commentField.textbox.focus();    
+      await receivingPage.receivingStep.table
+        .row(5)
+        .commentField.textbox.focus();
       await page.keyboard.press('Control+ArrowDown');
       await expect(
         receivingPage.receivingStep.table.row(6).commentField.textbox

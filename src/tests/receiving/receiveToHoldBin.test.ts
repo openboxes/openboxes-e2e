@@ -1,6 +1,8 @@
+import AppConfig from '@/config/AppConfig';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
 import { StockMovementResponse } from '@/types';
+import BinLocationUtils from '@/utils/BinLocationUtils';
 import UniqueIdentifier from '@/utils/UniqueIdentifier';
 
 test.describe('Receive item into hold bin', () => {
@@ -89,13 +91,15 @@ test.describe('Receive item into hold bin', () => {
       mainLocationService,
       createLocationPage,
     }) => {
+      const mainLocation = await mainLocationService.getLocation();
+      const receivingBin =
+        AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
       await stockMovementShowPage.rollbackLastReceiptButton.click();
       await stockMovementShowPage.rollbackButton.click();
       await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
 
-      await test.step('Deatitave created bin location', async () => {
-        const mainLocation = await mainLocationService.getLocation();
+      await test.step('Deactitave created bin location', async () => {
         await page.goto('./location/list');
         await locationListPage.searchByLocationNameField.fill(
           mainLocation.name
@@ -118,6 +122,14 @@ test.describe('Receive item into hold bin', () => {
         await createLocationPage.locationConfigurationTab.click();
         await createLocationPage.locationConfigurationTabSection.activeCheckbox.uncheck();
         await createLocationPage.locationConfigurationTabSection.saveButton.click();
+      });
+
+      await BinLocationUtils.deactivateReceivingBin({
+        mainLocationService,
+        locationListPage,
+        createLocationPage,
+        page,
+        receivingBin,
       });
     }
   );
