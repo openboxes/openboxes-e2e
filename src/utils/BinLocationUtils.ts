@@ -5,11 +5,7 @@ import CreateLocationPage from '@/pages/location/createLocation/CreateLocationPa
 import LocationListPage from '@/pages/location/LocationListPage';
 import LocationData from '@/utils/LocationData';
 
-class BinLocationUtils extends BasePageModel {
-  constructor(page: Page) {
-    super(page);
-  }
-
+class BinLocationUtils {
   static async deactivateReceivingBin({
     mainLocationService,
     locationListPage,
