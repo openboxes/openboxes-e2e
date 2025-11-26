@@ -2,6 +2,7 @@ import AppConfig from '@/config/AppConfig';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
 import { StockMovementResponse } from '@/types';
+import BinLocationUtils from '@/utils/BinLocationUtils';
 import UniqueIdentifier from '@/utils/UniqueIdentifier';
 
 test.describe('Receive item into hold bin', () => {
@@ -98,7 +99,7 @@ test.describe('Receive item into hold bin', () => {
       await stockMovementShowPage.rollbackButton.click();
       await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
 
-      await test.step('Deatitave created bin location', async () => {
+      await test.step('Deactitave created bin location', async () => {
         await page.goto('./location/list');
         await locationListPage.searchByLocationNameField.fill(
           mainLocation.name
@@ -123,20 +124,12 @@ test.describe('Receive item into hold bin', () => {
         await createLocationPage.locationConfigurationTabSection.saveButton.click();
       });
 
-      await test.step('Deactivate receiving bin', async () => {
-        await createLocationPage.binLocationTab.click();
-        await createLocationPage.binLocationTabSection.isLoaded();
-        await createLocationPage.binLocationTabSection.searchField.fill(
-          receivingBin
-        );
-        await createLocationPage.binLocationTabSection.searchField.press(
-          'Enter'
-        );
-        await createLocationPage.binLocationTabSection.isLoaded();
-        await createLocationPage.binLocationTabSection.editBinButton.click();
-        await createLocationPage.locationConfigurationTab.click();
-        await createLocationPage.locationConfigurationTabSection.activeCheckbox.uncheck();
-        await createLocationPage.locationConfigurationTabSection.saveButton.click();
+      await BinLocationUtils.deactivateReceivingBin({
+        mainLocationService,
+        locationListPage,
+        createLocationPage,
+        page,
+        receivingBin,
       });
     }
   );

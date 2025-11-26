@@ -4,6 +4,7 @@ import { expect, test } from '@/fixtures/fixtures';
 import CreateLocationPage from '@/pages/location/createLocation/CreateLocationPage';
 import LocationListPage from '@/pages/location/LocationListPage';
 import { StockMovementResponse } from '@/types';
+import BinLocationUtils from '@/utils/BinLocationUtils';
 
 test.describe('Assert creation of receiving bin', () => {
   test.describe.configure({ timeout: 60000 });
@@ -55,29 +56,14 @@ test.describe('Assert creation of receiving bin', () => {
       await stockMovementShowPage.rollbackButton.click();
       await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
 
-      await test.step('Deactivate receiving bin', async () => {
-        const mainLocation = await mainLocationService.getLocation();
-        const receivingBin =
-          AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
-        await page.goto('./location/list');
-        await locationListPage.searchByLocationNameField.fill(
-          mainLocation.name
-        );
-        await locationListPage.findButton.click();
-        await locationListPage.getLocationEditButton(mainLocation.name).click();
-        await createLocationPage.binLocationTab.click();
-        await createLocationPage.binLocationTabSection.isLoaded();
-        await createLocationPage.binLocationTabSection.searchField.fill(
-          receivingBin
-        );
-        await createLocationPage.binLocationTabSection.searchField.press(
-          'Enter'
-        );
-        await createLocationPage.binLocationTabSection.isLoaded();
-        await createLocationPage.binLocationTabSection.editBinButton.click();
-        await createLocationPage.locationConfigurationTab.click();
-        await createLocationPage.locationConfigurationTabSection.activeCheckbox.uncheck();
-        await createLocationPage.locationConfigurationTabSection.saveButton.click();
+      const receivingBin =
+        AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
+      await BinLocationUtils.deactivateReceivingBin({
+        mainLocationService,
+        locationListPage,
+        createLocationPage,
+        page,
+        receivingBin,
       });
     }
   );

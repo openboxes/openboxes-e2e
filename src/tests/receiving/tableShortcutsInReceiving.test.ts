@@ -2,6 +2,7 @@ import AppConfig from '@/config/AppConfig';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
 import { StockMovementResponse } from '@/types';
+import BinLocationUtils from '@/utils/BinLocationUtils';
 
 test.describe('Use table shortcuts on receiving page', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
@@ -73,7 +74,6 @@ test.describe('Use table shortcuts on receiving page', () => {
       const isRollbackButtonVisible =
         await stockMovementShowPage.rollbackButton.isVisible();
 
-      // due to failed test, shipment might not be received which will not show the button
       if (isRollbackLastReceiptButtonVisible) {
         await stockMovementShowPage.rollbackLastReceiptButton.click();
       }
@@ -84,29 +84,14 @@ test.describe('Use table shortcuts on receiving page', () => {
 
       await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
 
-      await test.step('Deactivate receiving bin', async () => {
-        const mainLocation = await mainLocationService.getLocation();
-        const receivingBin =
-          AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
-        await page.goto('./location/list');
-        await locationListPage.searchByLocationNameField.fill(
-          mainLocation.name
-        );
-        await locationListPage.findButton.click();
-        await locationListPage.getLocationEditButton(mainLocation.name).click();
-        await createLocationPage.binLocationTab.click();
-        await createLocationPage.binLocationTabSection.isLoaded();
-        await createLocationPage.binLocationTabSection.searchField.fill(
-          receivingBin
-        );
-        await createLocationPage.binLocationTabSection.searchField.press(
-          'Enter'
-        );
-        await createLocationPage.binLocationTabSection.isLoaded();
-        await createLocationPage.binLocationTabSection.editBinButton.click();
-        await createLocationPage.locationConfigurationTab.click();
-        await createLocationPage.locationConfigurationTabSection.activeCheckbox.uncheck();
-        await createLocationPage.locationConfigurationTabSection.saveButton.click();
+      const receivingBin =
+        AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
+      await BinLocationUtils.deactivateReceivingBin({
+        mainLocationService,
+        locationListPage,
+        createLocationPage,
+        page,
+        receivingBin,
       });
     }
   );

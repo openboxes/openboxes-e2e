@@ -2,6 +2,7 @@ import AppConfig from '@/config/AppConfig';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
 import { StockMovementResponse } from '@/types';
+import BinLocationUtils from '@/utils/BinLocationUtils';
 import UniqueIdentifier from '@/utils/UniqueIdentifier';
 
 test.describe('Edit Bin Location when receive inbound stock movement', () => {
@@ -106,20 +107,12 @@ test.describe('Edit Bin Location when receive inbound stock movement', () => {
         await createLocationPage.locationConfigurationTabSection.saveButton.click();
       });
 
-      await test.step('Deactivate receiving bin', async () => {
-        await createLocationPage.binLocationTab.click();
-        await createLocationPage.binLocationTabSection.isLoaded();
-        await createLocationPage.binLocationTabSection.searchField.fill(
-          receivingBin
-        );
-        await createLocationPage.binLocationTabSection.searchField.press(
-          'Enter'
-        );
-        await createLocationPage.binLocationTabSection.isLoaded();
-        await createLocationPage.binLocationTabSection.editBinButton.click();
-        await createLocationPage.locationConfigurationTab.click();
-        await createLocationPage.locationConfigurationTabSection.activeCheckbox.uncheck();
-        await createLocationPage.locationConfigurationTabSection.saveButton.click();
+      await BinLocationUtils.deactivateReceivingBin({
+        mainLocationService,
+        locationListPage,
+        createLocationPage,
+        page,
+        receivingBin,
       });
     }
   );
@@ -323,20 +316,12 @@ test.describe('Edit Bin Location to bin with zone when receive inbound stock mov
         await createLocationPage.locationConfigurationTabSection.saveButton.click();
       });
 
-      await test.step('Deactivate receiving bin', async () => {
-        await createLocationPage.binLocationTab.click();
-        await createLocationPage.binLocationTabSection.isLoaded();
-        await createLocationPage.binLocationTabSection.searchField.fill(
-          receivingBin
-        );
-        await createLocationPage.binLocationTabSection.searchField.press(
-          'Enter'
-        );
-        await createLocationPage.binLocationTabSection.isLoaded();
-        await createLocationPage.binLocationTabSection.editBinButton.click();
-        await createLocationPage.locationConfigurationTab.click();
-        await createLocationPage.locationConfigurationTabSection.activeCheckbox.uncheck();
-        await createLocationPage.locationConfigurationTabSection.saveButton.click();
+      await BinLocationUtils.deactivateReceivingBin({
+        mainLocationService,
+        locationListPage,
+        createLocationPage,
+        page,
+        receivingBin,
       });
     }
   );
@@ -509,20 +494,12 @@ test.describe('Edit Bin Location when receive for all lines', () => {
         await createLocationPage.locationConfigurationTabSection.saveButton.click();
       });
 
-      await test.step('Deactivate receiving bin', async () => {
-        await createLocationPage.binLocationTab.click();
-        await createLocationPage.binLocationTabSection.isLoaded();
-        await createLocationPage.binLocationTabSection.searchField.fill(
-          receivingBin
-        );
-        await createLocationPage.binLocationTabSection.searchField.press(
-          'Enter'
-        );
-        await createLocationPage.binLocationTabSection.isLoaded();
-        await createLocationPage.binLocationTabSection.editBinButton.click();
-        await createLocationPage.locationConfigurationTab.click();
-        await createLocationPage.locationConfigurationTabSection.activeCheckbox.uncheck();
-        await createLocationPage.locationConfigurationTabSection.saveButton.click();
+      await BinLocationUtils.deactivateReceivingBin({
+        mainLocationService,
+        locationListPage,
+        createLocationPage,
+        page,
+        receivingBin,
       });
     }
   );
