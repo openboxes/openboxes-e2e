@@ -1,6 +1,5 @@
 import { Page } from '@playwright/test';
 
-import BasePageModel from '@/pages/BasePageModel';
 import CreateLocationPage from '@/pages/location/createLocation/CreateLocationPage';
 import LocationListPage from '@/pages/location/LocationListPage';
 import LocationData from '@/utils/LocationData';
