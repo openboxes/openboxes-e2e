@@ -33,5 +33,9 @@ class Row extends BasePageModel {
   get actionsButton() {
     return this.row.getByTestId('action-menu-0');
   }
+
+  get statusTag() {
+    return this.row.getByTestId('status-0');
+  }
 }
 export default PutawayListTable;
