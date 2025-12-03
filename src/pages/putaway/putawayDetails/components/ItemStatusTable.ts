@@ -8,11 +8,11 @@ class ItemStatusTable extends BasePageModel {
   }
 
   get table() {
-    return this.page.getByRole('table');
+    return this.page.getByTestId('item-status-table');
   }
 
   get rows() {
-    return this.table.getByRole('cell');
+    return this.table.getByRole('row');
   }
 
   row(index: number) {
@@ -32,21 +32,15 @@ class Row extends BasePageModel {
   }
 
   get itemStatus() {
-    return this.page
-      .getByTestId('item-status-table')
-      .getByTestId('order-item-status-code');
+    return this.row.getByTestId('order-item-status-code');
   }
 
   get originBin() {
-    return this.page
-      .getByTestId('item-status-table')
-      .getByTestId('origin-bin-location');
+    return this.row.getByTestId('origin-bin-location');
   }
 
   get destinationBin() {
-    return this.page
-      .getByTestId('item-status-table')
-      .getByTestId('destination-bin-location');
+    return this.row.getByTestId('destination-bin-location');
   }
 }
 

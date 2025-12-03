@@ -211,13 +211,13 @@ test.describe('Assert putaway details page', () => {
 
     await test.step('Assert content of items status table', async () => {
       await expect(
-        putawayDetailsPage.itemStatusTable.row(0).itemStatus
+        putawayDetailsPage.itemStatusTable.row(1).itemStatus
       ).toHaveText('PENDING');
       await expect(
-        putawayDetailsPage.itemStatusTable.row(0).originBin
+        putawayDetailsPage.itemStatusTable.row(1).originBin
       ).toHaveText(receivingBin);
       await expect(
-        putawayDetailsPage.itemStatusTable.row(0).destinationBin
+        putawayDetailsPage.itemStatusTable.row(1).destinationBin
       ).toHaveText(internalLocation.name);
     });
 
