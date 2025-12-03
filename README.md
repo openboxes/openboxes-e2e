@@ -7,8 +7,8 @@ End to end testing for OpenBoxes
 
 ## 🧰 Setup
 ### Required
-- NPM 6.14.6
-- Node 14.21.x
+- NPM 9.2.0
+- Node 18.19.x
 
 ### Install Dependencies
 

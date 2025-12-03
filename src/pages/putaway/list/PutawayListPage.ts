@@ -24,6 +24,42 @@ class PutawayListPage extends BasePageModel {
       this.page.getByRole('heading').getByText('List Putaways')
     ).toBeVisible();
   }
+
+  get filters() {
+    return this.page.locator('.box');
+  }
+
+  get searchField() {
+    return this.filters
+      .locator('.filter-list-item')
+      .getByTestId('search-input');
+  }
+
+  get orderTypeFilter() {
+    return this.filters
+      .locator('.filter-list-item')
+      .getByTestId('order-type-select');
+  }
+
+  get statusFilter() {
+    return this.filters
+      .locator('.filter-list-item')
+      .getByTestId('status.select');
+  }
+
+  get destinationFilter() {
+    return this.filters
+      .locator('.filter-list-item')
+      .getByTestId('destination-select');
+  }
+
+  get searchButton() {
+    return this.filters.getByTestId('search-button');
+  }
+
+  get clearFilteringButton() {
+    return this.filters.getByTestId('cancel-button');
+  }
 }
 
 export default PutawayListPage;

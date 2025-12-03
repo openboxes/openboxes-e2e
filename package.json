@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/openboxes/openboxes-e2e#readme",
   "devDependencies": {
-    "@playwright/test": "~1.34.0",
+    "@playwright/test": "~1.57.0",
     "@types/lodash": "~4.17.0",
     "@types/node": "~20.11.30",
     "@typescript-eslint/eslint-plugin": "~5.62.0",

@@ -8,15 +8,19 @@ class SummaryTable extends BasePageModel {
   }
 
   get table() {
-    return this.page.getByRole('table', { name: 'Summary' });
+    return this.page.getByRole('table');
   }
 
   get rows() {
-    return this.table.getByRole('row');
+    return this.table.getByRole('cell');
   }
 
   row(index: number) {
     return new Row(this.page, this.rows.nth(index));
+  }
+
+  getColumnHeader(columnName: string) {
+    return this.table.getByRole('row').getByText(columnName);
   }
 }
 
