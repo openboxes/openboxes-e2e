@@ -38,6 +38,10 @@ class Row extends BasePageModel {
       .getByText(binLocation);
   }
 
+  get receivingBin() {
+    return this.row.getByTestId('cell-undefined-undefined');
+  }
+
   getProductName(name: string) {
     return this.row.getByTestId('table-cell').getByText(name);
   }

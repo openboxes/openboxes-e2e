@@ -20,6 +20,17 @@ class PutawayListTable extends BasePageModel {
       .locator('.action-menu-item')
       .getByRole('link', { name: 'View order details' });
   }
+
+  get deleteOrderButton() {
+    return this.page
+      .locator('.action-menu-item')
+      .getByRole('link', { name: 'Delete Order' });
+  }
+
+  async clickDeleteOrderButton() {
+    this.page.once('dialog', (dialog) => dialog.accept());
+    await this.deleteOrderButton.click();
+  }
 }
 
 class Row extends BasePageModel {
@@ -36,6 +47,10 @@ class Row extends BasePageModel {
 
   get statusTag() {
     return this.row.getByTestId('status-0');
+  }
+
+  get orderNumber() {
+    return this.row.getByTestId('order-number-0');
   }
 }
 export default PutawayListTable;
