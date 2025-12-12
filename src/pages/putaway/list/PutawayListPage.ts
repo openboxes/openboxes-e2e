@@ -60,6 +60,12 @@ class PutawayListPage extends BasePageModel {
   get clearFilteringButton() {
     return this.filters.getByTestId('cancel-button');
   }
+
+  get emptyPutawayList() {
+    return this.page
+      .locator('.empty fade center')
+      .getByText('No orders match the given criteria');
+  }
 }
 
 export default PutawayListPage;
