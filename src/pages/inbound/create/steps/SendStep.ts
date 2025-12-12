@@ -15,7 +15,7 @@ class SendStep extends BasePageModel {
   shipmentTypeSelect: Select;
   shipDateDatePicker: DatePicker;
   expectedDeliveryDatePicker: DatePicker;
-  originField: TextField;
+  originField: Select;
   trackingNumberField: TextField;
   driverNameField: TextField;
   commentField: TextField;
@@ -34,7 +34,7 @@ class SendStep extends BasePageModel {
       page,
       'Expected Delivery Date'
     );
-    this.originField = new TextField(page, 'Origin');
+    this.originField = new Select(page, 'Origin');
     this.trackingNumberField = new TextField(page, 'Tracking Number');
     this.driverNameField = new TextField(page, 'Driver Name');
     this.commentField = new TextField(page, 'Comments');
@@ -65,12 +65,12 @@ class SendStep extends BasePageModel {
 
   getDocuments(documentName: string) {
     return this.page
-      .locator('.dropdown-content')
+      .locator('.dropdown-item')
       .getByText(documentName, { exact: true });
   }
 
   async isLoaded() {
-    await expect(this.originField.textbox).toBeVisible();
+    await expect(this.originField.selectField).toBeVisible();
     await expect(this.destinationSelect.selectField).toBeVisible();
     await expect(this.shipmentTypeSelect.selectField).toBeVisible();
     await expect(this.shipDateDatePicker.textbox).toBeVisible();

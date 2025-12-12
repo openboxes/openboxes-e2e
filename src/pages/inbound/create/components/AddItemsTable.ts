@@ -117,7 +117,7 @@ class Row extends BasePageModel {
     if (!_.isNil(rowValues.expirationDate)) {
       await test.step('Assert value in expiry date field', async () => {
         await expect(this.expirationDate.textbox).toHaveValue(
-          formatDate(rowValues.expirationDate as Date)
+          formatDate(rowValues.expirationDate as Date, 'DD/MMM/YYYY')
         );
       });
     }
