@@ -57,6 +57,9 @@ test.describe('Download documents from inbound send page', () => {
     });
 
     await test.step('Fill create stock movement page', async () => {
+      await createInboundPage.createStep.descriptionField.textbox.fill(
+        DESCRIPTION
+      );
       await createInboundPage.createStep.originSelect.findAndSelectOption(
         ORIGIN.name
       );
@@ -64,9 +67,6 @@ test.describe('Download documents from inbound send page', () => {
         USER.name
       );
       await createInboundPage.createStep.dateRequestedDatePicker.fill(TODAY);
-      await createInboundPage.createStep.descriptionField.textbox.fill(
-        DESCRIPTION
-      );
     });
 
     await test.step('Go to add items page)', async () => {
@@ -97,6 +97,14 @@ test.describe('Download documents from inbound send page', () => {
     });
 
     await test.step('Expand download dropdown and assert documents in pending shipment', async () => {
+      await expect(createInboundPage.sendStep.downloadButton).toBeDisabled();
+      await createInboundPage.sendStep.shipmentTypeSelect.findAndSelectOption(
+        SHIPMENT_TYPE
+      );
+      await createInboundPage.sendStep.expectedDeliveryDatePicker.fill(
+        EXPECTED_DELIVERY_DATE
+      );
+      await expect(createInboundPage.sendStep.downloadButton).toBeEnabled();
       await createInboundPage.sendStep.downloadButton.click();
       await expect(
         createInboundPage.sendStep.getDocuments('Export Packing List (.xls)')
@@ -122,6 +130,7 @@ test.describe('Download documents from inbound send page', () => {
     });
 
     await test.step('Download Export Packing List (.xls) file', async () => {
+      await createInboundPage.sendStep.downloadButton.click();
       const popupPromise = page.waitForEvent('popup');
       await createInboundPage.sendStep
         .getDocuments('Export Packing List (.xls)')
@@ -131,19 +140,14 @@ test.describe('Download documents from inbound send page', () => {
     });
 
     await test.step('Download Packing List file', async () => {
+      await createInboundPage.sendStep.downloadButton.click();
       const popupPromise = page.waitForEvent('popup');
       await createInboundPage.sendStep.getDocuments('Packing List').click();
       const popup = await popupPromise;
       await popup.close();
     });
 
-    await test.step('Fill send page and send shipment', async () => {
-      await createInboundPage.sendStep.shipmentTypeSelect.findAndSelectOption(
-        SHIPMENT_TYPE
-      );
-      await createInboundPage.sendStep.expectedDeliveryDatePicker.fill(
-        EXPECTED_DELIVERY_DATE
-      );
+    await test.step('Send shipment', async () => {
       await createInboundPage.sendStep.sendShipmentButton.click();
       await stockMovementShowPage.isLoaded();
     });
@@ -194,11 +198,12 @@ test.describe('Download documents from inbound send page', () => {
 
     await test.step('Download Export Packing List (.xls) file', async () => {
       await createInboundPage.sendStep.isLoaded();
+      await createInboundPage.sendStep.downloadButton.click();
       const popupPromise = page.waitForEvent('popup');
+      const popup = await popupPromise;
       await createInboundPage.sendStep
         .getDocuments('Export Packing List (.xls)')
         .click();
-      const popup = await popupPromise;
       const downloadPromise = popup.waitForEvent('download');
       const download = await downloadPromise;
       await popup.close();
@@ -209,6 +214,7 @@ test.describe('Download documents from inbound send page', () => {
 
     await test.step('Download Packing list file', async () => {
       await createInboundPage.sendStep.isLoaded();
+      await createInboundPage.sendStep.downloadButton.click();
       const popupPromise = page.waitForEvent('popup');
       await createInboundPage.sendStep.getDocuments('Packing List').click();
       const popup = await popupPromise;

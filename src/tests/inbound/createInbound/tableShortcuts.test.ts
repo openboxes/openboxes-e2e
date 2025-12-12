@@ -72,13 +72,15 @@ test('Use Control+ArrowDown copy cell shortcut', async ({
     await createInboundPage.addItemsStep.addLineButton.click({
       delay: 300,
     });
+    await createInboundPage.addItemsStep.addLineButton.click({
+      delay: 300,
+    });
   });
 
   await test.step('Use Control+ArrowDown copy cell shortcut on Pack Level 1', async () => {
     await createInboundPage.addItemsStep.table
       .row(0)
       .packLevel1Field.textbox.fill(ROW.packLevel1);
-    await createInboundPage.addItemsStep.table.row(0).packLevel1Field.textbox.focus();  
     await page.keyboard.press('Control+ArrowDown');
     await page.keyboard.press('Control+ArrowDown');
 
@@ -96,8 +98,10 @@ test('Use Control+ArrowDown copy cell shortcut', async ({
   await test.step('Use Control+ArrowDown copy cell shortcut on Pack Level 2', async () => {
     await createInboundPage.addItemsStep.table
       .row(0)
+      .packLevel2Field.textbox.focus();
+    await createInboundPage.addItemsStep.table
+      .row(0)
       .packLevel2Field.textbox.fill(ROW.packLevel2);
-    await createInboundPage.addItemsStep.table.row(0).packLevel2Field.textbox.focus();  
     await page.keyboard.press('Control+ArrowDown');
     await page.keyboard.press('Control+ArrowDown');
 
@@ -113,10 +117,10 @@ test('Use Control+ArrowDown copy cell shortcut', async ({
   });
 
   await test.step('Use Control+ArrowDown copy cell shortcut on Lot Number', async () => {
+    await createInboundPage.addItemsStep.table.row(0).lotField.textbox.focus();
     await createInboundPage.addItemsStep.table
       .row(0)
       .lotField.textbox.fill(ROW.lotNumber);
-    await createInboundPage.addItemsStep.table.row(0).lotField.textbox.focus();  
     await page.keyboard.press('Control+ArrowDown');
     await page.keyboard.press('Control+ArrowDown');
 
@@ -134,8 +138,10 @@ test('Use Control+ArrowDown copy cell shortcut', async ({
   await test.step('Use Control+ArrowDown copy cell shortcut on Quantity', async () => {
     await createInboundPage.addItemsStep.table
       .row(0)
+      .quantityField.numberbox.focus();
+    await createInboundPage.addItemsStep.table
+      .row(0)
       .quantityField.numberbox.fill(ROW.quantity);
-    await createInboundPage.addItemsStep.table.row(0).quantityField.numberbox.focus();  
     await page.keyboard.press('Control+ArrowDown');
     await page.keyboard.press('Control+ArrowDown');
 
