@@ -1,11 +1,7 @@
 import { expect, test } from '@/fixtures/fixtures';
 import InboundListPage from '@/pages/inbound/list/InboundListPage';
 import StockMovementShowPage from '@/pages/stockMovementShow/StockMovementShowPage';
-import {
-  AddItemsTableRow,
-  LocationResponse,
-  User,
-} from '@/types';
+import { AddItemsTableRow, LocationResponse, User } from '@/types';
 import { formatDate, getDateByOffset, getToday } from '@/utils/DateUtils';
 import UniqueIdentifier from '@/utils/UniqueIdentifier';
 

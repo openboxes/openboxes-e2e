@@ -126,6 +126,9 @@ test.describe('Create inbound stock movement', () => {
 
     await test.step('Remove second item', async () => {
       await createInboundPage.addItemsStep.table.row(1).deleteButton.click();
+      await createInboundPage.addItemsStep.table
+        .row(1)
+        .deleteButton.waitFor({ state: 'detached' });
       expect(await createInboundPage.addItemsStep.table.rows.count()).toBe(1);
     });
 
@@ -281,7 +284,7 @@ test.describe('Values persistance between steps', () => {
       ).toContainText(USER.name);
       await expect(
         createInboundPage.createStep.dateRequestedDatePicker.textbox
-      ).toHaveValue(formatDate(TODAY));
+      ).toHaveValue(formatDate(TODAY, 'DD/MMM/YYYY'));
     });
 
     await test.step('Go next step (Add items)', async () => {
@@ -353,9 +356,9 @@ test.describe('Values persistance between steps', () => {
     });
 
     await test.step('Assert data on send step', async () => {
-      await expect(createInboundPage.sendStep.originField.textbox).toHaveValue(
-        ORIGIN.name
-      );
+      await expect(
+        createInboundPage.sendStep.originField.selectField
+      ).toContainText(ORIGIN.name);
       await expect(
         createInboundPage.sendStep.destinationSelect.selectField
       ).toContainText(CURRENT_LOCATION.name);
@@ -373,7 +376,7 @@ test.describe('Values persistance between steps', () => {
       );
       await expect(
         createInboundPage.sendStep.expectedDeliveryDatePicker.textbox
-      ).toHaveValue(formatDate(EXPECTED_DELIVERY_DATE));
+      ).toHaveValue(formatDate(EXPECTED_DELIVERY_DATE, 'DD/MMM/YYYY'));
 
       for (let i = 0; i < ROWS.length; i++) {
         const data = ROWS[i];
