@@ -183,47 +183,50 @@ test.describe('Download documents from inbound send page', () => {
       ' - Packing List.xls';
 
     await test.step('Download Certificate of Donation file', async () => {
-      const popupPromise = page.waitForEvent('popup');
-      await createInboundPage.sendStep
-        .getDocuments('Certificate of Donation')
-        .click();
-      const popup = await popupPromise;
-      const downloadPromise = popup.waitForEvent('download');
-      const download = await downloadPromise;
+      await createInboundPage.sendStep.isLoaded();
+
+      const [popup, download] = await Promise.all([
+        page.waitForEvent('popup'),
+        page.waitForEvent('download'),
+        createInboundPage.sendStep
+          .getDocuments('Certificate of Donation')
+          .click(),
+      ]);
+
+      expect(download.suggestedFilename()).toBe(certificateOfDonationFileName);
       await popup.close();
-      await expect(download.suggestedFilename()).toBe(
-        certificateOfDonationFileName
-      );
     });
 
     await test.step('Download Export Packing List (.xls) file', async () => {
       await createInboundPage.sendStep.isLoaded();
       await createInboundPage.sendStep.downloadButton.click();
-      const popupPromise = page.waitForEvent('popup');
-      const popup = await popupPromise;
-      await createInboundPage.sendStep
-        .getDocuments('Export Packing List (.xls)')
-        .click();
-      const downloadPromise = popup.waitForEvent('download');
-      const download = await downloadPromise;
+
+      const [popup, download] = await Promise.all([
+        page.waitForEvent('popup'),
+        page.waitForEvent('download'),
+        createInboundPage.sendStep
+          .getDocuments('Export Packing List (.xls)')
+          .click(),
+      ]);
+
+      expect(download.suggestedFilename()).toBe(exportPackingListFileName);
       await popup.close();
-      await expect(download.suggestedFilename()).toBe(
-        exportPackingListFileName
-      );
     });
 
     await test.step('Download Packing list file', async () => {
       await createInboundPage.sendStep.isLoaded();
       await createInboundPage.sendStep.downloadButton.click();
-      const popupPromise = page.waitForEvent('popup');
-      await createInboundPage.sendStep.getDocuments('Packing List').click();
-      const popup = await popupPromise;
-      const downloadPromise = popup.waitForEvent('download');
-      const download = await downloadPromise;
-      await popup.close();
-      await expect(download.suggestedFilename()).toMatch(
+
+      const [popup, download] = await Promise.all([
+        page.waitForEvent('popup'),
+        page.waitForEvent('download'),
+        createInboundPage.sendStep.getDocuments('Packing List').click(),
+      ]);
+
+      expect(download.suggestedFilename()).toMatch(
         /^Packing List - .*\.xls(x)?$/
       );
+      await popup.close();
     });
   });
 });
