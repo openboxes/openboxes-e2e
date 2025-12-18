@@ -12,9 +12,22 @@ class FormField extends BasePageModel {
     this.root = root ?? this.page.locator('body');
   }
 
+  async hasError() {
+    return (
+      (await this.field.getAttribute('class'))?.includes('has-error') ||
+      (await this.field.getAttribute('data-testid'))?.includes('has-errors')
+    );
+  }
+
+  get fieldWithError() {
+    return this.root.locator(
+      `div[data-testid="form-field has-errors"][aria-label="${this.fieldName}"]`
+    );
+  }
+
   get field() {
     return this.root.locator(
-      `div[data-testid="form-field"][aria-label="${this.fieldName}"]`
+      `div[data-testid^="form-field"][aria-label="${this.fieldName}"]`
     );
   }
 
@@ -23,15 +36,19 @@ class FormField extends BasePageModel {
   }
 
   get tooltip() {
-    return this.page.getByRole('tooltip');
+    return this.page.locator('.tippy-tooltip-content');
   }
 
   async assertHasError() {
-    await expect(this.field).toHaveClass(/has-error/);
+    expect(await this.hasError()).toBeTruthy();
+  }
+
+  async assertFieldWithErrorIsVisible(error: string) {
+    await expect(this.fieldWithError).toContainText(error);
   }
 
   async assertHasNoError() {
-    await expect(this.field).not.toHaveClass(/has-error/);
+    expect(await this.hasError()).toBeFalsy();
   }
 }
 
