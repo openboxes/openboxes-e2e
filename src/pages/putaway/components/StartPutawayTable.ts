@@ -33,7 +33,7 @@ class Row extends BasePageModel {
   }
 
   get splitLineButton() {
-    return this.row.getByRole('button', { name: 'Split line' });
+    return this.row.getByTestId('open-modal');
   }
 
   get deleteButton() {
@@ -57,6 +57,10 @@ class Row extends BasePageModel {
 
   getCurrentBin(currentBin: string) {
     return this.row.getByTestId('cell-0-currentBin').getByText(currentBin);
+  }
+
+  get quantityField() {
+    return this.row.getByTestId('cell-0-quantity').getByRole('spinbutton');
   }
 }
 
