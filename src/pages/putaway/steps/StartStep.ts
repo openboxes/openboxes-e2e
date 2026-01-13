@@ -1,9 +1,8 @@
 import { expect, Page } from '@playwright/test';
 
 import BasePageModel from '@/pages/BasePageModel';
-
-import SplitModal from '../components/SplitModal';
-import StartPutawayTable from '../components/StartPutawayTable';
+import SplitModal from '@/pages/putaway/components/SplitModal';
+import StartPutawayTable from '@/pages/putaway/components/StartPutawayTable';
 
 class StartStep extends BasePageModel {
   table: StartPutawayTable;
@@ -37,13 +36,13 @@ class StartStep extends BasePageModel {
 
   get validationOnEditCompletedPutaway() {
     return this.page
-      .locator('.s-alert-box-inner')
+      .locator('[class*="alert"]')
       .getByText(/Can't update completed putaway/);
   }
 
   get validationOnDeleteItemFromCompletedPutaway() {
     return this.page
-      .locator('.s-alert-box-inner')
+      .locator('[class*="alert"]')
       .getByText(/Can't remove an item on completed putaway/);
   }
 

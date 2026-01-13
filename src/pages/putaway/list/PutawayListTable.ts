@@ -34,7 +34,7 @@ class PutawayListTable extends BasePageModel {
 
   get emptyPutawayList() {
     return this.table
-      .locator('.empty fade center')
+      .locator('.empty')
       .getByText('No orders match the given criteria');
   }
 }
