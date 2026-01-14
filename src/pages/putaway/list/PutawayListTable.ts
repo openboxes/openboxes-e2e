@@ -31,6 +31,12 @@ class PutawayListTable extends BasePageModel {
     this.page.once('dialog', (dialog) => dialog.accept());
     await this.deleteOrderButton.click();
   }
+
+  get emptyPutawayList() {
+    return this.table
+      .locator('.empty')
+      .getByText('No orders match the given criteria');
+  }
 }
 
 class Row extends BasePageModel {

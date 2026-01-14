@@ -113,6 +113,16 @@ class PutawayDetailsPage extends BasePageModel {
   get generatePutawayListButton() {
     return this.page.getByRole('link', { name: 'Generate Putaway List' });
   }
+
+  async assertClickOnEditButtonWhenPutawayCompleted() {
+    this.page.once('dialog', (dialog) => {
+      expect(dialog.message()).toContain(
+        'This feature is not available for completed and canceled putaways'
+      );
+      dialog.accept();
+    });
+    await this.editButton.click();
+  }
 }
 
 export default PutawayDetailsPage;
