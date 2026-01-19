@@ -108,6 +108,7 @@ test.describe('Status changes for inbound sm on view sm and inbound list page', 
       const row = createInboundPage.addItemsStep.table.row(1);
       await row.productSelect.findAndSelectOption(data.productName);
       await row.quantityField.numberbox.fill(data.quantity);
+      await row.quantityField.numberbox.blur();
 
       expect(await createInboundPage.addItemsStep.table.rows.count()).toBe(2);
     });
@@ -294,6 +295,7 @@ test.describe('Status changes for inbound sm on view sm and inbound list page', 
       const row = createInboundPage.addItemsStep.table.row(1);
       await row.productSelect.findAndSelectOption(data.productName);
       await row.quantityField.numberbox.fill(data.quantity);
+      await row.quantityField.numberbox.blur();
 
       expect(await createInboundPage.addItemsStep.table.rows.count()).toBe(2);
     });

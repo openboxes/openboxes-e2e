@@ -146,7 +146,7 @@ test.describe('Filter by "Received" status', () => {
         await receivingPage.receivingStep.isLoaded();
       });
 
-      await test.step('Select all items to receiv', async () => {
+      await test.step('Select all items to receive', async () => {
         await receivingPage.receivingStep.table
           .row(1)
           .receivingNowField.textbox.fill('2');
@@ -159,6 +159,7 @@ test.describe('Filter by "Received" status', () => {
       await test.step('Receive shipment', async () => {
         await receivingPage.checkStep.isLoaded();
         await receivingPage.checkStep.receiveShipmentButton.click();
+        await stockMovementShowPage.isLoaded();
       });
     }
   );
@@ -255,6 +256,7 @@ test.describe('Filter by "Receiving" status', () => {
       await test.step('Receive shipment', async () => {
         await receivingPage.checkStep.isLoaded();
         await receivingPage.checkStep.receiveShipmentButton.click();
+        await stockMovementShowPage.isLoaded();
       });
     }
   );
