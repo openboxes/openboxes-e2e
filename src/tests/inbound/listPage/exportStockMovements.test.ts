@@ -102,6 +102,7 @@ test.describe('Export stock movements', () => {
     ];
 
     await test.step('Download file', async () => {
+      await inboundListPage.waitForNetworkIdle();
       const { fullFilePath } = await inboundListPage.exportStockMovements();
       filePath = fullFilePath;
     });
@@ -157,6 +158,7 @@ test.describe('Export stock movements', () => {
     });
 
     await test.step('Download filtered file', async () => {
+      await inboundListPage.waitForNetworkIdle();
       const { fullFilePath } = await inboundListPage.exportStockMovements();
       filePath = fullFilePath;
     });
