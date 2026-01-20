@@ -47,7 +47,7 @@ class StartStep extends BasePageModel {
   }
 
   async closeDisplayedError() {
-    return this.page.locator('.alert-close-icon').click();
+    return this.page.locator('.alert-close-icon').first().click();
   }
 }
 
