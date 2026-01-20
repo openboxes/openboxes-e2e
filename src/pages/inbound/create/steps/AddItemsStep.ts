@@ -96,6 +96,11 @@ class AddItemsStep extends BasePageModel {
       });
     }
   }
+
+  async waitForNetworkIdle() {
+    // eslint-disable-next-line playwright/no-networkidle
+    await this.page.waitForLoadState('networkidle');
+  }
 }
 
 export default AddItemsStep;

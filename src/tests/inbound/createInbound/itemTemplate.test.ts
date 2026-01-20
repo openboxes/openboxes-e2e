@@ -37,9 +37,11 @@ test.describe('Export items template on inbound add items page', () => {
     let filePath: string;
     let downloadedTemplateFile: WorkbookUtils;
 
-    await test.step('Go to inbound list page', async () => {
+    await test.step('Go to inbound add items page', async () => {
       await createInboundPage.goToPage(STOCK_MOVEMENT.id);
+      await createInboundPage.nextButton.click();
       await createInboundPage.addItemsStep.isLoaded();
+      await createInboundPage.addItemsStep.waitForNetworkIdle();
     });
 
     await test.step('Download template', async () => {
@@ -81,6 +83,7 @@ test.describe('Export items template on inbound add items page', () => {
   }) => {
     await test.step('Go to inbound list page', async () => {
       await createInboundPage.goToPage(STOCK_MOVEMENT.id);
+      await createInboundPage.nextButton.click();
       await createInboundPage.addItemsStep.isLoaded();
     });
 
@@ -181,7 +184,9 @@ test.describe('Import template with data', () => {
   }) => {
     await test.step('Go to inbound list page', async () => {
       await createInboundPage.goToPage(STOCK_MOVEMENT.id);
+      await createInboundPage.nextButton.click();
       await createInboundPage.addItemsStep.isLoaded();
+      await createInboundPage.addItemsStep.waitForNetworkIdle();
     });
 
     let downloadedTemplateFile: WorkbookUtils;
@@ -261,7 +266,9 @@ test.describe('Import template with data', () => {
   }) => {
     await test.step('Go to inbound list page', async () => {
       await createInboundPage.goToPage(STOCK_MOVEMENT.id);
+      await createInboundPage.nextButton.click();
       await createInboundPage.addItemsStep.isLoaded();
+      await createInboundPage.addItemsStep.waitForNetworkIdle();
     });
 
     await test.step('Add items to table', async () => {
@@ -352,6 +359,7 @@ test.describe('Import template with data', () => {
   }) => {
     await test.step('Go to inbound list page', async () => {
       await createInboundPage.goToPage(STOCK_MOVEMENT.id);
+      await createInboundPage.nextButton.click();
       await createInboundPage.addItemsStep.isLoaded();
     });
 

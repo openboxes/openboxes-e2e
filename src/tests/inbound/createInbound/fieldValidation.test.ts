@@ -82,16 +82,16 @@ test('Create Inbound stock movement field validations', async ({
 
   await test.step('Assert field validation on Description field (Create step)', async () => {
     await createInboundPage.createStep.descriptionField.assertHasError();
-    await expect(
-      createInboundPage.createStep.descriptionField.errorMessage
-    ).toContainText('This field is required');
+    await createInboundPage.createStep.descriptionField.assertFieldWithErrorIsVisible(
+      'is required'
+    );
   });
 
   await test.step('Assert field validation on Origin field (Create step)', async () => {
     await createInboundPage.createStep.originSelect.assertHasError();
-    await expect(
-      createInboundPage.createStep.originSelect.errorMessage
-    ).toContainText('This field is required');
+    await createInboundPage.createStep.originSelect.assertFieldWithErrorIsVisible(
+      'is required'
+    );
   });
 
   await test.step('Assert no field validation on Destination field (Create step)', async () => {
@@ -100,9 +100,9 @@ test('Create Inbound stock movement field validations', async ({
 
   await test.step('Assert field validation on Requested By field (Create step)', async () => {
     await createInboundPage.createStep.requestedBySelect.assertHasError();
-    await expect(
-      createInboundPage.createStep.requestedBySelect.errorMessage
-    ).toContainText('This field is required');
+    await createInboundPage.createStep.requestedBySelect.assertFieldWithErrorIsVisible(
+      'is required'
+    );
   });
 
   await test.step('Assert no field validation on Stock field (Create step)', async () => {
@@ -111,9 +111,9 @@ test('Create Inbound stock movement field validations', async ({
 
   await test.step('Assert field validation on Date Requested field (Create step)', async () => {
     await createInboundPage.createStep.dateRequestedDatePicker.assertHasError();
-    await expect(
-      createInboundPage.createStep.dateRequestedDatePicker.errorMessage
-    ).toContainText('This field is required');
+    await createInboundPage.createStep.dateRequestedDatePicker.assertFieldWithErrorIsVisible(
+      'is required'
+    );
   });
 
   await test.step('Fill all required field on create step (Create step)', async () => {
@@ -130,6 +130,7 @@ test('Create Inbound stock movement field validations', async ({
   });
 
   await test.step('Go to next step (Create -> Add Items)', async () => {
+    await createInboundPage.nextButton.focus();
     await createInboundPage.nextButton.click();
   });
 
@@ -164,6 +165,7 @@ test('Create Inbound stock movement field validations', async ({
 
   await test.step('Fill pack level 1 (Add Items)', async () => {
     await row.packLevel1Field.textbox.fill(ROW.packLevel1);
+    await row.packLevel1Field.textbox.blur();
     await row.packLevel2Field.assertHasNoError();
   });
 
@@ -191,6 +193,9 @@ test('Create Inbound stock movement field validations', async ({
   });
 
   await test.step('Expected delivery date should be empty', async () => {
+    await createInboundPage.sendStep.isLoaded();
+    await createInboundPage.sendStep.commentField.textbox.focus();
+    await createInboundPage.sendStep.expectedDeliveryDatePicker.textbox.focus();
     await expect(
       createInboundPage.sendStep.expectedDeliveryDatePicker.textbox
     ).toHaveValue('');
@@ -200,11 +205,21 @@ test('Create Inbound stock movement field validations', async ({
     await createInboundPage.sendStep.sendShipmentButton.click();
   });
 
-  await test.step('Expected delivery date field shoudl have validation error', async () => {
-    await createInboundPage.sendStep.expectedDeliveryDatePicker.assertHasError();
-    await expect(
-      createInboundPage.sendStep.expectedDeliveryDatePicker.errorMessage
-    ).toContainText('This field is required');
+  await test.step('Assert shipment type is required', async () => {
+    await createInboundPage.sendStep.shipmentTypeSelect.assertHasError();
+    await createInboundPage.sendStep.shipmentTypeSelect.assertFieldWithErrorIsVisible(
+      'This field is required'
+    );
+    await createInboundPage.sendStep.shipmentTypeSelect.findAndSelectOption(
+      'Air'
+    );
+    await createInboundPage.sendStep.sendShipmentButton.click();
+  });
+
+  await test.step('Expected delivery date field should have validation error', async () => {
+    await createInboundPage.sendStep.expectedDeliveryDatePicker.assertFieldWithErrorIsVisible(
+      'This field is required'
+    );
   });
 
   await test.step('Fill expected delivery date one day before ship date', async () => {
@@ -214,17 +229,11 @@ test('Create Inbound stock movement field validations', async ({
   });
 
   await test.step('Assert field validation errors on Ship date and Expeted delivery date fields', async () => {
-    await createInboundPage.sendStep.shipDateDatePicker.assertHasError();
-    await expect(
-      createInboundPage.sendStep.shipDateDatePicker.errorMessage
-    ).toContainText(
+    await createInboundPage.sendStep.shipDateDatePicker.assertFieldWithErrorIsVisible(
       'Please verify timeline. Delivery date cannot be before Ship date.'
     );
 
-    await createInboundPage.sendStep.expectedDeliveryDatePicker.assertHasError();
-    await expect(
-      createInboundPage.sendStep.expectedDeliveryDatePicker.errorMessage
-    ).toContainText(
+    await createInboundPage.sendStep.expectedDeliveryDatePicker.assertFieldWithErrorIsVisible(
       'Please verify timeline. Delivery date cannot be before Ship date.'
     );
   });
