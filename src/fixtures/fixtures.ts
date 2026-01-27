@@ -92,6 +92,8 @@ type Fixtures = {
   wardLocationService: LocationData;
   noPickAndPutawayStockDepotService: LocationData;
   internalLocationService: LocationData;
+  internalLocation2Service: LocationData;
+
   // PRODUCT DATA
   mainProductService: ProductData;
   otherProductService: ProductData;
@@ -179,6 +181,8 @@ export const test = baseTest.extend<Fixtures>({
     use(new LocationData(LOCATION_KEY.NO_PICK_AND_PUTAWAY_STOCK, page.request)),
   internalLocationService: async ({ page }, use) =>
     use(new LocationData(LOCATION_KEY.BIN_LOCATION, page.request)),
+  internalLocation2Service: async ({ page }, use) =>
+    use(new LocationData(LOCATION_KEY.BIN_LOCATION2, page.request)),
   // PRODUCTS
   mainProductService: async ({ page }, use) =>
     use(new ProductData(PRODUCT_KEY.ONE, page.request)),
