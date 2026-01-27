@@ -12,7 +12,7 @@ class CompletePutawayTable extends BasePageModel {
   }
 
   get rows() {
-    return this.table.getByRole('rowgroup');
+    return this.table.getByRole('row');
   }
 
   row(index: number) {
@@ -26,6 +26,10 @@ class Row extends BasePageModel {
   constructor(page: Page, row: Locator) {
     super(page);
     this.row = row;
+  }
+
+  getputawayBin(rowIndex: number) {
+    return this.row.getByTestId(`cell-${rowIndex}-undefined`).nth(9);
   }
 }
 

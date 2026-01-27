@@ -62,6 +62,10 @@ class Row extends BasePageModel {
   get quantityField() {
     return this.row.getByTestId('cell-0-quantity').getByRole('spinbutton');
   }
+
+  get splitLineinPutawayBin() {
+    return this.row.getByTestId('cell-0-putawayBin');
+  }
 }
 
 export default StartPutawayTable;
