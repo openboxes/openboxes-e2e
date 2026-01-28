@@ -26,6 +26,7 @@ export enum LOCATION_KEY {
   WARD = 'ward',
   NO_PICK_AND_PUTAWAY_STOCK = 'noPickAndPutawayStockDepot',
   BIN_LOCATION = 'internalLocation',
+  BIN_LOCATION2 = 'internalLocation2',
 }
 
 export enum PRODUCT_KEY {
@@ -262,6 +263,19 @@ class AppConfig {
         id: env.get('LOCATION_INTERNAL').asString(),
         key: LOCATION_KEY.BIN_LOCATION,
         name: this.uniqueIdentifier.generateUniqueString('bin-location'),
+        requiredActivityCodes: new Set([
+          ActivityCode.PICK_STOCK,
+          ActivityCode.PUTAWAY_STOCK,
+        ]),
+        required: false,
+        type: LocationTypeCode.BIN_LOCATION,
+        parentLocation: env.get('LOCATION_MAIN').required().asString(),
+      }),
+
+      internalLocation2: new LocationConfig({
+        id: env.get('LOCATION_INTERNAL_TWO').asString(),
+        key: LOCATION_KEY.BIN_LOCATION,
+        name: this.uniqueIdentifier.generateUniqueString('bin-location2'),
         requiredActivityCodes: new Set([
           ActivityCode.PICK_STOCK,
           ActivityCode.PUTAWAY_STOCK,

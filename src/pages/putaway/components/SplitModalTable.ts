@@ -47,6 +47,14 @@ class Row extends BasePageModel {
   get quantityField() {
     return this.row.getByRole('cell').getByTestId('quantity-input');
   }
+
+  get clearBinSelect() {
+    return this.row.locator('.react-select__clear-indicator');
+  }
+
+  get putawayBinField() {
+    return this.row.getByTestId('bin-select').getByRole('textbox');
+  }
 }
 
 export default SplitModalTable;
