@@ -328,19 +328,19 @@ test.describe('Split line in Putaway', () => {
       ).toHaveText('COMPLETED');
       await expect(
         putawayDetailsPage.itemStatusTable.row(1).destinationBin
-      ).toContainText(internalLocation2.name);
+      ).toContainText(internalLocation.name);
       await expect(
         putawayDetailsPage.itemStatusTable.row(2).itemStatus
       ).toHaveText('COMPLETED');
       await expect(
         putawayDetailsPage.itemStatusTable.row(2).destinationBin
-      ).toContainText(internalLocation2.name);
+      ).toContainText(internalLocation.name);
       await expect(
         putawayDetailsPage.itemStatusTable.row(3).itemStatus
       ).toHaveText('COMPLETED');
       await expect(
         putawayDetailsPage.itemStatusTable.row(3).destinationBin
-      ).toContainText(internalLocation2.name);
+      ).toContainText(internalLocation.name);
     });
   });
 });
