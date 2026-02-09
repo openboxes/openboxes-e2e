@@ -13,12 +13,13 @@ test.describe('Receive inbound stock movement in location without pick and putaw
     async ({
       supplierLocationService,
       stockMovementService,
-      mainProductService,
+      productService,
       noPickAndPutawayStockDepotService,
     }) => {
       const supplierLocation = await supplierLocationService.getLocation();
       const noPickAndPutawayStockDepot= await noPickAndPutawayStockDepotService.getLocation();
-      const PRODUCT_ONE = await mainProductService.getProduct();
+      productService.setProduct('1');
+      const PRODUCT_ONE = await productService.getProduct();
 
       STOCK_MOVEMENT = await stockMovementService.createInbound({
         originId: supplierLocation.id,
@@ -100,7 +101,7 @@ test.describe('Receive inbound stock movement in location without pick and putaw
 
 
     await test.step('Go to and assert checking page is visible', async () => {
-      await receivingPage.nextButton.click();  
+      await receivingPage.nextButton.click();
       await receivingPage.checkStep.isLoaded();
     });
 

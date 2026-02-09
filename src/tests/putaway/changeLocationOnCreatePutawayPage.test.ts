@@ -11,7 +11,7 @@ test.describe('Change location on putaway create page and list pages', () => {
     async ({
       supplierLocationService,
       stockMovementService,
-      fifthProductService,
+      productService,
       receivingService,
     }) => {
       const supplierLocation = await supplierLocationService.getLocation();
@@ -19,7 +19,8 @@ test.describe('Change location on putaway create page and list pages', () => {
         originId: supplierLocation.id,
       });
 
-      const product = await fifthProductService.getProduct();
+      productService.setProduct('5');
+      const product = await productService.getProduct();
 
       await stockMovementService.addItemsToInboundStockMovement(
         STOCK_MOVEMENT.id,
@@ -77,7 +78,7 @@ test.describe('Change location on putaway create page and list pages', () => {
     navbar,
     createPutawayPage,
     locationChooser,
-    fifthProductService,
+    productService,
     depotLocationService,
     mainLocationService,
     putawayListPage,
@@ -85,7 +86,8 @@ test.describe('Change location on putaway create page and list pages', () => {
   }) => {
     const receivingBin =
       AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
-    const product = await fifthProductService.getProduct();
+    productService.setProduct('5');
+    const product = await productService.getProduct();
     const mainLocation = await mainLocationService.getLocation();
     const depotLocation = await depotLocationService.getLocation();
 

@@ -10,7 +10,6 @@ import LocationChooser from '@/components/LocationChooser';
 import Navbar from '@/components/Navbar';
 import AppConfig, {
   LOCATION_KEY,
-  PRODUCT_KEY,
   USER_KEY,
 } from '@/config/AppConfig';
 import CreateInbound from '@/pages/inbound/create/CreateInboundPage';
@@ -95,11 +94,7 @@ type Fixtures = {
   internalLocation2Service: LocationData;
 
   // PRODUCT DATA
-  mainProductService: ProductData;
-  otherProductService: ProductData;
-  thirdProductService: ProductData;
-  fourthProductService: ProductData;
-  fifthProductService: ProductData;
+  productService: ProductData;
   // USERS DATA
   mainUserService: UserData;
   altUserService: UserData;
@@ -184,16 +179,8 @@ export const test = baseTest.extend<Fixtures>({
   internalLocation2Service: async ({ page }, use) =>
     use(new LocationData(LOCATION_KEY.BIN_LOCATION2, page.request)),
   // PRODUCTS
-  mainProductService: async ({ page }, use) =>
-    use(new ProductData(PRODUCT_KEY.ONE, page.request)),
-  otherProductService: async ({ page }, use) =>
-    use(new ProductData(PRODUCT_KEY.TWO, page.request)),
-  thirdProductService: async ({ page }, use) =>
-    use(new ProductData(PRODUCT_KEY.THREE, page.request)),
-  fourthProductService: async ({ page }, use) =>
-    use(new ProductData(PRODUCT_KEY.FOUR, page.request)),
-  fifthProductService: async ({ page }, use) =>
-    use(new ProductData(PRODUCT_KEY.FIVE, page.request)),
+  productService: async ({ page }, use) =>
+    use(new ProductData(page.request)),
   // USERS
   mainUserService: async ({ page }, use) =>
     use(new UserData(USER_KEY.MAIN, page.request)),

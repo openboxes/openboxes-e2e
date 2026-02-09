@@ -11,7 +11,7 @@ test.describe('Split line in Putaway', () => {
     async ({
       supplierLocationService,
       stockMovementService,
-      fifthProductService,
+      productService,
       receivingService,
     }) => {
       const supplierLocation = await supplierLocationService.getLocation();
@@ -19,7 +19,8 @@ test.describe('Split line in Putaway', () => {
         originId: supplierLocation.id,
       });
 
-      const product = await fifthProductService.getProduct();
+      productService.setProduct('5');
+      const product = await productService.getProduct();
 
       await stockMovementService.addItemsToInboundStockMovement(
         STOCK_MOVEMENT.id,
@@ -88,7 +89,7 @@ test.describe('Split line in Putaway', () => {
     internalLocation2Service,
     putawayDetailsPage,
     productShowPage,
-    fifthProductService,
+    productService,
   }) => {
     const internalLocation = await internalLocationService.getLocation();
     const internalLocation2 = await internalLocation2Service.getLocation();
@@ -176,7 +177,8 @@ test.describe('Split line in Putaway', () => {
 
     await test.step('Assert putaway bin on stock card', async () => {
       await putawayDetailsPage.summaryTab.click();
-      const product = await fifthProductService.getProduct();
+      productService.setProduct('5');
+      const product = await productService.getProduct();
       await productShowPage.goToPage(product.id);
       await productShowPage.inStockTab.click();
       await productShowPage.inStockTabSection.isLoaded();
