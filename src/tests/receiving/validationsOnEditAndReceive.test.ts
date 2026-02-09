@@ -74,7 +74,7 @@ test.describe('Validations on edit and receive inbound stock movement', () => {
     async ({
       supplierLocationService,
       stockMovementService,
-      mainProductService,
+      productService,
     }) => {
       const supplierLocation = await supplierLocationService.getLocation();
       STOCK_MOVEMENT = await stockMovementService.createInbound({
@@ -83,7 +83,8 @@ test.describe('Validations on edit and receive inbound stock movement', () => {
         dateRequested,
       });
 
-      const product = await mainProductService.getProduct();
+      productService.setProduct('1');
+      const product = await productService.getProduct();
 
       await stockMovementService.addItemsToInboundStockMovement(
         STOCK_MOVEMENT.id,

@@ -11,7 +11,7 @@ test.describe('Rollback last receipt behavior when putaway created', () => {
     async ({
       supplierLocationService,
       stockMovementService,
-      fifthProductService,
+      productService,
       receivingService,
     }) => {
       const supplierLocation = await supplierLocationService.getLocation();
@@ -19,7 +19,8 @@ test.describe('Rollback last receipt behavior when putaway created', () => {
         originId: supplierLocation.id,
       });
 
-      const product = await fifthProductService.getProduct();
+      productService.setProduct('5');
+      const product = await productService.getProduct();
 
       await stockMovementService.addItemsToInboundStockMovement(
         STOCK_MOVEMENT.id,

@@ -11,7 +11,7 @@ test.describe('Putaway received inbound shipment', () => {
     async ({
       supplierLocationService,
       stockMovementService,
-      fifthProductService,
+      productService,
       receivingService,
     }) => {
       const supplierLocation = await supplierLocationService.getLocation();
@@ -19,7 +19,8 @@ test.describe('Putaway received inbound shipment', () => {
         originId: supplierLocation.id,
       });
 
-      const product = await fifthProductService.getProduct();
+      productService.setProduct('5');
+      const product = await productService.getProduct();
 
       await stockMovementService.addItemsToInboundStockMovement(
         STOCK_MOVEMENT.id,
@@ -84,7 +85,7 @@ test.describe('Putaway received inbound shipment', () => {
     internalLocationService,
     productShowPage,
     putawayDetailsPage,
-    fifthProductService,
+    productService,
   }) => {
     await test.step('Go to stock movement show page and assert received status', async () => {
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
@@ -128,7 +129,8 @@ test.describe('Putaway received inbound shipment', () => {
 
     await test.step('Assert putaway bin on stock card', async () => {
       await putawayDetailsPage.summaryTab.click();
-      const product = await fifthProductService.getProduct();
+      productService.setProduct('5');
+      const product = await productService.getProduct();
       await productShowPage.goToPage(product.id)
       await productShowPage.inStockTab.click();
       await productShowPage.inStockTabSection.isLoaded();

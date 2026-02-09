@@ -1,3 +1,5 @@
 Product code,Product,Lot number,Expiration date,Bin location,Quantity,Comment
 1,E2E-product-one,,,,122,
 2,E2E-product-two,,,,123,
+3,E2E-product-three,,,,100,
+4,E2E-product-four,,,,100,

@@ -392,8 +392,7 @@ test.describe('Receive from different locations', () => {
     async ({
       supplierLocationService,
       stockMovementService,
-      mainProductService,
-      otherProductService,
+      productService,
     }) => {
       const supplierLocation = await supplierLocationService.getLocation();
       STOCK_MOVEMENT = await stockMovementService.createInbound({
@@ -402,8 +401,10 @@ test.describe('Receive from different locations', () => {
         dateRequested,
       });
 
-      const product = await mainProductService.getProduct();
-      const product2 = await otherProductService.getProduct();
+      productService.setProduct('1');
+      const product = await productService.getProduct();
+      productService.setProduct('2');
+      const product2 = await productService.getProduct();
 
       await stockMovementService.addItemsToInboundStockMovement(
         STOCK_MOVEMENT.id,

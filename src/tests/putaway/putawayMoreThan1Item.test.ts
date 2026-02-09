@@ -11,8 +11,7 @@ test.describe('Create putaway for more than 1 item, separate putaways', () => {
     async ({
       supplierLocationService,
       stockMovementService,
-      fifthProductService,
-      fourthProductService,
+      productService,
       receivingService,
     }) => {
       const supplierLocation = await supplierLocationService.getLocation();
@@ -20,8 +19,10 @@ test.describe('Create putaway for more than 1 item, separate putaways', () => {
         originId: supplierLocation.id,
       });
 
-      const product = await fifthProductService.getProduct();
-      const product2 = await fourthProductService.getProduct();
+      productService.setProduct('5');
+      const product = await productService.getProduct();
+      productService.setProduct('4');
+      const product2 = await productService.getProduct();
 
       await stockMovementService.addItemsToInboundStockMovement(
         STOCK_MOVEMENT.id,
@@ -90,14 +91,15 @@ test.describe('Create putaway for more than 1 item, separate putaways', () => {
     internalLocationService,
     productShowPage,
     putawayDetailsPage,
-    fifthProductService,
-    fourthProductService,
+    productService,
     putawayListPage,
   }) => {
     const receivingBin =
       AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
-    const product = await fifthProductService.getProduct();
-    const product2 = await fourthProductService.getProduct();
+    productService.setProduct('5');
+    const product = await productService.getProduct();
+    productService.setProduct('4');
+    const product2 = await productService.getProduct();
     const internalLocation = await internalLocationService.getLocation();
 
     await test.step('Go to create putaway page', async () => {
@@ -243,8 +245,7 @@ test.describe('Putaway 2 items in the same putaway', () => {
     async ({
       supplierLocationService,
       stockMovementService,
-      fifthProductService,
-      fourthProductService,
+      productService,
       receivingService,
     }) => {
       const supplierLocation = await supplierLocationService.getLocation();
@@ -252,8 +253,10 @@ test.describe('Putaway 2 items in the same putaway', () => {
         originId: supplierLocation.id,
       });
 
-      const product = await fifthProductService.getProduct();
-      const product2 = await fourthProductService.getProduct();
+      productService.setProduct('5');
+      const product = await productService.getProduct();
+      productService.setProduct('4');
+      const product2 = await productService.getProduct();
 
       await stockMovementService.addItemsToInboundStockMovement(
         STOCK_MOVEMENT.id,
@@ -321,13 +324,14 @@ test.describe('Putaway 2 items in the same putaway', () => {
     internalLocationService,
     productShowPage,
     putawayDetailsPage,
-    fifthProductService,
-    fourthProductService,
+    productService,
   }) => {
     const receivingBin =
       AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
-    const product = await fifthProductService.getProduct();
-    const product2 = await fourthProductService.getProduct();
+    productService.setProduct('5');
+    const product = await productService.getProduct();
+    productService.setProduct('4');
+    const product2 = await productService.getProduct();
     const internalLocation = await internalLocationService.getLocation();
 
     await test.step('Go to create putaway page', async () => {
