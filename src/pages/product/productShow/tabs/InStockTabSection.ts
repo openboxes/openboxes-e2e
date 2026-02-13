@@ -44,6 +44,10 @@ class Row extends BasePageModel {
       .getByRole('link');
   }
 
+  get defaultBinLocation() {
+    return this.row.locator('.line').getByText('Default');
+  }
+
   get zoneLocation() {
     return this.row.locator('.line').locator('.line-base').getByRole('link');
   }
