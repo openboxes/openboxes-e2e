@@ -59,6 +59,10 @@ class Row extends BasePageModel {
     return this.row.getByTestId('cell-0-currentBin').getByText(currentBin);
   }
 
+  getPreferredBin(rowIndex: number) {
+    return this.row.getByTestId(`cell-${rowIndex}-preferredBin`);
+  }
+
   get quantityField() {
     return this.row.getByTestId('cell-0-quantity').getByRole('spinbutton');
   }

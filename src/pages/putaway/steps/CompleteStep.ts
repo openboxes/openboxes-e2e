@@ -19,6 +19,18 @@ class CompleteStep extends BasePageModel {
   get completePutawayButton() {
     return this.page.getByTestId('complete-putaway-button').nth(1);
   }
+
+  get confirmPutawayDialog() {
+    return this.page.locator('.react-confirm-alert');
+  }
+
+  get yesButtonOnConfirmPutawayDialog() {
+    return this.confirmPutawayDialog.getByRole('button', { name: 'Yes' });
+  }
+
+  get noButtonOnConfirmPutawayDialog() {
+    return this.confirmPutawayDialog.getByRole('button', { name: 'No' });
+  }
 }
 
 export default CompleteStep;
