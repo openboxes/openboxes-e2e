@@ -34,6 +34,10 @@ class ProductShowPage extends BasePageModel {
   get stockHistoryTab() {
     return this.page.getByRole('link', { name: 'Stock History' });
   }
+
+  get editProductkButton() {
+    return this.page.getByRole('link', { name: 'Edit Product' });
+  }
 }
 
 export default ProductShowPage;

@@ -8,10 +8,7 @@ import StockMovementService from '@/api/StockMovementService';
 import ImpersonateBanner from '@/components/ImpersonateBanner';
 import LocationChooser from '@/components/LocationChooser';
 import Navbar from '@/components/Navbar';
-import AppConfig, {
-  LOCATION_KEY,
-  USER_KEY,
-} from '@/config/AppConfig';
+import AppConfig, { LOCATION_KEY, USER_KEY } from '@/config/AppConfig';
 import CreateInbound from '@/pages/inbound/create/CreateInboundPage';
 import InboundListPage from '@/pages/inbound/list/InboundListPage';
 import CreateInvoicePage from '@/pages/invoice/CreateInvoicePage';
@@ -28,6 +25,7 @@ import OrganizationListPage from '@/pages/oranization/OrganizationListPage';
 import CreatePersonPage from '@/pages/people/CreatePersonPage';
 import PersonsListPage from '@/pages/people/PersonsListPage';
 import CreateProductPage from '@/pages/product/CreateProductPage';
+import ProductEditPage from '@/pages/product/productEdit/ProductEditPage';
 import ProductShowPage from '@/pages/product/productShow/ProductShowPage';
 import CreatePutawayPage from '@/pages/putaway/CreatePutawayPage';
 import PutawayListPage from '@/pages/putaway/list/PutawayListPage';
@@ -72,6 +70,7 @@ type Fixtures = {
   transactionListPage: TransactionListPage;
   oldViewShipmentPage: OldViewShipmentPage;
   putawayListPage: PutawayListPage;
+  productEditPage: ProductEditPage;
   // COMPONENTS
   navbar: Navbar;
   locationChooser: LocationChooser;
@@ -145,6 +144,7 @@ export const test = baseTest.extend<Fixtures>({
   oldViewShipmentPage: async ({ page }, use) =>
     use(new OldViewShipmentPage(page)),
   putawayListPage: async ({ page }, use) => use(new PutawayListPage(page)),
+  productEditPage: async ({ page }, use) => use(new ProductEditPage(page)),
   // COMPONENTS
   navbar: async ({ page }, use) => use(new Navbar(page)),
   locationChooser: async ({ page }, use) => use(new LocationChooser(page)),
@@ -179,8 +179,7 @@ export const test = baseTest.extend<Fixtures>({
   internalLocation2Service: async ({ page }, use) =>
     use(new LocationData(LOCATION_KEY.BIN_LOCATION2, page.request)),
   // PRODUCTS
-  productService: async ({ page }, use) =>
-    use(new ProductData(page.request)),
+  productService: async ({ page }, use) => use(new ProductData(page.request)),
   // USERS
   mainUserService: async ({ page }, use) =>
     use(new UserData(USER_KEY.MAIN, page.request)),
