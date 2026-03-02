@@ -153,10 +153,10 @@ test.describe('Putaway to preferred bin and default bin', () => {
 
     await test.step('Assert assignment of preferred and putaway bins', async () => {
       await expect(
-        createPutawayPage.startStep.table.row(1).getPreferredBin(0)
+        createPutawayPage.startStep.table.row(1).preferredBin
       ).toHaveText('');
       await expect(
-        createPutawayPage.startStep.table.row(2).getPreferredBin(1)
+        createPutawayPage.startStep.table.row(2).preferredBin
       ).toContainText(internalLocation.name);
       await expect(
         createPutawayPage.startStep.table.row(1).putawayBinSelect
@@ -250,7 +250,7 @@ test.describe('Putaway to preferred bin and default bin', () => {
 
     await test.step('Assert assignment of preferred and putaway bins', async () => {
       await expect(
-        createPutawayPage.startStep.table.row(1).getPreferredBin(0)
+        createPutawayPage.startStep.table.row(1).preferredBin
       ).toContainText(internalLocation.name);
       await expect(
         createPutawayPage.startStep.table.row(1).putawayBinSelect
@@ -269,7 +269,7 @@ test.describe('Putaway to preferred bin and default bin', () => {
       await createPutawayPage.startStep.nextButton.click();
       await createPutawayPage.completeStep.isLoaded();
       await expect(
-        createPutawayPage.completeStep.table.row(2).getputawayBin(0)
+        createPutawayPage.completeStep.table.row(2).putawayBin
       ).toContainText(internalLocation2.name);
     });
 

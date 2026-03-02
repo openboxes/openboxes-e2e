@@ -28,8 +28,8 @@ class Row extends BasePageModel {
     this.row = row;
   }
 
-  getputawayBin(rowIndex: number) {
-    return this.row.getByTestId(`cell-${rowIndex}-undefined`).nth(9);
+  get putawayBin() {
+    return this.row.getByTestId('table-cell').nth(10);
   }
 }
 

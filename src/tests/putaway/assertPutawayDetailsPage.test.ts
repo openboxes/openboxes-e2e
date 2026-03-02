@@ -140,8 +140,9 @@ test.describe('Assert putaway details page', () => {
     });
 
     await test.step('Go to putaway view page and assert page elements', async () => {
-      await putawayListPage.table.row(1).actionsButton.click();
-      await putawayListPage.table.viewOrderDetailsButton.click();
+      const row = putawayListPage.table.row(1)
+      await row.actionsButton.click();
+      await row.viewOrderDetails.click();
       await putawayDetailsPage.isLoaded();
       await expect(putawayDetailsPage.listOrdersButton).toBeVisible();
       await expect(putawayDetailsPage.createOrderButton).toBeVisible();

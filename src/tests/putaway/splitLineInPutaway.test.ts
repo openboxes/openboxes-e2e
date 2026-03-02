@@ -132,7 +132,7 @@ test.describe('Split line in Putaway', () => {
 
     await test.step('Assert split line on start step', async () => {
       await expect(
-        createPutawayPage.startStep.table.row(0).splitLineinPutawayBin
+        createPutawayPage.startStep.table.row(0).splitLineInPutawayBin
       ).toHaveText('Split line');
     });
 
@@ -140,10 +140,10 @@ test.describe('Split line in Putaway', () => {
       await createPutawayPage.startStep.nextButton.click();
       await createPutawayPage.completeStep.isLoaded();
       await expect(
-        createPutawayPage.completeStep.table.row(2).getputawayBin(0)
+        createPutawayPage.completeStep.table.row(2).putawayBin
       ).toContainText(internalLocation.name);
       await expect(
-        createPutawayPage.completeStep.table.row(3).getputawayBin(1)
+        createPutawayPage.completeStep.table.row(3).putawayBin
       ).toContainText(internalLocation.name);
     });
 
@@ -269,7 +269,7 @@ test.describe('Split line in Putaway', () => {
 
     await test.step('Assert split line on start step', async () => {
       await expect(
-        createPutawayPage.startStep.table.row(0).splitLineinPutawayBin
+        createPutawayPage.startStep.table.row(0).splitLineInPutawayBin
       ).toHaveText('Split line');
     });
 
@@ -299,7 +299,7 @@ test.describe('Split line in Putaway', () => {
 
       await createPutawayPage.startStep.splitModal.saveButton.click();
       await expect(
-        createPutawayPage.startStep.table.row(0).splitLineinPutawayBin
+        createPutawayPage.startStep.table.row(0).splitLineInPutawayBin
       ).toHaveText('Split line');
     });
 
@@ -307,13 +307,13 @@ test.describe('Split line in Putaway', () => {
       await createPutawayPage.startStep.nextButton.click();
       await createPutawayPage.completeStep.isLoaded();
       await expect(
-        createPutawayPage.completeStep.table.row(2).getputawayBin(0)
+        createPutawayPage.completeStep.table.row(2).putawayBin
       ).toContainText(internalLocation.name);
       await expect(
-        createPutawayPage.completeStep.table.row(3).getputawayBin(1)
+        createPutawayPage.completeStep.table.row(3).putawayBin
       ).toContainText(internalLocation.name);
       await expect(
-        createPutawayPage.completeStep.table.row(4).getputawayBin(2)
+        createPutawayPage.completeStep.table.row(4).putawayBin
       ).toContainText(internalLocation.name);
     });
 

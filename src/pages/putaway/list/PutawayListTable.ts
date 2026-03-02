@@ -15,27 +15,9 @@ class PutawayListTable extends BasePageModel {
     return new Row(this.page, this.rows.nth(index));
   }
 
-  get viewOrderDetailsButton() {
-    return this.page
-      .locator('.action-menu-item')
-      .getByRole('link', { name: 'View order details' });
-  }
-
-  get deleteOrderButton() {
-    return this.page
-      .locator('.action-menu-item')
-      .getByRole('link', { name: 'Delete Order' });
-  }
-
-  async clickDeleteOrderButton() {
+  async clickDeleteOrderButton(index: number) {
     this.page.once('dialog', (dialog) => dialog.accept());
-    await this.deleteOrderButton.click();
-  }
-
-  get emptyPutawayList() {
-    return this.table
-      .locator('.empty')
-      .getByText('No orders match the given criteria');
+    await this.row(index).deleteOrder.click();
   }
 }
 
@@ -48,15 +30,23 @@ class Row extends BasePageModel {
   }
 
   get actionsButton() {
-    return this.row.getByTestId('action-menu-0');
+    return this.row.getByTestId('action-menu');
   }
 
   get statusTag() {
-    return this.row.getByTestId('status-0');
+    return this.row.getByTestId('status');
   }
 
   get orderNumber() {
-    return this.row.getByTestId('order-number-0');
+    return this.row.getByTestId('order-number');
+  }
+
+  get viewOrderDetails() {
+    return this.row.getByTestId('view-details-item');
+  }
+
+  get deleteOrder() {
+    return this.row.getByTestId('delete-order-item');
   }
 }
 export default PutawayListTable;

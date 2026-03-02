@@ -134,17 +134,17 @@ test.describe('Create putaway for more than 1 item, separate putaways', () => {
 
     await test.step('Select bin to putaway and save progress', async () => {
       await expect(
-        createPutawayPage.startStep.table.row(0).getCurrentBin(receivingBin)
+        createPutawayPage.startStep.table.row(1).getCurrentBin(receivingBin)
       ).toBeHidden();
-      await createPutawayPage.startStep.table.row(0).putawayBinSelect.click();
+      await createPutawayPage.startStep.table.row(1).putawayBinSelect.click();
       await createPutawayPage.startStep.table
-        .row(0)
+        .row(1)
         .getPutawayBin(internalLocation.name)
         .click();
       await createPutawayPage.startStep.saveButton.click();
     });
 
-    await test.step('Change default fileting on create putaway page to include lines in pending putaways', async () => {
+    await test.step('Change default filtering on create putaway page to include lines in pending putaways', async () => {
       await createPutawayPage.goToPage();
       await createPutawayPage.linesInPendingPutawayFilter.click();
       await createPutawayPage.includeLinesInPendingPutawayFilter.click();
@@ -164,8 +164,9 @@ test.describe('Create putaway for more than 1 item, separate putaways', () => {
     await test.step('Go to putaway list page and edit created pending putaway', async () => {
       await putawayListPage.goToPage();
       await putawayListPage.isLoaded();
-      await putawayListPage.table.row(1).actionsButton.click();
-      await putawayListPage.table.viewOrderDetailsButton.click();
+      const row = putawayListPage.table.row(1)
+      await row.actionsButton.click();
+      await row.viewOrderDetails.click();
       await putawayDetailsPage.isLoaded();
     });
 
@@ -173,7 +174,7 @@ test.describe('Create putaway for more than 1 item, separate putaways', () => {
       await putawayDetailsPage.editButton.click();
       await createPutawayPage.startStep.isLoaded();
       await expect(
-        createPutawayPage.startStep.table.row(0).putawayBinSelect
+        createPutawayPage.startStep.table.row(1).putawayBinSelect
       ).toHaveText(internalLocation.name);
       await createPutawayPage.startStep.nextButton.click();
       await createPutawayPage.completeStep.isLoaded();
@@ -203,11 +204,11 @@ test.describe('Create putaway for more than 1 item, separate putaways', () => {
 
     await test.step('Select bin to putaway and complete putaway', async () => {
       await expect(
-        createPutawayPage.startStep.table.row(0).getCurrentBin(receivingBin)
+        createPutawayPage.startStep.table.row(1).getCurrentBin(receivingBin)
       ).toBeHidden();
-      await createPutawayPage.startStep.table.row(0).putawayBinSelect.click();
+      await createPutawayPage.startStep.table.row(1).putawayBinSelect.click();
       await createPutawayPage.startStep.table
-        .row(0)
+        .row(1)
         .getPutawayBin(internalLocation.name)
         .click();
       await createPutawayPage.startStep.nextButton.click();
