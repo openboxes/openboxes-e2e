@@ -56,19 +56,23 @@ class Row extends BasePageModel {
   }
 
   getCurrentBin(currentBin: string) {
-    return this.row.getByTestId('cell-0-currentBin').getByText(currentBin);
+    return this.row.getByTestId('table-cell').getByText(currentBin);
   }
 
-  getPreferredBin(rowIndex: number) {
-    return this.row.getByTestId(`cell-${rowIndex}-preferredBin`);
+  get preferredBin() {
+    return this.row.getByTestId('table-cell').nth(8);
   }
 
   get quantityField() {
-    return this.row.getByTestId('cell-0-quantity').getByRole('spinbutton');
+    return this.row.getByTestId('table-cell').nth(7);
   }
 
-  get splitLineinPutawayBin() {
-    return this.row.getByTestId('cell-0-putawayBin');
+  get quantityInput() {
+    return this.row.getByTestId('quantity-input')
+  }
+
+  get splitLineInPutawayBin() {
+    return this.row.getByTestId('open-modal');
   }
 }
 

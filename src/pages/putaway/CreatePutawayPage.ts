@@ -43,10 +43,7 @@ class CreatePutawayPage extends BasePageModel {
   }
 
   get linesInPendingPutawayFilter() {
-    return this.page
-      .locator('#select-id_1 div')
-      .filter({ hasText: 'Exclude' })
-      .nth(1);
+    return this.page.getByTestId('custom-select-element');
   }
 
   get includeLinesInPendingPutawayFilter() {

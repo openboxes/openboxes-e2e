@@ -151,9 +151,10 @@ test.describe('Rollback last receipt behavior when putaway created', () => {
       await putawayListPage.isLoaded();
     });
 
-    await test.step('Open putaway detials page', async () => {
-      await putawayListPage.table.row(1).actionsButton.click();
-      await putawayListPage.table.viewOrderDetailsButton.click();
+    await test.step('Open putaway details page', async () => {
+      const row = putawayListPage.table.row(1)
+      await row.actionsButton.click();
+      await row.viewOrderDetails.click();
       await putawayDetailsPage.isLoaded();
     });
 

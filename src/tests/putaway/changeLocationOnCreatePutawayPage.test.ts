@@ -60,7 +60,7 @@ test.describe('Change location on putaway create page and list pages', () => {
     }) => {
       await putawayListPage.goToPage();
       await putawayListPage.table.row(1).actionsButton.click();
-      await putawayListPage.table.clickDeleteOrderButton();
+      await putawayListPage.table.clickDeleteOrderButton(1);
       await putawayListPage.emptyPutawayList.isVisible();
 
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);

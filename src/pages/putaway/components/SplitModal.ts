@@ -13,7 +13,7 @@ class SplitModal extends BasePageModel {
   }
 
   get modal() {
-    return this.page.locator('.ReactModal__Content');
+    return this.page.getByTestId('split-line-modal');
   }
 
   async isLoaded() {

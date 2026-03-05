@@ -31,37 +31,27 @@ class PutawayDetailsPage extends BasePageModel {
   }
 
   get actionsViewOrderDetailsButton() {
-    return this.page
-      .locator('.action-menu-item')
-      .getByRole('link', { name: 'View order details' });
+    return this.page.getByTestId('view-details-item');
   }
 
   get actionsAddCommentButton() {
-    return this.page
-      .locator('.action-menu-item')
-      .getByRole('link', { name: 'Add comment' });
+    return this.page.getByTestId('add-comment-item');
   }
 
   get actionsAddDocumentsButton() {
-    return this.page
-      .locator('.action-menu-item')
-      .getByRole('link', { name: 'Add document' });
+    return this.page.getByTestId('add-document-item');
   }
 
   get actionsGeneratePutawayListButton() {
-    return this.page
-      .locator('.action-menu-item')
-      .getByRole('link', { name: 'Generate Putaway List' });
+    return this.page.getByTestId('generate-pdf-item');
   }
 
   get actionsDeleteButton() {
-    return this.page
-      .locator('.action-menu-item')
-      .getByRole('link', { name: 'Delete Order' });
+    return this.page.getByTestId('delete-order-item');
   }
 
   get statusTag() {
-    return this.summary.locator('.tag-alert');
+    return this.summary.getByTestId('status');
   }
 
   // TABS

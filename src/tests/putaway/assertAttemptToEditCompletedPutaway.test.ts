@@ -189,7 +189,7 @@ test.describe('Assert attempt to edit completed putaway', () => {
       ).toBeVisible();
       await createPutawayPage.startStep.closeDisplayedError();
       await createPutawayPage.startStep.table.row(0).editButton.click();
-      await createPutawayPage.startStep.table.row(0).quantityField.fill('20');
+      await createPutawayPage.startStep.table.row(0).quantityInput.fill('20');
       await expect(createPutawayPage.startStep.nextButton).toBeDisabled();
       await expect(createPutawayPage.startStep.saveButton).toBeDisabled();
     });

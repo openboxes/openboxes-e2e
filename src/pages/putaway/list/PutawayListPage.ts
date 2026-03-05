@@ -26,30 +26,26 @@ class PutawayListPage extends BasePageModel {
   }
 
   get filters() {
-    return this.page.locator('.box');
+    return this.page.getByTestId('filters')
   }
 
   get searchField() {
     return this.filters
-      .locator('.filter-list-item')
       .getByTestId('search-input');
   }
 
   get orderTypeFilter() {
     return this.filters
-      .locator('.filter-list-item')
       .getByTestId('order-type-select');
   }
 
   get statusFilter() {
     return this.filters
-      .locator('.filter-list-item')
       .getByTestId('status.select');
   }
 
   get destinationFilter() {
     return this.filters
-      .locator('.filter-list-item')
       .getByTestId('destination-select');
   }
 
@@ -62,9 +58,7 @@ class PutawayListPage extends BasePageModel {
   }
 
   get emptyPutawayList() {
-    return this.page
-      .locator('.empty fade center')
-      .getByText('No orders match the given criteria');
+    return this.page.getByTestId('empty-table');
   }
 }
 

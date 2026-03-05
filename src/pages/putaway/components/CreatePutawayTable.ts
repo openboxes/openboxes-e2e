@@ -34,12 +34,12 @@ class Row extends BasePageModel {
 
   getExpandBinLocation(binLocation: string) {
     return this.row
-      .getByTestId('cell-undefined-undefined')
+      .getByTestId('table-cell')
       .getByText(binLocation);
   }
 
   get receivingBin() {
-    return this.row.getByTestId('cell-undefined-undefined');
+    return this.row.getByTestId('table-cell');
   }
 
   getProductName(name: string) {
