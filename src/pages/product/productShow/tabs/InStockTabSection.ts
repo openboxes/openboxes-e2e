@@ -55,6 +55,10 @@ class Row extends BasePageModel {
   get inventoryInformation() {
     return this.row.locator('td').nth(6);
   }
+
+  get quantityOnHand() {
+    return this.row.locator('td').nth(4);
+  }
 }
 
 export default InStockTabSection;
