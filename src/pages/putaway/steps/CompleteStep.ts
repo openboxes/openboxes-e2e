@@ -25,11 +25,17 @@ class CompleteStep extends BasePageModel {
   }
 
   get yesButtonOnConfirmPutawayDialog() {
-    return this.confirmPutawayDialog.getByRole('button', { name: 'Yes' });
+    return this.confirmPutawayDialog.getByRole('button', {
+      name: 'Yes',
+      exact: true,
+    });
   }
 
   get noButtonOnConfirmPutawayDialog() {
-    return this.confirmPutawayDialog.getByRole('button', { name: 'No' });
+    return this.confirmPutawayDialog.getByRole('button', {
+      name: 'No',
+      exact: true,
+    });
   }
 }
 
