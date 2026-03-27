@@ -1,0 +1,228 @@
+import AppConfig from '@/config/AppConfig';
+import { ShipmentType } from '@/constants/ShipmentType';
+import { expect, test } from '@/fixtures/fixtures';
+import { StockMovementResponse } from '@/types';
+import { getShipmentId, getShipmentItemId } from '@/utils/shipmentUtils';
+
+test.describe('Create more than 1 putaway from the same item', () => {
+  let STOCK_MOVEMENT: StockMovementResponse;
+
+  test.beforeEach(
+    async ({
+      supplierLocationService,
+      stockMovementService,
+      productService,
+      receivingService,
+    }) => {
+      const supplierLocation = await supplierLocationService.getLocation();
+      STOCK_MOVEMENT = await stockMovementService.createInbound({
+        originId: supplierLocation.id,
+      });
+
+      productService.setProduct('5');
+      const product = await productService.getProduct();
+
+      await stockMovementService.addItemsToInboundStockMovement(
+        STOCK_MOVEMENT.id,
+        [{ productId: product.id, quantity: 10 }]
+      );
+
+      await stockMovementService.sendInboundStockMovement(STOCK_MOVEMENT.id, {
+        shipmentType: ShipmentType.AIR,
+      });
+
+      const { data: stockMovement } =
+        await stockMovementService.getStockMovement(STOCK_MOVEMENT.id);
+      const shipmentId = getShipmentId(stockMovement);
+      const { data: receipt } = await receivingService.getReceipt(shipmentId);
+      const receivingBin =
+        AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
+
+      await receivingService.createReceivingBin(shipmentId, receipt);
+
+      await receivingService.updateReceivingItems(shipmentId, [
+        {
+          shipmentItemId: getShipmentItemId(receipt, 0, 0),
+          quantityReceiving: 10,
+          binLocationName: receivingBin,
+        },
+      ]);
+      await receivingService.completeReceipt(shipmentId);
+    }
+  );
+
+  test.afterEach(
+    async ({
+      stockMovementShowPage,
+      stockMovementService,
+      navbar,
+      transactionListPage,
+      oldViewShipmentPage,
+    }) => {
+      await navbar.configurationButton.click();
+      await navbar.transactions.click();
+      await transactionListPage.table.row(1).actionsButton.click();
+      await transactionListPage.table.deleteButton.click();
+      await expect(transactionListPage.successMessage).toBeVisible();
+      await transactionListPage.table.row(1).actionsButton.click();
+      await transactionListPage.table.deleteButton.click();
+      await expect(transactionListPage.successMessage).toBeVisible();
+
+      await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
+      await stockMovementShowPage.detailsListTable.oldViewShipmentPage.click();
+      await oldViewShipmentPage.undoStatusChangeButton.click();
+      await stockMovementShowPage.isLoaded();
+      await stockMovementShowPage.rollbackButton.click();
+
+      await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
+    }
+  );
+
+  test('Create more than 1 putaway from the same item', async ({
+    stockMovementShowPage,
+    navbar,
+    createPutawayPage,
+    internalLocationService,
+    productShowPage,
+    putawayDetailsPage,
+    productService,
+  }) => {
+    productService.setProduct('5');
+    const product = await productService.getProduct();
+    const internalLocation = await internalLocationService.getLocation();
+    const receivingBin =
+      AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
+    await test.step('Go to stock movement show page and assert received status', async () => {
+      await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
+      await stockMovementShowPage.isLoaded();
+      await expect(stockMovementShowPage.statusTag).toHaveText('Received');
+      await navbar.profileButton.click();
+      await navbar.refreshCachesButton.click();
+    });
+
+    await test.step('Go to create putaway page', async () => {
+      await navbar.inbound.click();
+      await navbar.createPutaway.click();
+      await createPutawayPage.isLoaded();
+    });
+
+    await test.step('Start putaway', async () => {
+      await createPutawayPage.table.row(0).checkbox.click();
+      await createPutawayPage.startPutawayButton.click();
+      await createPutawayPage.startStep.isLoaded();
+    });
+
+    await test.step('Select bin to putaway', async () => {
+      await createPutawayPage.startStep.table.row(0).editButton.click();
+      await createPutawayPage.startStep.table.row(0).quantityInput.fill('5');
+      await createPutawayPage.startStep.table.row(0).putawayBinSelect.click();
+      await createPutawayPage.startStep.table
+        .row(0)
+        .getPutawayBin(internalLocation.name)
+        .click();
+      await createPutawayPage.startStep.nextButton.click();
+    });
+
+    await test.step('Complete putaway and assert displayed dialog', async () => {
+      await createPutawayPage.completeStep.isLoaded();
+      await createPutawayPage.completeStep.completePutawayButton.click();
+      await expect(
+        createPutawayPage.completeStep.confirmPutawayDialog
+      ).toBeVisible();
+      await expect(
+        createPutawayPage.completeStep.confirmPutawayDialog
+      ).toContainText(
+        `Qty5 of item ${product.name} is still in the receiving bin. Do you want to continue?`
+      );
+      await expect(
+        createPutawayPage.completeStep.noButtonOnConfirmPutawayDialog
+      ).toBeVisible();
+      await createPutawayPage.completeStep.noButtonOnConfirmPutawayDialog
+        .last()
+        .click();
+      await createPutawayPage.completeStep.isLoaded();
+    });
+
+    await test.step('Accept dialog and  and complete putaway', async () => {
+      await createPutawayPage.completeStep.isLoaded();
+      await createPutawayPage.completeStep.completePutawayButton.click();
+      await expect(
+        createPutawayPage.completeStep.confirmPutawayDialog
+      ).toBeVisible();
+      await createPutawayPage.completeStep.yesButtonOnConfirmPutawayDialog
+        .last()
+        .click();
+    });
+
+    await test.step('Assert completing putaway', async () => {
+      await putawayDetailsPage.isLoaded();
+      await expect(putawayDetailsPage.statusTag).toHaveText('Completed');
+    });
+
+    await test.step('Assert putaway bin and qty on stock card', async () => {
+      await putawayDetailsPage.summaryTab.click();
+      await productShowPage.goToPage(product.id);
+      await productShowPage.inStockTab.click();
+      await productShowPage.inStockTabSection.isLoaded();
+      await expect(
+        productShowPage.inStockTabSection.row(1).binLocation
+      ).toHaveText(internalLocation.name);
+      await expect(
+        productShowPage.inStockTabSection.row(1).quantityOnHand
+      ).toHaveText('5');
+      await navbar.profileButton.click();
+      await navbar.refreshCachesButton.click();
+    });
+
+    await test.step('Go to create putaway page and assert receiving bin', async () => {
+      await navbar.inbound.click();
+      await navbar.createPutaway.click();
+      await createPutawayPage.isLoaded();
+      await createPutawayPage.table
+        .row(0)
+        .getExpandBinLocation(receivingBin)
+        .click();
+      await expect(
+        createPutawayPage.table.row(1).getProductName(product.name)
+      ).toBeVisible();
+    });
+
+    await test.step('Start putaway', async () => {
+      await createPutawayPage.table.row(1).checkbox.click();
+      await createPutawayPage.startPutawayButton.click();
+      await createPutawayPage.startStep.isLoaded();
+    });
+
+    await test.step('Select bin to putaway', async () => {
+      await createPutawayPage.startStep.table.row(0).putawayBinSelect.click();
+      await createPutawayPage.startStep.table
+        .row(0)
+        .getPutawayBin(internalLocation.name)
+        .click();
+      await createPutawayPage.startStep.nextButton.click();
+    });
+
+    await test.step('Complete putaway', async () => {
+      await createPutawayPage.completeStep.isLoaded();
+      await createPutawayPage.completeStep.completePutawayButton.click();
+    });
+
+    await test.step('Assert completing putaway', async () => {
+      await putawayDetailsPage.isLoaded();
+      await expect(putawayDetailsPage.statusTag).toHaveText('Completed');
+    });
+
+    await test.step('Assert putaway bin and qty on stock card', async () => {
+      await putawayDetailsPage.summaryTab.click();
+      await productShowPage.goToPage(product.id);
+      await productShowPage.inStockTab.click();
+      await productShowPage.inStockTabSection.isLoaded();
+      await expect(
+        productShowPage.inStockTabSection.row(1).binLocation
+      ).toHaveText(internalLocation.name);
+      await expect(
+        productShowPage.inStockTabSection.row(1).quantityOnHand
+      ).toHaveText('10');
+    });
+  });
+});
