@@ -1,4 +1,4 @@
-import { Locator, Page } from '@playwright/test';
+import { expect, Locator, Page } from '@playwright/test';
 
 import BasePageModel from '@/pages/BasePageModel';
 
@@ -68,12 +68,20 @@ class Row extends BasePageModel {
   }
 
   get quantityInput() {
-    return this.row.getByTestId('quantity-input')
+    return this.row.getByTestId('quantity-input');
   }
 
   get splitLineInPutawayBin() {
     return this.row.getByTestId('open-modal');
   }
+
+  get tooltip() {
+    return this.page.getByRole('tooltip');
+  }
+
+  assertValidationOnQtyField = async (errorContent: string) => {
+    await expect(this.tooltip).toContainText(errorContent);
+  };
 }
 
 export default StartPutawayTable;

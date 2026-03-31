@@ -1,4 +1,4 @@
-import { Locator, Page } from '@playwright/test';
+import { expect, Locator, Page } from '@playwright/test';
 
 import BasePageModel from '@/pages/BasePageModel';
 
@@ -55,6 +55,14 @@ class Row extends BasePageModel {
   get putawayBinField() {
     return this.row.getByTestId('bin-select').getByRole('textbox');
   }
+
+  get tooltip() {
+    return this.page.getByRole('tooltip');
+  }
+
+  assertValidationOnQtyField = async (errorContent: string) => {
+    await expect(this.tooltip).toContainText(errorContent);
+  };
 }
 
 export default SplitModalTable;
