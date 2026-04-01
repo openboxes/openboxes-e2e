@@ -18,6 +18,14 @@ class StartPutawayTable extends BasePageModel {
   row(index: number) {
     return new Row(this.page, this.rows.nth(index));
   }
+
+  get qtyValidationTooltip() {
+    return this.page.getByRole('tooltip');
+  }
+
+  assertValidationOnQtyField = async (errorContent: string) => {
+    await expect(this.qtyValidationTooltip).toContainText(errorContent);
+  };
 }
 
 class Row extends BasePageModel {
@@ -74,14 +82,6 @@ class Row extends BasePageModel {
   get splitLineInPutawayBin() {
     return this.row.getByTestId('open-modal');
   }
-
-  get tooltip() {
-    return this.page.getByRole('tooltip');
-  }
-
-  assertValidationOnQtyField = async (errorContent: string) => {
-    await expect(this.tooltip).toContainText(errorContent);
-  };
 }
 
 export default StartPutawayTable;

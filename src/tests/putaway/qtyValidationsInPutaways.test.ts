@@ -106,11 +106,9 @@ test.describe('Assert qty validations in putaways', () => {
       await createPutawayPage.startStep.table.row(0).editButton.click();
       await createPutawayPage.startStep.table.row(0).quantityInput.fill('20');
       await createPutawayPage.startStep.table.row(0).quantityInput.hover();
-      await createPutawayPage.startStep.table
-        .row(0)
-        .assertValidationOnQtyField(
-          'Quantity cannot be greater than original putaway item quantity'
-        );
+      await createPutawayPage.startStep.table.assertValidationOnQtyField(
+        'Quantity cannot be greater than original putaway item quantity'
+      );
       await expect(createPutawayPage.startStep.nextButton).toBeDisabled();
       await expect(createPutawayPage.startStep.saveButton).toBeDisabled();
     });
@@ -119,9 +117,9 @@ test.describe('Assert qty validations in putaways', () => {
       await createPutawayPage.startStep.table.row(0).editButton.click();
       await createPutawayPage.startStep.table.row(0).quantityInput.fill('0');
       await createPutawayPage.startStep.table.row(0).quantityInput.hover();
-      await createPutawayPage.startStep.table
-        .row(0)
-        .assertValidationOnQtyField('Quantity cannot be less than 1');
+      await createPutawayPage.startStep.table.assertValidationOnQtyField(
+        'Quantity cannot be less than 1'
+      );
       await expect(createPutawayPage.startStep.nextButton).toBeDisabled();
       await expect(createPutawayPage.startStep.saveButton).toBeDisabled();
     });
@@ -130,9 +128,9 @@ test.describe('Assert qty validations in putaways', () => {
       await createPutawayPage.startStep.table.row(0).editButton.click();
       await createPutawayPage.startStep.table.row(0).quantityInput.fill('-2');
       await createPutawayPage.startStep.table.row(0).quantityInput.hover();
-      await createPutawayPage.startStep.table
-        .row(0)
-        .assertValidationOnQtyField('Quantity cannot be less than 1');
+      await createPutawayPage.startStep.table.assertValidationOnQtyField(
+        'Quantity cannot be less than 1'
+      );
       await expect(createPutawayPage.startStep.nextButton).toBeDisabled();
       await expect(createPutawayPage.startStep.saveButton).toBeDisabled();
     });
@@ -159,11 +157,9 @@ test.describe('Assert qty validations in putaways', () => {
       await createPutawayPage.startStep.splitModal.table
         .row(1)
         .quantityField.hover();
-      await createPutawayPage.startStep.splitModal.table
-        .row(1)
-        .assertValidationOnQtyField(
-          'Sum of all split items quantities cannot be higher than original putaway item quantity'
-        );
+      await createPutawayPage.startStep.splitModal.table.assertValidationOnQtyField(
+        'Sum of all split items quantities cannot be higher than original putaway item quantity'
+      );
       await expect(
         createPutawayPage.startStep.splitModal.saveButton
       ).toBeDisabled();
@@ -176,9 +172,9 @@ test.describe('Assert qty validations in putaways', () => {
       await createPutawayPage.startStep.splitModal.table
         .row(1)
         .quantityField.hover();
-      await createPutawayPage.startStep.splitModal.table
-        .row(1)
-        .assertValidationOnQtyField('Items quantity cannot be less than 1');
+      await createPutawayPage.startStep.splitModal.table.assertValidationOnQtyField(
+        'Items quantity cannot be less than 1'
+      );
       await expect(
         createPutawayPage.startStep.splitModal.saveButton
       ).toBeDisabled();
@@ -191,9 +187,9 @@ test.describe('Assert qty validations in putaways', () => {
       await createPutawayPage.startStep.splitModal.table
         .row(1)
         .quantityField.hover();
-      await createPutawayPage.startStep.splitModal.table
-        .row(1)
-        .assertValidationOnQtyField('Items quantity cannot be less than 1');
+      await createPutawayPage.startStep.splitModal.table.assertValidationOnQtyField(
+        'Items quantity cannot be less than 1'
+      );
       await expect(
         createPutawayPage.startStep.splitModal.saveButton
       ).toBeDisabled();
@@ -216,9 +212,9 @@ test.describe('Assert qty validations in putaways', () => {
       await createPutawayPage.startStep.splitModal.table
         .row(2)
         .quantityField.hover();
-      await createPutawayPage.startStep.splitModal.table
-        .row(2)
-        .assertValidationOnQtyField('Items quantity cannot be less than 1');
+      await createPutawayPage.startStep.splitModal.table.assertValidationOnQtyField(
+        'Items quantity cannot be less than 1'
+      );
     });
 
     await test.step('Try to input higher qty on newly added line', async () => {
@@ -228,19 +224,15 @@ test.describe('Assert qty validations in putaways', () => {
       await createPutawayPage.startStep.splitModal.table
         .row(1)
         .quantityField.hover();
-      await createPutawayPage.startStep.splitModal.table
-        .row(1)
-        .assertValidationOnQtyField(
-          'Sum of all split items quantities cannot be higher than original putaway item quantity'
-        );
+      await createPutawayPage.startStep.splitModal.table.assertValidationOnQtyField(
+        'Sum of all split items quantities cannot be higher than original putaway item quantity'
+      );
       await createPutawayPage.startStep.splitModal.table
         .row(2)
         .quantityField.hover();
-      await createPutawayPage.startStep.splitModal.table
-        .row(2)
-        .assertValidationOnQtyField(
-          'Sum of all split items quantities cannot be higher than original putaway item quantity'
-        );
+      await createPutawayPage.startStep.splitModal.table.assertValidationOnQtyField(
+        'Sum of all split items quantities cannot be higher than original putaway item quantity'
+      );
     });
 
     await test.step('Try to input 0 on newly added line', async () => {
@@ -250,9 +242,9 @@ test.describe('Assert qty validations in putaways', () => {
       await createPutawayPage.startStep.splitModal.table
         .row(2)
         .quantityField.hover();
-      await createPutawayPage.startStep.splitModal.table
-        .row(2)
-        .assertValidationOnQtyField('Items quantity cannot be less than 1');
+      await createPutawayPage.startStep.splitModal.table.assertValidationOnQtyField(
+        'Items quantity cannot be less than 1'
+      );
     });
 
     await test.step('Try to input negative qty on newly added line', async () => {
@@ -262,9 +254,9 @@ test.describe('Assert qty validations in putaways', () => {
       await createPutawayPage.startStep.splitModal.table
         .row(2)
         .quantityField.hover();
-      await createPutawayPage.startStep.splitModal.table
-        .row(2)
-        .assertValidationOnQtyField('Items quantity cannot be less than 1');
+      await createPutawayPage.startStep.splitModal.table.assertValidationOnQtyField(
+        'Items quantity cannot be less than 1'
+      );
     });
 
     await test.step('Leave split modal', async () => {

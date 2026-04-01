@@ -18,6 +18,14 @@ class SplitModalTable extends BasePageModel {
   row(index: number) {
     return new Row(this.page, this.rows.nth(index));
   }
+
+  get qtyValidationTooltip() {
+    return this.page.getByRole('tooltip');
+  }
+
+  assertValidationOnQtyField = async (errorContent: string) => {
+    await expect(this.qtyValidationTooltip).toContainText(errorContent);
+  };
 }
 
 class Row extends BasePageModel {
@@ -55,14 +63,6 @@ class Row extends BasePageModel {
   get putawayBinField() {
     return this.row.getByTestId('bin-select').getByRole('textbox');
   }
-
-  get tooltip() {
-    return this.page.getByRole('tooltip');
-  }
-
-  assertValidationOnQtyField = async (errorContent: string) => {
-    await expect(this.tooltip).toContainText(errorContent);
-  };
 }
 
 export default SplitModalTable;
