@@ -78,9 +78,7 @@ test.describe('Assert qty validations in putaways', () => {
     navbar,
     createPutawayPage,
     internalLocationService,
-    productService,
   }) => {
-    productService.setProduct('5');
     const internalLocation = await internalLocationService.getLocation();
     await test.step('Go to stock movement show page and assert received status', async () => {
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
