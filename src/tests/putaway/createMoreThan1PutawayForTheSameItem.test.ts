@@ -143,7 +143,7 @@ test.describe('Create more than 1 putaway from the same item', () => {
       await createPutawayPage.completeStep.isLoaded();
     });
 
-    await test.step('Accept dialog and  and complete putaway', async () => {
+    await test.step('Accept dialog and complete putaway', async () => {
       await createPutawayPage.completeStep.isLoaded();
       await createPutawayPage.completeStep.completePutawayButton.click();
       await expect(
