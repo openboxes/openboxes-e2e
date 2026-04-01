@@ -15,11 +15,7 @@ test.describe('Download documents from inbound send page', () => {
   const uniqueIdentifier = new UniqueIdentifier();
 
   test.beforeEach(
-    async ({
-      productService,
-      mainUserService,
-      supplierLocationService,
-    }) => {
+    async ({ productService, mainUserService, supplierLocationService }) => {
       productService.setProduct('1');
       const PRODUCT_ONE = await productService.getProduct();
       USER = await mainUserService.getUser();
@@ -225,7 +221,7 @@ test.describe('Download documents from inbound send page', () => {
       ]);
 
       expect(download.suggestedFilename()).toMatch(
-        /^Packing List - .*\.xls(x)?$/
+        /^Packing List_.*\.xls(x)?$/
       );
       await popup.close();
     });
