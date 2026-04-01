@@ -37,6 +37,10 @@ class CompleteStep extends BasePageModel {
       exact: true,
     });
   }
+
+  get editButton() {
+    return this.page.getByTestId('edit-button').first();
+  }
 }
 
 export default CompleteStep;
