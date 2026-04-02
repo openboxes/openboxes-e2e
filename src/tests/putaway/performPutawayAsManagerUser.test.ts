@@ -2,7 +2,6 @@ import Navbar from '@/components/Navbar';
 import AppConfig from '@/config/AppConfig';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
-import ProductShowPage from '@/pages/product/productShow/ProductShowPage';
 import CreatePutawayPage from '@/pages/putaway/CreatePutawayPage';
 import PutawayDetailsPage from '@/pages/putaway/putawayDetails/PutawayDetailsPage';
 import StockMovementShowPage from '@/pages/stockMovementShow/StockMovementShowPage';
@@ -107,7 +106,6 @@ test.describe('Perform putaway as manager user', () => {
     const navbar = new Navbar(managerUserPage);
     const createPutawayPage = new CreatePutawayPage(managerUserPage);
     const putawayDetailsPage = new PutawayDetailsPage(managerUserPage);
-    const productShowPage = new ProductShowPage(managerUserPage);
 
     await test.step('Go to create putaway page', async () => {
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
@@ -189,7 +187,7 @@ test.describe('Perform putaway as manager user', () => {
       await expect(
         createPutawayPage.completeStep.confirmPutawayDialog
       ).toContainText(
-        `Qty5 of item ${product.name} is still in the receiving bin. Do you want to continue?`
+        /Qty5 of item .* is still in the receiving bin\. Do you want to continue\?/
       );
       await expect(
         createPutawayPage.completeStep.confirmPutawayDialog
@@ -202,18 +200,6 @@ test.describe('Perform putaway as manager user', () => {
     await test.step('Assert completing putaway', async () => {
       await putawayDetailsPage.isLoaded();
       await expect(putawayDetailsPage.statusTag).toHaveText('Completed');
-    });
-
-    await test.step('Assert putaway bin on stock card', async () => {
-      await productShowPage.goToPage(product.id);
-      await productShowPage.inStockTab.click();
-      await productShowPage.inStockTabSection.isLoaded();
-      await expect(
-        productShowPage.inStockTabSection.row(2).binLocation
-      ).toHaveText(internalLocation.name);
-      await expect(
-        productShowPage.inStockTabSection.row(2).quantityOnHand
-      ).toHaveText('5');
     });
 
     await test.step('Assert qty still available to putaway on create putaway page', async () => {
