@@ -2,6 +2,7 @@ import AppConfig from '@/config/AppConfig';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
 import { StockMovementResponse } from '@/types';
+import RefreshCachesUtils from '@/utils/RefreshCaches';
 import { getShipmentId, getShipmentItemId } from '@/utils/shipmentUtils';
 
 test.describe('Assert qty validations in putaways', () => {
@@ -76,6 +77,7 @@ test.describe('Assert qty validations in putaways', () => {
   test('Assert qty validations in putaways', async ({
     stockMovementShowPage,
     navbar,
+    page,
     createPutawayPage,
     internalLocationService,
   }) => {
@@ -84,8 +86,10 @@ test.describe('Assert qty validations in putaways', () => {
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
       await stockMovementShowPage.isLoaded();
       await expect(stockMovementShowPage.statusTag).toHaveText('Received');
-      await navbar.profileButton.click();
-      await navbar.refreshCachesButton.click();
+      await RefreshCachesUtils.refreshCaches({
+        navbar,
+        page,
+      });
     });
 
     await test.step('Go to create putaway page', async () => {

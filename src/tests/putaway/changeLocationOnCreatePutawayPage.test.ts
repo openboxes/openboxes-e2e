@@ -2,6 +2,7 @@ import AppConfig from '@/config/AppConfig';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
 import { StockMovementResponse } from '@/types';
+import RefreshCachesUtils from '@/utils/RefreshCaches';
 import { getShipmentId, getShipmentItemId } from '@/utils/shipmentUtils';
 
 test.describe('Change location on putaway create page and list pages', () => {
@@ -76,6 +77,7 @@ test.describe('Change location on putaway create page and list pages', () => {
   test('Change location on putaway create page and list page', async ({
     stockMovementShowPage,
     navbar,
+    page,
     createPutawayPage,
     locationChooser,
     productService,
@@ -95,8 +97,10 @@ test.describe('Change location on putaway create page and list pages', () => {
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
       await stockMovementShowPage.isLoaded();
       await expect(stockMovementShowPage.statusTag).toHaveText('Received');
-      await navbar.profileButton.click();
-      await navbar.refreshCachesButton.click();
+      await RefreshCachesUtils.refreshCaches({
+        navbar,
+        page,
+      });
     });
 
     await test.step('Go to create putaway page and assert its content', async () => {
@@ -120,8 +124,10 @@ test.describe('Change location on putaway create page and list pages', () => {
         .getOrganization(depotLocation.organization?.name as string)
         .click();
       await locationChooser.getLocation(depotLocation.name).click();
-      await navbar.profileButton.click();
-      await navbar.refreshCachesButton.click();
+      await RefreshCachesUtils.refreshCaches({
+        navbar,
+        page,
+      });
       await createPutawayPage.goToPage();
       await expect(createPutawayPage.emptyCreatePageInformation).toBeVisible();
       await expect(

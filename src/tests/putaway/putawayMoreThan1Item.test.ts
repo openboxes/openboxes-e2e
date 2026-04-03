@@ -2,6 +2,7 @@ import AppConfig from '@/config/AppConfig';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
 import { StockMovementResponse } from '@/types';
+import RefreshCachesUtils from '@/utils/RefreshCaches';
 import { getShipmentId, getShipmentItemId } from '@/utils/shipmentUtils';
 
 test.describe('Create putaway for more than 1 item, separate putaways', () => {
@@ -87,6 +88,7 @@ test.describe('Create putaway for more than 1 item, separate putaways', () => {
   test('Create putaway from inbound stock movement for 2 items, 2 separate putaways', async ({
     stockMovementShowPage,
     navbar,
+    page,
     createPutawayPage,
     internalLocationService,
     productShowPage,
@@ -105,8 +107,10 @@ test.describe('Create putaway for more than 1 item, separate putaways', () => {
     await test.step('Go to create putaway page', async () => {
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
       await stockMovementShowPage.isLoaded();
-      await navbar.profileButton.click();
-      await navbar.refreshCachesButton.click();
+      await RefreshCachesUtils.refreshCaches({
+        navbar,
+        page,
+      });
       await navbar.inbound.click();
       await navbar.createPutaway.click();
       await createPutawayPage.isLoaded();
@@ -164,7 +168,7 @@ test.describe('Create putaway for more than 1 item, separate putaways', () => {
     await test.step('Go to putaway list page and edit created pending putaway', async () => {
       await putawayListPage.goToPage();
       await putawayListPage.isLoaded();
-      const row = putawayListPage.table.row(1)
+      const row = putawayListPage.table.row(1);
       await row.actionsButton.click();
       await row.viewOrderDetails.click();
       await putawayDetailsPage.isLoaded();
@@ -187,8 +191,10 @@ test.describe('Create putaway for more than 1 item, separate putaways', () => {
     });
 
     await test.step('Go to create putaway page and start putaway for 2nd item', async () => {
-      await navbar.profileButton.click();
-      await navbar.refreshCachesButton.click();
+      await RefreshCachesUtils.refreshCaches({
+        navbar,
+        page,
+      });
       await createPutawayPage.goToPage();
       await createPutawayPage.table
         .row(0)
@@ -231,8 +237,10 @@ test.describe('Create putaway for more than 1 item, separate putaways', () => {
     });
 
     await test.step('Assert empty create putaway page', async () => {
-      await navbar.profileButton.click();
-      await navbar.refreshCachesButton.click();
+      await RefreshCachesUtils.refreshCaches({
+        navbar,
+        page,
+      });
       await createPutawayPage.goToPage();
       await expect(createPutawayPage.emptyCreatePageInformation).toBeVisible();
     });
@@ -321,6 +329,7 @@ test.describe('Putaway 2 items in the same putaway', () => {
   test('Create putaway from inbound stock movement for 2 items', async ({
     stockMovementShowPage,
     navbar,
+    page,
     createPutawayPage,
     internalLocationService,
     productShowPage,
@@ -338,8 +347,10 @@ test.describe('Putaway 2 items in the same putaway', () => {
     await test.step('Go to create putaway page', async () => {
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
       await stockMovementShowPage.isLoaded();
-      await navbar.profileButton.click();
-      await navbar.refreshCachesButton.click();
+      await RefreshCachesUtils.refreshCaches({
+        navbar,
+        page,
+      });
       await navbar.inbound.click();
       await navbar.createPutaway.click();
       await createPutawayPage.isLoaded();
@@ -408,8 +419,10 @@ test.describe('Putaway 2 items in the same putaway', () => {
     });
 
     await test.step('Assert empty create putaway page', async () => {
-      await navbar.profileButton.click();
-      await navbar.refreshCachesButton.click();
+      await RefreshCachesUtils.refreshCaches({
+        navbar,
+        page,
+      });
       await createPutawayPage.goToPage();
       await expect(createPutawayPage.emptyCreatePageInformation).toBeVisible();
     });
