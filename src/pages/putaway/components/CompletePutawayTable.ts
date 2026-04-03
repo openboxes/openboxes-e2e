@@ -32,7 +32,7 @@ class Row extends BasePageModel {
     return this.row.getByTestId('table-cell').nth(10);
   }
 
-  get qtyField() {
+  get quantity() {
     return this.row.getByTestId('table-cell').nth(7);
   }
 }
