@@ -6,6 +6,7 @@ import CreatePutawayPage from '@/pages/putaway/CreatePutawayPage';
 import PutawayDetailsPage from '@/pages/putaway/putawayDetails/PutawayDetailsPage';
 import StockMovementShowPage from '@/pages/stockMovementShow/StockMovementShowPage';
 import { StockMovementResponse } from '@/types';
+import RefreshCachesUtils from '@/utils/RefreshCaches';
 import { getShipmentId, getShipmentItemId } from '@/utils/shipmentUtils';
 
 test.describe('Perform putaway as manager user', () => {
@@ -92,6 +93,7 @@ test.describe('Perform putaway as manager user', () => {
     managerUserContext,
     internalLocationService,
     productService,
+    page,
   }) => {
     const receivingBin =
       AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
@@ -102,16 +104,18 @@ test.describe('Perform putaway as manager user', () => {
     const internalLocation = await internalLocationService.getLocation();
 
     const managerUserPage = await managerUserContext.newPage();
-    const stockMovementShowPage = new StockMovementShowPage(managerUserPage);
     const navbar = new Navbar(managerUserPage);
+    const stockMovementShowPage = new StockMovementShowPage(managerUserPage);
     const createPutawayPage = new CreatePutawayPage(managerUserPage);
     const putawayDetailsPage = new PutawayDetailsPage(managerUserPage);
 
     await test.step('Go to create putaway page', async () => {
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
       await stockMovementShowPage.isLoaded();
-      await navbar.profileButton.click();
-      await navbar.refreshCachesButton.click();
+      await RefreshCachesUtils.refreshCaches({
+        navbar,
+        page,
+      });
       await navbar.inbound.click();
       await navbar.createPutaway.click();
       await createPutawayPage.isLoaded();
@@ -158,25 +162,26 @@ test.describe('Perform putaway as manager user', () => {
       await createPutawayPage.startStep.nextButton.click();
       await createPutawayPage.completeStep.isLoaded();
       await expect(
-        createPutawayPage.completeStep.table.row(2).qtyField
+        createPutawayPage.completeStep.table.row(2).quantity
       ).toContainText('5');
       await expect(
-        createPutawayPage.completeStep.table.row(3).qtyField
+        createPutawayPage.completeStep.table.row(3).quantity
       ).toContainText('5');
+      await expect(createPutawayPage.completeStep.table.rows).toHaveCount(4);
     });
 
     await test.step('Go backward and use delete button as manager user', async () => {
       await createPutawayPage.completeStep.editButton.click();
       await createPutawayPage.startStep.isLoaded();
+      await expect(createPutawayPage.startStep.table.rows).toHaveCount(3);
       await createPutawayPage.startStep.table.row(2).deleteButton.click();
-      await createPutawayPage.startStep.table.row(2).row.isHidden();
+      await expect(createPutawayPage.startStep.table.rows).toHaveCount(2);
     });
 
     await test.step('Go to next page and assert displayed rows', async () => {
       await createPutawayPage.startStep.nextButton.click();
       await createPutawayPage.completeStep.isLoaded();
-      await createPutawayPage.completeStep.table.row(2).row.isVisible();
-      await createPutawayPage.completeStep.table.row(2).row.isHidden();
+      await expect(createPutawayPage.completeStep.table.rows).toHaveCount(3);
     });
 
     await test.step('Complete putaway', async () => {
