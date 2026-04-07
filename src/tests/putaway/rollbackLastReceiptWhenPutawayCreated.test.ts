@@ -80,7 +80,6 @@ test.describe('Rollback last receipt behavior when putaway created', () => {
   test('Rollback last receipt behavior when putaway created', async ({
     stockMovementShowPage,
     navbar,
-    page,
     createPutawayPage,
     internalLocationService,
     receivingPage,
@@ -92,8 +91,7 @@ test.describe('Rollback last receipt behavior when putaway created', () => {
       await stockMovementShowPage.isLoaded();
       await expect(stockMovementShowPage.statusTag).toHaveText('Received');
       await RefreshCachesUtils.refreshCaches({
-        navbar,
-        page,
+        navbar
       });
     });
 

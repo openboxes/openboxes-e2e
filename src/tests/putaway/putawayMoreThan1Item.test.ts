@@ -88,7 +88,6 @@ test.describe('Create putaway for more than 1 item, separate putaways', () => {
   test('Create putaway from inbound stock movement for 2 items, 2 separate putaways', async ({
     stockMovementShowPage,
     navbar,
-    page,
     createPutawayPage,
     internalLocationService,
     productShowPage,
@@ -108,8 +107,7 @@ test.describe('Create putaway for more than 1 item, separate putaways', () => {
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
       await stockMovementShowPage.isLoaded();
       await RefreshCachesUtils.refreshCaches({
-        navbar,
-        page,
+        navbar
       });
       await navbar.inbound.click();
       await navbar.createPutaway.click();
@@ -192,8 +190,7 @@ test.describe('Create putaway for more than 1 item, separate putaways', () => {
 
     await test.step('Go to create putaway page and start putaway for 2nd item', async () => {
       await RefreshCachesUtils.refreshCaches({
-        navbar,
-        page,
+        navbar
       });
       await createPutawayPage.goToPage();
       await createPutawayPage.table
@@ -238,8 +235,7 @@ test.describe('Create putaway for more than 1 item, separate putaways', () => {
 
     await test.step('Assert empty create putaway page', async () => {
       await RefreshCachesUtils.refreshCaches({
-        navbar,
-        page,
+        navbar
       });
       await createPutawayPage.goToPage();
       await expect(createPutawayPage.emptyCreatePageInformation).toBeVisible();
@@ -329,7 +325,6 @@ test.describe('Putaway 2 items in the same putaway', () => {
   test('Create putaway from inbound stock movement for 2 items', async ({
     stockMovementShowPage,
     navbar,
-    page,
     createPutawayPage,
     internalLocationService,
     productShowPage,
@@ -348,8 +343,7 @@ test.describe('Putaway 2 items in the same putaway', () => {
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
       await stockMovementShowPage.isLoaded();
       await RefreshCachesUtils.refreshCaches({
-        navbar,
-        page,
+        navbar
       });
       await navbar.inbound.click();
       await navbar.createPutaway.click();
@@ -420,8 +414,7 @@ test.describe('Putaway 2 items in the same putaway', () => {
 
     await test.step('Assert empty create putaway page', async () => {
       await RefreshCachesUtils.refreshCaches({
-        navbar,
-        page,
+        navbar
       });
       await createPutawayPage.goToPage();
       await expect(createPutawayPage.emptyCreatePageInformation).toBeVisible();

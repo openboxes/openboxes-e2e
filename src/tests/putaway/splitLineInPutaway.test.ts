@@ -85,7 +85,6 @@ test.describe('Split line in Putaway', () => {
   test('Assert split line in Putaway', async ({
     stockMovementShowPage,
     navbar,
-    page,
     createPutawayPage,
     internalLocationService,
     internalLocation2Service,
@@ -101,8 +100,7 @@ test.describe('Split line in Putaway', () => {
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
       await stockMovementShowPage.isLoaded();
       await RefreshCachesUtils.refreshCaches({
-        navbar,
-        page,
+        navbar
       });
       await navbar.inbound.click();
       await navbar.createPutaway.click();
@@ -198,7 +196,6 @@ test.describe('Split line in Putaway', () => {
   test('Assert behavior when split into more than 1 line', async ({
     stockMovementShowPage,
     navbar,
-    page,
     createPutawayPage,
     internalLocationService,
     internalLocation2Service,
@@ -210,8 +207,7 @@ test.describe('Split line in Putaway', () => {
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
       await stockMovementShowPage.isLoaded();
       await RefreshCachesUtils.refreshCaches({
-        navbar,
-        page,
+        navbar
       });
       await navbar.inbound.click();
       await navbar.createPutaway.click();

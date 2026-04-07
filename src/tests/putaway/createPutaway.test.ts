@@ -82,7 +82,6 @@ test.describe('Putaway received inbound shipment', () => {
   test('Create putaway from inbound stock movement', async ({
     stockMovementShowPage,
     navbar,
-    page,
     createPutawayPage,
     internalLocationService,
     productShowPage,
@@ -94,8 +93,7 @@ test.describe('Putaway received inbound shipment', () => {
       await stockMovementShowPage.isLoaded();
       await expect(stockMovementShowPage.statusTag).toHaveText('Received');
       await RefreshCachesUtils.refreshCaches({
-        navbar,
-        page,
+        navbar
       });
     });
 

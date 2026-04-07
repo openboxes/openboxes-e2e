@@ -77,7 +77,6 @@ test.describe('Change location on putaway create page and list pages', () => {
   test('Change location on putaway create page and list page', async ({
     stockMovementShowPage,
     navbar,
-    page,
     createPutawayPage,
     locationChooser,
     productService,
@@ -98,8 +97,7 @@ test.describe('Change location on putaway create page and list pages', () => {
       await stockMovementShowPage.isLoaded();
       await expect(stockMovementShowPage.statusTag).toHaveText('Received');
       await RefreshCachesUtils.refreshCaches({
-        navbar,
-        page,
+        navbar
       });
     });
 
@@ -125,8 +123,7 @@ test.describe('Change location on putaway create page and list pages', () => {
         .click();
       await locationChooser.getLocation(depotLocation.name).click();
       await RefreshCachesUtils.refreshCaches({
-        navbar,
-        page,
+        navbar
       });
       await createPutawayPage.goToPage();
       await expect(createPutawayPage.emptyCreatePageInformation).toBeVisible();

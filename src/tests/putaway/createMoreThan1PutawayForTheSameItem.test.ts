@@ -82,7 +82,6 @@ test.describe('Create more than 1 putaway from the same item', () => {
   test('Create more than 1 putaway from the same item', async ({
     stockMovementShowPage,
     navbar,
-    page,
     createPutawayPage,
     internalLocationService,
     productShowPage,
@@ -173,8 +172,7 @@ test.describe('Create more than 1 putaway from the same item', () => {
         productShowPage.inStockTabSection.row(1).quantityOnHand
       ).toHaveText('5');
       await RefreshCachesUtils.refreshCaches({
-        navbar,
-        page,
+        navbar
       });
     });
 

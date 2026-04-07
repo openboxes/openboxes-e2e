@@ -77,7 +77,6 @@ test.describe('Assert qty validations in putaways', () => {
   test('Assert qty validations in putaways', async ({
     stockMovementShowPage,
     navbar,
-    page,
     createPutawayPage,
     internalLocationService,
   }) => {
@@ -87,8 +86,7 @@ test.describe('Assert qty validations in putaways', () => {
       await stockMovementShowPage.isLoaded();
       await expect(stockMovementShowPage.statusTag).toHaveText('Received');
       await RefreshCachesUtils.refreshCaches({
-        navbar,
-        page,
+        navbar
       });
     });
 

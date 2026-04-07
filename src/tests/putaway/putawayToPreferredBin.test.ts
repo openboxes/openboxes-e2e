@@ -117,7 +117,6 @@ test.describe('Putaway to preferred bin and default bin', () => {
   test('Create putaway for product with preferred bin assigned and without it', async ({
     stockMovementShowPage,
     navbar,
-    page,
     createPutawayPage,
     internalLocationService,
     productShowPage,
@@ -136,8 +135,7 @@ test.describe('Putaway to preferred bin and default bin', () => {
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
       await stockMovementShowPage.isLoaded();
       await RefreshCachesUtils.refreshCaches({
-        navbar,
-        page,
+        navbar
       });
       await navbar.inbound.click();
       await navbar.createPutaway.click();
@@ -218,7 +216,6 @@ test.describe('Putaway to preferred bin and default bin', () => {
   test('Edit putaway bin when preferred bin assigned automatically', async ({
     stockMovementShowPage,
     navbar,
-    page,
     createPutawayPage,
     internalLocationService,
     internalLocation2Service,
@@ -237,8 +234,7 @@ test.describe('Putaway to preferred bin and default bin', () => {
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
       await stockMovementShowPage.isLoaded();
       await RefreshCachesUtils.refreshCaches({
-        navbar,
-        page,
+        navbar
       });
       await navbar.inbound.click();
       await navbar.createPutaway.click();

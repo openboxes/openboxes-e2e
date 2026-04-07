@@ -99,8 +99,7 @@ test.describe('Assert putaway details page', () => {
       await stockMovementShowPage.isLoaded();
       await expect(stockMovementShowPage.statusTag).toHaveText('Received');
       await RefreshCachesUtils.refreshCaches({
-        navbar,
-        page,
+        navbar
       });
     });
 

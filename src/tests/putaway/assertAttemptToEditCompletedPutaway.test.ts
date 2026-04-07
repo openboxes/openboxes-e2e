@@ -92,8 +92,7 @@ test.describe('Assert attempt to edit completed putaway', () => {
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
       await stockMovementShowPage.isLoaded();
       await RefreshCachesUtils.refreshCaches({
-        navbar,
-        page,
+        navbar
       });
       await navbar.inbound.click();
       await navbar.createPutaway.click();
