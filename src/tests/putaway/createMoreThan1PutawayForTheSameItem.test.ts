@@ -2,6 +2,7 @@ import AppConfig from '@/config/AppConfig';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
 import { StockMovementResponse } from '@/types';
+import RefreshCachesUtils from '@/utils/RefreshCaches';
 import { getShipmentId, getShipmentItemId } from '@/utils/shipmentUtils';
 
 test.describe('Create more than 1 putaway from the same item', () => {
@@ -143,7 +144,7 @@ test.describe('Create more than 1 putaway from the same item', () => {
       await createPutawayPage.completeStep.isLoaded();
     });
 
-    await test.step('Accept dialog and  and complete putaway', async () => {
+    await test.step('Accept dialog and complete putaway', async () => {
       await createPutawayPage.completeStep.isLoaded();
       await createPutawayPage.completeStep.completePutawayButton.click();
       await expect(
@@ -170,8 +171,9 @@ test.describe('Create more than 1 putaway from the same item', () => {
       await expect(
         productShowPage.inStockTabSection.row(1).quantityOnHand
       ).toHaveText('5');
-      await navbar.profileButton.click();
-      await navbar.refreshCachesButton.click();
+      await RefreshCachesUtils.refreshCaches({
+        navbar
+      });
     });
 
     await test.step('Go to create putaway page and assert receiving bin', async () => {

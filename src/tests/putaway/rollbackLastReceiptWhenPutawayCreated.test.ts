@@ -2,6 +2,7 @@ import AppConfig from '@/config/AppConfig';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
 import { StockMovementResponse } from '@/types';
+import RefreshCachesUtils from '@/utils/RefreshCaches';
 import { getShipmentId, getShipmentItemId } from '@/utils/shipmentUtils';
 
 test.describe('Rollback last receipt behavior when putaway created', () => {
@@ -89,8 +90,9 @@ test.describe('Rollback last receipt behavior when putaway created', () => {
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
       await stockMovementShowPage.isLoaded();
       await expect(stockMovementShowPage.statusTag).toHaveText('Received');
-      await navbar.profileButton.click();
-      await navbar.refreshCachesButton.click();
+      await RefreshCachesUtils.refreshCaches({
+        navbar
+      });
     });
 
     await test.step('Go to create putaway page', async () => {
@@ -152,7 +154,7 @@ test.describe('Rollback last receipt behavior when putaway created', () => {
     });
 
     await test.step('Open putaway details page', async () => {
-      const row = putawayListPage.table.row(1)
+      const row = putawayListPage.table.row(1);
       await row.actionsButton.click();
       await row.viewOrderDetails.click();
       await putawayDetailsPage.isLoaded();
