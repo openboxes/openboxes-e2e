@@ -93,7 +93,6 @@ test.describe('Perform putaway as manager user', () => {
     managerUserContext,
     internalLocationService,
     productService,
-    page,
   }) => {
     const receivingBin =
       AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
@@ -114,7 +113,6 @@ test.describe('Perform putaway as manager user', () => {
       await stockMovementShowPage.isLoaded();
       await RefreshCachesUtils.refreshCaches({
         navbar,
-        page,
       });
       await navbar.inbound.click();
       await navbar.createPutaway.click();
