@@ -24,6 +24,12 @@ class TransactionTable extends BasePageModel {
       .locator('.action-menu-item')
       .getByRole('link', { name: 'Delete' });
   }
+
+  get editButton() {
+    return this.page
+      .locator('.action-menu-item')
+      .getByRole('link', { name: 'Edit' });
+  }
 }
 
 class Row extends BasePageModel {
