@@ -36,11 +36,11 @@ class Row extends BasePageModel {
   }
 
   async decreaseMinute() {
-    const currentValue = await this.transactionDateMinuteSelect.inputValue();
-    const current = parseInt(currentValue || '0', 10);
-    const next = (current - 1 + 60) % 60;
-    const formatted = String(next).padStart(2, '0');
-    await this.transactionDateMinuteSelect.selectOption(formatted);
+    const selectedValue = await this.transactionDateMinuteSelect.inputValue();
+    const parsedValue = parseInt(selectedValue || '0', 10);
+    const nextMinute = (parsedValue - 1 + 60) % 60;
+    const optionToSelect = String(nextMinute).padStart(2, '0');
+    await this.transactionDateMinuteSelect.selectOption(optionToSelect);
   }
 }
 

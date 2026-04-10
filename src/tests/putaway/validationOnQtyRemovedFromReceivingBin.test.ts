@@ -193,7 +193,7 @@ test.describe('Assert validation on qty removed from receiving bin', () => {
       ).toBeVisible();
     });
 
-    await test.step('Go backward and assert validatiion', async () => {
+    await test.step('Go backward and assert validation', async () => {
       await createPutawayPage.completeStep.editButton.click();
       await createPutawayPage.startStep.isLoaded();
       await expect(createPutawayPage.startStep.saveButton).toBeDisabled();
