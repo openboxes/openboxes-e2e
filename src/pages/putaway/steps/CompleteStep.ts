@@ -41,6 +41,14 @@ class CompleteStep extends BasePageModel {
   get editButton() {
     return this.page.getByTestId('edit-button').first();
   }
+
+  get validationOnQtyInReceivingBin() {
+    return this.page
+      .locator('[class*="alert"]')
+      .getByText(
+        /Quantity available 0 is less than quantity to putaway \d+ for product/
+      );
+  }
 }
 
 export default CompleteStep;
