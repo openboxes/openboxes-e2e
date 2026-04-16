@@ -1,10 +1,14 @@
 import { expect, Locator, Page } from '@playwright/test';
 
 import BasePageModel from '@/pages/BasePageModel';
+import StockTransferDialog from '@/pages/product/productShow/sections/components/StockTransferDialog';
 
 class InStockTabSection extends BasePageModel {
+  stockTransferDialog: StockTransferDialog;
+
   constructor(page: Page) {
     super(page);
+    this.stockTransferDialog = new StockTransferDialog(page);
   }
 
   async isLoaded() {
@@ -23,6 +27,10 @@ class InStockTabSection extends BasePageModel {
 
   row(index: number) {
     return new Row(this.page, this.rows.nth(index));
+  }
+
+  get stockTransferButton() {
+    return this.page.getByRole('link', { name: 'Transfer Stock' });
   }
 }
 
@@ -58,6 +66,14 @@ class Row extends BasePageModel {
 
   get quantityOnHand() {
     return this.row.locator('td').nth(4);
+  }
+
+  get lot() {
+    return this.row.locator('td').nth(2);
+  }
+
+  get expires() {
+    return this.row.locator('td').nth(3);
   }
 }
 
