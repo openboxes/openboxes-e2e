@@ -110,6 +110,7 @@ test.describe('Apply sorting by alphabetical order and remain inputs', () => {
     await test.step('Send shipment', async () => {
       await createInboundPage.nextButton.click();
       await createInboundPage.sendStep.isLoaded();
+      await expect(createInboundPage.sendStep.sendShipmentButton).toBeVisible();
       await createInboundPage.sendStep.sendShipmentButton.click();
       await stockMovementShowPage.waitForUrl();
       await stockMovementShowPage.isLoaded();

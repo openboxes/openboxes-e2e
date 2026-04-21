@@ -82,6 +82,14 @@ class Row extends BasePageModel {
   get splitLineInPutawayBin() {
     return this.row.getByTestId('open-modal');
   }
+
+  get lotField() {
+    return this.row.getByTestId('table-cell').nth(4);
+  }
+
+  get expiryDateField() {
+    return this.row.getByTestId('table-cell').nth(5);
+  }
 }
 
 export default StartPutawayTable;

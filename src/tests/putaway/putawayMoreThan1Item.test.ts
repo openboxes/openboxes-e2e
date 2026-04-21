@@ -3,7 +3,11 @@ import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
 import { StockMovementResponse } from '@/types';
 import RefreshCachesUtils from '@/utils/RefreshCaches';
-import { getShipmentId, getShipmentItemId } from '@/utils/shipmentUtils';
+import {
+  deleteReceivedShipment,
+  getShipmentId,
+  getShipmentItemId,
+} from '@/utils/shipmentUtils';
 
 test.describe('Create putaway for more than 1 item, separate putaways', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
@@ -75,13 +79,12 @@ test.describe('Create putaway for more than 1 item, separate putaways', () => {
       for (let n = 1; n < 4; n++) {
         await transactionListPage.deleteTransaction(1);
       }
-      await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
-      await stockMovementShowPage.detailsListTable.oldViewShipmentPage.click();
-      await oldViewShipmentPage.undoStatusChangeButton.click();
-      await stockMovementShowPage.isLoaded();
-      await stockMovementShowPage.rollbackButton.click();
-
-      await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
+      await deleteReceivedShipment({
+        stockMovementShowPage,
+        oldViewShipmentPage,
+        stockMovementService,
+        STOCK_MOVEMENT,
+      });
     }
   );
 
@@ -107,7 +110,7 @@ test.describe('Create putaway for more than 1 item, separate putaways', () => {
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
       await stockMovementShowPage.isLoaded();
       await RefreshCachesUtils.refreshCaches({
-        navbar
+        navbar,
       });
       await navbar.inbound.click();
       await navbar.createPutaway.click();
@@ -190,7 +193,7 @@ test.describe('Create putaway for more than 1 item, separate putaways', () => {
 
     await test.step('Go to create putaway page and start putaway for 2nd item', async () => {
       await RefreshCachesUtils.refreshCaches({
-        navbar
+        navbar,
       });
       await createPutawayPage.goToPage();
       await createPutawayPage.table
@@ -235,7 +238,7 @@ test.describe('Create putaway for more than 1 item, separate putaways', () => {
 
     await test.step('Assert empty create putaway page', async () => {
       await RefreshCachesUtils.refreshCaches({
-        navbar
+        navbar,
       });
       await createPutawayPage.goToPage();
       await expect(createPutawayPage.emptyCreatePageInformation).toBeVisible();
@@ -343,7 +346,7 @@ test.describe('Putaway 2 items in the same putaway', () => {
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
       await stockMovementShowPage.isLoaded();
       await RefreshCachesUtils.refreshCaches({
-        navbar
+        navbar,
       });
       await navbar.inbound.click();
       await navbar.createPutaway.click();
@@ -414,7 +417,7 @@ test.describe('Putaway 2 items in the same putaway', () => {
 
     await test.step('Assert empty create putaway page', async () => {
       await RefreshCachesUtils.refreshCaches({
-        navbar
+        navbar,
       });
       await createPutawayPage.goToPage();
       await expect(createPutawayPage.emptyCreatePageInformation).toBeVisible();

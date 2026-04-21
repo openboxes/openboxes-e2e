@@ -1,6 +1,7 @@
 import { Locator, Page } from '@playwright/test';
 
 import BasePageModel from '@/pages/BasePageModel';
+import { formatDate } from '@/utils/DateUtils';
 
 class CreatePutawayTable extends BasePageModel {
   constructor(page: Page) {
@@ -32,10 +33,12 @@ class Row extends BasePageModel {
     return this.row.getByRole('checkbox');
   }
 
+  get tableCell() {
+    return this.row.getByTestId('table-cell');
+  }
+
   getExpandBinLocation(binLocation: string) {
-    return this.row
-      .getByTestId('table-cell')
-      .getByText(binLocation);
+    return this.tableCell.getByText(binLocation);
   }
 
   get receivingBin() {
@@ -43,7 +46,17 @@ class Row extends BasePageModel {
   }
 
   getProductName(name: string) {
-    return this.row.getByTestId('table-cell').getByText(name);
+    return this.tableCell.getByText(name);
+  }
+
+  getLot(lot: string) {
+    return this.tableCell.getByText(lot);
+  }
+
+  getExpDate(expDate: Date) {
+    return this.tableCell.getByText(
+      formatDate(expDate, 'MM/DD/YYYY').toString()
+    );
   }
 }
 
