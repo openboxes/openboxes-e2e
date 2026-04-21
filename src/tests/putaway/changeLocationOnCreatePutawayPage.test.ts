@@ -3,7 +3,11 @@ import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
 import { StockMovementResponse } from '@/types';
 import RefreshCachesUtils from '@/utils/RefreshCaches';
-import { getShipmentId, getShipmentItemId } from '@/utils/shipmentUtils';
+import {
+  deleteReceivedShipment,
+  getShipmentId,
+  getShipmentItemId,
+} from '@/utils/shipmentUtils';
 
 test.describe('Change location on putaway create page and list pages', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
@@ -64,13 +68,12 @@ test.describe('Change location on putaway create page and list pages', () => {
       await putawayListPage.table.clickDeleteOrderButton(1);
       await putawayListPage.emptyPutawayList.isVisible();
 
-      await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
-      await stockMovementShowPage.detailsListTable.oldViewShipmentPage.click();
-      await oldViewShipmentPage.undoStatusChangeButton.click();
-      await stockMovementShowPage.isLoaded();
-      await stockMovementShowPage.rollbackButton.click();
-
-      await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
+      await deleteReceivedShipment({
+        stockMovementShowPage,
+        oldViewShipmentPage,
+        stockMovementService,
+        STOCK_MOVEMENT,
+      });
     }
   );
 
@@ -97,7 +100,7 @@ test.describe('Change location on putaway create page and list pages', () => {
       await stockMovementShowPage.isLoaded();
       await expect(stockMovementShowPage.statusTag).toHaveText('Received');
       await RefreshCachesUtils.refreshCaches({
-        navbar
+        navbar,
       });
     });
 
@@ -123,7 +126,7 @@ test.describe('Change location on putaway create page and list pages', () => {
         .click();
       await locationChooser.getLocation(depotLocation.name).click();
       await RefreshCachesUtils.refreshCaches({
-        navbar
+        navbar,
       });
       await createPutawayPage.goToPage();
       await expect(createPutawayPage.emptyCreatePageInformation).toBeVisible();

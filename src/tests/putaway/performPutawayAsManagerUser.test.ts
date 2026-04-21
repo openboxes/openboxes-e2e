@@ -7,7 +7,11 @@ import PutawayDetailsPage from '@/pages/putaway/putawayDetails/PutawayDetailsPag
 import StockMovementShowPage from '@/pages/stockMovementShow/StockMovementShowPage';
 import { StockMovementResponse } from '@/types';
 import RefreshCachesUtils from '@/utils/RefreshCaches';
-import { getShipmentId, getShipmentItemId } from '@/utils/shipmentUtils';
+import {
+  deleteReceivedShipment,
+  getShipmentId,
+  getShipmentItemId,
+} from '@/utils/shipmentUtils';
 
 test.describe('Perform putaway as manager user', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
@@ -79,13 +83,12 @@ test.describe('Perform putaway as manager user', () => {
       await navbar.transactions.click();
       await transactionListPage.deleteTransaction(1);
       await transactionListPage.deleteTransaction(1);
-      await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
-      await stockMovementShowPage.detailsListTable.oldViewShipmentPage.click();
-      await oldViewShipmentPage.undoStatusChangeButton.click();
-      await stockMovementShowPage.isLoaded();
-      await stockMovementShowPage.rollbackButton.click();
-
-      await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
+      await deleteReceivedShipment({
+        stockMovementShowPage,
+        oldViewShipmentPage,
+        stockMovementService,
+        STOCK_MOVEMENT,
+      });
     }
   );
 

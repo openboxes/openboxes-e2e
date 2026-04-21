@@ -5,7 +5,11 @@ import { expect, test } from '@/fixtures/fixtures';
 import ProductShowPage from '@/pages/product/productShow/ProductShowPage';
 import { StockMovementResponse } from '@/types';
 import RefreshCachesUtils from '@/utils/RefreshCaches';
-import { getShipmentId, getShipmentItemId } from '@/utils/shipmentUtils';
+import {
+  deleteReceivedShipment,
+  getShipmentId,
+  getShipmentItemId,
+} from '@/utils/shipmentUtils';
 
 test.describe('Assert validation on qty removed from receiving bin', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
@@ -77,13 +81,12 @@ test.describe('Assert validation on qty removed from receiving bin', () => {
       for (let n = 1; n < 4; n++) {
         await transactionListPage.deleteTransaction(1);
       }
-      await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
-      await stockMovementShowPage.detailsListTable.oldViewShipmentPage.click();
-      await oldViewShipmentPage.undoStatusChangeButton.click();
-      await stockMovementShowPage.isLoaded();
-      await stockMovementShowPage.rollbackButton.click();
-
-      await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
+      await deleteReceivedShipment({
+        stockMovementShowPage,
+        oldViewShipmentPage,
+        stockMovementService,
+        STOCK_MOVEMENT,
+      });
     }
   );
 

@@ -3,7 +3,11 @@ import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
 import { StockMovementResponse } from '@/types';
 import RefreshCachesUtils from '@/utils/RefreshCaches';
-import { getShipmentId, getShipmentItemId } from '@/utils/shipmentUtils';
+import {
+  deleteReceivedShipment,
+  getShipmentId,
+  getShipmentItemId,
+} from '@/utils/shipmentUtils';
 
 test.describe('Split line in Putaway', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
@@ -72,13 +76,12 @@ test.describe('Split line in Putaway', () => {
       await transactionListPage.table.deleteButton.click();
       await expect(transactionListPage.successMessage).toBeVisible();
 
-      await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
-      await stockMovementShowPage.detailsListTable.oldViewShipmentPage.click();
-      await oldViewShipmentPage.undoStatusChangeButton.click();
-      await stockMovementShowPage.isLoaded();
-      await stockMovementShowPage.rollbackButton.click();
-
-      await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
+      await deleteReceivedShipment({
+        stockMovementShowPage,
+        oldViewShipmentPage,
+        stockMovementService,
+        STOCK_MOVEMENT,
+      });
     }
   );
 
@@ -100,7 +103,7 @@ test.describe('Split line in Putaway', () => {
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
       await stockMovementShowPage.isLoaded();
       await RefreshCachesUtils.refreshCaches({
-        navbar
+        navbar,
       });
       await navbar.inbound.click();
       await navbar.createPutaway.click();
@@ -207,7 +210,7 @@ test.describe('Split line in Putaway', () => {
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
       await stockMovementShowPage.isLoaded();
       await RefreshCachesUtils.refreshCaches({
-        navbar
+        navbar,
       });
       await navbar.inbound.click();
       await navbar.createPutaway.click();
