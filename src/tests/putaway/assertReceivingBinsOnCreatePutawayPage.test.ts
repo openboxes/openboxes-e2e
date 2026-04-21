@@ -4,12 +4,16 @@ import { expect, test } from '@/fixtures/fixtures';
 import { StockMovementResponse } from '@/types';
 import { formatDate, getDateByOffset } from '@/utils/DateUtils';
 import RefreshCachesUtils from '@/utils/RefreshCaches';
-import { getShipmentId, getShipmentItemId } from '@/utils/shipmentUtils';
+import {
+  deleteReceivedShipment,
+  getShipmentId,
+  getShipmentItemId,
+} from '@/utils/shipmentUtils';
 import UniqueIdentifier from '@/utils/UniqueIdentifier';
 
 test.describe('Assert receiving bin on create putaway page', () => {
-  let STOCK_MOVEMENT: StockMovementResponse;
-  let STOCK_MOVEMENT_OTHER: StockMovementResponse;
+  let PRIMARY_STOCK_MOVEMENT: StockMovementResponse;
+  let SECONDARY_STOCK_MOVEMENT: StockMovementResponse;
   const uniqueIdentifier = new UniqueIdentifier();
   const lot = uniqueIdentifier.generateUniqueString('lot');
 
@@ -22,8 +26,8 @@ test.describe('Assert receiving bin on create putaway page', () => {
     }) => {
       const supplierLocation = await supplierLocationService.getLocation();
 
-      await test.step('Create 1st stock movement and receive it', async () => {
-        STOCK_MOVEMENT = await stockMovementService.createInbound({
+      await test.step('Create 1st stock movement', async () => {
+        PRIMARY_STOCK_MOVEMENT = await stockMovementService.createInbound({
           originId: supplierLocation.id,
         });
 
@@ -31,7 +35,7 @@ test.describe('Assert receiving bin on create putaway page', () => {
         const product = await productService.getProduct();
 
         await stockMovementService.addItemsToInboundStockMovement(
-          STOCK_MOVEMENT.id,
+          PRIMARY_STOCK_MOVEMENT.id,
           [
             {
               productId: product.id,
@@ -42,16 +46,24 @@ test.describe('Assert receiving bin on create putaway page', () => {
           ]
         );
 
-        await stockMovementService.sendInboundStockMovement(STOCK_MOVEMENT.id, {
-          shipmentType: ShipmentType.AIR,
-        });
+        await stockMovementService.sendInboundStockMovement(
+          PRIMARY_STOCK_MOVEMENT.id,
+          {
+            shipmentType: ShipmentType.AIR,
+          }
+        );
+      });
 
+      await test.step('Receive 1st stock movement', async () => {
         const { data: stockMovement } =
-          await stockMovementService.getStockMovement(STOCK_MOVEMENT.id);
+          await stockMovementService.getStockMovement(
+            PRIMARY_STOCK_MOVEMENT.id
+          );
         const shipmentId = getShipmentId(stockMovement);
         const { data: receipt } = await receivingService.getReceipt(shipmentId);
         const receivingBin =
-          AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
+          AppConfig.instance.receivingBinPrefix +
+          PRIMARY_STOCK_MOVEMENT.identifier;
 
         await receivingService.createReceivingBin(shipmentId, receipt);
 
@@ -65,8 +77,8 @@ test.describe('Assert receiving bin on create putaway page', () => {
         await receivingService.completeReceipt(shipmentId);
       });
 
-      await test.step('Create 2nd stock movement and receive it', async () => {
-        STOCK_MOVEMENT_OTHER = await stockMovementService.createInbound({
+      await test.step('Create 2nd stock movement', async () => {
+        SECONDARY_STOCK_MOVEMENT = await stockMovementService.createInbound({
           originId: supplierLocation.id,
         });
 
@@ -74,24 +86,28 @@ test.describe('Assert receiving bin on create putaway page', () => {
         const product = await productService.getProduct();
 
         await stockMovementService.addItemsToInboundStockMovement(
-          STOCK_MOVEMENT_OTHER.id,
+          SECONDARY_STOCK_MOVEMENT.id,
           [{ productId: product.id, quantity: 10 }]
         );
 
         await stockMovementService.sendInboundStockMovement(
-          STOCK_MOVEMENT_OTHER.id,
+          SECONDARY_STOCK_MOVEMENT.id,
           {
             shipmentType: ShipmentType.AIR,
           }
         );
+      });
 
+      await test.step('Receive 2nd stock movement', async () => {
         const { data: stockMovement } =
-          await stockMovementService.getStockMovement(STOCK_MOVEMENT_OTHER.id);
+          await stockMovementService.getStockMovement(
+            SECONDARY_STOCK_MOVEMENT.id
+          );
         const shipmentId = getShipmentId(stockMovement);
         const { data: receipt } = await receivingService.getReceipt(shipmentId);
         const receivingBin2 =
           AppConfig.instance.receivingBinPrefix +
-          STOCK_MOVEMENT_OTHER.identifier;
+          SECONDARY_STOCK_MOVEMENT.identifier;
 
         await receivingService.createReceivingBin(shipmentId, receipt);
 
@@ -121,23 +137,19 @@ test.describe('Assert receiving bin on create putaway page', () => {
         await transactionListPage.deleteTransaction(1);
       }
 
-      await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
-      await navbar.configurationButton.click();
-      await navbar.transactions.click();
-      await transactionListPage.deleteTransaction(1);
-      await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
-      await stockMovementShowPage.detailsListTable.oldViewShipmentPage.click();
-      await oldViewShipmentPage.undoStatusChangeButton.click();
-      await stockMovementShowPage.isLoaded();
-      await stockMovementShowPage.rollbackButton.click();
-      await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
+      await deleteReceivedShipment({
+        stockMovementShowPage,
+        oldViewShipmentPage,
+        stockMovementService,
+        STOCK_MOVEMENT: PRIMARY_STOCK_MOVEMENT,
+      });
 
-      await stockMovementShowPage.goToPage(STOCK_MOVEMENT_OTHER.id);
-      await stockMovementShowPage.detailsListTable.oldViewShipmentPage.click();
-      await oldViewShipmentPage.undoStatusChangeButton.click();
-      await stockMovementShowPage.isLoaded();
-      await stockMovementShowPage.rollbackButton.click();
-      await stockMovementService.deleteStockMovement(STOCK_MOVEMENT_OTHER.id);
+      await deleteReceivedShipment({
+        stockMovementShowPage,
+        oldViewShipmentPage,
+        stockMovementService,
+        STOCK_MOVEMENT: SECONDARY_STOCK_MOVEMENT,
+      });
     }
   );
 
@@ -152,9 +164,10 @@ test.describe('Assert receiving bin on create putaway page', () => {
     putawayDetailsPage,
   }) => {
     const receivingBin =
-      AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
+      AppConfig.instance.receivingBinPrefix + PRIMARY_STOCK_MOVEMENT.identifier;
     const receivingBin2 =
-      AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT_OTHER.identifier;
+      AppConfig.instance.receivingBinPrefix +
+      SECONDARY_STOCK_MOVEMENT.identifier;
     productService.setProduct('5');
     const product = await productService.getProduct();
     const expDate = getDateByOffset(new Date(), 3);
@@ -162,7 +175,7 @@ test.describe('Assert receiving bin on create putaway page', () => {
     const internalLocation = await internalLocationService.getLocation();
 
     await test.step('Go to create putaway page', async () => {
-      await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
+      await stockMovementShowPage.goToPage(PRIMARY_STOCK_MOVEMENT.id);
       await stockMovementShowPage.isLoaded();
       await RefreshCachesUtils.refreshCaches({
         navbar,
@@ -226,11 +239,11 @@ test.describe('Assert receiving bin on create putaway page', () => {
 
     await test.step('Perform Stock Transfer of 1 inventory to another receiving bin', async () => {
       await productShowPage.inStockTabSection.stockTransferDialog.locationSelect.click();
-      await productShowPage.inStockTabSection.stockTransferDialog.getLocation(
+      await productShowPage.inStockTabSection.stockTransferDialog.selectLocation(
         currentLocation.name
       );
       await productShowPage.inStockTabSection.stockTransferDialog.binLocationSelect.click();
-      await productShowPage.inStockTabSection.stockTransferDialog.getLocation(
+      await productShowPage.inStockTabSection.stockTransferDialog.selectLocation(
         receivingBin
       );
       await productShowPage.inStockTabSection.stockTransferDialog.transferStockButton.click();

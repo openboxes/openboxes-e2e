@@ -3,18 +3,19 @@ import { expect } from '@playwright/test';
 import BasePageModel from '@/pages/BasePageModel';
 
 class StockTransferDialog extends BasePageModel {
-  
+  get stockTransferDialog() {
+    return this.page.getByRole('dialog', { name: 'Transfer Stock' });
+  }
+
   async isLoaded() {
-    await expect(
-      this.page.getByRole('dialog', { name: 'Transfer Stock' })
-    ).toBeVisible();
+    await expect(this.stockTransferDialog).toBeVisible();
   }
 
   get locationSelect() {
     return this.page.getByRole('cell', { name: 'Choose where stock is being' });
   }
 
-  async getLocation(locationName: string) {
+  async selectLocation(locationName: string) {
     const activeDropdown = this.page.locator(
       '.chosen-container-active .chosen-results'
     );
@@ -29,9 +30,9 @@ class StockTransferDialog extends BasePageModel {
   }
 
   get transferStockButton() {
-    return this.page
-      .getByRole('dialog', { name: 'Transfer Stock' })
-      .getByRole('button', { name: 'Transfer Stock' });
+    return this.stockTransferDialog.getByRole('button', {
+      name: 'Transfer Stock',
+    });
   }
 }
 

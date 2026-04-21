@@ -33,8 +33,12 @@ class Row extends BasePageModel {
     return this.row.getByRole('checkbox');
   }
 
+  get tableCell() {
+    return this.row.getByTestId('table-cell');
+  }
+
   getExpandBinLocation(binLocation: string) {
-    return this.row.getByTestId('table-cell').getByText(binLocation);
+    return this.tableCell.getByText(binLocation);
   }
 
   get receivingBin() {
@@ -42,17 +46,17 @@ class Row extends BasePageModel {
   }
 
   getProductName(name: string) {
-    return this.row.getByTestId('table-cell').getByText(name);
+    return this.tableCell.getByText(name);
   }
 
   getLot(lot: string) {
-    return this.row.getByTestId('table-cell').getByText(lot);
+    return this.tableCell.getByText(lot);
   }
 
   getExpDate(expDate: Date) {
-    return this.row
-      .getByTestId('table-cell')
-      .getByText(formatDate(expDate, 'MM/DD/YYYY').toString());
+    return this.tableCell.getByText(
+      formatDate(expDate, 'MM/DD/YYYY').toString()
+    );
   }
 }
 
