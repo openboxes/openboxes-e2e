@@ -146,22 +146,22 @@ test.describe('Delete items from putaway', () => {
 
     await test.step('Assert number of lines on summary tab', async () => {
       await putawayDetailsPage.summaryTab.click();
-      await expect(
-        putawayDetailsPage.summaryTable.table.locator('tr.order-item')
-      ).toHaveCount(2);
+      await expect(putawayDetailsPage.summaryTable.orderItemRows).toHaveCount(
+        2
+      );
     });
 
     await test.step('Assert number of lines on status table', async () => {
       await putawayDetailsPage.itemStatusTab.click();
       await expect(
-        putawayDetailsPage.itemStatusTable.table.locator('tr.order-item')
+        putawayDetailsPage.itemStatusTable.orderItemRows
       ).toHaveCount(2);
     });
 
     await test.step('Assert number of lines on item details table', async () => {
       await putawayDetailsPage.itemDetailsTab.click();
       await expect(
-        putawayDetailsPage.itemDetailsTable.table.locator('tr.order-item')
+        putawayDetailsPage.itemDetailsTable.orderItemRows
       ).toHaveCount(2);
     });
 
@@ -193,22 +193,22 @@ test.describe('Delete items from putaway', () => {
 
     await test.step('Assert number of lines on summary tab', async () => {
       await putawayDetailsPage.summaryTab.click();
-      await expect(
-        putawayDetailsPage.summaryTable.table.locator('tr.order-item')
-      ).toHaveCount(1);
+      await expect(putawayDetailsPage.summaryTable.orderItemRows).toHaveCount(
+        1
+      );
     });
 
     await test.step('Assert number of lines on items status table', async () => {
       await putawayDetailsPage.itemStatusTab.click();
       await expect(
-        putawayDetailsPage.itemStatusTable.table.locator('tr.order-item')
+        putawayDetailsPage.itemStatusTable.orderItemRows
       ).toHaveCount(1);
     });
 
     await test.step('Assert number of lines on item details table', async () => {
       await putawayDetailsPage.itemDetailsTab.click();
       await expect(
-        putawayDetailsPage.itemDetailsTable.table.locator('tr.order-item')
+        putawayDetailsPage.itemDetailsTable.orderItemRows
       ).toHaveCount(1);
     });
 
@@ -271,22 +271,22 @@ test.describe('Delete items from putaway', () => {
 
     await test.step('Assert number of lines on summary tab', async () => {
       await putawayDetailsPage.summaryTab.click();
-      await expect(
-        putawayDetailsPage.summaryTable.table.locator('tr.order-item')
-      ).toHaveCount(2);
+      await expect(putawayDetailsPage.summaryTable.orderItemRows).toHaveCount(
+        2
+      );
     });
 
     await test.step('Assert number of lines on items status table', async () => {
       await putawayDetailsPage.itemStatusTab.click();
       await expect(
-        putawayDetailsPage.itemStatusTable.table.locator('tr.order-item')
+        putawayDetailsPage.itemStatusTable.orderItemRows
       ).toHaveCount(2);
     });
 
     await test.step('Assert number of lines on item details table', async () => {
       await putawayDetailsPage.itemDetailsTab.click();
       await expect(
-        putawayDetailsPage.itemDetailsTable.table.locator('tr.order-item')
+        putawayDetailsPage.itemDetailsTable.orderItemRows
       ).toHaveCount(2);
     });
 
@@ -321,22 +321,22 @@ test.describe('Delete items from putaway', () => {
 
     await test.step('Assert number of lines on summary tab on completed putaway', async () => {
       await putawayDetailsPage.summaryTab.click();
-      await expect(
-        putawayDetailsPage.summaryTable.table.locator('tr.order-item')
-      ).toHaveCount(2);
+      await expect(putawayDetailsPage.summaryTable.orderItemRows).toHaveCount(
+        2
+      );
     });
 
     await test.step('Assert number of lines on items status table on completed putaway', async () => {
       await putawayDetailsPage.itemStatusTab.click();
       await expect(
-        putawayDetailsPage.itemStatusTable.table.locator('tr.order-item')
+        putawayDetailsPage.itemStatusTable.orderItemRows
       ).toHaveCount(2);
     });
 
     await test.step('Assert number of lines on item details table on completed putaway', async () => {
       await putawayDetailsPage.itemDetailsTab.click();
       await expect(
-        putawayDetailsPage.itemDetailsTable.table.locator('tr.order-item')
+        putawayDetailsPage.itemDetailsTable.orderItemRows
       ).toHaveCount(2);
     });
 

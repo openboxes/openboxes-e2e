@@ -22,6 +22,10 @@ class ItemStatusTable extends BasePageModel {
   getColumnHeader(columnName: string) {
     return this.table.getByRole('row').getByText(columnName, { exact: true });
   }
+
+  get orderItemRows() {
+    return this.table.locator('tr.order-item');
+  }
 }
 
 class Row extends BasePageModel {

@@ -18,6 +18,10 @@ class ItemDetailsTable extends BasePageModel {
   row(index: number) {
     return new Row(this.page, this.rows.nth(index));
   }
+
+  get orderItemRows() {
+    return this.table.locator('tr.order-item');
+  }
 }
 
 class Row extends BasePageModel {
