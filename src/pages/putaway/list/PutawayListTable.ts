@@ -48,5 +48,9 @@ class Row extends BasePageModel {
   get deleteOrder() {
     return this.row.getByTestId('delete-order-item');
   }
+
+  get lineItems() {
+    return this.row.getByTestId('line-items');
+  }
 }
 export default PutawayListTable;
