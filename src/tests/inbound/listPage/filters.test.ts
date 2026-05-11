@@ -71,7 +71,7 @@ test.describe('Switch locations on inbound list page', () => {
 
     const filters = {
       search: 'TEST',
-      receiptStatus: 'Created',
+      receiptStatus: 'Pending',
       destination: mainLocation.name,
       origin: supplierLocation.name,
       shipmentType: 'Air',
@@ -207,7 +207,7 @@ test('Clicking clear button should clear all of the editable filters', async ({
 
   const filters = {
     search: 'TEST',
-    receiptStatus: 'Created',
+    receiptStatus: 'Pending',
     destination: mainLocation.name,
     origin: supplierLocation.name,
     shipmentType: 'Air',
