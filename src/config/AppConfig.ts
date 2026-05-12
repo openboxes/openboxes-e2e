@@ -16,6 +16,7 @@ export enum USER_KEY {
   ALTERNATIVE = 'alternative',
   MANAGER = 'manager',
   IMPERSONATOR = 'impersonator',
+  ASSISTANT = 'assistant',
 }
 
 export enum LOCATION_KEY {
@@ -55,11 +56,20 @@ class AppConfig {
 
   public static TEST_DATA_FILE_PATH = path.join(process.cwd(), '.data.json');
 
-  public static DATA_IMPORT_DIRECTORY_PATH = path.join(process.cwd(), 'src/setup/dataImport');
+  public static DATA_IMPORT_DIRECTORY_PATH = path.join(
+    process.cwd(),
+    'src/setup/dataImport'
+  );
 
-  public static PRODUCTS_IMPORT_FILE_PATH = path.join(AppConfig.DATA_IMPORT_DIRECTORY_PATH, '/products.csv');
+  public static PRODUCTS_IMPORT_FILE_PATH = path.join(
+    AppConfig.DATA_IMPORT_DIRECTORY_PATH,
+    '/products.csv'
+  );
 
-  public static INVENTORY_IMPORT_FILE_PATH = path.join(AppConfig.DATA_IMPORT_DIRECTORY_PATH, '/inventory.csv');
+  public static INVENTORY_IMPORT_FILE_PATH = path.join(
+    AppConfig.DATA_IMPORT_DIRECTORY_PATH,
+    '/inventory.csv'
+  );
 
   // Base URL to use in actions like `await page.goto('./dashboard')`.
   public appURL!: string;
@@ -132,7 +142,7 @@ class AppConfig {
         password: env.get('USER_ALT_PASSWORD').required().asString(),
         storageFileName: '.auth-storage-ALT-USER.json',
         requiredRoles: new Set([
-          RoleType.ROLE_SUPERUSER,
+          RoleType.ROLE_ADMIN,
           RoleType.ROLE_FINANCE,
           RoleType.ROLE_PRODUCT_MANAGER,
           RoleType.ROLE_INVOICE,
@@ -145,6 +155,14 @@ class AppConfig {
         password: env.get('USER_MANAGER_PASSWORD').required().asString(),
         storageFileName: '.auth-storage-MANAGER-USER.json',
         requiredRoles: new Set([RoleType.ROLE_MANAGER]),
+      }),
+
+      assistant: new TestUserConfig({
+        key: USER_KEY.ASSISTANT,
+        username: env.get('USER_ASSISTANT_USERNAME').required().asString(),
+        password: env.get('USER_ASSISTANT_PASSWORD').required().asString(),
+        storageFileName: '.auth-storage-ASSISTANT-USER.json',
+        requiredRoles: new Set([RoleType.ROLE_ASSISTANT]),
       }),
     };
 
@@ -301,8 +319,8 @@ class AppConfig {
         name: productData['Name'],
         quantity: parseInt(productData['Quantity']),
         required: false,
-      })
-    })
+      });
+    });
 
     this.receivingBinPrefix = env
       .get('RECEIVING_BIN_PREFIX')
