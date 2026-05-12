@@ -100,11 +100,13 @@ type Fixtures = {
   mainUserService: UserData;
   altUserService: UserData;
   managerUserService: UserData;
+  assistantUserService: UserData;
   // USER CONTEXT
   mainUserContext: BrowserContext;
   altUserContext: BrowserContext;
   emptyUserContext: BrowserContext;
   managerUserContext: BrowserContext;
+  assistantUserContext: BrowserContext;
 };
 
 export const test = baseTest.extend<Fixtures>({
@@ -191,6 +193,8 @@ export const test = baseTest.extend<Fixtures>({
     use(new UserData(USER_KEY.ALTERNATIVE, page.request)),
   managerUserService: async ({ page }, use) =>
     use(new UserData(USER_KEY.MANAGER, page.request)),
+  assistantUserService: async ({ page }, use) =>
+    use(new UserData(USER_KEY.ASSISTANT, page.request)),
   // NEW USER CONTEXTS
   mainUserContext: async ({ browser }, use) => {
     const newCtx = await browser.newContext({
@@ -223,6 +227,16 @@ export const test = baseTest.extend<Fixtures>({
   managerUserContext: async ({ browser }, use) => {
     const newCtx = await browser.newContext({
       storageState: AppConfig.instance.users.manager.storagePath,
+    });
+
+    await use(newCtx);
+
+    await newCtx.close();
+  },
+
+  assistantUserContext: async ({ browser }, use) => {
+    const newCtx = await browser.newContext({
+      storageState: AppConfig.instance.users.assistant.storagePath,
     });
 
     await use(newCtx);
