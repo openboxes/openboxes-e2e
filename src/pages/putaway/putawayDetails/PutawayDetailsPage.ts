@@ -116,6 +116,11 @@ class PutawayDetailsPage extends BasePageModel {
     });
     await this.editButton.click();
   }
+
+  async clickDeleteOrderButton() {
+    this.page.once('dialog', (dialog) => dialog.accept());
+    await this.actionsDeleteButton.click();
+  }
 }
 
 export default PutawayDetailsPage;
