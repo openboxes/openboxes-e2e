@@ -10,7 +10,7 @@ test.describe('Receive item into hold bin', () => {
   //timeout has been added for this test to make sure that the content on bin location tab will load as it can include a lot of data
   let STOCK_MOVEMENT: StockMovementResponse;
   const uniqueIdentifier = new UniqueIdentifier();
-  const binLocationName = uniqueIdentifier.generateUniqueString('holdbin');
+  const holdBinLocationName = uniqueIdentifier.generateUniqueString('holdbin');
 
   test.beforeEach(
     async ({
@@ -23,7 +23,6 @@ test.describe('Receive item into hold bin', () => {
       createLocationPage,
     }) => {
       const supplierLocation = await supplierLocationService.getLocation();
-      const mainLocation = await mainLocationService.getLocation();
       productService.setProduct('1');
       const PRODUCT_ONE = await productService.getProduct();
 
@@ -41,44 +40,13 @@ test.describe('Receive item into hold bin', () => {
       });
 
       await test.step('Create bin location with hold stock activity for location', async () => {
-        await page.goto('./location/list');
-        await locationListPage.searchByLocationNameField.fill(
-          mainLocation.name
-        );
-        await locationListPage.findButton.click();
-        await expect(
-          locationListPage.getLocationEditButton(mainLocation.name)
-        ).toBeVisible();
-        await locationListPage.getLocationEditButton(mainLocation.name).click();
-        await createLocationPage.binLocationTab.click();
-        await createLocationPage.binLocationTabSection.isLoaded();
-        await createLocationPage.binLocationTabSection.addBinLocationButton.click();
-        await createLocationPage.binLocationTabSection.addBinLocationDialog.binLocationNameField.fill(
-          binLocationName
-        );
-        await createLocationPage.binLocationTabSection.addBinLocationDialog.saveButton.click();
-        await createLocationPage.binLocationTab.click();
-        await createLocationPage.binLocationTabSection.searchField.fill(
-          binLocationName
-        );
-        await createLocationPage.binLocationTabSection.searchField.press(
-          'Enter'
-        );
-        await createLocationPage.binLocationTabSection.isLoaded();
-        await createLocationPage.binLocationTabSection.editBinButton.click();
-        await createLocationPage.locationConfigurationTab.click();
-        await createLocationPage.locationConfigurationTabSection.useDefaultSettingsCheckbox.uncheck();
-        await createLocationPage.locationConfigurationTabSection
-          .removeSupportedActivitiesButton('Putaway stock')
-          .click();
-        await createLocationPage.locationConfigurationTabSection
-          .removeSupportedActivitiesButton('Pick stock')
-          .click();
-        await createLocationPage.locationConfigurationTabSection.supportedActivitiesSelect.click();
-        await createLocationPage.locationConfigurationTabSection
-          .getSupportedActivitiesOption('Hold stock')
-          .click();
-        await createLocationPage.locationConfigurationTabSection.saveButton.click();
+        await BinLocationUtils.createHoldBin({
+          mainLocationService,
+          locationListPage,
+          createLocationPage,
+          page,
+          holdBinLocationName,
+        });
       });
     }
   );
@@ -92,7 +60,6 @@ test.describe('Receive item into hold bin', () => {
       mainLocationService,
       createLocationPage,
     }) => {
-      const mainLocation = await mainLocationService.getLocation();
       const receivingBin =
         AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
@@ -100,29 +67,14 @@ test.describe('Receive item into hold bin', () => {
       await stockMovementShowPage.rollbackButton.click();
       await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
 
-      await test.step('Deactitave created bin location', async () => {
-        await page.goto('./location/list');
-        await locationListPage.searchByLocationNameField.fill(
-          mainLocation.name
-        );
-        await locationListPage.findButton.click();
-        await expect(
-          locationListPage.getLocationEditButton(mainLocation.name)
-        ).toBeVisible();
-        await locationListPage.getLocationEditButton(mainLocation.name).click();
-        await createLocationPage.binLocationTab.click();
-        await createLocationPage.binLocationTabSection.isLoaded();
-        await createLocationPage.binLocationTabSection.searchField.fill(
-          binLocationName
-        );
-        await createLocationPage.binLocationTabSection.searchField.press(
-          'Enter'
-        );
-        await createLocationPage.binLocationTabSection.isLoaded();
-        await createLocationPage.binLocationTabSection.editBinButton.click();
-        await createLocationPage.locationConfigurationTab.click();
-        await createLocationPage.locationConfigurationTabSection.activeCheckbox.uncheck();
-        await createLocationPage.locationConfigurationTabSection.saveButton.click();
+      await test.step('Deactivate created bin location', async () => {
+        await BinLocationUtils.deactivateCreatedBin({
+          mainLocationService,
+          locationListPage,
+          createLocationPage,
+          page,
+          binLocationName: holdBinLocationName,
+        });
       });
 
       await BinLocationUtils.deactivateReceivingBin({
@@ -155,7 +107,7 @@ test.describe('Receive item into hold bin', () => {
       await receivingPage.receivingStep.table.row(1).binLocationSelect.click();
       await receivingPage.receivingStep.table
         .row(1)
-        .getBinLocation(binLocationName)
+        .getBinLocation(holdBinLocationName)
         .click();
       await receivingPage.receivingStep.table
         .row(1)
@@ -176,7 +128,7 @@ test.describe('Receive item into hold bin', () => {
     await test.step('Assert edited bin on Packing list', async () => {
       await expect(
         stockMovementShowPage.packingListTable.row(1).binLocation
-      ).toHaveText(binLocationName);
+      ).toHaveText(holdBinLocationName);
     });
 
     await test.step('Go to product page and assert bin location', async () => {
@@ -185,7 +137,7 @@ test.describe('Receive item into hold bin', () => {
       await productShowPage.inStockTabSection.isLoaded();
       await expect(
         productShowPage.inStockTabSection.row(2).binLocation
-      ).toHaveText(binLocationName);
+      ).toHaveText(holdBinLocationName);
       await expect(
         productShowPage.inStockTabSection.row(2).row
       ).toHaveAttribute('title', 'This bin has been restricted');
