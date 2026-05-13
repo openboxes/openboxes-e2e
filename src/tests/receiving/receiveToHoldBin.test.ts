@@ -67,7 +67,7 @@ test.describe('Receive item into hold bin', () => {
       await stockMovementShowPage.rollbackButton.click();
       await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
 
-      await test.step('Deactitave created bin location', async () => {
+      await test.step('Deactivate created bin location', async () => {
         await BinLocationUtils.deactivateCreatedBin({
           mainLocationService,
           locationListPage,
