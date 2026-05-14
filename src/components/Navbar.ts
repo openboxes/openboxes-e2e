@@ -27,6 +27,13 @@ class Navbar extends BasePageModel {
     return this.navbar.getByRole('menuitem', { name: name, exact: true });
   }
 
+  getSectionTitle(name: string) {
+    return this.navbar
+      .locator('.subsection-section-title')
+      .filter({ hasText: name })
+      .filter({ visible: true });
+  }
+
   get editProfileButton() {
     return this.navbar.getByRole('menuitem', { name: 'Edit Profile' });
   }
@@ -98,6 +105,10 @@ class Navbar extends BasePageModel {
 
   get transactions() {
     return this.getNavItem('Transactions');
+  }
+
+  get inventory() {
+    return this.getNavItem('Inventory');
   }
 }
 

@@ -301,5 +301,19 @@ test.describe('Assert putaway details page', () => {
         'Completed'
       );
     });
+
+    await test.step('Download putaway pdf from putaway list', async () => {
+      const row = putawayListPage.table.row(1);
+      await row.actionsButton.click();
+      await row.generatePdf.click();
+      const generatePutawayPdfFileName =
+        'Putaway ' + `${putawayOrderIdentifier}`.toString().trim() + '.pdf';
+      await putawayDetailsPage.generatePutawayListButton.click();
+      const downloadPromise = page.waitForEvent('download');
+      const download = await downloadPromise;
+      await expect(download.suggestedFilename()).toBe(
+        generatePutawayPdfFileName
+      );
+    });
   });
 });

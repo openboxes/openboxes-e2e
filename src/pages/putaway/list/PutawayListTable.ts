@@ -52,5 +52,9 @@ class Row extends BasePageModel {
   get lineItems() {
     return this.row.getByTestId('line-items');
   }
+
+  get generatePdf() {
+    return this.row.getByTestId('generate-pdf-item');
+  }
 }
 export default PutawayListTable;
