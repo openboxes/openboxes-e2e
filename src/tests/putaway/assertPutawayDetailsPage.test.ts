@@ -304,6 +304,20 @@ test.describe('Assert putaway details page', () => {
       );
     });
 
+    await test.step('Download putaway pdf from putaway list', async () => {
+      const row = putawayListPage.table.row(1);
+      await row.actionsButton.click();
+      await row.generatePdf.click();
+      const generatePutawayPdfFileName =
+        'Putaway ' + `${putawayOrderIdentifier}`.toString().trim() + '.pdf';
+      await putawayDetailsPage.generatePutawayListButton.click();
+      const downloadPromise = page.waitForEvent('download');
+      const download = await downloadPromise;
+      await expect(download.suggestedFilename()).toBe(
+        generatePutawayPdfFileName
+      );
+    });
+
     await test.step('Filter by completed status and ordered by on putaway list page', async () => {
       await putawayListPage.clearFilteringButton.click();
       await putawayListPage.statusFilter.click();

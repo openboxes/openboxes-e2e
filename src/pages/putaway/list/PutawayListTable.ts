@@ -53,6 +53,10 @@ class Row extends BasePageModel {
     return this.row.getByTestId('line-items');
   }
 
+  get generatePdf() {
+    return this.row.getByTestId('generate-pdf-item');
+  }
+
   get orderedBy() {
     return this.row.getByTestId('ordered-by');
   }
