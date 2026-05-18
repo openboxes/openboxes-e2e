@@ -2,6 +2,7 @@ import { expect, Page } from '@playwright/test';
 
 import BasePageModel from '@/pages/BasePageModel';
 
+import AuditingTable from './components/AuditingTable';
 import ItemDetailsTable from './components/ItemDetailsTable';
 import ItemStatusTable from './components/ItemStatusTable';
 import OrderHeaderTable from './components/OrderHeaderTable';
@@ -12,6 +13,7 @@ class PutawayDetailsPage extends BasePageModel {
   orderHeaderTable: OrderHeaderTable;
   itemStatusTable: ItemStatusTable;
   itemDetailsTable: ItemDetailsTable;
+  auditingTable: AuditingTable;
 
   constructor(page: Page) {
     super(page);
@@ -19,6 +21,7 @@ class PutawayDetailsPage extends BasePageModel {
     this.orderHeaderTable = new OrderHeaderTable(page);
     this.itemStatusTable = new ItemStatusTable(page);
     this.itemDetailsTable = new ItemDetailsTable(page);
+    this.auditingTable = new AuditingTable(page);
   }
 
   async isLoaded() {
