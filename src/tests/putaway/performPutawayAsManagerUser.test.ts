@@ -225,4 +225,135 @@ test.describe('Perform putaway as manager user', () => {
       await managerUserPage.close();
     });
   });
+
+  test('Create pening putaway as manager user and use filters on list page', async ({
+    managerUserContext,
+    internalLocationService,
+    putawayListPage,
+    managerUserService,
+    putawayDetailsPage,
+    mainUserService,
+    createPutawayPage,
+  }) => {
+    const internalLocation = await internalLocationService.getLocation();
+    const managerUserPage = await managerUserContext.newPage();
+    const navbar = new Navbar(managerUserPage);
+    const stockMovementShowPage = new StockMovementShowPage(managerUserPage);
+    const createPutawayPageManagerUser = new CreatePutawayPage(managerUserPage);
+    const managerUser = await managerUserService.getUser();
+    const mainUser = await mainUserService.getUser();
+
+    await test.step('Go to create putaway page', async () => {
+      await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
+      await stockMovementShowPage.isLoaded();
+      await RefreshCachesUtils.refreshCaches({
+        navbar,
+      });
+      await navbar.inbound.click();
+      await navbar.createPutaway.click();
+      await createPutawayPageManagerUser.isLoaded();
+    });
+
+    await test.step('Start putaway', async () => {
+      await createPutawayPageManagerUser.table.row(0).checkbox.click();
+      await createPutawayPageManagerUser.startPutawayButton.click();
+      await createPutawayPageManagerUser.startStep.isLoaded();
+    });
+
+    await test.step('Select bins to putaway and save pending putaway', async () => {
+      await createPutawayPageManagerUser.startStep.table
+        .row(1)
+        .putawayBinSelect.click();
+      await createPutawayPageManagerUser.startStep.table
+        .row(1)
+        .getPutawayBin(internalLocation.name)
+        .click();
+      await createPutawayPageManagerUser.startStep.table
+        .row(2)
+        .putawayBinSelect.click();
+      await createPutawayPageManagerUser.startStep.table
+        .row(2)
+        .getPutawayBin(internalLocation.name)
+        .click();
+      await createPutawayPageManagerUser.startStep.saveButton.click();
+      await managerUserPage.close();
+    });
+
+    await test.step('Go to list putaway page as main user and use filters', async () => {
+      await putawayListPage.goToPage();
+      await putawayListPage.isLoaded();
+      await expect(putawayListPage.table.row(1).statusTag).toHaveText(
+        'Pending'
+      );
+      const putawayOrderIdentifier = await putawayListPage.table
+        .row(1)
+        .orderNumber.textContent();
+      await putawayListPage.searchField.fill(
+        `${putawayOrderIdentifier}`.toString().trim()
+      );
+      await putawayListPage.orderedByFilter.click();
+      await putawayListPage.orderedByTextInput.fill(managerUser.name);
+      await putawayListPage.getOrderedBy(managerUser.name);
+      await putawayListPage.searchButton.click();
+      await expect(putawayListPage.table.row(1).orderedBy).toContainText(
+        managerUser.name
+      );
+    });
+
+    await test.step('Clear applied filters and filter by created by ans status', async () => {
+      const putawayOrderIdentifier = await putawayListPage.table
+        .row(1)
+        .orderNumber.textContent();
+      await putawayListPage.isLoaded();
+      await putawayListPage.clearFilteringButton.click();
+      await putawayListPage.statusFilter.click();
+      await putawayListPage.getStatus('Pending');
+
+      await putawayListPage.createdByFilter.click();
+      await putawayListPage.createdByTextInput.fill(managerUser.name);
+      await putawayListPage.getCreatedBy(managerUser.name);
+      await putawayListPage.searchButton.click();
+      await expect(putawayListPage.table.row(1).orderNumber).toContainText(
+        `${putawayOrderIdentifier}`
+      );
+      await expect(putawayListPage.table.row(1).statusTag).toHaveText(
+        'Pending'
+      );
+    });
+
+    await test.step('Go to putaway details page', async () => {
+      await putawayListPage.table.row(1).actionsButton.click();
+      await putawayListPage.table.row(1).viewOrderDetails.click();
+      await putawayDetailsPage.isLoaded();
+    });
+
+    await test.step('Assert data in auditing table', async () => {
+      await putawayDetailsPage.isLoaded();
+      await expect(
+        putawayDetailsPage.auditingTable.orderedByValue
+      ).toContainText(managerUser.name);
+      await expect(
+        putawayDetailsPage.auditingTable.createdByValue
+      ).toContainText(managerUser.name);
+    });
+
+    await test.step('Edit and complete putaway', async () => {
+      await putawayDetailsPage.editButton.click();
+      await createPutawayPage.startStep.isLoaded();
+      await createPutawayPage.startStep.nextButton.click();
+      await createPutawayPage.completeStep.isLoaded();
+      await createPutawayPage.completeStep.completePutawayButton.click();
+    });
+
+    await test.step('Assert completing putaway', async () => {
+      await putawayDetailsPage.isLoaded();
+      await expect(putawayDetailsPage.statusTag).toHaveText('Completed');
+      await expect(
+        putawayDetailsPage.auditingTable.completedByValue
+      ).toContainText(mainUser.name);
+      await expect(
+        putawayDetailsPage.auditingTable.updateddByValue
+      ).toContainText(mainUser.name);
+    });
+  });
 });

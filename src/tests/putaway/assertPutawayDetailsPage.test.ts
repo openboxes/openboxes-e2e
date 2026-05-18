@@ -91,11 +91,13 @@ test.describe('Assert putaway details page', () => {
     putawayListPage,
     page,
     mainLocationService,
+    mainUserService,
   }) => {
     const internalLocation = await internalLocationService.getLocation();
     const receivingBin =
       AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
     const currentLocation = await mainLocationService.getLocation();
+    const mainUser = await mainUserService.getUser();
 
     await test.step('Go to stock movement show page and assert received status', async () => {
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
@@ -299,6 +301,28 @@ test.describe('Assert putaway details page', () => {
       await putawayListPage.searchButton.click();
       await expect(putawayListPage.table.row(1).statusTag).toHaveText(
         'Completed'
+      );
+    });
+
+    await test.step('Filter by completed status and ordered by on putaway list page', async () => {
+      await putawayListPage.clearFilteringButton.click();
+      await putawayListPage.statusFilter.click();
+      await putawayListPage.getStatus('Completed');
+      await putawayListPage.orderedByFilter.click();
+      await putawayListPage.orderedByTextInput.fill(mainUser.name);
+      await putawayListPage.getOrderedBy(mainUser.name);
+      await putawayListPage.searchButton.click();
+    });
+
+    await test.step('Assert filtering not reset when go through pages of results', async () => {
+      await expect(putawayListPage.statusFilter).toContainText('Completed');
+      await expect(putawayListPage.orderedByFilter).toContainText(
+        mainUser.name
+      );
+      await putawayListPage.nextButton.click();
+      await expect(putawayListPage.statusFilter).toContainText('Completed');
+      await expect(putawayListPage.orderedByFilter).toContainText(
+        mainUser.name
       );
     });
   });
