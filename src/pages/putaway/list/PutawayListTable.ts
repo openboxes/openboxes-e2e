@@ -52,5 +52,9 @@ class Row extends BasePageModel {
   get lineItems() {
     return this.row.getByTestId('line-items');
   }
+
+  get orderedBy() {
+    return this.row.getByTestId('ordered-by');
+  }
 }
 export default PutawayListTable;
