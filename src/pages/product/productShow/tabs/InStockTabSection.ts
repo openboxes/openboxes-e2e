@@ -1,14 +1,17 @@
 import { expect, Locator, Page } from '@playwright/test';
 
 import BasePageModel from '@/pages/BasePageModel';
+import EditItemDialog from '@/pages/product/productShow/sections/components/EditItemDialog';
 import StockTransferDialog from '@/pages/product/productShow/sections/components/StockTransferDialog';
 
 class InStockTabSection extends BasePageModel {
   stockTransferDialog: StockTransferDialog;
+  editItemDialog: EditItemDialog;
 
   constructor(page: Page) {
     super(page);
     this.stockTransferDialog = new StockTransferDialog(page);
+    this.editItemDialog = new EditItemDialog(page);
   }
 
   async isLoaded() {
@@ -31,6 +34,10 @@ class InStockTabSection extends BasePageModel {
 
   get stockTransferButton() {
     return this.page.getByRole('link', { name: 'Transfer Stock' });
+  }
+
+  get editItem() {
+    return this.page.getByRole('link', { name: 'Edit item' });
   }
 }
 
