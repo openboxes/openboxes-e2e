@@ -1,9 +1,8 @@
 import { expect, Locator, Page } from '@playwright/test';
 
 import BasePageModel from '@/pages/BasePageModel';
+import EditItemDialog from '@/pages/product/productShow/sections/components/EditItemDialog';
 import StockTransferDialog from '@/pages/product/productShow/sections/components/StockTransferDialog';
-
-import EditItemDialog from '../sections/components/EditItemDialog';
 
 class InStockTabSection extends BasePageModel {
   stockTransferDialog: StockTransferDialog;

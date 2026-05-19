@@ -186,11 +186,11 @@ test.describe('Putaway item with empty lot', () => {
       await createPutawayPage.completeStep.completePutawayButton.click();
     });
 
-    const ifConfirmDialogIsVisible =
+    const ifConfirmDialogVisible =
       await createPutawayPage.completeStep.confirmPutawayDialog.isVisible();
 
     // eslint-disable-next-line playwright/no-conditional-in-test
-    if (ifConfirmDialogIsVisible) {
+    if (ifConfirmDialogVisible) {
       await test.step('Accept dialog if visible', async () => {
         await createPutawayPage.completeStep.yesButtonOnConfirmPutawayDialog
           .last()
