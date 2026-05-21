@@ -78,6 +78,7 @@ test.describe('Apply sorting by alphabetical order and remain inputs', () => {
     receivingPage,
     productService,
     createInboundPage,
+    page,
   }) => {
     await test.step('Go to stock movement show page', async () => {
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
@@ -96,9 +97,10 @@ test.describe('Apply sorting by alphabetical order and remain inputs', () => {
       await createInboundPage.sendStep.isLoaded();
       await createInboundPage.previousButton.click();
       await createInboundPage.addItemsStep.isLoaded();
-      await createInboundPage.addItemsStep.reloadButton.click();
-      await createInboundPage.addItemsStep.confirmReloadPopup.yesButton.click();
+      await page.reload();
+      await createInboundPage.previousButton.click();
       await createInboundPage.addItemsStep.isLoaded();
+      await createInboundPage.addItemsStep.addLineButton.focus();
       await createInboundPage.addItemsStep.addLineButton.click();
       productService.setProduct('5');
       const item = await productService.getProduct();
@@ -111,6 +113,7 @@ test.describe('Apply sorting by alphabetical order and remain inputs', () => {
       await createInboundPage.nextButton.click();
       await createInboundPage.sendStep.isLoaded();
       await expect(createInboundPage.sendStep.sendShipmentButton).toBeVisible();
+      await createInboundPage.sendStep.sendShipmentButton.focus();
       await createInboundPage.sendStep.sendShipmentButton.click();
       await stockMovementShowPage.waitForUrl();
       await stockMovementShowPage.isLoaded();
