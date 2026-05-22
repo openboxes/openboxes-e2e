@@ -1,4 +1,5 @@
 import BaseServiceModel from '@/api/BaseServiceModel';
+import { INVENTORY_IMPORT } from '@/consts/apiUrls';
 import { jsonToCsv } from '@/utils/ServiceUtils';
 
 class InventoryService extends BaseServiceModel {
@@ -6,7 +7,7 @@ class InventoryService extends BaseServiceModel {
     try {
       const csvContent = jsonToCsv(data);
 
-      const response = await this.request.post(`./api/facilities/${facilityId}/inventories/import`, {
+      const response = await this.request.post(INVENTORY_IMPORT(facilityId), {
         data: csvContent,
         headers: { 'Content-Type': 'text/csv' },
       });

@@ -1,5 +1,6 @@
 import AppConfig from '@/config/AppConfig';
 import { ShipmentType } from '@/constants/ShipmentType';
+import { LOCATION_URL } from '@/consts/applicationUrls';
 import { expect, test } from '@/fixtures/fixtures';
 import CreateLocationPage from '@/pages/location/createLocation/CreateLocationPage';
 import LocationListPage from '@/pages/location/LocationListPage';
@@ -86,7 +87,7 @@ test.describe('Assert creation of receiving bin', () => {
 
     await test.step('Go to Bin location tab of edit location page', async () => {
       const mainLocation = await mainLocationService.getLocation();
-      await page.goto('./location/list');
+      await page.goto(LOCATION_URL.list());
       await locationListPage.searchByLocationNameField.fill(mainLocation.name);
       await locationListPage.findButton.click();
       await expect(
@@ -125,7 +126,7 @@ test.describe('Assert creation of receiving bin', () => {
       const newLocationListPage = new LocationListPage(newPage);
       const newCreateLocationPage = new CreateLocationPage(newPage);
       const mainLocation = await mainLocationService.getLocation();
-      await newPage.goto('./location/list');
+      await newPage.goto(LOCATION_URL.list());
       await newLocationListPage.searchByLocationNameField.fill(
         mainLocation.name
       );

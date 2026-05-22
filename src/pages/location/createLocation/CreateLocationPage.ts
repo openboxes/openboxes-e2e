@@ -1,5 +1,6 @@
 import { Page } from '@playwright/test';
 
+import { LOCATION_URL } from '@/consts/applicationUrls';
 import { expect } from '@/fixtures/fixtures';
 import BasePageModel from '@/pages/BasePageModel';
 import BinLocationsTabSection from '@/pages/location/createLocation/tabs/BinLocationsTabSection';
@@ -24,7 +25,7 @@ class CreateLocationPage extends BasePageModel {
   }
 
   async gotToPage() {
-    await this.page.goto('./location/edit');
+    await this.page.goto(LOCATION_URL.edit());
   }
 
   async isLoaded() {

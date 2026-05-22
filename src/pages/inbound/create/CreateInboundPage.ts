@@ -1,6 +1,7 @@
 import { expect, Page } from '@playwright/test';
 
 import WizzardSteps from '@/components/WizzardSteps';
+import { STOCK_MOVEMENT_URL } from '@/consts/applicationUrls';
 import BasePageModel from '@/pages/BasePageModel';
 import AddItemsStep from '@/pages/inbound/create/steps/AddItemsStep';
 import CreateStep from '@/pages/inbound/create/steps/CreateStep';
@@ -26,10 +27,10 @@ class CreateInboundPage extends BasePageModel {
 
   async goToPage(id?: string) {
     if (id) {
-      await this.page.goto(`./stockMovement/createInbound/${id}`);
+      await this.page.goto(STOCK_MOVEMENT_URL.editInbound(id));
       return;
     }
-    await this.page.goto('./stockMovement/createInbound?direction=INBOUND');
+    await this.page.goto(STOCK_MOVEMENT_URL.createInbound());
   }
 
   getId() {

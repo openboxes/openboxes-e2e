@@ -1,3 +1,4 @@
+import { USER_URL } from '@/consts/applicationUrls';
 import { expect } from '@/fixtures/fixtures';
 import BasePageModel from '@/pages/BasePageModel';
 
@@ -7,7 +8,7 @@ class UserListPage extends BasePageModel {
   }
 
   async goToPage() {
-    await this.page.goto('./user/list');
+    await this.page.goto(USER_URL.list());
   }
 
   get createUserButton() {

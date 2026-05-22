@@ -1,5 +1,6 @@
 import { Page } from '@playwright/test';
 
+import { PRODUCT_URL } from '@/consts/applicationUrls';
 import BasePageModel from '@/pages/BasePageModel';
 import InventoryLevelsTabSection from '@/pages/product/productEdit/tabs/InventoryLevelsTabSection';
 
@@ -12,7 +13,7 @@ class ProductEditPage extends BasePageModel {
   }
 
   async goToPage(id: string) {
-    await this.page.goto(`./product/edit/${id}`);
+    await this.page.goto(PRODUCT_URL.edit(id));
   }
 
   get detailskTab() {

@@ -1,11 +1,16 @@
 import BaseServiceModel from '@/api/BaseServiceModel';
+import {
+  PRODUCT_BY_ID,
+  PRODUCT_DEMAND,
+  PRODUCT_IMPORT,
+} from '@/consts/apiUrls';
 import { ApiResponse, ProductDemandResponse, ProductResponse } from '@/types';
 import { jsonToCsv, parseRequestToJSON } from '@/utils/ServiceUtils';
 
 class ProductService extends BaseServiceModel {
   async getDemand(id: string): Promise<ApiResponse<ProductDemandResponse>> {
     try {
-      const apiResponse = await this.request.get(`./api/products/${id}/demand`);
+      const apiResponse = await this.request.get(PRODUCT_DEMAND(id));
 
       return await parseRequestToJSON(apiResponse);
     } catch (error) {
@@ -15,7 +20,7 @@ class ProductService extends BaseServiceModel {
 
   async get(id: string): Promise<ApiResponse<ProductResponse>> {
     try {
-      const apiResponse = await this.request.get(`./api/products/${id}`);
+      const apiResponse = await this.request.get(PRODUCT_BY_ID(id));
 
       return await parseRequestToJSON(apiResponse);
     } catch (error) {
@@ -28,7 +33,7 @@ class ProductService extends BaseServiceModel {
       const csvContent = jsonToCsv(data);
 
       const apiResponse = await this.request.post(
-        './api/products/import',
+        PRODUCT_IMPORT,
         {
         data: csvContent,
         headers: { 'Content-Type': 'text/csv' }

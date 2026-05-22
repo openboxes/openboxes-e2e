@@ -3,6 +3,13 @@ import { APIRequestContext } from '@playwright/test';
 import BaseServiceModel from '@/api/BaseServiceModel';
 import { ShipmentType } from '@/constants/ShipmentType';
 import {
+  STOCK_MOVEMENT_API,
+  STOCK_MOVEMENT_BY_ID,
+  STOCK_MOVEMENT_STATUS,
+  STOCK_MOVEMENT_UPDATE_ITEMS,
+  STOCK_MOVEMENT_UPDATE_SHIPMENT,
+} from '@/consts/apiUrls';
+import {
   ApiResponse,
   CreateInboundPayload,
   CreateStockMovementPayload,
@@ -33,7 +40,7 @@ class StockMovementService extends BaseServiceModel {
     payload: CreateStockMovementPayload
   ): Promise<ApiResponse<StockMovementResponse>> {
     try {
-      const apiResponse = await this.request.post('./api/stockMovements', {
+      const apiResponse = await this.request.post(STOCK_MOVEMENT_API, {
         data: payload,
       });
 
@@ -45,7 +52,7 @@ class StockMovementService extends BaseServiceModel {
 
   async deleteStockMovement(id: string) {
     try {
-      await this.request.delete(`./api/stockMovements/${id}`);
+      await this.request.delete(STOCK_MOVEMENT_BY_ID(id));
     } catch (error) {
       throw new Error('Problem deleting stock movement');
     }
@@ -55,7 +62,7 @@ class StockMovementService extends BaseServiceModel {
     id: string
   ): Promise<ApiResponse<StockMovementResponse>> {
     try {
-      const apiResponse = await this.request.get(`./api/stockMovements/${id}`);
+      const apiResponse = await this.request.get(STOCK_MOVEMENT_BY_ID(id));
       return await parseRequestToJSON(apiResponse);
     } catch (error) {
       throw new Error('Problem deleting stock movement');
@@ -68,7 +75,7 @@ class StockMovementService extends BaseServiceModel {
   ): Promise<ApiResponse<unknown>> {
     try {
       const apiResponse = await this.request.post(
-        `./api/stockMovements/${id}/updateItems`,
+        STOCK_MOVEMENT_UPDATE_ITEMS(id),
         {
           data: payload,
         }
@@ -82,7 +89,7 @@ class StockMovementService extends BaseServiceModel {
 
   async updateShipment(id: string, payload: UpdateStockMovementPayload) {
     try {
-      await this.request.post(`./api/stockMovements/${id}/updateShipment`, {
+      await this.request.post(STOCK_MOVEMENT_UPDATE_SHIPMENT(id), {
         data: payload,
       });
     } catch (error) {
@@ -112,7 +119,7 @@ class StockMovementService extends BaseServiceModel {
     payload: UpdateStockMovementStatusPayload
   ) {
     try {
-      await this.request.post(`./api/stockMovements/${id}/status`, {
+      await this.request.post(STOCK_MOVEMENT_STATUS(id), {
         data: payload,
       });
     } catch (error) {

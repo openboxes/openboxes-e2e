@@ -1,3 +1,4 @@
+import { PERSON_URL } from '@/consts/applicationUrls';
 import { expect, test } from '@/fixtures/fixtures';
 import { AddItemsTableRow, LocationResponse } from '@/types';
 import { formatDate, getDateByOffset, getToday } from '@/utils/DateUtils';
@@ -42,7 +43,7 @@ test.describe('Select person in requested by', () => {
       ];
 
       await test.step('Create person', async () => {
-        await page.goto('./person/list');
+        await page.goto(PERSON_URL.list());
         await personsListPage.isLoaded();
         await personsListPage.addPersonButton.click();
         await createPersonPage.firstNameField.fill(personFirstName);
@@ -63,7 +64,7 @@ test.describe('Select person in requested by', () => {
     }) => {
       await stockMovementShowPage.rollbackButton.click();
       await stockMovementService.deleteStockMovement(INBOUND_ID);
-      await page.goto('./person/list');
+      await page.goto(PERSON_URL.list());
       await personsListPage.isLoaded();
       await personsListPage.searchField.fill(personFirstName);
       await personsListPage.findButton.click();

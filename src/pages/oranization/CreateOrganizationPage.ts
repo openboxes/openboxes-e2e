@@ -1,3 +1,4 @@
+import { ORGANIZATION_URL } from '@/consts/applicationUrls';
 import { expect } from '@/fixtures/fixtures';
 import BasePageModel from '@/pages/BasePageModel';
 
@@ -7,7 +8,7 @@ class CreateOrganizationPage extends BasePageModel {
   }
 
   async goToPage() {
-    await this.page.goto('./organization/create');
+    await this.page.goto(ORGANIZATION_URL.create());
   }
 
   get organizationNameField() {

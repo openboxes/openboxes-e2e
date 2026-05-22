@@ -1,5 +1,6 @@
 import { expect, Page } from '@playwright/test';
 
+import { STOCK_MOVEMENT_URL } from '@/consts/applicationUrls';
 import BasePageModel from '@/pages/BasePageModel';
 import AuditingTable from '@/pages/stockMovementShow/components/AuditingTable';
 import PackingListTable from '@/pages/stockMovementShow/components/PackingListTable';
@@ -25,11 +26,11 @@ class StockMovementShowPage extends BasePageModel {
   }
 
   async goToPage(id: string) {
-    await this.page.goto(`./stockMovement/show/${id}`);
+    await this.page.goto(STOCK_MOVEMENT_URL.show(id));
   }
 
   async waitForUrl() {
-    await this.page.waitForURL('**/stockMovement/show/**');
+    await this.page.waitForURL(STOCK_MOVEMENT_URL.showPattern);
   }
 
   async isLoaded() {

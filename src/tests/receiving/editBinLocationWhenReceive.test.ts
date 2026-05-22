@@ -1,5 +1,6 @@
 import AppConfig from '@/config/AppConfig';
 import { ShipmentType } from '@/constants/ShipmentType';
+import { LOCATION_URL } from '@/consts/applicationUrls';
 import { expect, test } from '@/fixtures/fixtures';
 import { StockMovementResponse } from '@/types';
 import BinLocationUtils from '@/utils/BinLocationUtils';
@@ -46,7 +47,7 @@ test.describe('Edit Bin Location when receive inbound stock movement', () => {
       });
 
       await test.step('Create bin location for location', async () => {
-        await page.goto('./location/list');
+        await page.goto(LOCATION_URL.list());
         await locationListPage.searchByLocationNameField.fill(
           mainLocation.name
         );
@@ -91,7 +92,7 @@ test.describe('Edit Bin Location when receive inbound stock movement', () => {
       await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
 
       await test.step('Deactivate created bin location', async () => {
-        await page.goto('./location/list');
+        await page.goto(LOCATION_URL.list());
         await locationListPage.searchByLocationNameField.fill(
           mainLocation.name
         );
@@ -222,7 +223,7 @@ test.describe('Edit Bin Location to bin with zone when receive inbound stock mov
       });
 
       await test.step('Create zone for location', async () => {
-        await page.goto('./location/list');
+        await page.goto(LOCATION_URL.list());
         await locationListPage.searchByLocationNameField.fill(
           mainLocation.name
         );
@@ -285,7 +286,7 @@ test.describe('Edit Bin Location to bin with zone when receive inbound stock mov
       await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
 
       await test.step('Deactivate created bin location', async () => {
-        await page.goto('./location/list');
+        await page.goto(LOCATION_URL.list());
         await locationListPage.searchByLocationNameField.fill(
           mainLocation.name
         );
@@ -442,7 +443,7 @@ test.describe('Edit Bin Location when receive for all lines', () => {
       });
 
       await test.step('Create bin location for location', async () => {
-        await page.goto('./location/list');
+        await page.goto(LOCATION_URL.list());
         await locationListPage.searchByLocationNameField.fill(
           mainLocation.name
         );
@@ -480,7 +481,7 @@ test.describe('Edit Bin Location when receive for all lines', () => {
       await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
 
       await test.step('Deactivate created bin location', async () => {
-        await page.goto('./location/list');
+        await page.goto(LOCATION_URL.list());
         await locationListPage.searchByLocationNameField.fill(
           mainLocation.name
         );

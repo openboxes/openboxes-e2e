@@ -1,6 +1,7 @@
 import Navbar from '@/components/Navbar';
 import AppConfig from '@/config/AppConfig';
 import { ShipmentType } from '@/constants/ShipmentType';
+import { DASHBOARD_URL } from '@/consts/applicationUrls';
 import { expect, test } from '@/fixtures/fixtures';
 import ProductShowPage from '@/pages/product/productShow/ProductShowPage';
 import { StockMovementResponse } from '@/types';
@@ -113,7 +114,7 @@ test.describe('Assert validation on qty removed from receiving bin', () => {
     const internalLocation = await internalLocationService.getLocation();
 
     await test.step('Edit transaction date of transfer in', async () => {
-      await page.goto('./dashboard');
+      await page.goto(DASHBOARD_URL.base);
       await navbar.configurationButton.click();
       await navbar.transactions.click();
       // eslint-disable-next-line playwright/no-networkidle

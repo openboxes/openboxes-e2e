@@ -1,5 +1,6 @@
 import { expect, Page } from '@playwright/test';
 
+import { ORDER_URL } from '@/consts/applicationUrls';
 import BasePageModel from '@/pages/BasePageModel';
 
 import PutawayListTable from './PutawayListTable';
@@ -14,9 +15,7 @@ class PutawayListPage extends BasePageModel {
   }
 
   async goToPage(status = 'PENDING') {
-    await this.page.goto(
-      './order/list?orderType=PUTAWAY_ORDER&status=' + `${status}`
-    );
+    await this.page.goto(ORDER_URL.putawayList(status));
   }
 
   async isLoaded() {
