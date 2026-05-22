@@ -1,4 +1,5 @@
 import AppConfig from '@/config/AppConfig';
+import { Product } from '@/constants/ProductCodes.generated';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
 import { StockMovementResponse } from '@/types';
@@ -24,8 +25,7 @@ test.describe('Change location on putaway create page and list pages', () => {
         originId: supplierLocation.id,
       });
 
-      productService.setProduct('5');
-      const product = await productService.getProduct();
+      const product = await productService.getProduct(Product.FIVE);
 
       await stockMovementService.addItemsToInboundStockMovement(
         STOCK_MOVEMENT.id,
@@ -90,8 +90,7 @@ test.describe('Change location on putaway create page and list pages', () => {
   }) => {
     const receivingBin =
       AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
-    productService.setProduct('5');
-    const product = await productService.getProduct();
+    const product = await productService.getProduct(Product.FIVE);
     const mainLocation = await mainLocationService.getLocation();
     const depotLocation = await depotLocationService.getLocation();
 

@@ -1,3 +1,4 @@
+import { Product } from '@/constants/ProductCodes.generated';
 import { expect, test } from '@/fixtures/fixtures';
 import { AddItemsTableRow } from '@/types';
 import { getDateByOffset, getToday } from '@/utils/DateUtils';
@@ -12,8 +13,7 @@ test.beforeEach(
     createInboundPage,
     supplierLocationService,
   }) => {
-    productService.setProduct('1');
-    const PRODUCT_ONE = await productService.getProduct();
+    const PRODUCT_ONE = await productService.getProduct(Product.ONE);
     const USER = await mainUserService.getUser();
     const ORIGIN = await supplierLocationService.getLocation();
     const DESCRIPTION = 'some description';

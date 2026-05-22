@@ -1,4 +1,5 @@
 import AppConfig from '@/config/AppConfig';
+import { Product } from '@/constants/ProductCodes.generated';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
 import { StockMovementResponse } from '@/types';
@@ -24,10 +25,8 @@ test.describe('Delete items from putaway', () => {
         originId: supplierLocation.id,
       });
 
-      productService.setProduct('5');
-      const product = await productService.getProduct();
-      productService.setProduct('4');
-      const product2 = await productService.getProduct();
+      const product = await productService.getProduct(Product.FIVE);
+      const product2 = await productService.getProduct(Product.FOUR);
 
       await stockMovementService.addItemsToInboundStockMovement(
         STOCK_MOVEMENT.id,
@@ -99,10 +98,8 @@ test.describe('Delete items from putaway', () => {
   }) => {
     const receivingBin =
       AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
-    productService.setProduct('5');
-    const product = await productService.getProduct();
-    productService.setProduct('4');
-    const product2 = await productService.getProduct();
+    const product = await productService.getProduct(Product.FIVE);
+    const product2 = await productService.getProduct(Product.FOUR);
     const internalLocation = await internalLocationService.getLocation();
 
     await test.step('Go to create putaway page', async () => {

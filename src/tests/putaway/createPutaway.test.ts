@@ -1,4 +1,5 @@
 import AppConfig from '@/config/AppConfig';
+import { Product } from '@/constants/ProductCodes.generated';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
 import { StockMovementResponse } from '@/types';
@@ -24,8 +25,7 @@ test.describe('Putaway received inbound shipment', () => {
         originId: supplierLocation.id,
       });
 
-      productService.setProduct('5');
-      const product = await productService.getProduct();
+      const product = await productService.getProduct(Product.FIVE);
 
       await stockMovementService.addItemsToInboundStockMovement(
         STOCK_MOVEMENT.id,
@@ -134,8 +134,7 @@ test.describe('Putaway received inbound shipment', () => {
 
     await test.step('Assert putaway bin on stock card', async () => {
       await putawayDetailsPage.summaryTab.click();
-      productService.setProduct('5');
-      const product = await productService.getProduct();
+      const product = await productService.getProduct(Product.FIVE);
       await productShowPage.goToPage(product.id);
       await productShowPage.inStockTab.click();
       await productShowPage.inStockTabSection.isLoaded();

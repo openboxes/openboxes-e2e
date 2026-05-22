@@ -1,4 +1,5 @@
 import AppConfig from '@/config/AppConfig';
+import { Product } from '@/constants/ProductCodes.generated';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
 import { StockMovementResponse } from '@/types';
@@ -15,10 +16,8 @@ test.describe('Assert recipient field when receive', () => {
       mainUserService,
     }) => {
       const supplierLocation = await supplierLocationService.getLocation();
-      productService.setProduct('4');
-      const PRODUCT_FOUR = await productService.getProduct();
-      productService.setProduct('5');
-      const PRODUCT_FIVE = await productService.getProduct();
+      const PRODUCT_FOUR = await productService.getProduct(Product.FOUR);
+      const PRODUCT_FIVE = await productService.getProduct(Product.FIVE);
       const USER = await mainUserService.getUser();
 
       STOCK_MOVEMENT = await stockMovementService.createInbound({

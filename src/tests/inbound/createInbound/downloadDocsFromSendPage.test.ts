@@ -1,3 +1,4 @@
+import { Product } from '@/constants/ProductCodes.generated';
 import { expect, test } from '@/fixtures/fixtures';
 import { AddItemsTableRow, LocationResponse, User } from '@/types';
 import { getDateByOffset, getToday } from '@/utils/DateUtils';
@@ -16,8 +17,7 @@ test.describe('Download documents from inbound send page', () => {
 
   test.beforeEach(
     async ({ productService, mainUserService, supplierLocationService }) => {
-      productService.setProduct('1');
-      const PRODUCT_ONE = await productService.getProduct();
+      const PRODUCT_ONE = await productService.getProduct(Product.ONE);
       USER = await mainUserService.getUser();
       ORIGIN = await supplierLocationService.getLocation();
 

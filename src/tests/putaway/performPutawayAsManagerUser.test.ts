@@ -1,5 +1,6 @@
 import Navbar from '@/components/Navbar';
 import AppConfig from '@/config/AppConfig';
+import { Product } from '@/constants/ProductCodes.generated';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
 import CreatePutawayPage from '@/pages/putaway/CreatePutawayPage';
@@ -28,10 +29,8 @@ test.describe('Perform putaway as manager user', () => {
         originId: supplierLocation.id,
       });
 
-      productService.setProduct('3');
-      const product = await productService.getProduct();
-      productService.setProduct('4');
-      const product2 = await productService.getProduct();
+      const product = await productService.getProduct(Product.THREE);
+      const product2 = await productService.getProduct(Product.FOUR);
 
       await stockMovementService.addItemsToInboundStockMovement(
         STOCK_MOVEMENT.id,
@@ -99,10 +98,8 @@ test.describe('Perform putaway as manager user', () => {
   }) => {
     const receivingBin =
       AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
-    productService.setProduct('3');
-    const product = await productService.getProduct();
-    productService.setProduct('4');
-    const product2 = await productService.getProduct();
+    const product = await productService.getProduct(Product.THREE);
+    const product2 = await productService.getProduct(Product.FOUR);
     const internalLocation = await internalLocationService.getLocation();
 
     const managerUserPage = await managerUserContext.newPage();

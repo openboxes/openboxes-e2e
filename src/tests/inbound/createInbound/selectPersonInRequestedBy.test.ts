@@ -1,3 +1,4 @@
+import { Product } from '@/constants/ProductCodes.generated';
 import { PERSON_URL } from '@/consts/applicationUrls';
 import { expect, test } from '@/fixtures/fixtures';
 import { AddItemsTableRow, LocationResponse } from '@/types';
@@ -25,8 +26,7 @@ test.describe('Select person in requested by', () => {
       personsListPage,
       createPersonPage,
     }) => {
-      productService.setProduct('1');
-      const PRODUCT_ONE = await productService.getProduct();
+      const PRODUCT_ONE = await productService.getProduct(Product.ONE);
       ORIGIN = await supplierLocationService.getLocation();
 
       ROWS = [

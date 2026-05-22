@@ -1,4 +1,5 @@
 import AppConfig from '@/config/AppConfig';
+import { Product } from '@/constants/ProductCodes.generated';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
 import { StockMovementResponse } from '@/types';
@@ -18,8 +19,7 @@ test.describe('Receive inbound stock movement in location without pick and putaw
     }) => {
       const supplierLocation = await supplierLocationService.getLocation();
       const noPickAndPutawayStockDepot= await noPickAndPutawayStockDepotService.getLocation();
-      productService.setProduct('1');
-      const PRODUCT_ONE = await productService.getProduct();
+      const PRODUCT_ONE = await productService.getProduct(Product.ONE);
 
       STOCK_MOVEMENT = await stockMovementService.createInbound({
         originId: supplierLocation.id,

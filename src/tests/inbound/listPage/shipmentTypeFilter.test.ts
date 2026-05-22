@@ -1,3 +1,4 @@
+import { Product } from '@/constants/ProductCodes.generated';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
 import { StockMovementResponse } from '@/types';
@@ -20,8 +21,7 @@ test.describe('Shipment type filter', () => {
       stockMovementService,
     }) => {
       const supplierLocation = await supplierLocationService.getLocation();
-      productService.setProduct('1');
-      const product = await productService.getProduct();
+      const product = await productService.getProduct(Product.ONE);
 
       STOCK_MOVEMENT = await stockMovementService.createInbound({
         originId: supplierLocation.id,
@@ -112,8 +112,7 @@ test.describe('Multiple shipment types', () => {
       stockMovementService,
     }) => {
       const supplierLocation = await supplierLocationService.getLocation();
-      productService.setProduct('1');
-      const product = await productService.getProduct();
+      const product = await productService.getProduct(Product.ONE);
 
       STOCK_MOVEMENT_LAND = await stockMovementService.createInbound({
         originId: supplierLocation.id,

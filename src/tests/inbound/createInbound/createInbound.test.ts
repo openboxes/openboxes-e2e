@@ -1,3 +1,4 @@
+import { Product } from '@/constants/ProductCodes.generated';
 import { expect, test } from '@/fixtures/fixtures';
 import { AddItemsTableRow, LocationResponse, User } from '@/types';
 import { formatDate, getDateByOffset, getToday } from '@/utils/DateUtils';
@@ -23,10 +24,8 @@ test.describe('Create inbound stock movement', () => {
       supplierLocationService,
       mainLocationService,
     }) => {
-      productService.setProduct('1');
-      const PRODUCT_ONE = await productService.getProduct();
-      productService.setProduct('2');
-      const PRODUCT_TWO = await productService.getProduct();
+      const PRODUCT_ONE = await productService.getProduct(Product.ONE);
+      const PRODUCT_TWO = await productService.getProduct(Product.TWO);
       USER = await mainUserService.getUser();
       ORIGIN = await supplierLocationService.getLocation();
       CURRENT_LOCATION = await mainLocationService.getLocation();
@@ -198,10 +197,8 @@ test.describe('Values persistance between steps', () => {
       mainLocationService,
       supplierLocationService,
     }) => {
-      productService.setProduct('1');
-      const PRODUCT_ONE = await productService.getProduct();
-      productService.setProduct('2');
-      const PRODUCT_TWO = await productService.getProduct();
+      const PRODUCT_ONE = await productService.getProduct(Product.ONE);
+      const PRODUCT_TWO = await productService.getProduct(Product.TWO);
       USER = await mainUserService.getUser();
       CURRENT_LOCATION = await mainLocationService.getLocation();
       ORIGIN = await supplierLocationService.getLocation();

@@ -1,3 +1,4 @@
+import { Product } from '@/constants/ProductCodes.generated';
 import { ReceiptStatus } from '@/constants/ReceiptStatus';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
@@ -60,8 +61,7 @@ test.describe('Filter by "Shipped" status', () => {
         originId: supplierLocation.id,
       });
 
-      productService.setProduct('1');
-      const product = await productService.getProduct();
+      const product = await productService.getProduct(Product.ONE);
 
       await stockMovementService.addItemsToInboundStockMovement(
         STOCK_MOVEMENT.id,
@@ -126,8 +126,7 @@ test.describe('Filter by "Received" status', () => {
         originId: supplierLocation.id,
       });
 
-      productService.setProduct('1');
-      const product = await productService.getProduct();
+      const product = await productService.getProduct(Product.ONE);
 
       await stockMovementService.addItemsToInboundStockMovement(
         STOCK_MOVEMENT.id,
@@ -219,10 +218,8 @@ test.describe('Filter by "Receiving" status', () => {
         originId: supplierLocation.id,
       });
 
-      productService.setProduct('1');
-      const product = await productService.getProduct();
-      productService.setProduct('2');
-      const productTwo = await productService.getProduct();
+      const product = await productService.getProduct(Product.ONE);
+      const productTwo = await productService.getProduct(Product.TWO);
 
       await stockMovementService.addItemsToInboundStockMovement(
         STOCK_MOVEMENT.id,
@@ -320,8 +317,7 @@ test.describe('Filter by multiple statuses - "Pending" and "Shipped"', () => {
         originId: supplierLocation.id,
       });
 
-      productService.setProduct('1');
-      const product = await productService.getProduct();
+      const product = await productService.getProduct(Product.ONE);
 
       await stockMovementService.addItemsToInboundStockMovement(
         STOCK_MOVEMENT_TWO.id,

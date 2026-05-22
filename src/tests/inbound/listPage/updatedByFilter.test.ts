@@ -1,4 +1,5 @@
 import StockMovementService from '@/api/StockMovementService';
+import { Product } from '@/constants/ProductCodes.generated';
 import { expect, test } from '@/fixtures/fixtures';
 import { StockMovementResponse, User } from '@/types';
 
@@ -34,8 +35,7 @@ test.describe('Use "Updated By" filter', () => {
     inboundListPage,
     productService,
   }) => {
-    productService.setProduct('1');
-    const product = await productService.getProduct();
+    const product = await productService.getProduct(Product.ONE);
 
     await test.step('Go to inbound list page', async () => {
       await inboundListPage.goToPage();

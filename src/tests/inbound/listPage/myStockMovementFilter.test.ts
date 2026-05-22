@@ -1,3 +1,4 @@
+import { Product } from '@/constants/ProductCodes.generated';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
 import { StockMovementResponse, User } from '@/types';
@@ -15,10 +16,8 @@ test.describe('My Stock Movement filter', () => {
     }) => {
       const supplierLocation = await supplierLocationService.getLocation();
       USER = await mainUserService.getUser();
-      productService.setProduct('1');
-      const PRODUCT_ONE = await productService.getProduct();
-      productService.setProduct('2');
-      const PRODUCT_TWO = await productService.getProduct();
+      const PRODUCT_ONE = await productService.getProduct(Product.ONE);
+      const PRODUCT_TWO = await productService.getProduct(Product.TWO);
 
       INBOUND = await stockMovementService.createInbound({
         originId: supplierLocation.id,
