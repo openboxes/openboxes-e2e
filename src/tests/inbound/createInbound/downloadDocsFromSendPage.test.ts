@@ -42,8 +42,7 @@ test.describe('Download documents from inbound send page', () => {
     await stockMovementService.deleteStockMovement(INBOUND_ID);
   });
 
-  //add temporary skip until issue will be fixed on ob side
-  test.skip('Download documents from Send page of Inbound shipment', async ({
+  test('Download documents from Send page of Inbound shipment', async ({
     createInboundPage,
     page,
     stockMovementShowPage,
