@@ -2,7 +2,7 @@ import { APIRequestContext } from '@playwright/test';
 
 import ProductService from '@/api/ProductService';
 import AppConfig from '@/config/AppConfig';
-import { ProductCode } from '@/constants/ProductCodes.generated';
+import { ProductCode } from '@/generated/ProductCodes.generated';
 
 class ProductData {
   private productService: ProductService;

@@ -1,8 +1,8 @@
 import AppConfig from '@/config/AppConfig';
-import { Product } from '@/constants/ProductCodes.generated';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { LOCATION_URL } from '@/consts/applicationUrls';
 import { expect, test } from '@/fixtures/fixtures';
+import { Product } from '@/generated/ProductCodes.generated';
 import { StockMovementResponse } from '@/types';
 import BinLocationUtils from '@/utils/BinLocationUtils';
 import UniqueIdentifier from '@/utils/UniqueIdentifier';
@@ -81,7 +81,9 @@ test.describe('Edit Bin Location when receive inbound stock movement', () => {
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
 
       const hasRollbackLastReceipt =
-        await stockMovementShowPage.rollbackLastReceiptButton.isVisible().catch(() => false);
+        await stockMovementShowPage.rollbackLastReceiptButton
+          .isVisible()
+          .catch(() => false);
 
       if (hasRollbackLastReceipt) {
         await stockMovementShowPage.rollbackLastReceiptButton.click();

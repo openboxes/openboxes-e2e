@@ -1,6 +1,6 @@
 import StockMovementService from '@/api/StockMovementService';
-import { Product } from '@/constants/ProductCodes.generated';
 import { expect, test } from '@/fixtures/fixtures';
+import { Product } from '@/generated/ProductCodes.generated';
 import { StockMovementResponse, User } from '@/types';
 
 test.describe('Use "Updated By" filter', () => {

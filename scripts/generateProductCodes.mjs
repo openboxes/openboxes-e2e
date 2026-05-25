@@ -5,7 +5,19 @@ import { fileURLToPath } from 'node:url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const CSV_PATH = path.join(__dirname, '..', 'src', 'setup', 'dataImport', 'products.csv');
-const OUTPUT_PATH = path.join(__dirname, '..', 'src', 'constants', 'ProductCodes.generated.ts');
+const OUTPUT_PATH = path.join(__dirname, '..', 'src', 'generated', 'ProductCodes.generated.ts');
+
+// Stable keys for the generated objects, mapped to the name value
+// in products.csv that identifies the row. The productCode (value) is read
+// from the CSV at generation time, so codes can change without touching tests.
+const PRODUCT_KEYS = {
+  ONE: 'E2E-product-one',
+  TWO: 'E2E-product-two',
+  THREE: 'E2E-product-three',
+  FOUR: 'E2E-product-four',
+  FIVE: 'E2E-product-five',
+  SIX: 'E2E-product-six',
+};
 
 function parseCsv(csv) {
   const lines = csv.trim().split('\n');
@@ -31,37 +43,26 @@ function parseCsv(csv) {
     .filter((row) => row.code.length > 0);
 }
 
-function deriveKey({ code, name }) {
-  const lastSegment = name ? name.split('-').pop().trim() : '';
-  const sanitized = lastSegment.toUpperCase().replace(/[^A-Z0-9]/g, '_');
-  if (!sanitized) {
-    return `PRODUCT_${code}`;
-  }
-  return /^\d/.test(sanitized) ? `_${sanitized}` : sanitized;
-}
-
 function buildFileContent(rows) {
-  const seen = new Map();
-  for (const row of rows) {
-    const key = deriveKey(row);
-    if (seen.has(key)) {
+  const codeByName = new Map(rows.map((row) => [row.name, row.code]));
+
+  const entries = Object.entries(PRODUCT_KEYS).map(([key, name]) => {
+    const code = codeByName.get(name);
+    if (!code) {
       throw new Error(
-        `Duplicate Product key "${key}" derived for codes "${seen.get(key)}" and "${row.code}". ` +
-          'Update Name column in products.csv to make them distinct.'
+        `Product with Name "${name}" (key ${key}) not found in ${CSV_PATH}. ` +
+          'Update PRODUCT_KEYS in scripts/generateProductCodes.mjs or add the row to products.csv.'
       );
     }
-    seen.set(key, row.code);
-  }
-
-  const entries = [...seen.entries()]
-    .map(([key, code]) => `  ${key}: '${code}',`)
-    .join('\n');
+    return `  ${key}: '${code}',`;
+  });
 
   return `// AUTO-GENERATED FILE. DO NOT EDIT.
 // Regenerated from src/setup/dataImport/products.csv by scripts/generateProductCodes.mjs
+// Output: src/generated/ProductCodes.generated.ts
 
 export const Product = {
-${entries}
+${entries.join('\n')}
 } as const;
 
 export type ProductCode = (typeof Product)[keyof typeof Product];
@@ -76,7 +77,3 @@ if (rows.length === 0) {
 
 fs.mkdirSync(path.dirname(OUTPUT_PATH), { recursive: true });
 fs.writeFileSync(OUTPUT_PATH, buildFileContent(rows), 'utf8');
-
-console.log(
-  `Generated ${OUTPUT_PATH} with ${rows.length} products: ${rows.map((r) => r.code).join(', ')}`
-);

@@ -1,5 +1,5 @@
-import { Product } from '@/constants/ProductCodes.generated';
 import { expect, test } from '@/fixtures/fixtures';
+import { Product } from '@/generated/ProductCodes.generated';
 import { AddItemsTableRow, LocationResponse, User } from '@/types';
 import { getDateByOffset, getToday } from '@/utils/DateUtils';
 import UniqueIdentifier from '@/utils/UniqueIdentifier';

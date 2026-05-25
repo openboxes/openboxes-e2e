@@ -1,6 +1,6 @@
-import { Product } from '@/constants/ProductCodes.generated';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
+import { Product } from '@/generated/ProductCodes.generated';
 import { StockMovementResponse, User } from '@/types';
 
 test.describe('My Stock Movement filter', () => {

@@ -1,7 +1,7 @@
 import AppConfig from '@/config/AppConfig';
-import { Product } from '@/constants/ProductCodes.generated';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
+import { Product } from '@/generated/ProductCodes.generated';
 import { StockMovementResponse } from '@/types';
 import { getToday } from '@/utils/DateUtils';
 
@@ -18,7 +18,8 @@ test.describe('Receive inbound stock movement in location without pick and putaw
       noPickAndPutawayStockDepotService,
     }) => {
       const supplierLocation = await supplierLocationService.getLocation();
-      const noPickAndPutawayStockDepot= await noPickAndPutawayStockDepotService.getLocation();
+      const noPickAndPutawayStockDepot =
+        await noPickAndPutawayStockDepotService.getLocation();
       const PRODUCT_ONE = await productService.getProduct(Product.ONE);
 
       STOCK_MOVEMENT = await stockMovementService.createInbound({
@@ -30,9 +31,7 @@ test.describe('Receive inbound stock movement in location without pick and putaw
 
       await stockMovementService.addItemsToInboundStockMovement(
         STOCK_MOVEMENT.id,
-        [
-          { productId: PRODUCT_ONE.id, quantity: 200 },
-        ]
+        [{ productId: PRODUCT_ONE.id, quantity: 200 }]
       );
 
       await stockMovementService.sendInboundStockMovement(STOCK_MOVEMENT.id, {
@@ -41,16 +40,14 @@ test.describe('Receive inbound stock movement in location without pick and putaw
     }
   );
 
-  test.afterEach(
-    async ({ stockMovementShowPage, authService }) => {
-      await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
-      await stockMovementShowPage.rollbackLastReceiptButton.click();
-      await stockMovementShowPage.rollbackButton.click();
-      await stockMovementShowPage.clickDeleteShipment();
+  test.afterEach(async ({ stockMovementShowPage, authService }) => {
+    await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
+    await stockMovementShowPage.rollbackLastReceiptButton.click();
+    await stockMovementShowPage.rollbackButton.click();
+    await stockMovementShowPage.clickDeleteShipment();
 
-      await authService.changeLocation(AppConfig.instance.locations.main.id);
-    }
-  );
+    await authService.changeLocation(AppConfig.instance.locations.main.id);
+  });
 
   test('Receive sm in location without pick and putaway stock', async ({
     stockMovementShowPage,
@@ -58,7 +55,9 @@ test.describe('Receive inbound stock movement in location without pick and putaw
     authService,
   }) => {
     await test.step('Go to stock movement show page', async () => {
-      await authService.changeLocation(AppConfig.instance.locations.noPickAndPutawayStockDepot.id);
+      await authService.changeLocation(
+        AppConfig.instance.locations.noPickAndPutawayStockDepot.id
+      );
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
       await stockMovementShowPage.isLoaded();
     });
@@ -86,19 +85,19 @@ test.describe('Receive inbound stock movement in location without pick and putaw
       await receivingPage.assertColumnHeaderTooltipOnReceivingStep('Recipient');
       await receivingPage.assertColumnHeaderTooltipOnReceivingStep('Shipped');
       await receivingPage.assertColumnHeaderTooltipOnReceivingStep('Received');
-      await receivingPage.assertColumnHeaderTooltipOnReceivingStep('To receive');
+      await receivingPage.assertColumnHeaderTooltipOnReceivingStep(
+        'To receive'
+      );
       await receivingPage.assertColumnHeaderTooltipOnReceivingStep(
         'Receiving now'
       );
       await receivingPage.assertColumnHeaderTooltipOnReceivingStep('Comment');
     });
 
-
     await test.step('Autofill receiving qty', async () => {
       await receivingPage.receivingStep.isLoaded();
       await receivingPage.receivingStep.autofillQuantitiesButton.click();
     });
-
 
     await test.step('Go to and assert checking page is visible', async () => {
       await receivingPage.nextButton.click();
@@ -125,7 +124,9 @@ test.describe('Receive inbound stock movement in location without pick and putaw
         'Receiving now'
       );
       await receivingPage.assertColumnHeaderTooltipOnCheckingStep('Remaining');
-      await receivingPage.assertColumnHeaderTooltipOnCheckingStep('Cancel remaining');
+      await receivingPage.assertColumnHeaderTooltipOnCheckingStep(
+        'Cancel remaining'
+      );
       await receivingPage.assertColumnHeaderTooltipOnCheckingStep('Comment');
     });
 
@@ -136,10 +137,9 @@ test.describe('Receive inbound stock movement in location without pick and putaw
     });
 
     await test.step('Assert Default bin on Packing list', async () => {
-        await expect(stockMovementShowPage.packingListTable.row(1).binLocation).toHaveText('Default');
-      });
-
+      await expect(
+        stockMovementShowPage.packingListTable.row(1).binLocation
+      ).toHaveText('Default');
+    });
   });
-
-
 });

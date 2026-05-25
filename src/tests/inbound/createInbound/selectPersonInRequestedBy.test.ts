@@ -1,6 +1,6 @@
-import { Product } from '@/constants/ProductCodes.generated';
 import { PERSON_URL } from '@/consts/applicationUrls';
 import { expect, test } from '@/fixtures/fixtures';
+import { Product } from '@/generated/ProductCodes.generated';
 import { AddItemsTableRow, LocationResponse } from '@/types';
 import { formatDate, getDateByOffset, getToday } from '@/utils/DateUtils';
 import UniqueIdentifier from '@/utils/UniqueIdentifier';

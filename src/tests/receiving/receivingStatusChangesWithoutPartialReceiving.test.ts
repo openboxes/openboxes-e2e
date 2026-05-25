@@ -1,7 +1,7 @@
 import AppConfig from '@/config/AppConfig';
-import { Product } from '@/constants/ProductCodes.generated';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
+import { Product } from '@/generated/ProductCodes.generated';
 import InboundListPage from '@/pages/inbound/list/InboundListPage';
 import StockMovementShowPage from '@/pages/stockMovementShow/StockMovementShowPage';
 import { StockMovementResponse } from '@/types';

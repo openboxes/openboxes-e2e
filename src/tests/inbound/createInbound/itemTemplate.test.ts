@@ -3,8 +3,8 @@ import path from 'node:path';
 import _ from 'lodash';
 
 import AppConfig from '@/config/AppConfig';
-import { Product } from '@/constants/ProductCodes.generated';
 import { expect, test } from '@/fixtures/fixtures';
+import { Product } from '@/generated/ProductCodes.generated';
 import {
   CreateInboundAddItemsTableEntity,
   StockMovementResponse,

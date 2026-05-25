@@ -1,5 +1,5 @@
-import { Product } from '@/constants/ProductCodes.generated';
 import { expect, test } from '@/fixtures/fixtures';
+import { Product } from '@/generated/ProductCodes.generated';
 import InboundListPage from '@/pages/inbound/list/InboundListPage';
 import StockMovementShowPage from '@/pages/stockMovementShow/StockMovementShowPage';
 import { AddItemsTableRow, LocationResponse, User } from '@/types';
@@ -18,11 +18,7 @@ test.describe('Status changes for inbound sm on view sm and inbound list page', 
   const uniqueIdentifier = new UniqueIdentifier();
 
   test.beforeEach(
-    async ({
-      productService,
-      mainUserService,
-      supplierLocationService,
-    }) => {
+    async ({ productService, mainUserService, supplierLocationService }) => {
       const PRODUCT_ONE = await productService.getProduct(Product.ONE);
       const PRODUCT_TWO = await productService.getProduct(Product.TWO);
       USER = await mainUserService.getUser();

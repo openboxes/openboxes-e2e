@@ -1,8 +1,8 @@
 import Navbar from '@/components/Navbar';
 import AppConfig from '@/config/AppConfig';
-import { Product } from '@/constants/ProductCodes.generated';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
+import { Product } from '@/generated/ProductCodes.generated';
 import CreatePutawayPage from '@/pages/putaway/CreatePutawayPage';
 import PutawayDetailsPage from '@/pages/putaway/putawayDetails/PutawayDetailsPage';
 import StockMovementShowPage from '@/pages/stockMovementShow/StockMovementShowPage';

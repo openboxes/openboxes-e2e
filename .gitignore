@@ -16,4 +16,4 @@ node_modules/
 .idea/
 
 # generated
-src/constants/ProductCodes.generated.ts
+src/generated/
