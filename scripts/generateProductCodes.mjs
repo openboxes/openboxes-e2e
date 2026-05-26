@@ -7,18 +7,6 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const CSV_PATH = path.join(__dirname, '..', 'src', 'setup', 'dataImport', 'products.csv');
 const OUTPUT_PATH = path.join(__dirname, '..', 'src', 'generated', 'ProductCodes.generated.ts');
 
-// Stable keys for the generated objects, mapped to the name value
-// in products.csv that identifies the row. The productCode (value) is read
-// from the CSV at generation time, so codes can change without touching tests.
-const PRODUCT_KEYS = {
-  ONE: 'E2E-product-one',
-  TWO: 'E2E-product-two',
-  THREE: 'E2E-product-three',
-  FOUR: 'E2E-product-four',
-  FIVE: 'E2E-product-five',
-  SIX: 'E2E-product-six',
-};
-
 function parseCsv(csv) {
   const lines = csv.trim().split('\n');
   if (lines.length < 2) {
@@ -45,6 +33,18 @@ function parseCsv(csv) {
 
 function buildFileContent(rows) {
   const codeByName = new Map(rows.map((row) => [row.name, row.code]));
+
+  // Stable keys for the generated objects, mapped to the name value
+  // in products.csv that identifies the row. The productCode (value) is read
+  // from the CSV at generation time, so codes can change without touching tests.
+  const PRODUCT_KEYS = {
+    ONE: rows[0].name,
+    TWO: rows[1].name,
+    THREE: rows[2].name,
+    FOUR: rows[3].name,
+    FIVE: rows[4].name,
+    SIX: rows[5].name,
+  }
 
   const entries = Object.entries(PRODUCT_KEYS).map(([key, name]) => {
     const code = codeByName.get(name);
