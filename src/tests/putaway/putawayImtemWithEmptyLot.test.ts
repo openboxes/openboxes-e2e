@@ -1,6 +1,7 @@
 import AppConfig from '@/config/AppConfig';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
+import { Product } from '@/generated/ProductCodes.generated';
 import { StockMovementResponse } from '@/types';
 import RefreshCachesUtils from '@/utils/RefreshCaches';
 import {
@@ -24,8 +25,7 @@ test.describe('Putaway item with empty lot', () => {
         originId: supplierLocation.id,
       });
 
-      productService.setProduct('5');
-      const product2 = await productService.getProduct();
+      const product2 = await productService.getProduct(Product.FIVE);
 
       await stockMovementService.addItemsToInboundStockMovement(
         STOCK_MOVEMENT.id,
@@ -94,10 +94,8 @@ test.describe('Putaway item with empty lot', () => {
       AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
     const currentLocation = await mainLocationService.getLocation();
     const internalLocation = await internalLocationService.getLocation();
-    productService.setProduct('6');
-    const product = await productService.getProduct();
-    productService.setProduct('5');
-    const product2 = await productService.getProduct();
+    const product = await productService.getProduct(Product.SIX);
+    const product2 = await productService.getProduct(Product.FIVE);
 
     await test.step('Go to stockcard', async () => {
       await productShowPage.goToPage(product.id);

@@ -4,6 +4,7 @@ import Navbar from '@/components/Navbar';
 import AppConfig from '@/config/AppConfig';
 import { ActivityCode } from '@/constants/ActivityCodes';
 import { LocationTypeCode } from '@/constants/LocationTypeCode';
+import { DASHBOARD_URL } from '@/consts/applicationUrls';
 import { expect, test } from '@/fixtures/fixtures';
 import LoginPage from '@/pages/LoginPage';
 import { CreateUserType } from '@/types';
@@ -33,7 +34,7 @@ test.describe('Check if ward location is present in location chooser based on us
         password: 'testpassword123',
       };
 
-      await page.goto('./dashboard');
+      await page.goto(DASHBOARD_URL.base);
 
       await test.step('Go to create location page', async () => {
         await navbar.configurationButton.click();
@@ -56,7 +57,7 @@ test.describe('Check if ward location is present in location chooser based on us
       });
 
       await test.step('Go to create user page', async () => {
-        await page.goto('./dashboard');
+        await page.goto(DASHBOARD_URL.base);
         await navbar.configurationButton.click();
         await navbar.users.click();
         await userListPage.createUserButton.click();
@@ -98,7 +99,7 @@ test.describe('Check if ward location is present in location chooser based on us
       userListPage,
       editUserPage,
     }) => {
-      await page.goto('./dashboard');
+      await page.goto(DASHBOARD_URL.base);
       await test.step('Go to edit user page', async () => {
         await userListPage.goToPage();
         await userListPage.searchByNameField.fill(TEST_USER.username);
@@ -204,7 +205,7 @@ test.describe('Check if ward location is present in location chooser based on us
     });
 
     await test.step('Assert created ward on location chooser, react, admin', async () => {
-      await newUserPage.goto('./dashboard');
+      await newUserPage.goto(DASHBOARD_URL.base);
       await newPageNavbar.dashboard.click();
       await newPageNavbar.locationChooserButton.click();
       await expect(
@@ -288,7 +289,7 @@ test.describe('Check if ward location is present in location chooser based on us
     });
 
     await test.step('Assert created ward on location chooser, react, manager', async () => {
-      await newUserPage.goto('./dashboard');
+      await newUserPage.goto(DASHBOARD_URL.base);
       await newPageNavbar.dashboard.click();
       await newPageNavbar.locationChooserButton.click();
       await expect(
@@ -372,7 +373,7 @@ test.describe('Check if ward location is present in location chooser based on us
     });
 
     await test.step('Assert created ward on location chooser, react, browser', async () => {
-      await newUserPage.goto('./dashboard');
+      await newUserPage.goto(DASHBOARD_URL.base);
       await newPageNavbar.dashboard.click();
       await newPageNavbar.locationChooserButton.click();
       await expect(
@@ -427,7 +428,7 @@ test.describe('Check if ward location is present in location chooser based on us
         password: 'testpassword123',
       };
 
-      await page.goto('./dashboard');
+      await page.goto(DASHBOARD_URL.base);
 
       await test.step('Go to create location page', async () => {
         await navbar.configurationButton.click();
@@ -457,7 +458,7 @@ test.describe('Check if ward location is present in location chooser based on us
       });
 
       await test.step('Go to create user page', async () => {
-        await page.goto('./dashboard');
+        await page.goto(DASHBOARD_URL.base);
         await navbar.configurationButton.click();
         await navbar.users.click();
         await userListPage.createUserButton.click();
@@ -493,7 +494,7 @@ test.describe('Check if ward location is present in location chooser based on us
       userListPage,
       editUserPage,
     }) => {
-      await page.goto('./dashboard');
+      await page.goto(DASHBOARD_URL.base);
       await test.step('Go to edit user page', async () => {
         await userListPage.goToPage();
         await userListPage.searchByNameField.fill(TEST_USER.username);
@@ -592,7 +593,7 @@ test.describe('Check if ward location is present in location chooser based on us
     });
 
     await test.step('Assert created ward on location chooser, react, admin', async () => {
-      await newUserPage.goto('./dashboard');
+      await newUserPage.goto(DASHBOARD_URL.base);
       await newPageNavbar.dashboard.click();
       await newPageNavbar.locationChooserButton.click();
       await expect(
@@ -676,7 +677,7 @@ test.describe('Check if ward location is present in location chooser based on us
     });
 
     await test.step('Assert created ward on location chooser, react, manager', async () => {
-      await newUserPage.goto('./dashboard');
+      await newUserPage.goto(DASHBOARD_URL.base);
       await newPageNavbar.dashboard.click();
       await newPageNavbar.locationChooserButton.click();
       await expect(
@@ -735,7 +736,7 @@ test.describe('Check if ward location is present in location chooser based on us
 
       LOCATION_NAME = uniqueIdentifier.generateUniqueString('Test-Ward');
 
-      await page.goto('./dashboard');
+      await page.goto(DASHBOARD_URL.base);
 
       await test.step('Go to create location page', async () => {
         await navbar.configurationButton.click();
@@ -765,7 +766,7 @@ test.describe('Check if ward location is present in location chooser based on us
       });
 
       await test.step('Go to create user page', async () => {
-        await page.goto('./dashboard');
+        await page.goto(DASHBOARD_URL.base);
         await navbar.configurationButton.click();
         await navbar.users.click();
         await userListPage.createUserButton.click();
@@ -807,7 +808,7 @@ test.describe('Check if ward location is present in location chooser based on us
       userListPage,
       editUserPage,
     }) => {
-      await page.goto('./dashboard');
+      await page.goto(DASHBOARD_URL.base);
       await test.step('Go to edit user page', async () => {
         await userListPage.goToPage();
         await userListPage.searchByNameField.fill(TEST_USER.username);
@@ -883,7 +884,7 @@ test.describe('Check if ward location is present in location chooser based on us
     const newPageLocationChooser = new LocationChooser(newPage);
 
     await test.step('Assert created ward on location chooser in impersonate mode, react', async () => {
-      await newPage.goto('./dashboard');
+      await newPage.goto(DASHBOARD_URL.base);
       await newPageNavbar.dashboard.click();
       await newPageNavbar.locationChooserButton.click();
       await expect(

@@ -1,6 +1,7 @@
 import LocationChooser from '@/components/LocationChooser';
 import Navbar from '@/components/Navbar';
 import AppConfig, { LOCATION_KEY } from '@/config/AppConfig';
+import { DASHBOARD_URL } from '@/consts/applicationUrls';
 import { expect, test } from '@/fixtures/fixtures';
 import CreateLocationPage from '@/pages/location/createLocation/CreateLocationPage';
 import LocationListPage from '@/pages/location/LocationListPage';
@@ -102,7 +103,7 @@ test.describe('Check if depot location is present in location chooser', () => {
     const editLocationGroupPage = new EditLocationGroupPage(page);
 
     await test.step('Delete created location', async () => {
-      await page.goto('./dashboard');
+      await page.goto(DASHBOARD_URL.base);
       await navbar.configurationButton.click();
       await navbar.locations.click();
       await locationListPage.searchByLocationNameField.fill(LOCATION_NAME);
@@ -157,7 +158,7 @@ test.describe('Check if depot location is present in location chooser', () => {
     navbar,
     locationChooser,
   }) => {
-    await page.goto('./dashboard');
+    await page.goto(DASHBOARD_URL.base);
     await navbar.locationChooserButton.click();
     await expect(
       locationChooser.getOrganization(ORGANIZATION_NAME)
@@ -174,7 +175,7 @@ test.describe('Check if depot location is present in location chooser', () => {
     navbar,
     locationChooser,
   }) => {
-    await page.goto('./dashboard');
+    await page.goto(DASHBOARD_URL.base);
     await navbar.dashboard.click();
     await navbar.locationChooserButton.click();
     await expect(
@@ -292,7 +293,7 @@ test.describe('Check if location is present in location chooser after editing', 
     const createLocationPage = new CreateLocationPage(page);
     const editOrganizationPage = new EditOrganizationPage(page);
 
-    await page.goto('./dashboard');
+    await page.goto(DASHBOARD_URL.base);
 
     await test.step('Delete created location', async () => {
       await navbar.configurationButton.click();
@@ -358,7 +359,7 @@ test.describe('Check if location is present in location chooser after editing', 
     navbar,
     locationChooser,
   }) => {
-    await page.goto('./dashboard');
+    await page.goto(DASHBOARD_URL.base);
 
     await navbar.locationChooserButton.click();
     await expect(
@@ -380,7 +381,7 @@ test.describe('Check if location is present in location chooser after editing', 
       const locationListPage = new LocationListPage(page);
       const createLocationPage = new CreateLocationPage(page);
 
-      await page.goto('./dashboard');
+      await page.goto(DASHBOARD_URL.base);
 
       await navbar.configurationButton.click();
       await navbar.locations.click();
@@ -400,7 +401,7 @@ test.describe('Check if location is present in location chooser after editing', 
       navbar,
       locationChooser,
     }) => {
-      await page.goto('./dashboard');
+      await page.goto(DASHBOARD_URL.base);
 
       await navbar.locationChooserButton.click();
       await expect(
@@ -422,7 +423,7 @@ test.describe('Check if location is present in location chooser after editing', 
       navbar,
       locationChooser,
     }) => {
-      await page.goto('./dashboard');
+      await page.goto(DASHBOARD_URL.base);
 
       await navbar.dashboard.click();
       await navbar.locationChooserButton.click();
@@ -486,7 +487,7 @@ test.describe('Check if non manage inventory location is present in location cho
     const createLocationPage = new CreateLocationPage(page);
 
     location = await mainLocation.getLocation();
-    await page.goto('./dashboard');
+    await page.goto(DASHBOARD_URL.base);
 
     await test.step('Go to create location page', async () => {
       await navbar.configurationButton.click();
@@ -524,7 +525,7 @@ test.describe('Check if non manage inventory location is present in location cho
     const locationListPage = new LocationListPage(page);
     const createLocationPage = new CreateLocationPage(page);
 
-    await page.goto('./dashboard');
+    await page.goto(DASHBOARD_URL.base);
 
     await test.step('Delete created location', async () => {
       await navbar.configurationButton.click();
@@ -551,7 +552,7 @@ test.describe('Check if non manage inventory location is present in location cho
     navbar,
     locationChooser,
   }) => {
-    await page.goto('./dashboard');
+    await page.goto(DASHBOARD_URL.base);
 
     await navbar.locationChooserButton.click();
     await expect(
@@ -569,7 +570,7 @@ test.describe('Check if non manage inventory location is present in location cho
     navbar,
     locationChooser,
   }) => {
-    await page.goto('./dashboard');
+    await page.goto(DASHBOARD_URL.base);
 
     await navbar.dashboard.click();
     await navbar.locationChooserButton.click();

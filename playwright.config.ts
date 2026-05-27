@@ -1,8 +1,14 @@
 import 'dotenv/config';
 
+import { execSync } from 'node:child_process';
+
 import { defineConfig, devices } from '@playwright/test';
 
 import AppConfig from './src/config/AppConfig';
+
+// Regenerate ProductCodes.generated.ts before any test files are loaded.
+// Runs whether tests are invoked via `npm test` (pretest hook) or `npx playwright test` directly.
+execSync('node scripts/generateProductCodes.mjs', { stdio: 'inherit' });
 
 const appConfig = AppConfig.instance;
 

@@ -4,6 +4,7 @@ import _ from 'lodash';
 
 import AppConfig from '@/config/AppConfig';
 import { expect, test } from '@/fixtures/fixtures';
+import { Product } from '@/generated/ProductCodes.generated';
 import {
   CreateInboundAddItemsTableEntity,
   StockMovementResponse,
@@ -86,10 +87,8 @@ test.describe('Export items template on inbound add items page', () => {
       await createInboundPage.addItemsStep.isLoaded();
     });
 
-    productService.setProduct('1');
-    const PRODUCT_ONE = await productService.getProduct();
-    productService.setProduct('2');
-    const PRODUCT_TWO = await productService.getProduct();
+    const PRODUCT_ONE = await productService.getProduct(Product.ONE);
+    const PRODUCT_TWO = await productService.getProduct(Product.TWO);
     const USER = await mainUserService.getUser();
 
     const ROWS = [
@@ -198,10 +197,8 @@ test.describe('Import template with data', () => {
       workbooks.push(downloadedTemplateFile);
     });
 
-    productService.setProduct('1');
-    const PRODUCT_ONE = await productService.getProduct();
-    productService.setProduct('2');
-    const PRODUCT_TWO = await productService.getProduct();
+    const PRODUCT_ONE = await productService.getProduct(Product.ONE);
+    const PRODUCT_TWO = await productService.getProduct(Product.TWO);
     const USER = await mainUserService.getUser();
 
     const ROWS = [
@@ -273,8 +270,7 @@ test.describe('Import template with data', () => {
     });
 
     await test.step('Add items to table', async () => {
-      productService.setProduct('1');
-      const PRODUCT_ONE = await productService.getProduct();
+      const PRODUCT_ONE = await productService.getProduct(Product.ONE);
       const USER = await mainUserService.getUser();
 
       const ROWS = [
@@ -309,8 +305,7 @@ test.describe('Import template with data', () => {
       parsedDocumentData = downloadedTemplateFile.sheetToJSON();
     });
 
-    productService.setProduct('2');
-    const PRODUCT_TWO = await productService.getProduct();
+    const PRODUCT_TWO = await productService.getProduct(Product.TWO);
     const ALT_USER = await altUserService.getUser();
 
     const NEW_ROW = {
@@ -367,8 +362,7 @@ test.describe('Import template with data', () => {
 
     let ROW: CreateInboundAddItemsTableEntity;
     await test.step('Add items to table', async () => {
-      productService.setProduct('1');
-      const PRODUCT_ONE = await productService.getProduct();
+      const PRODUCT_ONE = await productService.getProduct(Product.ONE);
       const USER = await mainUserService.getUser();
 
       ROW = {
@@ -400,8 +394,7 @@ test.describe('Import template with data', () => {
       parsedDocumentData = downloadedTemplateFile.sheetToJSON();
     });
 
-    productService.setProduct('2')
-    const PRODUCT_TWO = await productService.getProduct();
+    const PRODUCT_TWO = await productService.getProduct(Product.TWO);
     const ALT_USER = await altUserService.getUser();
 
     const NEW_ROW = {

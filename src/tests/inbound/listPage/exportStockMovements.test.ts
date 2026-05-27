@@ -1,5 +1,6 @@
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
+import { Product } from '@/generated/ProductCodes.generated';
 import { StockMovementResponse } from '@/types';
 import { formatDate, getToday } from '@/utils/DateUtils';
 import { WorkbookUtils } from '@/utils/WorkbookUtils';
@@ -17,10 +18,8 @@ test.describe('Export stock movements', () => {
       productService,
     }) => {
       const supplierLocation = await supplierLocationService.getLocation();
-      productService.setProduct('1');
-      const PRODUCT_ONE = await productService.getProduct();
-      productService.setProduct('2');
-      const PRODUCT_TWO = await productService.getProduct();
+      const PRODUCT_ONE = await productService.getProduct(Product.ONE);
+      const PRODUCT_TWO = await productService.getProduct(Product.TWO);
 
       INBOUND1 = await stockMovementService.createInbound({
         originId: supplierLocation.id,

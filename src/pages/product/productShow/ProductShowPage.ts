@@ -1,5 +1,6 @@
 import { Page } from '@playwright/test';
 
+import { INVENTORY_ITEM_URL } from '@/consts/applicationUrls';
 import BasePageModel from '@/pages/BasePageModel';
 import RecordStockSection from '@/pages/product/productShow/sections/RecordStockSection';
 
@@ -16,7 +17,7 @@ class ProductShowPage extends BasePageModel {
   }
 
   async goToPage(id: string) {
-    await this.page.goto(`./inventoryItem/showStockCard/${id}`);
+    await this.page.goto(INVENTORY_ITEM_URL.showStockCard(id));
   }
 
   get showStockCardButton() {

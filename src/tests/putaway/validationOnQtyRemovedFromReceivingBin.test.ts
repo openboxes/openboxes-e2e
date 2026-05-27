@@ -1,7 +1,9 @@
 import Navbar from '@/components/Navbar';
 import AppConfig from '@/config/AppConfig';
 import { ShipmentType } from '@/constants/ShipmentType';
+import { DASHBOARD_URL } from '@/consts/applicationUrls';
 import { expect, test } from '@/fixtures/fixtures';
+import { Product } from '@/generated/ProductCodes.generated';
 import ProductShowPage from '@/pages/product/productShow/ProductShowPage';
 import { StockMovementResponse } from '@/types';
 import RefreshCachesUtils from '@/utils/RefreshCaches';
@@ -26,10 +28,8 @@ test.describe('Assert validation on qty removed from receiving bin', () => {
         originId: supplierLocation.id,
       });
 
-      productService.setProduct('5');
-      const product = await productService.getProduct();
-      productService.setProduct('4');
-      const product2 = await productService.getProduct();
+      const product = await productService.getProduct(Product.FIVE);
+      const product2 = await productService.getProduct(Product.FOUR);
 
       await stockMovementService.addItemsToInboundStockMovement(
         STOCK_MOVEMENT.id,
@@ -106,14 +106,12 @@ test.describe('Assert validation on qty removed from receiving bin', () => {
   }) => {
     const receivingBin =
       AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
-    productService.setProduct('5');
-    const product = await productService.getProduct();
-    productService.setProduct('4');
-    const product2 = await productService.getProduct();
+    const product = await productService.getProduct(Product.FIVE);
+    const product2 = await productService.getProduct(Product.FOUR);
     const internalLocation = await internalLocationService.getLocation();
 
     await test.step('Edit transaction date of transfer in', async () => {
-      await page.goto('./dashboard');
+      await page.goto(DASHBOARD_URL.base);
       await navbar.configurationButton.click();
       await navbar.transactions.click();
       // eslint-disable-next-line playwright/no-networkidle

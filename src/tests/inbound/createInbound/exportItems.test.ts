@@ -1,4 +1,5 @@
 import { expect, test } from '@/fixtures/fixtures';
+import { Product } from '@/generated/ProductCodes.generated';
 import { getDateByOffset, getToday } from '@/utils/DateUtils';
 import { WorkbookUtils } from '@/utils/WorkbookUtils';
 
@@ -21,10 +22,8 @@ test.describe('Export all incoming items', () => {
       const USER = await mainUserService.getUser();
       const TODAY = getToday();
 
-      productService.setProduct('1');
-      const PRODUCT_ONE = await productService.getProduct();
-      productService.setProduct('2');
-      const PRODUCT_TWO = await productService.getProduct();
+      const PRODUCT_ONE = await productService.getProduct(Product.ONE);
+      const PRODUCT_TWO = await productService.getProduct(Product.TWO);
       const SHIPMENT_TYPE = 'Land';
       const EXPECTED_DELIVERY_DATE = getDateByOffset(TODAY, 1);
 

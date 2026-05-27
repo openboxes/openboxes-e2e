@@ -1,6 +1,8 @@
 import AppConfig from '@/config/AppConfig';
 import { ShipmentType } from '@/constants/ShipmentType';
+import { LOCATION_URL } from '@/consts/applicationUrls';
 import { expect, test } from '@/fixtures/fixtures';
+import { Product } from '@/generated/ProductCodes.generated';
 import { StockMovementResponse } from '@/types';
 import BinLocationUtils from '@/utils/BinLocationUtils';
 import UniqueIdentifier from '@/utils/UniqueIdentifier';
@@ -24,10 +26,8 @@ test.describe('Edit Bin Location when receive inbound stock movement', () => {
     }) => {
       const supplierLocation = await supplierLocationService.getLocation();
       const mainLocation = await mainLocationService.getLocation();
-      productService.setProduct('1');
-      const PRODUCT_ONE = await productService.getProduct();
-      productService.setProduct('2');
-      const PRODUCT_TWO = await productService.getProduct();
+      const PRODUCT_ONE = await productService.getProduct(Product.ONE);
+      const PRODUCT_TWO = await productService.getProduct(Product.TWO);
 
       STOCK_MOVEMENT = await stockMovementService.createInbound({
         originId: supplierLocation.id,
@@ -46,7 +46,7 @@ test.describe('Edit Bin Location when receive inbound stock movement', () => {
       });
 
       await test.step('Create bin location for location', async () => {
-        await page.goto('./location/list');
+        await page.goto(LOCATION_URL.list());
         await locationListPage.searchByLocationNameField.fill(
           mainLocation.name
         );
@@ -81,7 +81,9 @@ test.describe('Edit Bin Location when receive inbound stock movement', () => {
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
 
       const hasRollbackLastReceipt =
-        await stockMovementShowPage.rollbackLastReceiptButton.isVisible().catch(() => false);
+        await stockMovementShowPage.rollbackLastReceiptButton
+          .isVisible()
+          .catch(() => false);
 
       if (hasRollbackLastReceipt) {
         await stockMovementShowPage.rollbackLastReceiptButton.click();
@@ -91,7 +93,7 @@ test.describe('Edit Bin Location when receive inbound stock movement', () => {
       await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
 
       await test.step('Deactivate created bin location', async () => {
-        await page.goto('./location/list');
+        await page.goto(LOCATION_URL.list());
         await locationListPage.searchByLocationNameField.fill(
           mainLocation.name
         );
@@ -200,10 +202,8 @@ test.describe('Edit Bin Location to bin with zone when receive inbound stock mov
     }) => {
       const supplierLocation = await supplierLocationService.getLocation();
       const mainLocation = await mainLocationService.getLocation();
-      productService.setProduct('1');
-      const PRODUCT_ONE = await productService.getProduct();
-      productService.setProduct('2');
-      const PRODUCT_TWO = await productService.getProduct();
+      const PRODUCT_ONE = await productService.getProduct(Product.ONE);
+      const PRODUCT_TWO = await productService.getProduct(Product.TWO);
 
       STOCK_MOVEMENT = await stockMovementService.createInbound({
         originId: supplierLocation.id,
@@ -222,7 +222,7 @@ test.describe('Edit Bin Location to bin with zone when receive inbound stock mov
       });
 
       await test.step('Create zone for location', async () => {
-        await page.goto('./location/list');
+        await page.goto(LOCATION_URL.list());
         await locationListPage.searchByLocationNameField.fill(
           mainLocation.name
         );
@@ -285,7 +285,7 @@ test.describe('Edit Bin Location to bin with zone when receive inbound stock mov
       await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
 
       await test.step('Deactivate created bin location', async () => {
-        await page.goto('./location/list');
+        await page.goto(LOCATION_URL.list());
         await locationListPage.searchByLocationNameField.fill(
           mainLocation.name
         );
@@ -420,10 +420,8 @@ test.describe('Edit Bin Location when receive for all lines', () => {
     }) => {
       const supplierLocation = await supplierLocationService.getLocation();
       const mainLocation = await mainLocationService.getLocation();
-      productService.setProduct('1');
-      const PRODUCT_ONE = await productService.getProduct();
-      productService.setProduct('2');
-      const PRODUCT_TWO = await productService.getProduct();
+      const PRODUCT_ONE = await productService.getProduct(Product.ONE);
+      const PRODUCT_TWO = await productService.getProduct(Product.TWO);
 
       STOCK_MOVEMENT = await stockMovementService.createInbound({
         originId: supplierLocation.id,
@@ -442,7 +440,7 @@ test.describe('Edit Bin Location when receive for all lines', () => {
       });
 
       await test.step('Create bin location for location', async () => {
-        await page.goto('./location/list');
+        await page.goto(LOCATION_URL.list());
         await locationListPage.searchByLocationNameField.fill(
           mainLocation.name
         );
@@ -480,7 +478,7 @@ test.describe('Edit Bin Location when receive for all lines', () => {
       await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
 
       await test.step('Deactivate created bin location', async () => {
-        await page.goto('./location/list');
+        await page.goto(LOCATION_URL.list());
         await locationListPage.searchByLocationNameField.fill(
           mainLocation.name
         );

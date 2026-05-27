@@ -1,6 +1,8 @@
 import AppConfig from '@/config/AppConfig';
 import { ShipmentType } from '@/constants/ShipmentType';
+import { LOCATION_URL } from '@/consts/applicationUrls';
 import { expect, test } from '@/fixtures/fixtures';
+import { Product } from '@/generated/ProductCodes.generated';
 import CreateLocationPage from '@/pages/location/createLocation/CreateLocationPage';
 import LocationListPage from '@/pages/location/LocationListPage';
 import { StockMovementResponse } from '@/types';
@@ -18,10 +20,8 @@ test.describe('Assert creation of receiving bin', () => {
       productService,
     }) => {
       const supplierLocation = await supplierLocationService.getLocation();
-      productService.setProduct('1');
-      const PRODUCT_ONE = await productService.getProduct();
-      productService.setProduct('2');
-      const PRODUCT_TWO = await productService.getProduct();
+      const PRODUCT_ONE = await productService.getProduct(Product.ONE);
+      const PRODUCT_TWO = await productService.getProduct(Product.TWO);
 
       STOCK_MOVEMENT = await stockMovementService.createInbound({
         originId: supplierLocation.id,
@@ -86,7 +86,7 @@ test.describe('Assert creation of receiving bin', () => {
 
     await test.step('Go to Bin location tab of edit location page', async () => {
       const mainLocation = await mainLocationService.getLocation();
-      await page.goto('./location/list');
+      await page.goto(LOCATION_URL.list());
       await locationListPage.searchByLocationNameField.fill(mainLocation.name);
       await locationListPage.findButton.click();
       await expect(
@@ -125,7 +125,7 @@ test.describe('Assert creation of receiving bin', () => {
       const newLocationListPage = new LocationListPage(newPage);
       const newCreateLocationPage = new CreateLocationPage(newPage);
       const mainLocation = await mainLocationService.getLocation();
-      await newPage.goto('./location/list');
+      await newPage.goto(LOCATION_URL.list());
       await newLocationListPage.searchByLocationNameField.fill(
         mainLocation.name
       );

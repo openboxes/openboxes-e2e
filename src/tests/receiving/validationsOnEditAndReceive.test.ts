@@ -1,6 +1,7 @@
 import AppConfig from '@/config/AppConfig';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
+import { Product } from '@/generated/ProductCodes.generated';
 import { StockMovementResponse } from '@/types';
 import BinLocationUtils from '@/utils/BinLocationUtils';
 import { getToday } from '@/utils/DateUtils';
@@ -23,8 +24,7 @@ test.describe('Assert validation on try to receive not yet shipped inbound', () 
         dateRequested,
       });
 
-      productService.setProduct('1');
-      const product = await productService.getProduct();
+      const product = await productService.getProduct(Product.ONE);
 
       await stockMovementService.addItemsToInboundStockMovement(
         STOCK_MOVEMENT.id,
@@ -83,8 +83,7 @@ test.describe('Validations on edit and receive inbound stock movement', () => {
         dateRequested,
       });
 
-      productService.setProduct('1');
-      const product = await productService.getProduct();
+      const product = await productService.getProduct(Product.ONE);
 
       await stockMovementService.addItemsToInboundStockMovement(
         STOCK_MOVEMENT.id,

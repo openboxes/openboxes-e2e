@@ -1,6 +1,7 @@
 import ImpersonateBanner from '@/components/ImpersonateBanner';
 import Navbar from '@/components/Navbar';
 import AppConfig from '@/config/AppConfig';
+import { DASHBOARD_URL } from '@/consts/applicationUrls';
 import { expect, test } from '@/fixtures/fixtures';
 import LoginPage from '@/pages/LoginPage';
 import { CreateUserType } from '@/types';
@@ -23,7 +24,7 @@ test.describe('User Permissions', () => {
         };
 
         await test.step('Go to create user page', async () => {
-          await page.goto('./dashboard');
+          await page.goto(DASHBOARD_URL.base);
           await navbar.configurationButton.click();
           await navbar.users.click();
           await userListPage.createUserButton.click();

@@ -1,6 +1,7 @@
 import AppConfig from '@/config/AppConfig';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
+import { Product } from '@/generated/ProductCodes.generated';
 import { StockMovementResponse } from '@/types';
 import { formatDate, getToday } from '@/utils/DateUtils';
 
@@ -18,10 +19,8 @@ test.describe('Receive inbound stock movement in location without partial receiv
     }) => {
       const supplierLocation = await supplierLocationService.getLocation();
       const depotLocation = await depotLocationService.getLocation();
-      productService.setProduct('1');
-      const PRODUCT_ONE = await productService.getProduct();
-      productService.setProduct('2');
-      const PRODUCT_TWO = await productService.getProduct();
+      const PRODUCT_ONE = await productService.getProduct(Product.ONE);
+      const PRODUCT_TWO = await productService.getProduct(Product.TWO);
 
       STOCK_MOVEMENT = await stockMovementService.createInbound({
         originId: supplierLocation.id,
@@ -120,10 +119,8 @@ test.describe('Receive inbound stock movement in location without partial receiv
     });
 
     await test.step('Assert product in receiving table', async () => {
-      productService.setProduct('1');
-      const item = await productService.getProduct();
-      productService.setProduct('2');
-      const item2 = await productService.getProduct();
+      const item = await productService.getProduct(Product.ONE);
+      const item2 = await productService.getProduct(Product.TWO);
       await receivingPage.receivingStep.table.row(1).getItem(item.name).hover();
       await expect(receivingPage.tooltip).toContainText(item.name);
       await receivingPage.receivingStep.table
@@ -245,10 +242,8 @@ test.describe('Receive inbound stock movement in location without partial receiv
     });
 
     await test.step('Assert product in checking table', async () => {
-      productService.setProduct('1');
-      const item = await productService.getProduct();
-      productService.setProduct('2');
-      const item2 = await productService.getProduct();
+      const item = await productService.getProduct(Product.ONE);
+      const item2 = await productService.getProduct(Product.TWO);
       await receivingPage.checkStep.table.row(1).getItem(item.name).hover();
       await expect(receivingPage.tooltip).toContainText(item.name);
       await receivingPage.receivingStep.table

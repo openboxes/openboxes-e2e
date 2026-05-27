@@ -2,6 +2,7 @@ import { Page } from '@playwright/test';
 
 import AlertPopup from '@/components/AlertPopup';
 import FileHandler from '@/components/FileHandler';
+import { STOCK_MOVEMENT_ITEMS_PATTERN } from '@/consts/apiUrls';
 import { expect, test } from '@/fixtures/fixtures';
 import BasePageModel from '@/pages/BasePageModel';
 import AddItemsTable from '@/pages/inbound/create/components/AddItemsTable';
@@ -28,9 +29,7 @@ class AddItemsStep extends BasePageModel {
   }
 
   async waitForData() {
-    await this.page.waitForResponse(
-      /\/api\/stockMovements\/.*\/stockMovementItems/
-    );
+    await this.page.waitForResponse(STOCK_MOVEMENT_ITEMS_PATTERN);
   }
 
   get addLineButton() {

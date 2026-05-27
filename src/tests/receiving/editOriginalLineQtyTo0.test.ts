@@ -1,6 +1,7 @@
 import AppConfig from '@/config/AppConfig';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
+import { Product } from '@/generated/ProductCodes.generated';
 import { StockMovementResponse } from '@/types';
 import BinLocationUtils from '@/utils/BinLocationUtils';
 import { getDateByOffset } from '@/utils/DateUtils';
@@ -18,16 +19,11 @@ test.describe('Edit qty of original line to 0', () => {
       productService,
     }) => {
       const supplierLocation = await supplierLocationService.getLocation();
-      productService.setProduct('1');
-      const PRODUCT_ONE = await productService.getProduct();
-      productService.setProduct('2');
-      const PRODUCT_TWO = await productService.getProduct();
-      productService.setProduct('3');
-      const PRODUCT_THREE = await productService.getProduct();
-      productService.setProduct('4')
-      const PRODUCT_FOUR = await productService.getProduct();
-      productService.setProduct('5')
-      const PRODUCT_FIVE = await productService.getProduct();
+      const PRODUCT_ONE = await productService.getProduct(Product.ONE);
+      const PRODUCT_TWO = await productService.getProduct(Product.TWO);
+      const PRODUCT_THREE = await productService.getProduct(Product.THREE);
+      const PRODUCT_FOUR = await productService.getProduct(Product.FOUR);
+      const PRODUCT_FIVE = await productService.getProduct(Product.FIVE);
 
       STOCK_MOVEMENT = await stockMovementService.createInbound({
         originId: supplierLocation.id,
@@ -243,8 +239,7 @@ test.describe('Edit original line to other product in the middle of receipt', ()
       productService,
     }) => {
       const supplierLocation = await supplierLocationService.getLocation();
-      productService.setProduct('4');
-      const PRODUCT_FOUR = await productService.getProduct();
+      const PRODUCT_FOUR = await productService.getProduct(Product.FOUR);
 
       STOCK_MOVEMENT = await stockMovementService.createInbound({
         originId: supplierLocation.id,
@@ -313,8 +308,7 @@ test.describe('Edit original line to other product in the middle of receipt', ()
     });
 
     await test.step('Open edit modal for item', async () => {
-      productService.setProduct('5');
-      const PRODUCT_FIVE = await productService.getProduct();
+      const PRODUCT_FIVE = await productService.getProduct(Product.FIVE);
       await receivingPage.receivingStep.table.row(1).editButton.click();
       await receivingPage.receivingStep.editModal.isLoaded();
       await receivingPage.receivingStep.editModal.addLineButton.click();
@@ -335,10 +329,8 @@ test.describe('Edit original line to other product in the middle of receipt', ()
     });
 
     await test.step('Assert line with qty 0 is disabled', async () => {
-      productService.setProduct('4');
-      const PRODUCT_FOUR = await productService.getProduct();
-      productService.setProduct('5')
-      const PRODUCT_FIVE = await productService.getProduct();
+      const PRODUCT_FOUR = await productService.getProduct(Product.FOUR);
+      const PRODUCT_FIVE = await productService.getProduct(Product.FIVE);
       await expect(
         receivingPage.receivingStep.table.row(1).checkbox
       ).toBeDisabled();
@@ -378,8 +370,7 @@ test.describe('Edit original line to other product in the middle of receipt', ()
     });
 
     await test.step('Assert product name on check step', async () => {
-      productService.setProduct('5');
-      const PRODUCT_FIVE = await productService.getProduct();
+      const PRODUCT_FIVE = await productService.getProduct(Product.FIVE);
       await receivingPage.nextButton.click();
       await receivingPage.checkStep.isLoaded();
       await expect(
@@ -394,10 +385,8 @@ test.describe('Edit original line to other product in the middle of receipt', ()
     });
 
     await test.step('Assert received product on stock movement show page', async () => {
-      productService.setProduct('4');
-      const PRODUCT_FOUR = await productService.getProduct();
-      productService.setProduct('5');
-      const PRODUCT_FIVE = await productService.getProduct();
+      const PRODUCT_FOUR = await productService.getProduct(Product.FOUR);
+      const PRODUCT_FIVE = await productService.getProduct(Product.FIVE);
       await stockMovementShowPage.packingListTab.isVisible();
       await expect(
         stockMovementShowPage.packingListTable.row(1).product

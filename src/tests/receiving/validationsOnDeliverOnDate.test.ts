@@ -1,6 +1,7 @@
 import AppConfig from '@/config/AppConfig';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
+import { Product } from '@/generated/ProductCodes.generated';
 import { StockMovementResponse } from '@/types';
 import BinLocationUtils from '@/utils/BinLocationUtils';
 import { getDateByOffset } from '@/utils/DateUtils';
@@ -19,8 +20,7 @@ test.describe('Validations on edit Deliver On Date when receiving shipment', () 
         originId: supplierLocation.id,
       });
 
-      productService.setProduct('1');
-      const product = await productService.getProduct();
+      const product = await productService.getProduct(Product.ONE);
 
       await stockMovementService.addItemsToInboundStockMovement(
         STOCK_MOVEMENT.id,

@@ -1,6 +1,7 @@
 import LocationChooser from '@/components/LocationChooser';
 import Navbar from '@/components/Navbar';
 import AppConfig from '@/config/AppConfig';
+import { DASHBOARD_URL } from '@/consts/applicationUrls';
 import { expect, test } from '@/fixtures/fixtures';
 import CreateLocationPage from '@/pages/location/createLocation/CreateLocationPage';
 import LocationListPage from '@/pages/location/LocationListPage';
@@ -20,7 +21,7 @@ test.describe('Check if ward location is present in location chooser', () => {
     const locationListPage = new LocationListPage(page);
     const createLocationPage = new CreateLocationPage(page);
 
-    await page.goto('./dashboard');
+    await page.goto(DASHBOARD_URL.base);
 
     await test.step('Go to create location page', async () => {
       await navbar.configurationButton.click();
@@ -76,7 +77,7 @@ test.describe('Check if ward location is present in location chooser', () => {
     const locationListPage = new LocationListPage(page);
     const createLocationPage = new CreateLocationPage(page);
 
-    await page.goto('./dashboard');
+    await page.goto(DASHBOARD_URL.base);
     await test.step('Remove location role from user', async () => {
       await navbar.profileButton.click();
       await navbar.editProfileButton.click();
@@ -115,7 +116,7 @@ test.describe('Check if ward location is present in location chooser', () => {
     navbar,
     locationChooser,
   }) => {
-    await page.goto('./dashboard');
+    await page.goto(DASHBOARD_URL.base);
     await navbar.locationChooserButton.click();
     await expect(
       locationChooser.getOrganization('No organization')
@@ -133,7 +134,7 @@ test.describe('Check if ward location is present in location chooser', () => {
     navbar,
     locationChooser,
   }) => {
-    await page.goto('./dashboard');
+    await page.goto(DASHBOARD_URL.base);
     await navbar.dashboard.click();
     await navbar.locationChooserButton.click();
     await expect(

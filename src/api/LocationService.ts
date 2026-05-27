@@ -1,5 +1,10 @@
 import BaseServiceModel from '@/api/BaseServiceModel';
 import {
+  LOCATION_API,
+  LOCATION_BY_ID,
+  LOCATION_TYPES,
+} from '@/consts/apiUrls';
+import {
   ApiResponse,
   CreateLocationPayload,
   LocationResponse,
@@ -10,7 +15,7 @@ import { parseRequestToJSON } from '@/utils/ServiceUtils';
 class LocationService extends BaseServiceModel {
   async getLocation(id: string): Promise<ApiResponse<LocationResponse>> {
     try {
-      const apiResponse = await this.request.get(`./api/locations/${id}`);
+      const apiResponse = await this.request.get(LOCATION_BY_ID(id));
       return await parseRequestToJSON(apiResponse);
     } catch (error) {
       throw new Error(`Problem fetching location with id: ${id}`);
@@ -22,7 +27,7 @@ class LocationService extends BaseServiceModel {
     params = {}
   ): Promise<ApiResponse<LocationResponse>> {
     try {
-      const apiResponse = await this.request.post('./api/locations', {
+      const apiResponse = await this.request.post(LOCATION_API, {
         data: payload,
         params,
       });
@@ -34,9 +39,7 @@ class LocationService extends BaseServiceModel {
 
   async getLocationTypes(): Promise<ApiResponse<LocationType[]>> {
     try {
-      const apiResponse = await this.request.get(
-        './api/locations/locationTypes'
-      );
+      const apiResponse = await this.request.get(LOCATION_TYPES);
 
       return await parseRequestToJSON(apiResponse);
     } catch (error) {

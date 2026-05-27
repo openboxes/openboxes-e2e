@@ -1,5 +1,6 @@
 import { Page } from '@playwright/test';
 
+import { LOCATION_URL } from '@/consts/applicationUrls';
 import CreateLocationPage from '@/pages/location/createLocation/CreateLocationPage';
 import LocationListPage from '@/pages/location/LocationListPage';
 import LocationData from '@/utils/LocationData';
@@ -19,7 +20,7 @@ class BinLocationUtils {
     receivingBin: string;
   }) {
     const mainLocation = await mainLocationService.getLocation();
-    await page.goto('./location/list');
+    await page.goto(LOCATION_URL.list());
     await locationListPage.searchByLocationNameField.fill(mainLocation.name);
     await locationListPage.findButton.click();
     await locationListPage.getLocationEditButton(mainLocation.name).click();
@@ -50,7 +51,7 @@ class BinLocationUtils {
     holdBinLocationName: string;
   }) {
     const mainLocation = await mainLocationService.getLocation();
-    await page.goto('./location/list');
+    await page.goto(LOCATION_URL.list());
     await locationListPage.searchByLocationNameField.fill(mainLocation.name);
     await locationListPage.findButton.click();
     await locationListPage.getLocationEditButton(mainLocation.name).click();
@@ -97,7 +98,7 @@ class BinLocationUtils {
     binLocationName: string;
   }) {
     const mainLocation = await mainLocationService.getLocation();
-    await page.goto('./location/list');
+    await page.goto(LOCATION_URL.list());
     await locationListPage.searchByLocationNameField.fill(mainLocation.name);
     await locationListPage.findButton.click();
     await locationListPage.getLocationEditButton(mainLocation.name).click();

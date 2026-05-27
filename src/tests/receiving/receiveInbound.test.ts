@@ -1,6 +1,7 @@
 import AppConfig from '@/config/AppConfig';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
+import { Product } from '@/generated/ProductCodes.generated';
 import { StockMovementResponse } from '@/types';
 import BinLocationUtils from '@/utils/BinLocationUtils';
 import { formatDate, getToday } from '@/utils/DateUtils';
@@ -24,10 +25,8 @@ test.describe('Receive inbound stock movement', () => {
         dateRequested,
       });
 
-      productService.setProduct('1');
-      const product = await productService.getProduct();
-      productService.setProduct('2');
-      const product2 = await productService.getProduct();
+      const product = await productService.getProduct(Product.ONE);
+      const product2 = await productService.getProduct(Product.TWO);
 
       await stockMovementService.addItemsToInboundStockMovement(
         STOCK_MOVEMENT.id,
@@ -135,8 +134,7 @@ test.describe('Receive inbound stock movement', () => {
     });
 
     await test.step('Assert product in receiving table', async () => {
-      productService.setProduct('1');
-      const item = await productService.getProduct();
+      const item = await productService.getProduct(Product.ONE);
       await receivingPage.receivingStep.table.row(1).getItem(item.name).hover();
       await expect(receivingPage.tooltip).toContainText(item.name);
     });
@@ -192,8 +190,7 @@ test.describe('Receive inbound stock movement', () => {
     });
 
     await test.step('Assert product in checking table', async () => {
-      productService.setProduct('1');
-      const item = await productService.getProduct();
+      const item = await productService.getProduct(Product.ONE);
       await receivingPage.checkStep.table.row(1).getItem(item.name).hover();
       await expect(receivingPage.tooltip).toContainText(item.name);
     });
@@ -401,10 +398,8 @@ test.describe('Receive from different locations', () => {
         dateRequested,
       });
 
-      productService.setProduct('1');
-      const product = await productService.getProduct();
-      productService.setProduct('2');
-      const product2 = await productService.getProduct();
+      const product = await productService.getProduct(Product.ONE);
+      const product2 = await productService.getProduct(Product.TWO);
 
       await stockMovementService.addItemsToInboundStockMovement(
         STOCK_MOVEMENT.id,

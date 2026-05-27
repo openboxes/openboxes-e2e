@@ -1,6 +1,8 @@
 import { Page } from '@playwright/test';
 
 import FileHandler from '@/components/FileHandler';
+import { STOCK_MOVEMENT_API_PATTERN } from '@/consts/apiUrls';
+import { STOCK_MOVEMENT_URL } from '@/consts/applicationUrls';
 import BasePageModel from '@/pages/BasePageModel';
 import InboundListFilters from '@/pages/inbound/list/InboundListFilters';
 import InboundStockMovementTable from '@/pages/inbound/list/InboundStockMovementTable';
@@ -34,15 +36,15 @@ class InboundListPage extends BasePageModel {
   }
 
   async goToPage() {
-    await this.page.goto('./stockMovement/list?direction=INBOUND');
+    await this.page.goto(STOCK_MOVEMENT_URL.listInbound());
   }
 
   async waitForUrl() {
-    await this.page.waitForURL('**/stockMovement/list**');
+    await this.page.waitForURL(STOCK_MOVEMENT_URL.listPattern);
   }
 
   async waitForResponse() {
-    await this.page.waitForResponse('./api/stockMovements?**');
+    await this.page.waitForResponse(STOCK_MOVEMENT_API_PATTERN);
   }
 
   async search() {

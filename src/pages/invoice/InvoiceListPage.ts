@@ -1,3 +1,4 @@
+import { INVOICE_URL } from '@/consts/applicationUrls';
 import { expect } from '@/fixtures/fixtures';
 import BasePageModel from '@/pages/BasePageModel';
 
@@ -7,7 +8,7 @@ class InvoiceListPage extends BasePageModel {
   }
 
   async goToPage() {
-    await this.page.goto('./invoice/list');
+    await this.page.goto(INVOICE_URL.list());
   }
 
   get invoiceListHeader() {

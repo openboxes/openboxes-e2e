@@ -1,6 +1,7 @@
 import AppConfig from '@/config/AppConfig';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
+import { Product } from '@/generated/ProductCodes.generated';
 import { StockMovementResponse } from '@/types';
 import BinLocationUtils from '@/utils/BinLocationUtils';
 
@@ -14,8 +15,7 @@ test.describe('Assert bin location not clearable', () => {
       productService,
     }) => {
       const supplierLocation = await supplierLocationService.getLocation();
-      productService.setProduct('4');
-      const PRODUCT_FOUR = await productService.getProduct();
+      const PRODUCT_FOUR = await productService.getProduct(Product.FOUR);
 
       STOCK_MOVEMENT = await stockMovementService.createInbound({
         originId: supplierLocation.id,

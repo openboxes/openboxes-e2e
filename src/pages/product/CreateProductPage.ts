@@ -1,5 +1,6 @@
 import { Page } from '@playwright/test';
 
+import { PRODUCT_URL } from '@/consts/applicationUrls';
 import BasePageModel from '@/pages/BasePageModel';
 import ProductDetailsSection from '@/pages/product/sections/ProductDetailsSection';
 
@@ -16,11 +17,11 @@ class CreateProductPage extends BasePageModel {
   }
 
   async goToPage() {
-    await this.page.goto('./product/create');
+    await this.page.goto(PRODUCT_URL.create());
   }
 
   async waitForUrl() {
-    await this.page.waitForURL('**/product/create**');
+    await this.page.waitForURL(PRODUCT_URL.createPattern);
   }
 }
 

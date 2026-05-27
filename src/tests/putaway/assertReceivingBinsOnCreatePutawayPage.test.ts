@@ -1,6 +1,7 @@
 import AppConfig from '@/config/AppConfig';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
+import { Product } from '@/generated/ProductCodes.generated';
 import { StockMovementResponse } from '@/types';
 import { formatDate, getDateByOffset } from '@/utils/DateUtils';
 import RefreshCachesUtils from '@/utils/RefreshCaches';
@@ -31,8 +32,7 @@ test.describe('Assert receiving bin on create putaway page', () => {
           originId: supplierLocation.id,
         });
 
-        productService.setProduct('5');
-        const product = await productService.getProduct();
+        const product = await productService.getProduct(Product.FIVE);
 
         await stockMovementService.addItemsToInboundStockMovement(
           PRIMARY_STOCK_MOVEMENT.id,
@@ -82,8 +82,7 @@ test.describe('Assert receiving bin on create putaway page', () => {
           originId: supplierLocation.id,
         });
 
-        productService.setProduct('5');
-        const product = await productService.getProduct();
+        const product = await productService.getProduct(Product.FIVE);
 
         await stockMovementService.addItemsToInboundStockMovement(
           SECONDARY_STOCK_MOVEMENT.id,
@@ -168,8 +167,7 @@ test.describe('Assert receiving bin on create putaway page', () => {
     const receivingBin2 =
       AppConfig.instance.receivingBinPrefix +
       SECONDARY_STOCK_MOVEMENT.identifier;
-    productService.setProduct('5');
-    const product = await productService.getProduct();
+    const product = await productService.getProduct(Product.FIVE);
     const expDate = getDateByOffset(new Date(), 3);
     const currentLocation = await mainLocationService.getLocation();
     const internalLocation = await internalLocationService.getLocation();

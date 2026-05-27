@@ -1,3 +1,4 @@
+import { LOCATION_GROUP_URL } from '@/consts/applicationUrls';
 import { expect } from '@/fixtures/fixtures';
 import BasePageModel from '@/pages/BasePageModel';
 
@@ -11,7 +12,7 @@ class LocationGroupsListPage extends BasePageModel {
   }
 
   async goToPage(params: { max: number }) {
-    this.page.goto(`./locationGroup/list?max=${params.max}`);
+    this.page.goto(LOCATION_GROUP_URL.list(params));
   }
 
   getPaginationItem(pageNumber: string) {

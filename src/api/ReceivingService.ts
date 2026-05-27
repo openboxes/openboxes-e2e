@@ -3,6 +3,7 @@ import _ from 'lodash';
 
 import BaseServiceModel from '@/api/BaseServiceModel';
 import { PartialReceiptStatus } from '@/constants/PartialReceiptStatus';
+import { PARTIAL_RECEIVING_BY_ID } from '@/consts/apiUrls';
 import {
   ApiResponse,
   Container,
@@ -24,9 +25,7 @@ class ReceivingService extends BaseServiceModel {
   */
   async getReceipt(id: string): Promise<ApiResponse<ReceiptResponse>> {
     try {
-      const apiResponse = await this.request.get(
-        `./api/partialReceiving/${id}`
-      );
+      const apiResponse = await this.request.get(PARTIAL_RECEIVING_BY_ID(id));
       return await parseRequestToJSON(apiResponse);
     } catch (error) {
       throw new Error('Problem fetching partial receipt');
@@ -94,7 +93,7 @@ class ReceivingService extends BaseServiceModel {
         containers: containers,
         recipient: receipt?.data?.recipient?.id,
       };
-      await this.request.post(`./api/partialReceiving/${id}`, {
+      await this.request.post(PARTIAL_RECEIVING_BY_ID(id), {
         data: payload,
       });
     } catch (error) {
@@ -116,7 +115,7 @@ class ReceivingService extends BaseServiceModel {
         containers: this.createEmptyContainers(receipt?.containers),
         recipient: receipt.recipient?.id,
       };
-      await this.request.post(`./api/partialReceiving/${id}`, {
+      await this.request.post(PARTIAL_RECEIVING_BY_ID(id), {
         data: payload,
       });
     } catch (error) {
@@ -267,7 +266,7 @@ class ReceivingService extends BaseServiceModel {
   }
 
   private async saveSplitLines(id: string, payload: ReceiptPayload) {
-    await this.request.post(`./api/partialReceiving/${id}`, {
+    await this.request.post(PARTIAL_RECEIVING_BY_ID(id), {
       data: payload,
     });
   }
@@ -276,7 +275,7 @@ class ReceivingService extends BaseServiceModel {
     id: string,
     status: PartialReceiptStatus
   ): Promise<void> {
-    await this.request.post(`./api/partialReceiving/${id}`, {
+    await this.request.post(PARTIAL_RECEIVING_BY_ID(id), {
       data: {
         id,
         stepNumber: 2,

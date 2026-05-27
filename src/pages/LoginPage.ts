@@ -1,3 +1,4 @@
+import { AUTH_URL } from '@/consts/applicationUrls';
 import BasePageModel from '@/pages/BasePageModel';
 
 class LoginPage extends BasePageModel {
@@ -14,7 +15,7 @@ class LoginPage extends BasePageModel {
   }
 
   async goToPage() {
-    await this.page.goto('./auth/login');
+    await this.page.goto(AUTH_URL.login());
   }
 
   async fillLoginForm(username: string, password: string) {

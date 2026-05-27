@@ -1,4 +1,5 @@
 import LocationChooser from '@/components/LocationChooser';
+import { DASHBOARD_URL } from '@/consts/applicationUrls';
 import { expect, test } from '@/fixtures/fixtures';
 import CreateInvoicePage from '@/pages/invoice/CreateInvoicePage';
 import InvoiceListPage from '@/pages/invoice/InvoiceListPage';
@@ -20,7 +21,7 @@ test.beforeEach(
     };
 
     await test.step('Go to create user page', async () => {
-      await page.goto('./dashboard');
+      await page.goto(DASHBOARD_URL.base);
       await navbar.configurationButton.click();
       await navbar.users.click();
       await userListPage.createUserButton.click();

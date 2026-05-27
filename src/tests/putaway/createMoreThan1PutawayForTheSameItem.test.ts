@@ -1,6 +1,7 @@
 import AppConfig from '@/config/AppConfig';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
+import { Product } from '@/generated/ProductCodes.generated';
 import { StockMovementResponse } from '@/types';
 import RefreshCachesUtils from '@/utils/RefreshCaches';
 import {
@@ -24,8 +25,7 @@ test.describe('Create more than 1 putaway from the same item', () => {
         originId: supplierLocation.id,
       });
 
-      productService.setProduct('5');
-      const product = await productService.getProduct();
+      const product = await productService.getProduct(Product.FIVE);
 
       await stockMovementService.addItemsToInboundStockMovement(
         STOCK_MOVEMENT.id,
@@ -91,8 +91,7 @@ test.describe('Create more than 1 putaway from the same item', () => {
     putawayDetailsPage,
     productService,
   }) => {
-    productService.setProduct('5');
-    const product = await productService.getProduct();
+    const product = await productService.getProduct(Product.FIVE);
     const internalLocation = await internalLocationService.getLocation();
     const receivingBin =
       AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;

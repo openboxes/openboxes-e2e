@@ -1,6 +1,7 @@
 import { expect, Page } from '@playwright/test';
 
 import WizzardSteps from '@/components/WizzardSteps';
+import { PUTAWAY_URL } from '@/consts/applicationUrls';
 import BasePageModel from '@/pages/BasePageModel';
 import StartStep from '@/pages/putaway/steps/StartStep';
 
@@ -31,7 +32,7 @@ class CreatePutawayPage extends BasePageModel {
   }
 
   async goToPage() {
-    await this.page.goto('./putAway/create');
+    await this.page.goto(PUTAWAY_URL.create());
   }
 
   get startPutawayButton() {

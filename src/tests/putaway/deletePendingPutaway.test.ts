@@ -2,6 +2,7 @@ import Navbar from '@/components/Navbar';
 import AppConfig from '@/config/AppConfig';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
+import { Product } from '@/generated/ProductCodes.generated';
 import CreatePutawayPage from '@/pages/putaway/CreatePutawayPage';
 import PutawayListPage from '@/pages/putaway/list/PutawayListPage';
 import PutawayDetailsPage from '@/pages/putaway/putawayDetails/PutawayDetailsPage';
@@ -29,8 +30,7 @@ test.describe('Delete pending putaways', () => {
         originId: supplierLocation.id,
       });
 
-      productService.setProduct('5');
-      const product = await productService.getProduct();
+      const product = await productService.getProduct(Product.FIVE);
 
       await stockMovementService.addItemsToInboundStockMovement(
         STOCK_MOVEMENT.id,
@@ -86,8 +86,7 @@ test.describe('Delete pending putaways', () => {
   }) => {
     const receivingBin =
       AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
-    productService.setProduct('5');
-    const product = await productService.getProduct();
+    const product = await productService.getProduct(Product.FIVE);
 
     await test.step('Go to create putaway page', async () => {
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
@@ -138,8 +137,7 @@ test.describe('Delete pending putaways', () => {
   }) => {
     const receivingBin =
       AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
-    productService.setProduct('5');
-    const product = await productService.getProduct();
+    const product = await productService.getProduct(Product.FIVE);
 
     await test.step('Go to create putaway page', async () => {
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
@@ -192,8 +190,7 @@ test.describe('Delete pending putaways', () => {
   }) => {
     const receivingBin =
       AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
-    productService.setProduct('5');
-    const product = await productService.getProduct();
+    const product = await productService.getProduct(Product.FIVE);
 
     const managerUserPage = await managerUserContext.newPage();
     const navbar = new Navbar(managerUserPage);
@@ -248,8 +245,7 @@ test.describe('Delete pending putaways', () => {
   }) => {
     const receivingBin =
       AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
-    productService.setProduct('5');
-    const product = await productService.getProduct();
+    const product = await productService.getProduct(Product.FIVE);
 
     const managerUserPage = await managerUserContext.newPage();
     const navbar = new Navbar(managerUserPage);
@@ -312,8 +308,7 @@ test.describe('Delete pending putaways', () => {
   }) => {
     const receivingBin =
       AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
-    productService.setProduct('5');
-    const product = await productService.getProduct();
+    const product = await productService.getProduct(Product.FIVE);
 
     const adminUserPage = await altUserContext.newPage();
     const navbar = new Navbar(adminUserPage);
@@ -368,8 +363,7 @@ test.describe('Delete pending putaways', () => {
   }) => {
     const receivingBin =
       AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
-    productService.setProduct('5');
-    const product = await productService.getProduct();
+    const product = await productService.getProduct(Product.FIVE);
 
     const adminUserPage = await altUserContext.newPage();
     const navbar = new Navbar(adminUserPage);
@@ -432,8 +426,7 @@ test.describe('Delete pending putaways', () => {
   }) => {
     const receivingBin =
       AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
-    productService.setProduct('5');
-    const product = await productService.getProduct();
+    const product = await productService.getProduct(Product.FIVE);
 
     const assistantUserPage = await assistantUserContext.newPage();
     const navbar = new Navbar(assistantUserPage);
@@ -488,8 +481,7 @@ test.describe('Delete pending putaways', () => {
   }) => {
     const receivingBin =
       AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
-    productService.setProduct('5');
-    const product = await productService.getProduct();
+    const product = await productService.getProduct(Product.FIVE);
 
     const assistantUserPage = await assistantUserContext.newPage();
     const navbar = new Navbar(assistantUserPage);

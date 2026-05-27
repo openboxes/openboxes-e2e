@@ -1,6 +1,7 @@
 import AppConfig from '@/config/AppConfig';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
+import { Product } from '@/generated/ProductCodes.generated';
 import { StockMovementResponse } from '@/types';
 import RefreshCachesUtils from '@/utils/RefreshCaches';
 import {
@@ -24,8 +25,7 @@ test.describe('Split line in Putaway', () => {
         originId: supplierLocation.id,
       });
 
-      productService.setProduct('5');
-      const product = await productService.getProduct();
+      const product = await productService.getProduct(Product.FIVE);
 
       await stockMovementService.addItemsToInboundStockMovement(
         STOCK_MOVEMENT.id,
@@ -182,8 +182,7 @@ test.describe('Split line in Putaway', () => {
 
     await test.step('Assert putaway bin on stock card', async () => {
       await putawayDetailsPage.summaryTab.click();
-      productService.setProduct('5');
-      const product = await productService.getProduct();
+      const product = await productService.getProduct(Product.FIVE);
       await productShowPage.goToPage(product.id);
       await productShowPage.inStockTab.click();
       await productShowPage.inStockTabSection.isLoaded();

@@ -1,4 +1,5 @@
 import AppConfig from '@/config/AppConfig';
+import { DASHBOARD_URL } from '@/consts/applicationUrls';
 import { expect, test } from '@/fixtures/fixtures';
 
 test.describe('Assert Putaway exist in menu', () => {
@@ -11,7 +12,7 @@ test.describe('Assert Putaway exist in menu', () => {
       await authService.changeLocation(
         AppConfig.instance.locations.noPickAndPutawayStockDepot.id
       );
-      await page.goto('./dashboard');
+      await page.goto(DASHBOARD_URL.base);
     });
 
     await test.step('Assert content of inbound menu in location with pick and putaway stock', async () => {
@@ -43,7 +44,7 @@ test.describe('Assert Putaway exist in menu', () => {
   }) => {
     await test.step('Open dashboard', async () => {
       await authService.changeLocation(AppConfig.instance.locations.main.id);
-      await page.goto('./dashboard');
+      await page.goto(DASHBOARD_URL.base);
     });
 
     await test.step('Assert content of inbound menu in location with pick and putaway stock', async () => {

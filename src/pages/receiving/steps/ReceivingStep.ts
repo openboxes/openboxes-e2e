@@ -2,6 +2,7 @@ import { expect, Page } from '@playwright/test';
 
 import FileHandler from '@/components/FileHandler';
 import NewAlertPopup from '@/components/NewAlertPopup';
+import { PARTIAL_RECEIVING_API_PATTERN } from '@/consts/apiUrls';
 import BasePageModel from '@/pages/BasePageModel';
 import EditModal from '@/pages/receiving/components/EditModal';
 import ReceivingTable from '@/pages/receiving/components/ReceivingTable';
@@ -27,7 +28,7 @@ class ReceivingStep extends BasePageModel {
   }
 
   async waitForData() {
-    await this.page.waitForResponse('./api/partialReceiving/**');
+    await this.page.waitForResponse(PARTIAL_RECEIVING_API_PATTERN);
   }
 
   get autofillQuantitiesButton() {
