@@ -37,6 +37,7 @@
     "eslint-plugin-playwright": "~1.0.1",
     "eslint-plugin-promise": "~6.0.0",
     "eslint-plugin-simple-import-sort": "~10.0.0",
+    "pdfjs-dist": "~3.11.174",
     "prettier": "~3.2.5",
     "typescript": "~5.1.6"
   },
