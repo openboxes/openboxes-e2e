@@ -52,12 +52,12 @@ const writeToFile = (path: string, data: unknown) => {
 
 const deleteFile = (path: string) => {
   if (fs.existsSync(path)) {
-    fs.unlink(path, (err) => {
-      if (err) {
-        console.log(err);
-      }
-    });
+    fs.unlinkSync(path);
   }
 };
 
-export { deleteFile, readFile, writeToFile };
+const writeBufferToFile = (path: string, data: Buffer): void => {
+  fs.writeFileSync(path, data);
+};
+
+export { deleteFile, readFile, writeBufferToFile, writeToFile };
