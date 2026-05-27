@@ -34,6 +34,9 @@ function parseCsv(csv) {
 function buildFileContent(rows) {
   const codeByName = new Map(rows.map((row) => [row.name, row.code]));
 
+  if (rows.length < 6) {
+    throw new Error('We require at least 6 rows with a valid product code in products.csv')
+  }
   // Stable keys for the generated objects, mapped to the name value
   // in products.csv that identifies the row. The productCode (value) is read
   // from the CSV at generation time, so codes can change without touching tests.
