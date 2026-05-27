@@ -72,10 +72,9 @@ class Row extends BasePageModel {
       if (!_.isNil(rowValues.lotNumber)) {
         await this.lotField.textbox.fill(rowValues.lotNumber);
       }
-      if (!_.isNil(rowValues.recipient?.name)) {
-        await this.recipientSelect.findAndSelectOption(
-          rowValues.recipient.name
-        );
+      const recipientName = rowValues.recipient?.name;
+      if (!_.isNil(recipientName)) {
+        await this.recipientSelect.findAndSelectOption(recipientName);
       }
       if (!_.isNil(rowValues.expirationDate)) {
         await this.expirationDate.fill(rowValues.expirationDate);
