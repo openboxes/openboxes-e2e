@@ -1,17 +1,24 @@
+import path from 'node:path';
+
 import AppConfig from '@/config/AppConfig';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
 import { Product } from '@/generated/ProductCodes.generated';
 import { StockMovementResponse } from '@/types';
+import { deleteFile, writeBufferToFile } from '@/utils/FileIOUtils';
+import { pdfContainsValues } from '@/utils/pdfUtils';
 import RefreshCachesUtils from '@/utils/RefreshCaches';
 import {
   deleteReceivedShipment,
   getShipmentId,
   getShipmentItemId,
 } from '@/utils/shipmentUtils';
+import { captureRowValues } from '@/utils/tableUtils';
 
 test.describe('Assert putaway details page', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
+  const downloadedFilePaths: string[] = [];
+  let expectedPdfValues: string[] = [];
 
   test.beforeEach(
     async ({
@@ -79,6 +86,10 @@ test.describe('Assert putaway details page', () => {
         stockMovementService,
         STOCK_MOVEMENT,
       });
+
+      while (downloadedFilePaths.length) {
+        deleteFile(downloadedFilePaths.pop() as string);
+      }
     }
   );
 
@@ -257,15 +268,40 @@ test.describe('Assert putaway details page', () => {
     const putawayOrderIdentifier =
       await putawayDetailsPage.orderHeaderTable.orderNumberValue.textContent();
 
-    await test.step('Download putaway pdf', async () => {
-      const generatePutawayPdfFileName =
-        'Putaway ' + `${putawayOrderIdentifier}`.toString().trim() + '.pdf';
+    const detailsPagePdfFileName =
+      'Putaway ' + `${putawayOrderIdentifier}`.toString().trim() + '.pdf';
+
+    await test.step('Download putaway pdf from details page', async () => {
+      await putawayDetailsPage.fileHandler.onDownload();
       await putawayDetailsPage.generatePutawayListButton.click();
-      const downloadPromise = page.waitForEvent('download');
-      const download = await downloadPromise;
-      await expect(download.suggestedFilename()).toBe(
-        generatePutawayPdfFileName
+      const { fileName, fullFilePath } =
+        await putawayDetailsPage.fileHandler.saveFile();
+      expect(fileName).toBe(detailsPagePdfFileName);
+      downloadedFilePaths.push(fullFilePath);
+    });
+
+    await test.step('Assert details page pdf contains table data', async () => {
+      const rowCount =
+        await putawayDetailsPage.itemStatusTable.orderItemRows.count();
+      expect(rowCount).toBeGreaterThan(0);
+
+      expectedPdfValues = await captureRowValues(
+        rowCount,
+        (i) => putawayDetailsPage.itemStatusTable.orderItemRow(i),
+        (r) => r.code,
+        (r) => r.productName,
+        (r) => r.quantity,
+        (r) => r.lotNumber,
+        (r) => r.expirationDate,
+        (r) => r.destinationBin
       );
+
+      expect(
+        await pdfContainsValues(
+          downloadedFilePaths[downloadedFilePaths.length - 1],
+          expectedPdfValues
+        )
+      ).toBeTruthy();
     });
 
     await test.step('Edit pending putaway and reload without losing data', async () => {
@@ -273,6 +309,40 @@ test.describe('Assert putaway details page', () => {
       await createPutawayPage.startStep.isLoaded();
       await page.reload();
       await createPutawayPage.startStep.isLoaded();
+    });
+
+    const createPagePdfFileNameRegex = new RegExp(
+      `^PutawayReport-${`${putawayOrderIdentifier}`.toString().trim()}\\.pdf$`
+    );
+
+    await test.step('Download putaway list pdf from create putaway page', async () => {
+      const pdfResponsePromise = page.waitForResponse(
+        (resp) =>
+          resp.url().includes('/putAway/generatePdf/') &&
+          resp.status() === 200
+      );
+      const downloadPromise = page.waitForEvent('download');
+      await createPutawayPage.startStep.generatePutawayListButton.click();
+      const [pdfResponse, download] = await Promise.all([
+        pdfResponsePromise,
+        downloadPromise,
+      ]);
+
+      const fileName = download.suggestedFilename();
+      expect(fileName).toMatch(createPagePdfFileNameRegex);
+
+      const fullFilePath = path.join(AppConfig.LOCAL_FILES_DIR_PATH, fileName);
+      writeBufferToFile(fullFilePath, await pdfResponse.body());
+      downloadedFilePaths.push(fullFilePath);
+    });
+
+    await test.step('Assert create putaway page pdf contains table data', async () => {
+      expect(
+        await pdfContainsValues(
+          downloadedFilePaths[downloadedFilePaths.length - 1],
+          expectedPdfValues
+        )
+      ).toBeTruthy();
     });
 
     await test.step('Complete putaway', async () => {
@@ -305,17 +375,26 @@ test.describe('Assert putaway details page', () => {
     });
 
     await test.step('Download putaway pdf from putaway list', async () => {
+      const generatePutawayPdfFileName =
+        'Putaway ' + `${putawayOrderIdentifier}`.toString().trim() + '.pdf';
       const row = putawayListPage.table.row(1);
       await row.actionsButton.click();
       await row.generatePdf.click();
-      const generatePutawayPdfFileName =
-        'Putaway ' + `${putawayOrderIdentifier}`.toString().trim() + '.pdf';
+      await putawayDetailsPage.fileHandler.onDownload();
       await putawayDetailsPage.generatePutawayListButton.click();
-      const downloadPromise = page.waitForEvent('download');
-      const download = await downloadPromise;
-      await expect(download.suggestedFilename()).toBe(
-        generatePutawayPdfFileName
-      );
+      const { fileName, fullFilePath } =
+        await putawayDetailsPage.fileHandler.saveFile();
+      expect(fileName).toBe(generatePutawayPdfFileName);
+      downloadedFilePaths.push(fullFilePath);
+    });
+
+    await test.step('Assert putaway list pdf contains table data', async () => {
+      expect(
+        await pdfContainsValues(
+          downloadedFilePaths[downloadedFilePaths.length - 1],
+          expectedPdfValues
+        )
+      ).toBeTruthy();
     });
 
     await test.step('Filter by completed status and ordered by on putaway list page', async () => {
