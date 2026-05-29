@@ -19,6 +19,21 @@ class CheckTable extends BasePageModel {
     return new Row(this.page, this.rows.nth(index));
   }
 
+  // rows mixes container rows with item rows (e.g. the first item is at
+  // row(1), and multi-container shipments leave gaps), so it can't be indexed
+  // by item position.
+  get itemRows() {
+    return this.rows.filter({
+      has: this.page
+        .getByTestId('label-field')
+        .and(this.page.getByLabel('Code', { exact: true })),
+    });
+  }
+
+  itemRow(index: number) {
+    return new Row(this.page, this.itemRows.nth(index));
+  }
+
   getColumnHeader(columnName: string) {
     return this.table
       .locator('.table-header')
@@ -43,6 +58,12 @@ class Row extends BasePageModel {
 
   getItem(name: string) {
     return this.row.getByTestId('label-field').getByText(name);
+  }
+
+  get code() {
+    return this.row
+      .getByTestId('label-field')
+      .and(this.row.getByLabel('Code', { exact: true }));
   }
 
   get cancelRemainingCheckbox() {
