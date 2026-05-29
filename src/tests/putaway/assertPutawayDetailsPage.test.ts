@@ -2,6 +2,7 @@ import path from 'node:path';
 
 import AppConfig from '@/config/AppConfig';
 import { ShipmentType } from '@/constants/ShipmentType';
+import { PUTAWAY_URL } from '@/consts/applicationUrls';
 import { expect, test } from '@/fixtures/fixtures';
 import { Product } from '@/generated/ProductCodes.generated';
 import { StockMovementResponse } from '@/types';
@@ -318,7 +319,7 @@ test.describe('Assert putaway details page', () => {
     await test.step('Download putaway list pdf from create putaway page', async () => {
       const pdfResponsePromise = page.waitForResponse(
         (resp) =>
-          resp.url().includes('/putAway/generatePdf/') &&
+          PUTAWAY_URL.generatePdfPattern.test(resp.url()) &&
           resp.status() === 200
       );
       const downloadPromise = page.waitForEvent('download');

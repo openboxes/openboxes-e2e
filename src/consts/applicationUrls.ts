@@ -71,6 +71,7 @@ const USER_URL = {
 const PUTAWAY_URL = {
   base: './putAway',
   create: () => `${PUTAWAY_URL.base}/create`,
+  generatePdfPattern: /\/putAway\/generatePdf\//,
 };
 
 const ORDER_URL = {
