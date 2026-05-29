@@ -4,6 +4,8 @@ import { expect, test } from '@/fixtures/fixtures';
 import { Product } from '@/generated/ProductCodes.generated';
 import { StockMovementResponse } from '@/types';
 import BinLocationUtils from '@/utils/BinLocationUtils';
+import { pageContainsValues } from '@/utils/pageUtils';
+import { captureRowValues } from '@/utils/tableUtils';
 
 test.describe('Assert Goods Receipt Note is created and opened', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
@@ -66,6 +68,8 @@ test.describe('Assert Goods Receipt Note is created and opened', () => {
     receivingPage,
     page,
   }) => {
+    let expectedValues: string[] = [];
+
     await test.step('Go to stock movement show page', async () => {
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
       await stockMovementShowPage.isLoaded();
@@ -99,6 +103,13 @@ test.describe('Assert Goods Receipt Note is created and opened', () => {
       await receivingPage.nextButton.click();
       await receivingPage.checkStep.isLoaded();
       await receivingPage.checkStep.isLoaded();
+      const rowCount = await receivingPage.checkStep.table.itemRows.count();
+      expect(rowCount).toBeGreaterThan(0);
+      expectedValues = await captureRowValues(
+        rowCount,
+        (i) => receivingPage.checkStep.table.itemRow(i),
+        (r) => r.code
+      );
       await receivingPage.checkStep.receiveShipmentButton.click();
       await stockMovementShowPage.isLoaded();
     });
@@ -116,6 +127,7 @@ test.describe('Assert Goods Receipt Note is created and opened', () => {
         .downloadButton.click();
       const popup = await popupPromise;
       await expect(popup.locator('.title')).toHaveText('Goods Receipt Note');
+      expect(await pageContainsValues(popup, expectedValues)).toBeTruthy();
       await popup.close();
     });
 
@@ -152,6 +164,7 @@ test.describe('Assert Goods Receipt Note is created and opened', () => {
         .downloadButton.click();
       const popup = await popupPromise;
       await expect(popup.locator('.title')).toHaveText('Goods Receipt Note');
+      expect(await pageContainsValues(popup, expectedValues)).toBeTruthy();
       await popup.close();
     });
 
