@@ -26,6 +26,10 @@ class ItemStatusTable extends BasePageModel {
   get orderItemRows() {
     return this.table.locator('tr.order-item');
   }
+
+  orderItemRow(index: number) {
+    return new Row(this.page, this.orderItemRows.nth(index));
+  }
 }
 
 class Row extends BasePageModel {
@@ -37,6 +41,26 @@ class Row extends BasePageModel {
 
   get itemStatus() {
     return this.row.getByTestId('order-item-status-code');
+  }
+
+  get code() {
+    return this.row.getByTestId('product-code');
+  }
+
+  get productName() {
+    return this.row.getByTestId('product-name');
+  }
+
+  get quantity() {
+    return this.row.getByTestId('quantity');
+  }
+
+  get lotNumber() {
+    return this.row.getByTestId('lot-number');
+  }
+
+  get expirationDate() {
+    return this.row.getByTestId('expiration-date');
   }
 
   get originBin() {
