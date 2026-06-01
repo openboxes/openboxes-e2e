@@ -1,4 +1,4 @@
-import { ORGANIZATION_URL } from '@/consts/applicationUrls';
+import { ORGANIZATION_URL } from '@/constants/applicationUrls';
 import { expect } from '@/fixtures/fixtures';
 import BasePageModel from '@/pages/BasePageModel';
 

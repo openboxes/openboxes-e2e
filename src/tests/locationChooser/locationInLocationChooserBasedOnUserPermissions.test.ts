@@ -4,7 +4,7 @@ import Navbar from '@/components/Navbar';
 import AppConfig from '@/config/AppConfig';
 import { ActivityCode } from '@/constants/ActivityCodes';
 import { LocationTypeCode } from '@/constants/LocationTypeCode';
-import { DASHBOARD_URL } from '@/consts/applicationUrls';
+import { DASHBOARD_URL } from '@/constants/applicationUrls';
 import { expect, test } from '@/fixtures/fixtures';
 import LoginPage from '@/pages/LoginPage';
 import { CreateUserType } from '@/types';

@@ -1,4 +1,4 @@
-import { PERSON_URL } from '@/consts/applicationUrls';
+import { PERSON_URL } from '@/constants/applicationUrls';
 import { expect, test } from '@/fixtures/fixtures';
 import { Product } from '@/generated/ProductCodes.generated';
 import { AddItemsTableRow, LocationResponse } from '@/types';

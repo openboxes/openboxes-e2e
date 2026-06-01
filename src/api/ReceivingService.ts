@@ -3,7 +3,7 @@ import _ from 'lodash';
 
 import BaseServiceModel from '@/api/BaseServiceModel';
 import { PartialReceiptStatus } from '@/constants/PartialReceiptStatus';
-import { PARTIAL_RECEIVING_BY_ID } from '@/consts/apiUrls';
+import { PARTIAL_RECEIVING_BY_ID } from '@/constants/apiUrls';
 import {
   ApiResponse,
   Container,

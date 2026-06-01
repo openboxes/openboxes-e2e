@@ -1,5 +1,5 @@
 import BaseServiceModel from '@/api/BaseServiceModel';
-import { APP_CONTEXT, GENERIC_USER_BY_ID } from '@/consts/apiUrls';
+import { APP_CONTEXT, GENERIC_USER_BY_ID } from '@/constants/apiUrls';
 import { ApiResponse, AppContextResponse, User } from '@/types';
 import { parseRequestToJSON } from '@/utils/ServiceUtils';
 

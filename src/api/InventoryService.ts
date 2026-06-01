@@ -1,5 +1,5 @@
 import BaseServiceModel from '@/api/BaseServiceModel';
-import { INVENTORY_IMPORT } from '@/consts/apiUrls';
+import { INVENTORY_IMPORT } from '@/constants/apiUrls';
 import { jsonToCsv } from '@/utils/ServiceUtils';
 
 class InventoryService extends BaseServiceModel {

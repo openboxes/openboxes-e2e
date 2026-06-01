@@ -1,8 +1,8 @@
 import { Page } from '@playwright/test';
 
 import FileHandler from '@/components/FileHandler';
-import { STOCK_MOVEMENT_API_PATTERN } from '@/consts/apiUrls';
-import { STOCK_MOVEMENT_URL } from '@/consts/applicationUrls';
+import { STOCK_MOVEMENT_API_PATTERN } from '@/constants/apiUrls';
+import { STOCK_MOVEMENT_URL } from '@/constants/applicationUrls';
 import BasePageModel from '@/pages/BasePageModel';
 import InboundListFilters from '@/pages/inbound/list/InboundListFilters';
 import InboundStockMovementTable from '@/pages/inbound/list/InboundStockMovementTable';

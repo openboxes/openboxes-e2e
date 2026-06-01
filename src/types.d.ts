@@ -29,6 +29,18 @@ type FixtureCallback<T> = (
 
 type ApiResponse<T> = { data: T };
 
+type StockMovementListResponse = {
+  data: StockMovementResponse[];
+  totalCount: number;
+};
+
+type PutawayCandidate = {
+  product?: { name?: string; productCode?: string };
+  currentLocation?: { name?: string };
+  quantity?: number;
+  putawayStatus?: string;
+};
+
 type LocationResponse = {
   id: string;
   name: string;

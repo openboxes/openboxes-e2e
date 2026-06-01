@@ -3,7 +3,7 @@ import {
   LOCATION_API,
   LOCATION_BY_ID,
   LOCATION_TYPES,
-} from '@/consts/apiUrls';
+} from '@/constants/apiUrls';
 import {
   ApiResponse,
   CreateLocationPayload,

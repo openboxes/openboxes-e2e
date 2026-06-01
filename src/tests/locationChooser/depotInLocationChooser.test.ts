@@ -1,7 +1,7 @@
 import LocationChooser from '@/components/LocationChooser';
 import Navbar from '@/components/Navbar';
 import AppConfig, { LOCATION_KEY } from '@/config/AppConfig';
-import { DASHBOARD_URL } from '@/consts/applicationUrls';
+import { DASHBOARD_URL } from '@/constants/applicationUrls';
 import { expect, test } from '@/fixtures/fixtures';
 import CreateLocationPage from '@/pages/location/createLocation/CreateLocationPage';
 import LocationListPage from '@/pages/location/LocationListPage';

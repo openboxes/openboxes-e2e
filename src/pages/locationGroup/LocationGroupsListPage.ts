@@ -1,4 +1,4 @@
-import { LOCATION_GROUP_URL } from '@/consts/applicationUrls';
+import { LOCATION_GROUP_URL } from '@/constants/applicationUrls';
 import { expect } from '@/fixtures/fixtures';
 import BasePageModel from '@/pages/BasePageModel';
 

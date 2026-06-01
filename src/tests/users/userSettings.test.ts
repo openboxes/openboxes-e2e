@@ -1,5 +1,5 @@
 import LocationChooser from '@/components/LocationChooser';
-import { DASHBOARD_URL } from '@/consts/applicationUrls';
+import { DASHBOARD_URL } from '@/constants/applicationUrls';
 import { expect, test } from '@/fixtures/fixtures';
 import CreateInvoicePage from '@/pages/invoice/CreateInvoicePage';
 import InvoiceListPage from '@/pages/invoice/InvoiceListPage';

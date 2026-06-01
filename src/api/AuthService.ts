@@ -1,5 +1,5 @@
 import BaseServiceModel from '@/api/BaseServiceModel';
-import { CHOOSE_LOCATION, LOGIN_API } from '@/consts/apiUrls';
+import { CHOOSE_LOCATION, LOGIN_API } from '@/constants/apiUrls';
 
 class AuthService extends BaseServiceModel {
   async login(data: { username: string; password: string; location?: string }) {
