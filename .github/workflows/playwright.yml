@@ -21,6 +21,13 @@ on:
     branches:
       - main  # Trigger when a pull request targets the main branch
 
+# Serialize all runs that hit the same shared server. Tests are not safe to run
+# in parallel (shared session/inventory), so a new run must wait for the current
+# one to finish instead of starting concurrently.
+concurrency:
+  group: playwright-e2e-${{ inputs.environment || 'obdev5' }}
+  cancel-in-progress: false
+
 jobs:
   test:
     timeout-minutes: 60
