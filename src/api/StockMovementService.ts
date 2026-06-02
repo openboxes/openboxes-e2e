@@ -1,8 +1,6 @@
 import { APIRequestContext } from '@playwright/test';
 
 import BaseServiceModel from '@/api/BaseServiceModel';
-import { ShipmentType } from '@/constants/ShipmentType';
-import { StockMovementDirection } from '@/constants/StockMovementDirection';
 import {
   STOCK_MOVEMENT_API,
   STOCK_MOVEMENT_BY_ID,
@@ -10,6 +8,8 @@ import {
   STOCK_MOVEMENT_UPDATE_ITEMS,
   STOCK_MOVEMENT_UPDATE_SHIPMENT,
 } from '@/constants/apiUrls';
+import { ShipmentType } from '@/constants/ShipmentType';
+import { StockMovementDirection } from '@/constants/StockMovementDirection';
 import {
   ApiResponse,
   CreateInboundPayload,
