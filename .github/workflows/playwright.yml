@@ -21,6 +21,13 @@ on:
     branches:
       - main  # Trigger when a pull request targets the main branch
 
+# Serialize all runs that hit the same shared server. Tests are not safe to run
+# in parallel (shared session/inventory), so a new run must wait for the current
+# one to finish instead of starting concurrently.
+concurrency:
+  group: playwright-e2e-${{ inputs.environment || 'obdev5' }}
+  cancel-in-progress: false
+
 jobs:
   test:
     timeout-minutes: 60
@@ -29,6 +36,7 @@ jobs:
       id-token: write
       contents: read
       pages: write
+      actions: write # Required to delete the stale github-pages artifact before re-upload
     environment: ${{ inputs.environment }} # Assign environment dynamically
     steps:
     - name: Checkout code
@@ -87,6 +95,16 @@ jobs:
       with:
         name: playwright-report
         path: playwright-report/
+
+    - name: Remove stale github-pages artifact
+      # On a re-run, the previous attempt's "github-pages" artifact still exists,
+      # which makes deploy-pages fail ("Multiple artifacts named github-pages").
+      # Delete it so upload-pages-artifact below produces exactly one.
+      if: ${{ always() }}
+      uses: geekyeggo/delete-artifact@v5
+      with:
+        name: github-pages
+        failOnError: false
 
     - name: Save Pages
       if: ${{ always() }}

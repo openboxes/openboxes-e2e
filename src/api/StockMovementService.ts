@@ -1,20 +1,22 @@
 import { APIRequestContext } from '@playwright/test';
 
 import BaseServiceModel from '@/api/BaseServiceModel';
-import { ShipmentType } from '@/constants/ShipmentType';
 import {
   STOCK_MOVEMENT_API,
   STOCK_MOVEMENT_BY_ID,
   STOCK_MOVEMENT_STATUS,
   STOCK_MOVEMENT_UPDATE_ITEMS,
   STOCK_MOVEMENT_UPDATE_SHIPMENT,
-} from '@/consts/apiUrls';
+} from '@/constants/apiUrls';
+import { ShipmentType } from '@/constants/ShipmentType';
+import { StockMovementDirection } from '@/constants/StockMovementDirection';
 import {
   ApiResponse,
   CreateInboundPayload,
   CreateStockMovementPayload,
   LineItemsPayload,
   SendInboundPayload,
+  StockMovementListResponse,
   StockMovementResponse,
   UpdateStockMovementItemsPayload,
   UpdateStockMovementPayload,
@@ -47,6 +49,21 @@ class StockMovementService extends BaseServiceModel {
       return await parseRequestToJSON(apiResponse);
     } catch (error) {
       throw new Error('Problem creating stock movement');
+    }
+  }
+
+  async getStockMovements(params: {
+    direction: StockMovementDirection;
+    destination?: string;
+    origin?: string;
+  }): Promise<StockMovementListResponse> {
+    try {
+      const apiResponse = await this.request.get(STOCK_MOVEMENT_API, {
+        params,
+      });
+      return await parseRequestToJSON(apiResponse);
+    } catch (error) {
+      throw new Error('Problem fetching stock movements');
     }
   }
 

@@ -1,6 +1,6 @@
 import { expect, Page } from '@playwright/test';
 
-import { STOCK_MOVEMENT_URL } from '@/consts/applicationUrls';
+import { STOCK_MOVEMENT_URL } from '@/constants/applicationUrls';
 import BasePageModel from '@/pages/BasePageModel';
 import AuditingTable from '@/pages/stockMovementShow/components/AuditingTable';
 import PackingListTable from '@/pages/stockMovementShow/components/PackingListTable';

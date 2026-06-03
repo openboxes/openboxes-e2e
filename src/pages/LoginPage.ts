@@ -1,4 +1,4 @@
-import { AUTH_URL } from '@/consts/applicationUrls';
+import { AUTH_URL } from '@/constants/applicationUrls';
 import BasePageModel from '@/pages/BasePageModel';
 
 class LoginPage extends BasePageModel {

@@ -1,7 +1,7 @@
 import ImpersonateBanner from '@/components/ImpersonateBanner';
 import Navbar from '@/components/Navbar';
 import AppConfig from '@/config/AppConfig';
-import { DASHBOARD_URL } from '@/consts/applicationUrls';
+import { DASHBOARD_URL } from '@/constants/applicationUrls';
 import { expect, test } from '@/fixtures/fixtures';
 import LoginPage from '@/pages/LoginPage';
 import { CreateUserType } from '@/types';

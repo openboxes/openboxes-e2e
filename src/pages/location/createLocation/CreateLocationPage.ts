@@ -1,6 +1,6 @@
 import { Page } from '@playwright/test';
 
-import { LOCATION_URL } from '@/consts/applicationUrls';
+import { LOCATION_URL } from '@/constants/applicationUrls';
 import { expect } from '@/fixtures/fixtures';
 import BasePageModel from '@/pages/BasePageModel';
 import BinLocationsTabSection from '@/pages/location/createLocation/tabs/BinLocationsTabSection';

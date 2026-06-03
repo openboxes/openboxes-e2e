@@ -3,7 +3,7 @@ import {
   PRODUCT_BY_ID,
   PRODUCT_DEMAND,
   PRODUCT_IMPORT,
-} from '@/consts/apiUrls';
+} from '@/constants/apiUrls';
 import { ApiResponse, ProductDemandResponse, ProductResponse } from '@/types';
 import { jsonToCsv, parseRequestToJSON } from '@/utils/ServiceUtils';
 

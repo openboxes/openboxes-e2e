@@ -1,7 +1,7 @@
 import { expect, Page } from '@playwright/test';
 
 import WizzardSteps from '@/components/WizzardSteps';
-import { STOCK_MOVEMENT_URL } from '@/consts/applicationUrls';
+import { STOCK_MOVEMENT_URL } from '@/constants/applicationUrls';
 import BasePageModel from '@/pages/BasePageModel';
 import AddItemsStep from '@/pages/inbound/create/steps/AddItemsStep';
 import CreateStep from '@/pages/inbound/create/steps/CreateStep';

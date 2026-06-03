@@ -1,6 +1,6 @@
 import { expect, Page } from '@playwright/test';
 
-import { ORDER_URL } from '@/consts/applicationUrls';
+import { ORDER_URL } from '@/constants/applicationUrls';
 import BasePageModel from '@/pages/BasePageModel';
 
 import PutawayListTable from './PutawayListTable';

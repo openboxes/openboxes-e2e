@@ -1,5 +1,5 @@
 import AppConfig from '@/config/AppConfig';
-import { DASHBOARD_URL } from '@/consts/applicationUrls';
+import { DASHBOARD_URL } from '@/constants/applicationUrls';
 import { expect, test } from '@/fixtures/fixtures';
 
 test.describe('Assert Putaway exist in menu', () => {

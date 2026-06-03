@@ -2,8 +2,8 @@ import { APIRequestContext } from '@playwright/test';
 import _ from 'lodash';
 
 import BaseServiceModel from '@/api/BaseServiceModel';
+import { PARTIAL_RECEIVING_BY_ID } from '@/constants/apiUrls';
 import { PartialReceiptStatus } from '@/constants/PartialReceiptStatus';
-import { PARTIAL_RECEIVING_BY_ID } from '@/consts/apiUrls';
 import {
   ApiResponse,
   Container,

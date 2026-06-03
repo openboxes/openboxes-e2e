@@ -1,7 +1,7 @@
 import Navbar from '@/components/Navbar';
 import AppConfig from '@/config/AppConfig';
+import { DASHBOARD_URL } from '@/constants/applicationUrls';
 import { ShipmentType } from '@/constants/ShipmentType';
-import { DASHBOARD_URL } from '@/consts/applicationUrls';
 import { expect, test } from '@/fixtures/fixtures';
 import { Product } from '@/generated/ProductCodes.generated';
 import ProductShowPage from '@/pages/product/productShow/ProductShowPage';

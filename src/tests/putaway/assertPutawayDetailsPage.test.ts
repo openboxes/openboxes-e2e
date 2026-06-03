@@ -1,8 +1,8 @@
 import path from 'node:path';
 
 import AppConfig from '@/config/AppConfig';
+import { PUTAWAY_URL } from '@/constants/applicationUrls';
 import { ShipmentType } from '@/constants/ShipmentType';
-import { PUTAWAY_URL } from '@/consts/applicationUrls';
 import { expect, test } from '@/fixtures/fixtures';
 import { Product } from '@/generated/ProductCodes.generated';
 import { StockMovementResponse } from '@/types';

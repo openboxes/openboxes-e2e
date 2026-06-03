@@ -1,6 +1,6 @@
 import { Page } from '@playwright/test';
 
-import { LOCATION_URL } from '@/consts/applicationUrls';
+import { LOCATION_URL } from '@/constants/applicationUrls';
 import CreateLocationPage from '@/pages/location/createLocation/CreateLocationPage';
 import LocationListPage from '@/pages/location/LocationListPage';
 import LocationData from '@/utils/LocationData';

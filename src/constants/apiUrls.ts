@@ -38,6 +38,9 @@ export const STOCK_MOVEMENT_STATUS = (id: string) =>
 export const STOCK_MOVEMENT_ITEMS = (id: string) =>
   `${STOCK_MOVEMENT_BY_ID(id)}/stockMovementItems`;
 
+// PUTAWAY
+export const PUTAWAY_API = `${API}/putaways`;
+
 // PARTIAL RECEIVING
 export const PARTIAL_RECEIVING_BY_ID = (id: string) =>
   `${API}/partialReceiving/${id}`;

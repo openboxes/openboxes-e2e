@@ -1,6 +1,6 @@
 import { Page } from '@playwright/test';
 
-import { INVENTORY_ITEM_URL } from '@/consts/applicationUrls';
+import { INVENTORY_ITEM_URL } from '@/constants/applicationUrls';
 import BasePageModel from '@/pages/BasePageModel';
 import RecordStockSection from '@/pages/product/productShow/sections/RecordStockSection';
 

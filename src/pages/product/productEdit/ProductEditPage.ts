@@ -1,6 +1,6 @@
 import { Page } from '@playwright/test';
 
-import { PRODUCT_URL } from '@/consts/applicationUrls';
+import { PRODUCT_URL } from '@/constants/applicationUrls';
 import BasePageModel from '@/pages/BasePageModel';
 import InventoryLevelsTabSection from '@/pages/product/productEdit/tabs/InventoryLevelsTabSection';
 

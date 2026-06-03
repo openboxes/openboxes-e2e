@@ -2,7 +2,7 @@ import { expect, Page } from '@playwright/test';
 
 import FileHandler from '@/components/FileHandler';
 import NewAlertPopup from '@/components/NewAlertPopup';
-import { PARTIAL_RECEIVING_API_PATTERN } from '@/consts/apiUrls';
+import { PARTIAL_RECEIVING_API_PATTERN } from '@/constants/apiUrls';
 import BasePageModel from '@/pages/BasePageModel';
 import EditModal from '@/pages/receiving/components/EditModal';
 import ReceivingTable from '@/pages/receiving/components/ReceivingTable';

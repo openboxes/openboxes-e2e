@@ -76,13 +76,27 @@ export default defineConfig({
       },
     },
     {
+      name: 'validate-clean-state',
+      testMatch: 'validateCleanState.setup.ts',
+      testDir: './src/setup',
+      dependencies: ['data-import-setup'],
+      use: {
+        storageState: appConfig.users['main'].storagePath,
+      },
+    },
+    {
       name: 'chromium',
       use: {
         ...devices['Desktop Chrome'],
         viewport: { width: 1366, height: 768 },
         storageState: appConfig.users['main'].storagePath,
       },
-      dependencies: ['auth-setup', 'create-data-setup', 'data-import-setup'],
+      dependencies: [
+        'auth-setup',
+        'create-data-setup',
+        'data-import-setup',
+        'validate-clean-state',
+      ],
     },
   ],
 });

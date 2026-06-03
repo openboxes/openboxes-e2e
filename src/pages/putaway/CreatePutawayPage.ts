@@ -1,7 +1,7 @@
 import { expect, Page } from '@playwright/test';
 
 import WizzardSteps from '@/components/WizzardSteps';
-import { PUTAWAY_URL } from '@/consts/applicationUrls';
+import { PUTAWAY_URL } from '@/constants/applicationUrls';
 import BasePageModel from '@/pages/BasePageModel';
 import StartStep from '@/pages/putaway/steps/StartStep';
 
