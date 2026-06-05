@@ -158,7 +158,7 @@ test.describe('Assert attempt to edit completed putaway', () => {
         createPutawayPage.startStep.validationOnEditCompletedPutaway
       ).toBeVisible();
       await createPutawayPage.startStep.closeDisplayedError();
-      await createPutawayPage.startStep.sortByCurrentBinButton.click();
+      await createPutawayPage.startStep.sortButton.click();
       await expect(
         createPutawayPage.startStep.validationOnEditCompletedPutaway
       ).toBeVisible();
