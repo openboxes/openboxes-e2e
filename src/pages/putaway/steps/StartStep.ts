@@ -30,7 +30,7 @@ class StartStep extends BasePageModel {
     return this.page.getByTestId('export-button');
   }
 
-  /*
+  /**
     A single button that cycles the putaway item order through three states:
     original -> by current bins -> by preferred bin -> original.
     Its label shows the next action in the cycle, i.e. "Sort by current bins",

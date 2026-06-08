@@ -19,7 +19,7 @@ export const getShipmentItemId = (
     .shipmentItemId;
 };
 
-/*
+/**
   Sends an inbound stock movement and receives the given quantities (one per
   line, in order) into a single receiving bin, then completes the receipt.
 */

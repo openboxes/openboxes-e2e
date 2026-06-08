@@ -19,7 +19,7 @@ class StartPutawayTable extends BasePageModel {
     return new Row(this.page, this.rows.nth(index));
   }
 
-  /*
+  /**
     Returns the passed product names ordered by their actual vertical position
     in the table (top to bottom).
   */

@@ -10,7 +10,7 @@ import RefreshCachesUtils from '@/utils/RefreshCaches';
 import { deleteReceivedShipment, receiveInbound } from '@/utils/shipmentUtils';
 import { byNameAsc } from '@/utils/sortUtils';
 
-/*
+/**
   Sort putaway items by current bin, preferred bin and original order.
 
   Data is designed so each sort returns a different order
@@ -144,7 +144,7 @@ test.describe('Sort putaway by current bin, preferred bin and original order', (
     receivingService,
     supplierLocationService,
   }) => {
-    // Extended timeout: those pages are loading slowly than others.
+    // Extended timeout: those pages are loading slower than others.
     test.setTimeout(180_000);
 
     await test.step('create putaway for item A and complete it', async () => {

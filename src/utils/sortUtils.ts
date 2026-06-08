@@ -1,4 +1,4 @@
-/*
+/**
   Case-insensitive ascending comparator by `name`. Mirrors the backend's
   lexicographic (toLowerCase) ordering used for products and bin locations.
 */
