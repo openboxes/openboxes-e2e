@@ -19,6 +19,23 @@ class StartPutawayTable extends BasePageModel {
     return new Row(this.page, this.rows.nth(index));
   }
 
+  /**
+    Returns the passed product names ordered by their actual vertical position
+    in the table (top to bottom).
+  */
+  async getProductsOrder(productNames: string[]): Promise<string[]> {
+    const positions: { name: string; y: number }[] = [];
+    for (const name of productNames) {
+      const cell = this.table
+        .getByTestId('table-cell')
+        .filter({ hasText: name })
+        .first();
+      const box = await cell.boundingBox();
+      positions.push({ name, y: box?.y ?? Number.MAX_SAFE_INTEGER });
+    }
+    return positions.sort((a, b) => a.y - b.y).map((item) => item.name);
+  }
+
   get qtyValidationTooltip() {
     return this.page.getByRole('tooltip');
   }

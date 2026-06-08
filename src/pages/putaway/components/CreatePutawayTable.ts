@@ -19,6 +19,12 @@ class CreatePutawayTable extends BasePageModel {
   row(index: number) {
     return new Row(this.page, this.rows.nth(index));
   }
+
+  // Row containing the given product name. Use after flattening the table
+  // (Show by -> Product) so each item is its own row.
+  rowByProductName(name: string) {
+    return new Row(this.page, this.rows.filter({ hasText: name }).first());
+  }
 }
 
 class Row extends BasePageModel {
