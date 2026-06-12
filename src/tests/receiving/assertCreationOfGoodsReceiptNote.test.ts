@@ -5,6 +5,7 @@ import { Product } from '@/generated/ProductCodes.generated';
 import { StockMovementResponse } from '@/types';
 import BinLocationUtils from '@/utils/BinLocationUtils';
 import { pageContainsValues } from '@/utils/pageUtils';
+import { deleteReceivedShipment } from '@/utils/shipmentUtils';
 import { captureRowValues } from '@/utils/tableUtils';
 
 test.describe('Assert Goods Receipt Note is created and opened', () => {
@@ -46,11 +47,16 @@ test.describe('Assert Goods Receipt Note is created and opened', () => {
       page,
       locationListPage,
       createLocationPage,
+      oldViewShipmentPage,
     }) => {
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
-      await stockMovementShowPage.rollbackLastReceiptButton.click();
-      await stockMovementShowPage.rollbackButton.click();
-      await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
+
+      await deleteReceivedShipment({
+        stockMovementShowPage,
+        oldViewShipmentPage,
+        stockMovementService,
+        STOCK_MOVEMENT,
+      });
       const receivingBin =
         AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
       await BinLocationUtils.deactivateReceivingBin({

@@ -4,6 +4,7 @@ import { expect, test } from '@/fixtures/fixtures';
 import { Product } from '@/generated/ProductCodes.generated';
 import { StockMovementResponse } from '@/types';
 import { getToday } from '@/utils/DateUtils';
+import { deleteReceivedShipment } from '@/utils/shipmentUtils';
 
 test.describe('Receive inbound stock movement in location without pick and putaway stock', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
@@ -40,14 +41,24 @@ test.describe('Receive inbound stock movement in location without pick and putaw
     }
   );
 
-  test.afterEach(async ({ stockMovementShowPage, authService }) => {
-    await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
-    await stockMovementShowPage.rollbackLastReceiptButton.click();
-    await stockMovementShowPage.rollbackButton.click();
-    await stockMovementShowPage.clickDeleteShipment();
+  test.afterEach(
+    async ({
+      stockMovementShowPage,
+      authService,
+      oldViewShipmentPage,
+      stockMovementService,
+    }) => {
+      await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
+      await deleteReceivedShipment({
+        stockMovementShowPage,
+        oldViewShipmentPage,
+        stockMovementService,
+        STOCK_MOVEMENT,
+      });
 
-    await authService.changeLocation(AppConfig.instance.locations.main.id);
-  });
+      await authService.changeLocation(AppConfig.instance.locations.main.id);
+    }
+  );
 
   test('Receive sm in location without pick and putaway stock', async ({
     stockMovementShowPage,

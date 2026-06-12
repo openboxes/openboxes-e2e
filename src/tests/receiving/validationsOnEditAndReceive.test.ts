@@ -5,6 +5,7 @@ import { Product } from '@/generated/ProductCodes.generated';
 import { StockMovementResponse } from '@/types';
 import BinLocationUtils from '@/utils/BinLocationUtils';
 import { getToday } from '@/utils/DateUtils';
+import { deleteReceivedShipment } from '@/utils/shipmentUtils';
 
 test.describe('Assert validation on try to receive not yet shipped inbound', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
@@ -104,22 +105,15 @@ test.describe('Validations on edit and receive inbound stock movement', () => {
       page,
       locationListPage,
       createLocationPage,
+      oldViewShipmentPage,
     }) => {
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
-      const isRollbackLastReceiptButtonVisible =
-        await stockMovementShowPage.rollbackLastReceiptButton.isVisible();
-      const isRollbackButtonVisible =
-        await stockMovementShowPage.rollbackButton.isVisible();
-
-      if (isRollbackLastReceiptButtonVisible) {
-        await stockMovementShowPage.rollbackLastReceiptButton.click();
-      }
-
-      if (isRollbackButtonVisible) {
-        await stockMovementShowPage.rollbackButton.click();
-      }
-
-      await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
+      await deleteReceivedShipment({
+        stockMovementShowPage,
+        oldViewShipmentPage,
+        stockMovementService,
+        STOCK_MOVEMENT,
+      });
 
       const receivingBin =
         AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
@@ -228,6 +222,7 @@ test.describe('Validations on edit and receive inbound stock movement', () => {
   test('Assert unable to receive already received inbounds', async ({
     stockMovementShowPage,
     receivingPage,
+    page,
   }) => {
     await test.step('Go to stock movement show page', async () => {
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
@@ -258,8 +253,12 @@ test.describe('Validations on edit and receive inbound stock movement', () => {
 
     await test.step('Validation on receive already received inbound', async () => {
       await stockMovementShowPage.isLoaded();
+      // eslint-disable-next-line playwright/no-networkidle
+      await page.waitForLoadState('networkidle');
       await stockMovementShowPage.receiveButton.click();
-      await expect(stockMovementShowPage.errorMessage).toBeVisible();
+      await expect(stockMovementShowPage.errorMessage).toBeVisible({
+        timeout: 10000,
+      });
       await expect(stockMovementShowPage.errorMessage).toContainText(
         'Stock movement ' +
           STOCK_MOVEMENT.identifier +

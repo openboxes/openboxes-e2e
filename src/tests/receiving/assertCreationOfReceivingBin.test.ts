@@ -7,6 +7,7 @@ import CreateLocationPage from '@/pages/location/createLocation/CreateLocationPa
 import LocationListPage from '@/pages/location/LocationListPage';
 import { StockMovementResponse } from '@/types';
 import BinLocationUtils from '@/utils/BinLocationUtils';
+import { deleteReceivedShipment } from '@/utils/shipmentUtils';
 
 test.describe('Assert creation of receiving bin', () => {
   test.describe.configure({ timeout: 60000 });
@@ -52,10 +53,16 @@ test.describe('Assert creation of receiving bin', () => {
       page,
       locationListPage,
       createLocationPage,
+      oldViewShipmentPage,
     }) => {
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
-      await stockMovementShowPage.rollbackButton.click();
-      await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
+
+      await deleteReceivedShipment({
+        stockMovementShowPage,
+        oldViewShipmentPage,
+        stockMovementService,
+        STOCK_MOVEMENT,
+      });
 
       const receivingBin =
         AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;

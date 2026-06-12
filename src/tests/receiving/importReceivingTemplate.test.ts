@@ -7,6 +7,7 @@ import { Product } from '@/generated/ProductCodes.generated';
 import { StockMovementResponse } from '@/types';
 import BinLocationUtils from '@/utils/BinLocationUtils';
 import { getDateByOffset } from '@/utils/DateUtils';
+import { deleteReceivedShipment } from '@/utils/shipmentUtils';
 import UniqueIdentifier from '@/utils/UniqueIdentifier';
 import { WorkbookUtils } from '@/utils/WorkbookUtils';
 
@@ -58,18 +59,16 @@ test.describe('Import receiving template', () => {
       page,
       locationListPage,
       createLocationPage,
+      oldViewShipmentPage,
     }) => {
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
-      const isButtonVisible =
-        await stockMovementShowPage.rollbackLastReceiptButton.isVisible();
 
-      if (isButtonVisible) {
-        await stockMovementShowPage.rollbackLastReceiptButton.click();
-      }
-
-      await stockMovementShowPage.rollbackButton.click();
-
-      await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
+      await deleteReceivedShipment({
+        stockMovementShowPage,
+        oldViewShipmentPage,
+        stockMovementService,
+        STOCK_MOVEMENT,
+      });
 
       for (const workbook of workbooks) {
         workbook.delete();

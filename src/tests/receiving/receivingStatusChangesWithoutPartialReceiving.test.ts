@@ -6,6 +6,7 @@ import InboundListPage from '@/pages/inbound/list/InboundListPage';
 import StockMovementShowPage from '@/pages/stockMovementShow/StockMovementShowPage';
 import { StockMovementResponse } from '@/types';
 import { getToday } from '@/utils/DateUtils';
+import { deleteReceivedShipment } from '@/utils/shipmentUtils';
 
 test.describe('Status changes on sm view page when receive shipment in location without partial receiving', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
@@ -45,24 +46,24 @@ test.describe('Status changes on sm view page when receive shipment in location 
     }
   );
 
-  test.afterEach(async ({ stockMovementShowPage, authService }) => {
-    await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
-    const isRollbackLastReceiptButtonVisible =
-      await stockMovementShowPage.rollbackLastReceiptButton.isVisible();
-    const isRollbackButtonVisible =
-      await stockMovementShowPage.rollbackButton.isVisible();
+  test.afterEach(
+    async ({
+      stockMovementShowPage,
+      authService,
+      oldViewShipmentPage,
+      stockMovementService,
+    }) => {
+      await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
+      await deleteReceivedShipment({
+        stockMovementShowPage,
+        oldViewShipmentPage,
+        stockMovementService,
+        STOCK_MOVEMENT,
+      });
 
-    if (isRollbackLastReceiptButtonVisible) {
-      await stockMovementShowPage.rollbackLastReceiptButton.click();
+      await authService.changeLocation(AppConfig.instance.locations.main.id);
     }
-
-    if (isRollbackButtonVisible) {
-      await stockMovementShowPage.rollbackButton.click();
-    }
-
-    await stockMovementShowPage.clickDeleteShipment();
-    await authService.changeLocation(AppConfig.instance.locations.main.id);
-  });
+  );
 
   test('Assert status changes on view page and receipt tab when receive 1 item partially', async ({
     stockMovementShowPage,
