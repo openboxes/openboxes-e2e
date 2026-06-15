@@ -5,6 +5,7 @@ import { Product } from '@/generated/ProductCodes.generated';
 import { StockMovementResponse } from '@/types';
 import BinLocationUtils from '@/utils/BinLocationUtils';
 import { formatDate, getDateByOffset } from '@/utils/DateUtils';
+import { deleteReceivedShipment } from '@/utils/shipmentUtils';
 
 test.describe('Assert if quantity inputs remain when split lines', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
@@ -50,22 +51,16 @@ test.describe('Assert if quantity inputs remain when split lines', () => {
       page,
       locationListPage,
       createLocationPage,
+      oldViewShipmentPage,
     }) => {
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
-      const isRollbackLastReceiptButtonVisible =
-        await stockMovementShowPage.rollbackLastReceiptButton.isVisible();
-      const isRollbackButtonVisible =
-        await stockMovementShowPage.rollbackButton.isVisible();
 
-      if (isRollbackLastReceiptButtonVisible) {
-        await stockMovementShowPage.rollbackLastReceiptButton.click();
-      }
-
-      if (isRollbackButtonVisible) {
-        await stockMovementShowPage.rollbackButton.click();
-      }
-
-      await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
+      await deleteReceivedShipment({
+        stockMovementShowPage,
+        oldViewShipmentPage,
+        stockMovementService,
+        STOCK_MOVEMENT,
+      });
 
       const receivingBin =
         AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;

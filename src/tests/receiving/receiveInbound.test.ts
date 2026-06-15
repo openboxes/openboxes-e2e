@@ -5,6 +5,7 @@ import { Product } from '@/generated/ProductCodes.generated';
 import { StockMovementResponse } from '@/types';
 import BinLocationUtils from '@/utils/BinLocationUtils';
 import { formatDate, getToday } from '@/utils/DateUtils';
+import { deleteReceivedShipment } from '@/utils/shipmentUtils';
 
 test.describe('Receive inbound stock movement', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
@@ -50,18 +51,16 @@ test.describe('Receive inbound stock movement', () => {
       page,
       locationListPage,
       createLocationPage,
+      oldViewShipmentPage,
     }) => {
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
-      const isButtonVisible =
-        await stockMovementShowPage.rollbackLastReceiptButton.isVisible();
 
-      if (isButtonVisible) {
-        await stockMovementShowPage.rollbackLastReceiptButton.click();
-      }
-
-      await stockMovementShowPage.rollbackButton.click();
-
-      await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
+      await deleteReceivedShipment({
+        stockMovementShowPage,
+        oldViewShipmentPage,
+        stockMovementService,
+        STOCK_MOVEMENT,
+      });
 
       const receivingBin =
         AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
@@ -416,11 +415,20 @@ test.describe('Receive from different locations', () => {
   );
 
   test.afterEach(
-    async ({ authService, stockMovementShowPage, stockMovementService }) => {
+    async ({
+      authService,
+      stockMovementShowPage,
+      stockMovementService,
+      oldViewShipmentPage,
+    }) => {
       await authService.changeLocation(AppConfig.instance.locations.main.id);
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
-      await stockMovementShowPage.rollbackButton.click();
-      await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
+      await deleteReceivedShipment({
+        stockMovementShowPage,
+        oldViewShipmentPage,
+        stockMovementService,
+        STOCK_MOVEMENT,
+      });
     }
   );
 

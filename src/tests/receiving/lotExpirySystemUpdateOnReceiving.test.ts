@@ -5,6 +5,7 @@ import { Product } from '@/generated/ProductCodes.generated';
 import { StockMovementResponse } from '@/types';
 import BinLocationUtils from '@/utils/BinLocationUtils';
 import { formatDate, getDateByOffset, getToday } from '@/utils/DateUtils';
+import { deleteReceivedShipment } from '@/utils/shipmentUtils';
 import UniqueIdentifier from '@/utils/UniqueIdentifier';
 
 test.describe('Lot number system expiry date modification on receiving workflow', () => {
@@ -18,6 +19,7 @@ test.describe('Lot number system expiry date modification on receiving workflow'
       page,
       locationListPage,
       createLocationPage,
+      oldViewShipmentPage,
     }) => {
       // TODO: Improve this one, it is prone to getting stuck if there are not deleted SMs in the tested location
       while (STOCK_MOVEMENTS.length > 0) {
@@ -29,18 +31,13 @@ test.describe('Lot number system expiry date modification on receiving workflow'
           await stockMovementShowPage.isLoaded();
         });
 
-        const isButtonVisible =
-          await stockMovementShowPage.rollbackLastReceiptButton.isVisible();
-        if (isButtonVisible) {
-          await stockMovementShowPage.rollbackLastReceiptButton.click();
-        }
-
-        await test.step('Rollback shipment', async () => {
-          await stockMovementShowPage.rollbackButton.click();
-        });
-
         await test.step(`Delete stock movement "${STOCK_MOVEMENT.id}"`, async () => {
-          await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
+          await deleteReceivedShipment({
+            stockMovementShowPage,
+            oldViewShipmentPage,
+            stockMovementService,
+            STOCK_MOVEMENT,
+          });
         });
 
         const receivingBin =

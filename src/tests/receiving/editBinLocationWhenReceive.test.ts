@@ -5,6 +5,7 @@ import { expect, test } from '@/fixtures/fixtures';
 import { Product } from '@/generated/ProductCodes.generated';
 import { StockMovementResponse } from '@/types';
 import BinLocationUtils from '@/utils/BinLocationUtils';
+import { deleteReceivedShipment } from '@/utils/shipmentUtils';
 import UniqueIdentifier from '@/utils/UniqueIdentifier';
 
 test.describe('Edit Bin Location when receive inbound stock movement', () => {
@@ -74,23 +75,19 @@ test.describe('Edit Bin Location when receive inbound stock movement', () => {
       locationListPage,
       mainLocationService,
       createLocationPage,
+      oldViewShipmentPage,
     }) => {
       const mainLocation = await mainLocationService.getLocation();
       const receivingBin =
         AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
 
-      const hasRollbackLastReceipt =
-        await stockMovementShowPage.rollbackLastReceiptButton
-          .isVisible()
-          .catch(() => false);
-
-      if (hasRollbackLastReceipt) {
-        await stockMovementShowPage.rollbackLastReceiptButton.click();
-      }
-
-      await stockMovementShowPage.rollbackButton.click();
-      await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
+      await deleteReceivedShipment({
+        stockMovementShowPage,
+        oldViewShipmentPage,
+        stockMovementService,
+        STOCK_MOVEMENT,
+      });
 
       await test.step('Deactivate created bin location', async () => {
         await page.goto(LOCATION_URL.list());
@@ -275,14 +272,19 @@ test.describe('Edit Bin Location to bin with zone when receive inbound stock mov
       locationListPage,
       mainLocationService,
       createLocationPage,
+      oldViewShipmentPage,
     }) => {
       const mainLocation = await mainLocationService.getLocation();
       const receivingBin =
         AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
-      await stockMovementShowPage.rollbackLastReceiptButton.click();
-      await stockMovementShowPage.rollbackButton.click();
-      await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
+
+      await deleteReceivedShipment({
+        stockMovementShowPage,
+        oldViewShipmentPage,
+        stockMovementService,
+        STOCK_MOVEMENT,
+      });
 
       await test.step('Deactivate created bin location', async () => {
         await page.goto(LOCATION_URL.list());
@@ -468,14 +470,19 @@ test.describe('Edit Bin Location when receive for all lines', () => {
       locationListPage,
       mainLocationService,
       createLocationPage,
+      oldViewShipmentPage,
     }) => {
       const mainLocation = await mainLocationService.getLocation();
       const receivingBin =
         AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
-      await stockMovementShowPage.rollbackLastReceiptButton.click();
-      await stockMovementShowPage.rollbackButton.click();
-      await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
+
+      await deleteReceivedShipment({
+        stockMovementShowPage,
+        oldViewShipmentPage,
+        stockMovementService,
+        STOCK_MOVEMENT,
+      });
 
       await test.step('Deactivate created bin location', async () => {
         await page.goto(LOCATION_URL.list());

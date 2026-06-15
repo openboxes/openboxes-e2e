@@ -164,11 +164,9 @@ test.describe('Sort putaway by current bin, preferred bin and original order', (
       await createPutawayPage.startStep.isLoaded();
 
       // Putaway A into binTwo (its preferred bin is auto-suggested).
-      await createPutawayPage.startStep.table.row(0).putawayBinSelect.click();
-      await createPutawayPage.startStep.table
-        .row(0)
-        .getPutawayBin(binTwo.name)
-        .click();
+      await expect(
+        createPutawayPage.startStep.table.row(0).putawayBinSelect
+      ).toContainText(binTwo.name);
       await createPutawayPage.startStep.nextButton.click();
       await createPutawayPage.completeStep.isLoaded();
       await createPutawayPage.completeStep.completePutawayButton.click();
