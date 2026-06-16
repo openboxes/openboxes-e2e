@@ -51,6 +51,10 @@ class LocationDetailsTabSection extends BasePageModel {
   getZoneLocation(name: string) {
     return this.page.getByRole('listitem').getByText(name, { exact: true });
   }
+
+  get clearZoneLocation() {
+    return this.zoneLocationSelect.locator('.search-choice-close');
+  }
 }
 
 export default LocationDetailsTabSection;
