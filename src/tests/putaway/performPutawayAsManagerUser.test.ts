@@ -6,16 +6,19 @@ import { Product } from '@/generated/ProductCodes.generated';
 import CreatePutawayPage from '@/pages/putaway/CreatePutawayPage';
 import PutawayDetailsPage from '@/pages/putaway/putawayDetails/PutawayDetailsPage';
 import StockMovementShowPage from '@/pages/stockMovementShow/StockMovementShowPage';
-import { StockMovementResponse } from '@/types';
+import { ProductResponse, StockMovementResponse } from '@/types';
 import RefreshCachesUtils from '@/utils/RefreshCaches';
 import {
   deleteReceivedShipment,
   getShipmentId,
   getShipmentItemId,
 } from '@/utils/shipmentUtils';
+import { byNameAsc } from '@/utils/sortUtils';
 
 test.describe('Perform putaway as manager user', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
+  let product: ProductResponse;
+  let product2: ProductResponse;
 
   test.beforeEach(
     async ({
@@ -29,8 +32,10 @@ test.describe('Perform putaway as manager user', () => {
         originId: supplierLocation.id,
       });
 
-      const product = await productService.getProduct(Product.THREE);
-      const product2 = await productService.getProduct(Product.FOUR);
+      [product, product2] = [
+        await productService.getProduct(Product.THREE),
+        await productService.getProduct(Product.FOUR),
+      ].sort(byNameAsc);
 
       await stockMovementService.addItemsToInboundStockMovement(
         STOCK_MOVEMENT.id,
@@ -94,12 +99,9 @@ test.describe('Perform putaway as manager user', () => {
   test('Perform putaway as manager user', async ({
     managerUserContext,
     internalLocationService,
-    productService,
   }) => {
     const receivingBin =
-      AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
-    const product = await productService.getProduct(Product.THREE);
-    const product2 = await productService.getProduct(Product.FOUR);
+      AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;;
     const internalLocation = await internalLocationService.getLocation();
 
     const managerUserPage = await managerUserContext.newPage();
@@ -125,10 +127,10 @@ test.describe('Perform putaway as manager user', () => {
         .getExpandBinLocation(receivingBin)
         .click();
       await expect(
-        createPutawayPage.table.row(1).getProductName(product2.name)
+        createPutawayPage.table.row(2).getProductName(product2.name)
       ).toBeVisible();
       await expect(
-        createPutawayPage.table.row(2).getProductName(product.name)
+        createPutawayPage.table.row(1).getProductName(product.name)
       ).toBeVisible();
       await createPutawayPage.table.row(1).checkbox.click();
       await createPutawayPage.table.row(2).checkbox.click();
@@ -214,10 +216,10 @@ test.describe('Perform putaway as manager user', () => {
         .getExpandBinLocation(receivingBin)
         .click();
       await expect(
-        createPutawayPage.table.row(1).getProductName(product2.name)
+        createPutawayPage.table.row(2).getProductName(product2.name)
       ).toBeVisible();
       await expect(
-        createPutawayPage.table.row(2).getProductName(product.name)
+        createPutawayPage.table.row(1).getProductName(product.name)
       ).toBeVisible();
       await managerUserPage.close();
     });

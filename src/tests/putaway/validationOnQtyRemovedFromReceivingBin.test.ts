@@ -5,16 +5,19 @@ import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
 import { Product } from '@/generated/ProductCodes.generated';
 import ProductShowPage from '@/pages/product/productShow/ProductShowPage';
-import { StockMovementResponse } from '@/types';
+import { ProductResponse, StockMovementResponse } from '@/types';
 import RefreshCachesUtils from '@/utils/RefreshCaches';
 import {
   deleteReceivedShipment,
   getShipmentId,
   getShipmentItemId,
 } from '@/utils/shipmentUtils';
+import { byNameAsc } from '@/utils/sortUtils';
 
 test.describe('Assert validation on qty removed from receiving bin', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
+  let product: ProductResponse;
+  let product2: ProductResponse;
 
   test.beforeEach(
     async ({
@@ -28,8 +31,10 @@ test.describe('Assert validation on qty removed from receiving bin', () => {
         originId: supplierLocation.id,
       });
 
-      const product = await productService.getProduct(Product.FIVE);
-      const product2 = await productService.getProduct(Product.FOUR);
+      [product, product2] = [
+        await productService.getProduct(Product.FIVE),
+        await productService.getProduct(Product.FOUR),
+      ].sort(byNameAsc);
 
       await stockMovementService.addItemsToInboundStockMovement(
         STOCK_MOVEMENT.id,
@@ -99,15 +104,12 @@ test.describe('Assert validation on qty removed from receiving bin', () => {
     internalLocationService,
     productShowPage,
     putawayDetailsPage,
-    productService,
     putawayListPage,
     browser,
     navbar,
   }) => {
     const receivingBin =
       AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
-    const product = await productService.getProduct(Product.FIVE);
-    const product2 = await productService.getProduct(Product.FOUR);
     const internalLocation = await internalLocationService.getLocation();
 
     await test.step('Edit transaction date of transfer in', async () => {
