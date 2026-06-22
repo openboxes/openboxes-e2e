@@ -94,6 +94,7 @@ test.describe('Split line in Putaway', () => {
     putawayDetailsPage,
     productShowPage,
     productService,
+    page,
   }) => {
     const internalLocation = await internalLocationService.getLocation();
     const internalLocation2 = await internalLocation2Service.getLocation();
@@ -160,6 +161,8 @@ test.describe('Split line in Putaway', () => {
 
     await test.step('Assert content of items status table', async () => {
       await putawayDetailsPage.itemStatusTab.click();
+      // eslint-disable-next-line playwright/no-networkidle
+      await page.waitForLoadState('networkidle');
       await expect(
         putawayDetailsPage.itemStatusTable.row(1).itemStatus
       ).toHaveText('COMPLETED');
@@ -182,9 +185,13 @@ test.describe('Split line in Putaway', () => {
 
     await test.step('Assert putaway bin on stock card', async () => {
       await putawayDetailsPage.summaryTab.click();
+      // eslint-disable-next-line playwright/no-networkidle
+      await page.waitForLoadState('networkidle');
       const product = await productService.getProduct(Product.FIVE);
       await productShowPage.goToPage(product.id);
       await productShowPage.inStockTab.click();
+      // eslint-disable-next-line playwright/no-networkidle
+      await page.waitForLoadState('networkidle');
       await productShowPage.inStockTabSection.isLoaded();
       await expect(
         productShowPage.inStockTabSection.row(1).binLocation
@@ -202,6 +209,7 @@ test.describe('Split line in Putaway', () => {
     internalLocationService,
     internalLocation2Service,
     putawayDetailsPage,
+    page,
   }) => {
     const internalLocation = await internalLocationService.getLocation();
     const internalLocation2 = await internalLocation2Service.getLocation();
@@ -330,6 +338,8 @@ test.describe('Split line in Putaway', () => {
 
     await test.step('Assert content of items status table', async () => {
       await putawayDetailsPage.itemStatusTab.click();
+      // eslint-disable-next-line playwright/no-networkidle
+      await page.waitForLoadState('networkidle');
       await expect(
         putawayDetailsPage.itemStatusTable.row(1).itemStatus
       ).toHaveText('COMPLETED');

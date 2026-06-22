@@ -89,6 +89,7 @@ test.describe('Putaway item with empty lot', () => {
     productShowPage,
     putawayDetailsPage,
     productService,
+    page,
   }) => {
     const receivingBin =
       AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
@@ -100,6 +101,8 @@ test.describe('Putaway item with empty lot', () => {
     await test.step('Go to stockcard', async () => {
       await productShowPage.goToPage(product.id);
       await productShowPage.inStockTab.click();
+      // eslint-disable-next-line playwright/no-networkidle
+      await page.waitForLoadState('networkidle');
       await productShowPage.inStockTabSection.isLoaded();
     });
 
@@ -130,6 +133,8 @@ test.describe('Putaway item with empty lot', () => {
       );
       await productShowPage.inStockTabSection.stockTransferDialog.transferStockButton.click();
       await productShowPage.inStockTab.click();
+      // eslint-disable-next-line playwright/no-networkidle
+      await page.waitForLoadState('networkidle');
       await productShowPage.inStockTabSection.isLoaded();
       await expect(
         productShowPage.inStockTabSection.row(1).binLocation
@@ -203,8 +208,12 @@ test.describe('Putaway item with empty lot', () => {
 
     await test.step('Assert putaway bin on stock card', async () => {
       await putawayDetailsPage.summaryTab.click();
+      // eslint-disable-next-line playwright/no-networkidle
+      await page.waitForLoadState('networkidle');
       await productShowPage.goToPage(product.id);
       await productShowPage.inStockTab.click();
+      // eslint-disable-next-line playwright/no-networkidle
+      await page.waitForLoadState('networkidle');
       await productShowPage.inStockTabSection.isLoaded();
       await expect(
         productShowPage.inStockTabSection.row(1).binLocation

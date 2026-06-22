@@ -161,6 +161,7 @@ test.describe('Assert receiving bin on create putaway page', () => {
     mainLocationService,
     internalLocationService,
     putawayDetailsPage,
+    page,
   }) => {
     const receivingBin =
       AppConfig.instance.receivingBinPrefix + PRIMARY_STOCK_MOVEMENT.identifier;
@@ -214,6 +215,8 @@ test.describe('Assert receiving bin on create putaway page', () => {
     await test.step('Assert receiving bins and lot and exp on stockcard', async () => {
       await productShowPage.goToPage(product.id);
       await productShowPage.inStockTab.click();
+      // eslint-disable-next-line playwright/no-networkidle
+      await page.waitForLoadState('networkidle');
       await productShowPage.inStockTabSection.isLoaded();
       await expect(
         productShowPage.inStockTabSection.row(1).binLocation
@@ -249,6 +252,8 @@ test.describe('Assert receiving bin on create putaway page', () => {
 
     await test.step('Assert receiving bins and lot and exp on stockcard after stock transfer', async () => {
       await productShowPage.inStockTab.click();
+      // eslint-disable-next-line playwright/no-networkidle
+      await page.waitForLoadState('networkidle');
       await productShowPage.inStockTabSection.isLoaded();
       await expect(
         productShowPage.inStockTabSection.row(1).binLocation
@@ -336,6 +341,8 @@ test.describe('Assert receiving bin on create putaway page', () => {
     await test.step('Assert bins and lot on stockcard after putaway', async () => {
       await productShowPage.goToPage(product.id);
       await productShowPage.inStockTab.click();
+      // eslint-disable-next-line playwright/no-networkidle
+      await page.waitForLoadState('networkidle');
       await productShowPage.inStockTabSection.isLoaded();
       await expect(
         productShowPage.inStockTabSection.row(1).binLocation

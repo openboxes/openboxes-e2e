@@ -77,6 +77,7 @@ test.describe('Status changes on sm view page when receive shipment', () => {
     stockMovementShowPage,
     receivingPage,
     browser,
+    page,
   }) => {
     await test.step('Go to stock movement show page', async () => {
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
@@ -89,6 +90,8 @@ test.describe('Status changes on sm view page when receive shipment', () => {
 
     await test.step('Assert empty receipt tab', async () => {
       await stockMovementShowPage.receiptTab.click();
+      // eslint-disable-next-line playwright/no-networkidle
+      await page.waitForLoadState('networkidle');
       await stockMovementShowPage.receiptTab.isVisible();
       await expect(stockMovementShowPage.emptyReceiptTab).toBeVisible();
     });
@@ -117,6 +120,8 @@ test.describe('Status changes on sm view page when receive shipment', () => {
       await newStockMovementShowPage.isLoaded();
       await expect(newStockMovementShowPage.statusTag).toHaveText('Shipped');
       await newStockMovementShowPage.receiptTab.click();
+      // eslint-disable-next-line playwright/no-networkidle
+      await page.waitForLoadState('networkidle');
       await newStockMovementShowPage.receiptTab.isVisible();
       await expect(
         newStockMovementShowPage.receiptListTable.row(1).receiptStatus
@@ -139,6 +144,8 @@ test.describe('Status changes on sm view page when receive shipment', () => {
     await test.step('Assert statuses on stock movmenent show page after receiving item partially', async () => {
       await expect(stockMovementShowPage.statusTag).toHaveText('Receiving');
       await stockMovementShowPage.receiptTab.click();
+      // eslint-disable-next-line playwright/no-networkidle
+      await page.waitForLoadState('networkidle');
       await stockMovementShowPage.receiptTab.isVisible();
       await expect(
         stockMovementShowPage.receiptListTable.row(1).receiptStatus
@@ -156,6 +163,7 @@ test.describe('Status changes on sm view page when receive shipment', () => {
     stockMovementShowPage,
     receivingPage,
     browser,
+    page,
   }) => {
     await test.step('Go to stock movement show page', async () => {
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
@@ -168,6 +176,8 @@ test.describe('Status changes on sm view page when receive shipment', () => {
 
     await test.step('Assert empty receipt tab', async () => {
       await stockMovementShowPage.receiptTab.click();
+      // eslint-disable-next-line playwright/no-networkidle
+      await page.waitForLoadState('networkidle');
       await stockMovementShowPage.receiptTab.isVisible();
       await expect(stockMovementShowPage.emptyReceiptTab).toBeVisible();
     });
@@ -196,6 +206,8 @@ test.describe('Status changes on sm view page when receive shipment', () => {
       await newStockMovementShowPage.isLoaded();
       await expect(newStockMovementShowPage.statusTag).toHaveText('Shipped');
       await newStockMovementShowPage.receiptTab.click();
+      // eslint-disable-next-line playwright/no-networkidle
+      await page.waitForLoadState('networkidle');
       await newStockMovementShowPage.receiptTab.isVisible();
       await expect(
         newStockMovementShowPage.receiptListTable.row(1).receiptStatus
@@ -218,6 +230,8 @@ test.describe('Status changes on sm view page when receive shipment', () => {
     await test.step('Assert statuses on stock movmenent show page after receiving fully 1 of items', async () => {
       await expect(stockMovementShowPage.statusTag).toHaveText('Receiving');
       await stockMovementShowPage.receiptTab.click();
+      // eslint-disable-next-line playwright/no-networkidle
+      await page.waitForLoadState('networkidle');
       await stockMovementShowPage.receiptTab.isVisible();
       await expect(
         stockMovementShowPage.receiptListTable.row(1).receiptStatus
@@ -235,6 +249,7 @@ test.describe('Status changes on sm view page when receive shipment', () => {
     stockMovementShowPage,
     receivingPage,
     browser,
+    page,
   }) => {
     await test.step('Go to stock movement show page', async () => {
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
@@ -247,6 +262,8 @@ test.describe('Status changes on sm view page when receive shipment', () => {
 
     await test.step('Assert empty receipt tab', async () => {
       await stockMovementShowPage.receiptTab.click();
+      // eslint-disable-next-line playwright/no-networkidle
+      await page.waitForLoadState('networkidle');
       await stockMovementShowPage.receiptTab.isVisible();
       await expect(stockMovementShowPage.emptyReceiptTab).toBeVisible();
     });
@@ -278,6 +295,8 @@ test.describe('Status changes on sm view page when receive shipment', () => {
       await newStockMovementShowPage.isLoaded();
       await expect(newStockMovementShowPage.statusTag).toHaveText('Shipped');
       await newStockMovementShowPage.receiptTab.click();
+      // eslint-disable-next-line playwright/no-networkidle
+      await page.waitForLoadState('networkidle');
       await newStockMovementShowPage.receiptTab.isVisible();
       await expect(
         newStockMovementShowPage.receiptListTable.row(1).receiptStatus
@@ -309,6 +328,8 @@ test.describe('Status changes on sm view page when receive shipment', () => {
     await test.step('Assert statuses on stock movmenent show page after receiving items', async () => {
       await expect(stockMovementShowPage.statusTag).toHaveText('Receiving');
       await stockMovementShowPage.receiptTab.click();
+      // eslint-disable-next-line playwright/no-networkidle
+      await page.waitForLoadState('networkidle');
       await stockMovementShowPage.receiptTab.isVisible();
       await expect(
         stockMovementShowPage.receiptListTable.row(1).receiptStatus
@@ -352,6 +373,8 @@ test.describe('Status changes on sm view page when receive shipment', () => {
     await test.step('Assert statuses on stock movmenent show page after receiving items', async () => {
       await expect(stockMovementShowPage.statusTag).toHaveText('Received');
       await stockMovementShowPage.receiptTab.click();
+      // eslint-disable-next-line playwright/no-networkidle
+      await page.waitForLoadState('networkidle');
       await stockMovementShowPage.receiptTab.isVisible();
       await expect(
         stockMovementShowPage.receiptListTable.row(3).receiptStatus

@@ -83,6 +83,8 @@ test.describe('Assert Goods Receipt Note is created and opened', () => {
 
     await test.step('Go to Documnents tab and assert Goods receipt note is not visible', async () => {
       await stockMovementShowPage.documentTab.click();
+      // eslint-disable-next-line playwright/no-networkidle
+      await page.waitForLoadState('networkidle');
       await expect(
         stockMovementShowPage.documentsListTable
           .row(7)
@@ -161,6 +163,8 @@ test.describe('Assert Goods Receipt Note is created and opened', () => {
 
     await test.step('Assert Goods receipt note is created and opened for received shipment', async () => {
       await stockMovementShowPage.documentTab.click();
+      // eslint-disable-next-line playwright/no-networkidle
+      await page.waitForLoadState('networkidle');
       await expect(
         stockMovementShowPage.documentsListTable
           .row(7)

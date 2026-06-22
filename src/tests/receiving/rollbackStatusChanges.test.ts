@@ -77,6 +77,7 @@ test.describe('Status changes on sm view page when rollback receipts', () => {
   test('Assert status changes on view page and receipt tab when rollback partial receipt of 1 item', async ({
     stockMovementShowPage,
     receivingPage,
+    page,
   }) => {
     await test.step('Go to stock movement show page', async () => {
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
@@ -106,6 +107,8 @@ test.describe('Status changes on sm view page when rollback receipts', () => {
     await test.step('Assert statuses on stock movmenent show page after receiving item partially', async () => {
       await expect(stockMovementShowPage.statusTag).toHaveText('Receiving');
       await stockMovementShowPage.receiptTab.click();
+      // eslint-disable-next-line playwright/no-networkidle
+      await page.waitForLoadState('networkidle');
       await stockMovementShowPage.receiptTab.isVisible();
       await expect(
         stockMovementShowPage.receiptListTable.row(1).receiptStatus
@@ -128,6 +131,8 @@ test.describe('Status changes on sm view page when rollback receipts', () => {
 
     await test.step('Assert empty receipt tab after rollback last receipt', async () => {
       await stockMovementShowPage.receiptTab.click();
+      // eslint-disable-next-line playwright/no-networkidle
+      await page.waitForLoadState('networkidle');
       await stockMovementShowPage.receiptTab.isVisible();
       await expect(stockMovementShowPage.emptyReceiptTab).toBeVisible();
     });
@@ -136,6 +141,7 @@ test.describe('Status changes on sm view page when rollback receipts', () => {
   test('Assert status changes on view page and receipt tab when receive 1 item fully', async ({
     stockMovementShowPage,
     receivingPage,
+    page,
   }) => {
     await test.step('Go to stock movement show page', async () => {
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
@@ -165,6 +171,8 @@ test.describe('Status changes on sm view page when rollback receipts', () => {
     await test.step('Assert statuses on stock movmenent show page after receiving fully 1 of items', async () => {
       await expect(stockMovementShowPage.statusTag).toHaveText('Receiving');
       await stockMovementShowPage.receiptTab.click();
+      // eslint-disable-next-line playwright/no-networkidle
+      await page.waitForLoadState('networkidle');
       await stockMovementShowPage.receiptTab.isVisible();
       await expect(
         stockMovementShowPage.receiptListTable.row(1).receiptStatus
@@ -187,6 +195,8 @@ test.describe('Status changes on sm view page when rollback receipts', () => {
 
     await test.step('Assert empty receipt tab after rollback last receipt', async () => {
       await stockMovementShowPage.receiptTab.click();
+      // eslint-disable-next-line playwright/no-networkidle
+      await page.waitForLoadState('networkidle');
       await stockMovementShowPage.receiptTab.isVisible();
       await expect(stockMovementShowPage.emptyReceiptTab).toBeVisible();
     });
@@ -195,6 +205,7 @@ test.describe('Status changes on sm view page when rollback receipts', () => {
   test('Assert status changes on view page and receipt tab when receive 1 item fully and 1 partially', async ({
     stockMovementShowPage,
     receivingPage,
+    page,
   }) => {
     await test.step('Go to stock movement show page', async () => {
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
@@ -246,6 +257,8 @@ test.describe('Status changes on sm view page when rollback receipts', () => {
     await test.step('Assert statuses on stock movmenent show page after receiving items', async () => {
       await expect(stockMovementShowPage.statusTag).toHaveText('Received');
       await stockMovementShowPage.receiptTab.click();
+      // eslint-disable-next-line playwright/no-networkidle
+      await page.waitForLoadState('networkidle');
       await stockMovementShowPage.receiptTab.isVisible();
       await expect(
         stockMovementShowPage.receiptListTable.row(3).receiptStatus
@@ -266,6 +279,8 @@ test.describe('Status changes on sm view page when rollback receipts', () => {
     await test.step('Assert statuses on stock movmenent show page after receiving items', async () => {
       await expect(stockMovementShowPage.statusTag).toHaveText('Receiving');
       await stockMovementShowPage.receiptTab.click();
+      // eslint-disable-next-line playwright/no-networkidle
+      await page.waitForLoadState('networkidle');
       await stockMovementShowPage.receiptTab.isVisible();
       await expect(
         stockMovementShowPage.receiptListTable.row(1).receiptStatus
@@ -298,6 +313,8 @@ test.describe('Status changes on sm view page when rollback receipts', () => {
 
     await test.step('Assert empty receipt tab after rollback both receipts', async () => {
       await stockMovementShowPage.receiptTab.click();
+      // eslint-disable-next-line playwright/no-networkidle
+      await page.waitForLoadState('networkidle');
       await stockMovementShowPage.receiptTab.isVisible();
       await expect(stockMovementShowPage.emptyReceiptTab).toBeVisible();
     });

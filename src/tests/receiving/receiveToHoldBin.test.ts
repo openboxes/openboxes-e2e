@@ -96,6 +96,7 @@ test.describe('Receive item into hold bin', () => {
     stockMovementShowPage,
     receivingPage,
     productShowPage,
+    page,
   }) => {
     await test.step('Go to stock movement show page', async () => {
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
@@ -131,6 +132,8 @@ test.describe('Receive item into hold bin', () => {
     });
 
     await test.step('Assert edited bin on Packing list', async () => {
+      // eslint-disable-next-line playwright/no-networkidle
+      await page.waitForLoadState('networkidle');
       await expect(
         stockMovementShowPage.packingListTable.row(1).binLocation
       ).toHaveText(holdBinLocationName);
@@ -139,6 +142,8 @@ test.describe('Receive item into hold bin', () => {
     await test.step('Go to product page and assert bin location', async () => {
       await stockMovementShowPage.packingListTable.row(1).product.click();
       await productShowPage.inStockTab.click();
+      // eslint-disable-next-line playwright/no-networkidle
+      await page.waitForLoadState('networkidle');
       await productShowPage.inStockTabSection.isLoaded();
       await expect(
         productShowPage.inStockTabSection.row(2).binLocation

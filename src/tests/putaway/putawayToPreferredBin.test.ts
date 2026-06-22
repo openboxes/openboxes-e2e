@@ -127,6 +127,7 @@ test.describe('Putaway to preferred bin and default bin', () => {
     internalLocationService,
     productShowPage,
     putawayDetailsPage,
+    page,
   }) => {
     const receivingBin =
       AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
@@ -201,12 +202,16 @@ test.describe('Putaway to preferred bin and default bin', () => {
     await test.step('Assert putaway bin on stock card', async () => {
       await productShowPage.goToPage(product2.id);
       await productShowPage.inStockTab.click();
+      // eslint-disable-next-line playwright/no-networkidle
+      await page.waitForLoadState('networkidle');
       await productShowPage.inStockTabSection.isLoaded();
       await expect(
         productShowPage.inStockTabSection.row(2).binLocation
       ).toHaveText(internalLocation.name);
       await productShowPage.goToPage(product.id);
       await productShowPage.inStockTab.click();
+      // eslint-disable-next-line playwright/no-networkidle
+      await page.waitForLoadState('networkidle');
       await productShowPage.inStockTabSection.isLoaded();
       await expect(
         productShowPage.inStockTabSection.row(1).defaultBinLocation
@@ -222,6 +227,7 @@ test.describe('Putaway to preferred bin and default bin', () => {
     internalLocation2Service,
     productShowPage,
     putawayDetailsPage,
+    page,
   }) => {
     const receivingBin =
       AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
@@ -283,6 +289,8 @@ test.describe('Putaway to preferred bin and default bin', () => {
 
     await test.step('Assert content of items status table', async () => {
       await putawayDetailsPage.itemStatusTab.click();
+      // eslint-disable-next-line playwright/no-networkidle
+      await page.waitForLoadState('networkidle');
       await expect(
         putawayDetailsPage.itemStatusTable.row(1).itemStatus
       ).toHaveText('COMPLETED');
@@ -297,6 +305,8 @@ test.describe('Putaway to preferred bin and default bin', () => {
     await test.step('Assert putaway bin on stock card', async () => {
       await productShowPage.goToPage(product2.id);
       await productShowPage.inStockTab.click();
+      // eslint-disable-next-line playwright/no-networkidle
+      await page.waitForLoadState('networkidle');
       await productShowPage.inStockTabSection.isLoaded();
       await expect(
         productShowPage.inStockTabSection.row(2).binLocation

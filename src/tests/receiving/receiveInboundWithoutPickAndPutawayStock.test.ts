@@ -64,6 +64,7 @@ test.describe('Receive inbound stock movement in location without pick and putaw
     stockMovementShowPage,
     receivingPage,
     authService,
+    page,
   }) => {
     await test.step('Go to stock movement show page', async () => {
       await authService.changeLocation(
@@ -148,6 +149,8 @@ test.describe('Receive inbound stock movement in location without pick and putaw
     });
 
     await test.step('Assert Default bin on Packing list', async () => {
+      // eslint-disable-next-line playwright/no-networkidle
+      await page.waitForLoadState('networkidle');
       await expect(
         stockMovementShowPage.packingListTable.row(1).binLocation
       ).toHaveText('Default');

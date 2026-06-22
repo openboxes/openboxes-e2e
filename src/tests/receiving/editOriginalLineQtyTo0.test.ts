@@ -285,6 +285,7 @@ test.describe('Edit original line to other product in the middle of receipt', ()
     stockMovementShowPage,
     receivingPage,
     productService,
+    page,
   }) => {
     await test.step('Go to stock movement show page', async () => {
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
@@ -377,10 +378,14 @@ test.describe('Edit original line to other product in the middle of receipt', ()
       const PRODUCT_FOUR = await productService.getProduct(Product.FOUR);
       const PRODUCT_FIVE = await productService.getProduct(Product.FIVE);
       await stockMovementShowPage.packingListTab.isVisible();
+      // eslint-disable-next-line playwright/no-networkidle
+      await page.waitForLoadState('networkidle');
       await expect(
         stockMovementShowPage.packingListTable.row(1).product
       ).toHaveText(PRODUCT_FOUR.name);
       await stockMovementShowPage.receiptTab.click();
+      // eslint-disable-next-line playwright/no-networkidle
+      await page.waitForLoadState('networkidle');
       await expect(
         stockMovementShowPage.receiptListTable.row(1).product
       ).toHaveText(PRODUCT_FIVE.name);

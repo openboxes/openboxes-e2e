@@ -90,6 +90,7 @@ test.describe('Putaway received inbound shipment', () => {
     productShowPage,
     putawayDetailsPage,
     productService,
+    page,
   }) => {
     await test.step('Go to stock movement show page and assert received status', async () => {
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
@@ -134,9 +135,13 @@ test.describe('Putaway received inbound shipment', () => {
 
     await test.step('Assert putaway bin on stock card', async () => {
       await putawayDetailsPage.summaryTab.click();
+      // eslint-disable-next-line playwright/no-networkidle
+      await page.waitForLoadState('networkidle');
       const product = await productService.getProduct(Product.FIVE);
       await productShowPage.goToPage(product.id);
       await productShowPage.inStockTab.click();
+      // eslint-disable-next-line playwright/no-networkidle
+      await page.waitForLoadState('networkidle');
       await productShowPage.inStockTabSection.isLoaded();
       const internalLocation = await internalLocationService.getLocation();
       await expect(
