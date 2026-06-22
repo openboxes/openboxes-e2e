@@ -71,9 +71,13 @@ export async function deleteReceivedShipment({
   oldViewShipmentPage: OldViewShipmentPage;
 }) {
   await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
-  await stockMovementShowPage.detailsListTable.oldViewShipmentPage.click();
-  await oldViewShipmentPage.undoStatusChangeButton.click();
-  await stockMovementShowPage.isLoaded();
-  await stockMovementShowPage.rollbackButton.click();
+  try {
+    await stockMovementShowPage.detailsListTable.oldViewShipmentPage.click();
+    await oldViewShipmentPage.undoStatusChangeButton.click();
+    await stockMovementShowPage.isLoaded();
+    await stockMovementShowPage.rollbackButton.click();
+  } catch {
+    /* empty */
+  }
   await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
 }

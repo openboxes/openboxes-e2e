@@ -66,12 +66,8 @@ test.describe('Create more than 1 putaway from the same item', () => {
     }) => {
       await navbar.configurationButton.click();
       await navbar.transactions.click();
-      await transactionListPage.table.row(1).actionsButton.click();
-      await transactionListPage.table.deleteButton.click();
-      await expect(transactionListPage.successMessage).toBeVisible();
-      await transactionListPage.table.row(1).actionsButton.click();
-      await transactionListPage.table.deleteButton.click();
-      await expect(transactionListPage.successMessage).toBeVisible();
+      await transactionListPage.deleteTransactionIfPresent(1);
+      await transactionListPage.deleteTransactionIfPresent(1);
 
       await deleteReceivedShipment({
         stockMovementShowPage,
@@ -173,10 +169,14 @@ test.describe('Create more than 1 putaway from the same item', () => {
       await page.waitForLoadState('networkidle');
       await productShowPage.inStockTabSection.isLoaded();
       await expect(
-        productShowPage.inStockTabSection.row(1).binLocation
+        productShowPage.inStockTabSection.getRowByBinLocation(
+          internalLocation.name
+        ).binLocation
       ).toHaveText(internalLocation.name);
       await expect(
-        productShowPage.inStockTabSection.row(1).quantityOnHand
+        productShowPage.inStockTabSection.getRowByBinLocation(
+          internalLocation.name
+        ).quantityOnHand
       ).toHaveText('5');
       await RefreshCachesUtils.refreshCaches({
         navbar,
@@ -231,10 +231,14 @@ test.describe('Create more than 1 putaway from the same item', () => {
       await page.waitForLoadState('networkidle');
       await productShowPage.inStockTabSection.isLoaded();
       await expect(
-        productShowPage.inStockTabSection.row(1).binLocation
+        productShowPage.inStockTabSection.getRowByBinLocation(
+          internalLocation.name
+        ).binLocation
       ).toHaveText(internalLocation.name);
       await expect(
-        productShowPage.inStockTabSection.row(1).quantityOnHand
+        productShowPage.inStockTabSection.getRowByBinLocation(
+          internalLocation.name
+        ).quantityOnHand
       ).toHaveText('10');
     });
   });

@@ -133,7 +133,7 @@ test.describe('Assert receiving bin on create putaway page', () => {
       await navbar.configurationButton.click();
       await navbar.transactions.click();
       for (let n = 1; n < 4; n++) {
-        await transactionListPage.deleteTransaction(1);
+        await transactionListPage.deleteTransactionIfPresent(1);
       }
 
       await deleteReceivedShipment({

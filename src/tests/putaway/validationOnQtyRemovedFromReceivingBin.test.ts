@@ -84,7 +84,7 @@ test.describe('Assert validation on qty removed from receiving bin', () => {
       await navbar.configurationButton.click();
       await navbar.transactions.click();
       for (let n = 1; n < 4; n++) {
-        await transactionListPage.deleteTransaction(1);
+        await transactionListPage.deleteTransactionIfPresent(1);
       }
       await deleteReceivedShipment({
         stockMovementShowPage,
@@ -179,7 +179,7 @@ test.describe('Assert validation on qty removed from receiving bin', () => {
       await newProductShowPage.goToPage(product.id);
       await newProductShowPage.recordStockButton.click();
       await newProductShowPage.recordStock.lineItemsTable
-        .row(1)
+        .getRowByBinLocation(receivingBin)
         .newQuantity.getByRole('textbox')
         .fill('0');
       await newProductShowPage.recordStock.lineItemsTable.saveButton.click();
@@ -221,7 +221,7 @@ test.describe('Assert validation on qty removed from receiving bin', () => {
       await productShowPage.goToPage(product2.id);
       await productShowPage.recordStockButton.click();
       await productShowPage.recordStock.lineItemsTable
-        .row(2)
+        .getRowByBinLocation(receivingBin)
         .newQuantity.getByRole('textbox')
         .fill('5');
       await productShowPage.recordStock.lineItemsTable.saveButton.click();
@@ -272,10 +272,14 @@ test.describe('Assert validation on qty removed from receiving bin', () => {
       await page.waitForLoadState('networkidle');
       await productShowPage.inStockTabSection.isLoaded();
       await expect(
-        productShowPage.inStockTabSection.row(2).binLocation
+        productShowPage.inStockTabSection.getRowByBinLocation(
+          internalLocation.name
+        ).binLocation
       ).toHaveText(internalLocation.name);
       await expect(
-        productShowPage.inStockTabSection.row(2).quantityOnHand
+        productShowPage.inStockTabSection.getRowByBinLocation(
+          internalLocation.name
+        ).quantityOnHand
       ).toHaveText('5');
     });
   });

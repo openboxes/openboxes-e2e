@@ -20,6 +20,20 @@ class TransactionListPage extends BasePageModel {
     await this.table.deleteButton.click();
     await expect(this.page.locator('.message')).toBeVisible();
   }
+
+  /**
+   * Best-effort deletion used during cleanup. After a test fails mid-way the
+   * expected transactions may be missing, so a hard delete would throw and
+   * abort the afterEach before the shipment gets removed — leaving a received
+   * shipment behind. This swallows such errors so cleanup can continue.
+   */
+  async deleteTransactionIfPresent(n: number) {
+    try {
+      await this.deleteTransaction(n);
+    } catch {
+      // Nothing to delete at this row; continue with the rest of the cleanup.
+    }
+  }
 }
 
 export default TransactionListPage;

@@ -66,12 +66,8 @@ test.describe('Assert attempt to edit completed putaway', () => {
     }) => {
       await navbar.configurationButton.click();
       await navbar.transactions.click();
-      await transactionListPage.table.row(1).actionsButton.click();
-      await transactionListPage.table.deleteButton.click();
-      await expect(transactionListPage.successMessage).toBeVisible();
-      await transactionListPage.table.row(1).actionsButton.click();
-      await transactionListPage.table.deleteButton.click();
-      await expect(transactionListPage.successMessage).toBeVisible();
+      await transactionListPage.deleteTransactionIfPresent(1);
+      await transactionListPage.deleteTransactionIfPresent(1);
 
       await deleteReceivedShipment({
         stockMovementShowPage,

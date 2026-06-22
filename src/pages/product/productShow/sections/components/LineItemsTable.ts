@@ -38,6 +38,19 @@ class LineItemsTable extends BasePageModel {
   getRowByLot(lot: string) {
     return this.table.locator(`tr:has-text("${lot}")`);
   }
+
+  /**
+   * Select a row by its bin location name instead of a positional index.
+   * Residual/negative stock in shared bins can add unexpected rows (see
+   * validateCleanState.setup.ts), which shifts indices and makes `row(n)`
+   * target the wrong bin. Matching by name keeps the interaction correct.
+   */
+  getRowByBinLocation(binLocation: string) {
+    return new Row(
+      this.page,
+      this.rows.filter({ hasText: binLocation }).first()
+    );
+  }
 }
 
 class Row extends BasePageModel {

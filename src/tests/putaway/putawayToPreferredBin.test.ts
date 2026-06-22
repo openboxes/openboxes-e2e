@@ -98,8 +98,8 @@ test.describe('Putaway to preferred bin and default bin', () => {
     }) => {
       await navbar.configurationButton.click();
       await navbar.transactions.click();
-      await transactionListPage.deleteTransaction(1);
-      await transactionListPage.deleteTransaction(1);
+      await transactionListPage.deleteTransactionIfPresent(1);
+      await transactionListPage.deleteTransactionIfPresent(1);
       await deleteReceivedShipment({
         stockMovementShowPage,
         oldViewShipmentPage,
