@@ -103,7 +103,7 @@ test.describe('Sort putaway by current bin, preferred bin and original order', (
       await navbar.configurationButton.click();
       await navbar.transactions.click();
       for (let i = 0; i < 3; i++) {
-        await transactionListPage.deleteTransactionIfPresent(1);
+        await transactionListPage.deleteTransaction(1);
       }
 
       await deleteReceivedShipment({

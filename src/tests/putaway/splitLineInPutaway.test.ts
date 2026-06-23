@@ -66,9 +66,15 @@ test.describe('Split line in Putaway', () => {
     }) => {
       await navbar.configurationButton.click();
       await navbar.transactions.click();
-      await transactionListPage.deleteTransactionIfPresent(1);
-      await transactionListPage.deleteTransactionIfPresent(1);
-      await transactionListPage.deleteTransactionIfPresent(1);
+      await transactionListPage.table.row(1).actionsButton.click();
+      await transactionListPage.table.deleteButton.click();
+      await expect(transactionListPage.successMessage).toBeVisible();
+      await transactionListPage.table.row(1).actionsButton.click();
+      await transactionListPage.table.deleteButton.click();
+      await expect(transactionListPage.successMessage).toBeVisible();
+      await transactionListPage.table.row(1).actionsButton.click();
+      await transactionListPage.table.deleteButton.click();
+      await expect(transactionListPage.successMessage).toBeVisible();
 
       await deleteReceivedShipment({
         stockMovementShowPage,

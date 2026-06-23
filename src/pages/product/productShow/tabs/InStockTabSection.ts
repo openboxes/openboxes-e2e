@@ -32,20 +32,6 @@ class InStockTabSection extends BasePageModel {
     return new Row(this.page, this.rows.nth(index));
   }
 
-  /**
-   * Select a row by its bin location name instead of a positional index.
-   * Residual stock in shared bins can add unexpected rows (see
-   * validateCleanState.setup.ts), shifting indices so `row(n)` reads the
-   * wrong bin. Matching by name keeps the assertion pinned to the bin we
-   * actually put away into.
-   */
-  getRowByBinLocation(binLocation: string) {
-    return new Row(
-      this.page,
-      this.rows.filter({ hasText: binLocation }).first()
-    );
-  }
-
   get stockTransferButton() {
     return this.page.getByRole('link', { name: 'Transfer Stock' });
   }

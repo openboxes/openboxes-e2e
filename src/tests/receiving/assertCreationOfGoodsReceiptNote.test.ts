@@ -123,19 +123,14 @@ test.describe('Assert Goods Receipt Note is created and opened', () => {
     });
 
     await test.step('Assert Goods receipt note is created and opened for partially received shipment', async () => {
-      // The Goods Receipt Note is attached to the shipment asynchronously after
-      // the receipt completes, so the show page that loads right after can still
-      // be missing it. Reload until the document shows up instead of asserting
-      // once against a possibly stale page.
-      await expect(async () => {
-        await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
-        await stockMovementShowPage.documentTab.click();
-        await expect(
-          stockMovementShowPage.documentsListTable
-            .row(7)
-            .getDocumentName('Goods Receipt Note')
-        ).toBeVisible({ timeout: 3000 });
-      }).toPass({ timeout: 15000 });
+      await stockMovementShowPage.documentTab.click();
+      // eslint-disable-next-line playwright/no-networkidle
+      await page.waitForLoadState('networkidle');
+      await expect(
+        stockMovementShowPage.documentsListTable
+          .row(7)
+          .getDocumentName('Goods Receipt Note')
+      ).toBeVisible();
       const popupPromise = page.waitForEvent('popup');
       await stockMovementShowPage.documentsListTable
         .row(7)
@@ -167,17 +162,14 @@ test.describe('Assert Goods Receipt Note is created and opened', () => {
     });
 
     await test.step('Assert Goods receipt note is created and opened for received shipment', async () => {
-      // See note above: the GRN is attached asynchronously after the receipt,
-      // so reload until it appears rather than asserting against a stale page.
-      await expect(async () => {
-        await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
-        await stockMovementShowPage.documentTab.click();
-        await expect(
-          stockMovementShowPage.documentsListTable
-            .row(7)
-            .getDocumentName('Goods Receipt Note')
-        ).toBeVisible({ timeout: 3000 });
-      }).toPass({ timeout: 15000 });
+      await stockMovementShowPage.documentTab.click();
+      // eslint-disable-next-line playwright/no-networkidle
+      await page.waitForLoadState('networkidle');
+      await expect(
+        stockMovementShowPage.documentsListTable
+          .row(7)
+          .getDocumentName('Goods Receipt Note')
+      ).toBeVisible();
       const popupPromise = page.waitForEvent('popup');
       await stockMovementShowPage.documentsListTable
         .row(7)
