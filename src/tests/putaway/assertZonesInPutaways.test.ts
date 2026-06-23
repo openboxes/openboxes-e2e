@@ -157,7 +157,7 @@ test.describe('Assert zones on putaway pages', () => {
     }) => {
       await navbar.configurationButton.click();
       await navbar.transactions.click();
-      for (let n = 1; n < 3; n++) {
+      for (let n = 1; n < 4; n++) {
         await transactionListPage.deleteTransaction(1);
       }
       await deleteReceivedShipment({
