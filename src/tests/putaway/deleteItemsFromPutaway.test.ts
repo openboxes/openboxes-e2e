@@ -99,7 +99,6 @@ test.describe('Delete items from putaway', () => {
     internalLocationService,
     putawayDetailsPage,
     putawayListPage,
-    page,
   }) => {
     const receivingBin =
       AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
@@ -146,8 +145,7 @@ test.describe('Delete items from putaway', () => {
 
     await test.step('Assert number of lines on summary tab', async () => {
       await putawayDetailsPage.summaryTab.click();
-      // eslint-disable-next-line playwright/no-networkidle
-      await page.waitForLoadState('networkidle');
+      await putawayDetailsPage.summaryTable.isLoaded();
       await expect(putawayDetailsPage.summaryTable.orderItemRows).toHaveCount(
         2
       );
@@ -155,8 +153,7 @@ test.describe('Delete items from putaway', () => {
 
     await test.step('Assert number of lines on status table', async () => {
       await putawayDetailsPage.itemStatusTab.click();
-      // eslint-disable-next-line playwright/no-networkidle
-      await page.waitForLoadState('networkidle');
+      await putawayDetailsPage.itemStatusTable.isLoaded();
       await expect(
         putawayDetailsPage.itemStatusTable.orderItemRows
       ).toHaveCount(2);
@@ -164,8 +161,7 @@ test.describe('Delete items from putaway', () => {
 
     await test.step('Assert number of lines on item details table', async () => {
       await putawayDetailsPage.itemDetailsTab.click();
-      // eslint-disable-next-line playwright/no-networkidle
-      await page.waitForLoadState('networkidle');
+      await putawayDetailsPage.itemDetailsTable.isLoaded();
       await expect(
         putawayDetailsPage.itemDetailsTable.orderItemRows
       ).toHaveCount(2);
@@ -199,8 +195,7 @@ test.describe('Delete items from putaway', () => {
 
     await test.step('Assert number of lines on summary tab', async () => {
       await putawayDetailsPage.summaryTab.click();
-      // eslint-disable-next-line playwright/no-networkidle
-      await page.waitForLoadState('networkidle');
+      await putawayDetailsPage.summaryTable.isLoaded();
       await expect(putawayDetailsPage.summaryTable.orderItemRows).toHaveCount(
         1
       );
@@ -208,8 +203,7 @@ test.describe('Delete items from putaway', () => {
 
     await test.step('Assert number of lines on items status table', async () => {
       await putawayDetailsPage.itemStatusTab.click();
-      // eslint-disable-next-line playwright/no-networkidle
-      await page.waitForLoadState('networkidle');
+      await putawayDetailsPage.itemStatusTable.isLoaded();
       await expect(
         putawayDetailsPage.itemStatusTable.orderItemRows
       ).toHaveCount(1);
@@ -217,8 +211,7 @@ test.describe('Delete items from putaway', () => {
 
     await test.step('Assert number of lines on item details table', async () => {
       await putawayDetailsPage.itemDetailsTab.click();
-      // eslint-disable-next-line playwright/no-networkidle
-      await page.waitForLoadState('networkidle');
+      await putawayDetailsPage.itemDetailsTable.isLoaded();
       await expect(
         putawayDetailsPage.itemDetailsTable.orderItemRows
       ).toHaveCount(1);
@@ -283,8 +276,7 @@ test.describe('Delete items from putaway', () => {
 
     await test.step('Assert number of lines on summary tab', async () => {
       await putawayDetailsPage.summaryTab.click();
-      // eslint-disable-next-line playwright/no-networkidle
-      await page.waitForLoadState('networkidle');
+      await putawayDetailsPage.summaryTable.isLoaded();
       await expect(putawayDetailsPage.summaryTable.orderItemRows).toHaveCount(
         2
       );
@@ -292,8 +284,7 @@ test.describe('Delete items from putaway', () => {
 
     await test.step('Assert number of lines on items status table', async () => {
       await putawayDetailsPage.itemStatusTab.click();
-      // eslint-disable-next-line playwright/no-networkidle
-      await page.waitForLoadState('networkidle');
+      await putawayDetailsPage.itemStatusTable.isLoaded();
       await expect(
         putawayDetailsPage.itemStatusTable.orderItemRows
       ).toHaveCount(2);
@@ -301,8 +292,7 @@ test.describe('Delete items from putaway', () => {
 
     await test.step('Assert number of lines on item details table', async () => {
       await putawayDetailsPage.itemDetailsTab.click();
-      // eslint-disable-next-line playwright/no-networkidle
-      await page.waitForLoadState('networkidle');
+      await putawayDetailsPage.itemDetailsTable.isLoaded();
       await expect(
         putawayDetailsPage.itemDetailsTable.orderItemRows
       ).toHaveCount(2);
@@ -339,8 +329,7 @@ test.describe('Delete items from putaway', () => {
 
     await test.step('Assert number of lines on summary tab on completed putaway', async () => {
       await putawayDetailsPage.summaryTab.click();
-      // eslint-disable-next-line playwright/no-networkidle
-      await page.waitForLoadState('networkidle');
+      await putawayDetailsPage.summaryTable.isLoaded();
       await expect(putawayDetailsPage.summaryTable.orderItemRows).toHaveCount(
         2
       );
@@ -348,8 +337,7 @@ test.describe('Delete items from putaway', () => {
 
     await test.step('Assert number of lines on items status table on completed putaway', async () => {
       await putawayDetailsPage.itemStatusTab.click();
-      // eslint-disable-next-line playwright/no-networkidle
-      await page.waitForLoadState('networkidle');
+      await putawayDetailsPage.itemStatusTable.isLoaded();
       await expect(
         putawayDetailsPage.itemStatusTable.orderItemRows
       ).toHaveCount(2);
@@ -357,8 +345,7 @@ test.describe('Delete items from putaway', () => {
 
     await test.step('Assert number of lines on item details table on completed putaway', async () => {
       await putawayDetailsPage.itemDetailsTab.click();
-      // eslint-disable-next-line playwright/no-networkidle
-      await page.waitForLoadState('networkidle');
+      await putawayDetailsPage.itemDetailsTable.isLoaded();
       await expect(
         putawayDetailsPage.itemDetailsTable.orderItemRows
       ).toHaveCount(2);

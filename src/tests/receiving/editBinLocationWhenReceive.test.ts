@@ -128,7 +128,6 @@ test.describe('Edit Bin Location when receive inbound stock movement', () => {
     stockMovementShowPage,
     receivingPage,
     productShowPage,
-    page,
   }) => {
     await test.step('Go to stock movement show page', async () => {
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
@@ -164,8 +163,6 @@ test.describe('Edit Bin Location when receive inbound stock movement', () => {
     });
 
     await test.step('Assert edited bin on Packing list', async () => {
-      // eslint-disable-next-line playwright/no-networkidle
-      await page.waitForLoadState('networkidle');
       await expect(
         stockMovementShowPage.packingListTable.row(1).binLocation
       ).toHaveText(binLocationName);
@@ -174,8 +171,6 @@ test.describe('Edit Bin Location when receive inbound stock movement', () => {
     await test.step('Go to product page and assert bin location', async () => {
       await stockMovementShowPage.packingListTable.row(1).product.click();
       await productShowPage.inStockTab.click();
-      // eslint-disable-next-line playwright/no-networkidle
-      await page.waitForLoadState('networkidle');
       await productShowPage.inStockTabSection.isLoaded();
       await expect(
         productShowPage.inStockTabSection.row(2).binLocation
@@ -346,7 +341,6 @@ test.describe('Edit Bin Location to bin with zone when receive inbound stock mov
     stockMovementShowPage,
     receivingPage,
     productShowPage,
-    page,
   }) => {
     await test.step('Go to stock movement show page', async () => {
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
@@ -390,8 +384,7 @@ test.describe('Edit Bin Location to bin with zone when receive inbound stock mov
     });
 
     await test.step('Assert edited bin on Packing list', async () => {
-      // eslint-disable-next-line playwright/no-networkidle
-      await page.waitForLoadState('networkidle');
+      await stockMovementShowPage.packingListTable.isLoaded();
       await expect(
         stockMovementShowPage.packingListTable.row(1).binLocation
       ).toHaveText(binLocationName);
@@ -400,8 +393,6 @@ test.describe('Edit Bin Location to bin with zone when receive inbound stock mov
     await test.step('Go to product page and assert bin location', async () => {
       await stockMovementShowPage.packingListTable.row(1).product.click();
       await productShowPage.inStockTab.click();
-      // eslint-disable-next-line playwright/no-networkidle
-      await page.waitForLoadState('networkidle');
       await productShowPage.inStockTabSection.isLoaded();
       await expect(
         productShowPage.inStockTabSection.row(2).zoneLocation
@@ -532,7 +523,6 @@ test.describe('Edit Bin Location when receive for all lines', () => {
   test('Edit Bin location when receive for all lines', async ({
     stockMovementShowPage,
     receivingPage,
-    page,
   }) => {
     await test.step('Go to stock movement show page', async () => {
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
@@ -578,8 +568,7 @@ test.describe('Edit Bin Location when receive for all lines', () => {
     });
 
     await test.step('Assert edited bin on Packing list', async () => {
-      // eslint-disable-next-line playwright/no-networkidle
-      await page.waitForLoadState('networkidle');
+      await stockMovementShowPage.packingListTable.isLoaded();
       await expect(
         stockMovementShowPage.packingListTable.row(1).binLocation
       ).toHaveText(binLocationName);

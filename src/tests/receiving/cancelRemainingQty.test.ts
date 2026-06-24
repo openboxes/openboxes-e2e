@@ -73,7 +73,6 @@ test.describe('Cancel qty in the middle of receipt', () => {
   test('Cancel remaining qty when receive item partially', async ({
     stockMovementShowPage,
     receivingPage,
-    page,
   }) => {
     await test.step('Go to stock movement show page', async () => {
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
@@ -126,8 +125,7 @@ test.describe('Cancel qty in the middle of receipt', () => {
     await test.step('Assert canceled qty on stock movement show page', async () => {
       await expect(stockMovementShowPage.statusTag).toHaveText('Received');
       await stockMovementShowPage.receiptTab.click();
-      // eslint-disable-next-line playwright/no-networkidle
-      await page.waitForLoadState('networkidle');
+      await stockMovementShowPage.receiptListTable.isLoaded();
       await expect(
         stockMovementShowPage.receiptListTable.row(1).quantityCanceled
       ).toHaveText('50');
@@ -146,7 +144,6 @@ test.describe('Cancel qty in the middle of receipt', () => {
   test('Cancel remaining qty when receive items in 2nd receipt', async ({
     stockMovementShowPage,
     receivingPage,
-    page,
   }) => {
     await test.step('Go to stock movement show page', async () => {
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
@@ -181,8 +178,7 @@ test.describe('Cancel qty in the middle of receipt', () => {
     await test.step('Assert canceled qty on stock movement show page', async () => {
       await expect(stockMovementShowPage.statusTag).toHaveText('Receiving');
       await stockMovementShowPage.receiptTab.click();
-      // eslint-disable-next-line playwright/no-networkidle
-      await page.waitForLoadState('networkidle');
+      await stockMovementShowPage.receiptListTable.isLoaded();
       await expect(
         stockMovementShowPage.receiptListTable.row(1).quantityReceived
       ).toHaveText('50');
@@ -240,8 +236,7 @@ test.describe('Cancel qty in the middle of receipt', () => {
     await test.step('Assert canceled qty on stock movement show page', async () => {
       await expect(stockMovementShowPage.statusTag).toHaveText('Received');
       await stockMovementShowPage.receiptTab.click();
-      // eslint-disable-next-line playwright/no-networkidle
-      await page.waitForLoadState('networkidle');
+      await stockMovementShowPage.receiptListTable.isLoaded();
       await expect(
         stockMovementShowPage.receiptListTable.row(2).quantityCanceled
       ).toHaveText('10');
@@ -265,7 +260,6 @@ test.describe('Cancel qty in the middle of receipt', () => {
   test('Assert remaining qty and disabled cancel remaining checkbox when receive qty bigger than shipped', async ({
     stockMovementShowPage,
     receivingPage,
-    page,
   }) => {
     await test.step('Go to stock movement show page', async () => {
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
@@ -312,8 +306,7 @@ test.describe('Cancel qty in the middle of receipt', () => {
     await test.step('Assert canceled and received qty on stock movement show page', async () => {
       await expect(stockMovementShowPage.statusTag).toHaveText('Received');
       await stockMovementShowPage.receiptTab.click();
-      // eslint-disable-next-line playwright/no-networkidle
-      await page.waitForLoadState('networkidle');
+      await stockMovementShowPage.receiptListTable.isLoaded();
       await expect(
         stockMovementShowPage.receiptListTable.row(1).quantityCanceled
       ).toHaveText('0');
@@ -332,7 +325,6 @@ test.describe('Cancel qty in the middle of receipt', () => {
   test('Cancel remaining qty using cancel all remaining button', async ({
     stockMovementShowPage,
     receivingPage,
-    page,
   }) => {
     await test.step('Go to stock movement show page', async () => {
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
@@ -386,8 +378,7 @@ test.describe('Cancel qty in the middle of receipt', () => {
     await test.step('Assert canceled qty on stock movement show page', async () => {
       await expect(stockMovementShowPage.statusTag).toHaveText('Received');
       await stockMovementShowPage.receiptTab.click();
-      // eslint-disable-next-line playwright/no-networkidle
-      await page.waitForLoadState('networkidle');
+      await stockMovementShowPage.receiptListTable.isLoaded();
       await expect(
         stockMovementShowPage.receiptListTable.row(1).quantityCanceled
       ).toHaveText('50');
@@ -406,7 +397,6 @@ test.describe('Cancel qty in the middle of receipt', () => {
   test('Assert cancel checkbox selection when going forward and backward', async ({
     stockMovementShowPage,
     receivingPage,
-    page,
   }) => {
     await test.step('Go to stock movement show page', async () => {
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
@@ -453,8 +443,7 @@ test.describe('Cancel qty in the middle of receipt', () => {
     await test.step('Assert canceled and received qty on stock movement show page', async () => {
       await expect(stockMovementShowPage.statusTag).toHaveText('Receiving');
       await stockMovementShowPage.packingListTab.click();
-      // eslint-disable-next-line playwright/no-networkidle
-      await page.waitForLoadState('networkidle');
+      await stockMovementShowPage.packingListTable.isLoaded();
       await expect(
         stockMovementShowPage.packingListTable.row(1).quantityShipped
       ).toHaveText('100');
@@ -503,8 +492,7 @@ test.describe('Cancel qty in the middle of receipt', () => {
     await test.step('Assert canceled and received qty on stock movement show page', async () => {
       await expect(stockMovementShowPage.statusTag).toHaveText('Receiving');
       await stockMovementShowPage.packingListTab.click();
-      // eslint-disable-next-line playwright/no-networkidle
-      await page.waitForLoadState('networkidle');
+      await stockMovementShowPage.packingListTable.isLoaded();
       await expect(
         stockMovementShowPage.packingListTable.row(2).quantityShipped
       ).toHaveText('10');

@@ -268,8 +268,6 @@ test.describe('Assert validation on qty removed from receiving bin', () => {
     await test.step('Assert putaway bin and qty on stock card', async () => {
       await productShowPage.goToPage(product2.id);
       await productShowPage.inStockTab.click();
-      // eslint-disable-next-line playwright/no-networkidle
-      await page.waitForLoadState('networkidle');
       await productShowPage.inStockTabSection.isLoaded();
       await expect(
         productShowPage.inStockTabSection.row(2).binLocation

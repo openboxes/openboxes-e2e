@@ -69,7 +69,6 @@ test.describe('Status changes on sm view page when receive shipment in location 
     stockMovementShowPage,
     receivingPage,
     authService,
-    page,
   }) => {
     await test.step('Go to stock movement show page', async () => {
       await authService.changeLocation(AppConfig.instance.locations.depot.id);
@@ -83,8 +82,7 @@ test.describe('Status changes on sm view page when receive shipment in location 
 
     await test.step('Assert empty receipt tab', async () => {
       await stockMovementShowPage.receiptTab.click();
-      // eslint-disable-next-line playwright/no-networkidle
-      await page.waitForLoadState('networkidle');
+      await stockMovementShowPage.receiptListTable.isLoaded();
       await stockMovementShowPage.receiptTab.isVisible();
       await expect(stockMovementShowPage.emptyReceiptTab).toBeVisible();
     });
@@ -118,8 +116,7 @@ test.describe('Status changes on sm view page when receive shipment in location 
 
     await test.step('Assert Qty and statuses on receipt tab after receiving item partially and cancel not received qty', async () => {
       await stockMovementShowPage.receiptTab.click();
-      // eslint-disable-next-line playwright/no-networkidle
-      await page.waitForLoadState('networkidle');
+      await stockMovementShowPage.receiptListTable.isLoaded();
       await stockMovementShowPage.receiptTab.isVisible();
       await expect(
         stockMovementShowPage.receiptListTable.row(1).receiptStatus
@@ -152,7 +149,6 @@ test.describe('Status changes on sm view page when receive shipment in location 
     stockMovementShowPage,
     receivingPage,
     authService,
-    page,
   }) => {
     await test.step('Go to stock movement show page', async () => {
       await authService.changeLocation(AppConfig.instance.locations.depot.id);
@@ -166,8 +162,7 @@ test.describe('Status changes on sm view page when receive shipment in location 
 
     await test.step('Assert empty receipt tab', async () => {
       await stockMovementShowPage.receiptTab.click();
-      // eslint-disable-next-line playwright/no-networkidle
-      await page.waitForLoadState('networkidle');
+      await stockMovementShowPage.receiptListTable.isLoaded();
       await stockMovementShowPage.receiptTab.isVisible();
       await expect(stockMovementShowPage.emptyReceiptTab).toBeVisible();
     });
@@ -201,8 +196,7 @@ test.describe('Status changes on sm view page when receive shipment in location 
 
     await test.step('Assert Qty and statuses on receipt tab after receiving item partially and cancel not received qty', async () => {
       await stockMovementShowPage.receiptTab.click();
-      // eslint-disable-next-line playwright/no-networkidle
-      await page.waitForLoadState('networkidle');
+      await stockMovementShowPage.receiptListTable.isLoaded();
       await stockMovementShowPage.receiptTab.isVisible();
       await expect(
         stockMovementShowPage.receiptListTable.row(1).receiptStatus
@@ -235,7 +229,6 @@ test.describe('Status changes on sm view page when receive shipment in location 
     stockMovementShowPage,
     receivingPage,
     authService,
-    page,
   }) => {
     await test.step('Go to stock movement show page', async () => {
       await authService.changeLocation(AppConfig.instance.locations.depot.id);
@@ -249,8 +242,7 @@ test.describe('Status changes on sm view page when receive shipment in location 
 
     await test.step('Assert empty receipt tab', async () => {
       await stockMovementShowPage.receiptTab.click();
-      // eslint-disable-next-line playwright/no-networkidle
-      await page.waitForLoadState('networkidle');
+      await stockMovementShowPage.receiptListTable.isLoaded();
       await stockMovementShowPage.receiptTab.isVisible();
       await expect(stockMovementShowPage.emptyReceiptTab).toBeVisible();
     });
@@ -283,8 +275,7 @@ test.describe('Status changes on sm view page when receive shipment in location 
 
     await test.step('Assert Qty and statuses on receipt tab after receiving items and cancel not received qty', async () => {
       await stockMovementShowPage.receiptTab.click();
-      // eslint-disable-next-line playwright/no-networkidle
-      await page.waitForLoadState('networkidle');
+      await stockMovementShowPage.receiptListTable.isLoaded();
       await stockMovementShowPage.receiptTab.isVisible();
       await expect(
         stockMovementShowPage.receiptListTable.row(1).receiptStatus
@@ -317,7 +308,6 @@ test.describe('Status changes on sm view page when receive shipment in location 
     stockMovementShowPage,
     receivingPage,
     authService,
-    page,
   }) => {
     await test.step('Go to stock movement show page', async () => {
       await authService.changeLocation(AppConfig.instance.locations.depot.id);
@@ -331,8 +321,7 @@ test.describe('Status changes on sm view page when receive shipment in location 
 
     await test.step('Assert empty receipt tab', async () => {
       await stockMovementShowPage.receiptTab.click();
-      // eslint-disable-next-line playwright/no-networkidle
-      await page.waitForLoadState('networkidle');
+      await stockMovementShowPage.receiptListTable.isLoaded();
       await stockMovementShowPage.receiptTab.isVisible();
       await expect(stockMovementShowPage.emptyReceiptTab).toBeVisible();
     });
@@ -365,8 +354,7 @@ test.describe('Status changes on sm view page when receive shipment in location 
 
     await test.step('Assert Qty and statuses on receipt tab after receiving items and cancel not received qty', async () => {
       await stockMovementShowPage.receiptTab.click();
-      // eslint-disable-next-line playwright/no-networkidle
-      await page.waitForLoadState('networkidle');
+      await stockMovementShowPage.receiptListTable.isLoaded();
       await stockMovementShowPage.receiptTab.isVisible();
       await expect(
         stockMovementShowPage.receiptListTable.row(1).receiptStatus
@@ -405,8 +393,7 @@ test.describe('Status changes on sm view page when receive shipment in location 
 
     await test.step('Assert empty receipt tab after rollback receipt', async () => {
       await stockMovementShowPage.receiptTab.click();
-      // eslint-disable-next-line playwright/no-networkidle
-      await page.waitForLoadState('networkidle');
+      await stockMovementShowPage.receiptListTable.isLoaded();
       await stockMovementShowPage.receiptTab.isVisible();
       await expect(stockMovementShowPage.emptyReceiptTab).toBeVisible();
     });

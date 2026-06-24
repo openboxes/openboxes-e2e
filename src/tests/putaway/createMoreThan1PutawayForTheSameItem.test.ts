@@ -90,7 +90,6 @@ test.describe('Create more than 1 putaway from the same item', () => {
     productShowPage,
     putawayDetailsPage,
     productService,
-    page,
   }) => {
     const product = await productService.getProduct(Product.FIVE);
     const internalLocation = await internalLocationService.getLocation();
@@ -165,12 +164,8 @@ test.describe('Create more than 1 putaway from the same item', () => {
 
     await test.step('Assert putaway bin and qty on stock card', async () => {
       await putawayDetailsPage.summaryTab.click();
-      // eslint-disable-next-line playwright/no-networkidle
-      await page.waitForLoadState('networkidle');
       await productShowPage.goToPage(product.id);
       await productShowPage.inStockTab.click();
-      // eslint-disable-next-line playwright/no-networkidle
-      await page.waitForLoadState('networkidle');
       await productShowPage.inStockTabSection.isLoaded();
       await expect(
         productShowPage.inStockTabSection.row(1).binLocation
@@ -223,12 +218,8 @@ test.describe('Create more than 1 putaway from the same item', () => {
 
     await test.step('Assert putaway bin and qty on stock card', async () => {
       await putawayDetailsPage.summaryTab.click();
-      // eslint-disable-next-line playwright/no-networkidle
-      await page.waitForLoadState('networkidle');
       await productShowPage.goToPage(product.id);
       await productShowPage.inStockTab.click();
-      // eslint-disable-next-line playwright/no-networkidle
-      await page.waitForLoadState('networkidle');
       await productShowPage.inStockTabSection.isLoaded();
       await expect(
         productShowPage.inStockTabSection.row(1).binLocation
