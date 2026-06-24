@@ -66,7 +66,7 @@ test.describe('Putaway item with empty lot', () => {
     }) => {
       await navbar.configurationButton.click();
       await navbar.transactions.click();
-      for (let n = 1; n < 7; n++) {
+      for (let n = 1; n < 5; n++) {
         await transactionListPage.deleteTransaction(1);
       }
       await deleteReceivedShipment({

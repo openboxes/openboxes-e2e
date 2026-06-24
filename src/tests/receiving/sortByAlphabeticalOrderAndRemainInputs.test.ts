@@ -104,12 +104,12 @@ test.describe('Apply sorting by alphabetical order and remain inputs', () => {
     await test.step('Send shipment', async () => {
       await createInboundPage.nextButton.click();
       await createInboundPage.sendStep.isLoaded();
-      // eslint-disable-next-line playwright/no-networkidle
-      await page.waitForLoadState('networkidle');
       await expect(createInboundPage.sendStep.sendShipmentButton).toBeVisible();
-      await createInboundPage.sendStep.sendShipmentButton.focus();
-      await createInboundPage.sendStep.sendShipmentButton.click();
-      await stockMovementShowPage.waitForUrl();
+      await expect(createInboundPage.sendStep.sendShipmentButton).toBeEnabled();
+      await Promise.all([
+        stockMovementShowPage.waitForUrl(),
+        createInboundPage.sendStep.sendShipmentButton.click(),
+      ]);
       await stockMovementShowPage.isLoaded();
     });
 
