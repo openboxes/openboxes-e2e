@@ -222,7 +222,6 @@ test.describe('Validations on edit and receive inbound stock movement', () => {
   test('Assert unable to receive already received inbounds', async ({
     stockMovementShowPage,
     receivingPage,
-    page,
   }) => {
     await test.step('Go to stock movement show page', async () => {
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
@@ -253,8 +252,6 @@ test.describe('Validations on edit and receive inbound stock movement', () => {
 
     await test.step('Validation on receive already received inbound', async () => {
       await stockMovementShowPage.isLoaded();
-      // eslint-disable-next-line playwright/no-networkidle
-      await page.waitForLoadState('networkidle');
       await stockMovementShowPage.receiveButton.click();
       await expect(stockMovementShowPage.errorMessage).toBeVisible({
         timeout: 10000,
