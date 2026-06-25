@@ -63,6 +63,17 @@ class Row extends BasePageModel {
   get putawayBinField() {
     return this.row.getByTestId('bin-select').getByRole('textbox');
   }
+
+  get expandPutawayBinSelect() {
+    return this.row.locator('[class*="react-select__dropdown-indicator"]');
+  }
+
+  getZoneLocation(zoneLocation: string) {
+    return this.page
+      .getByTestId('custom-select-dropdown-menu')
+      .locator('.css-5ih5ya-group react-select__group-heading')
+      .getByText(zoneLocation, { exact: true });
+  }
 }
 
 export default SplitModalTable;

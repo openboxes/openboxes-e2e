@@ -384,6 +384,7 @@ test.describe('Edit Bin Location to bin with zone when receive inbound stock mov
     });
 
     await test.step('Assert edited bin on Packing list', async () => {
+      await stockMovementShowPage.packingListTable.isLoaded();
       await expect(
         stockMovementShowPage.packingListTable.row(1).binLocation
       ).toHaveText(binLocationName);
@@ -567,6 +568,7 @@ test.describe('Edit Bin Location when receive for all lines', () => {
     });
 
     await test.step('Assert edited bin on Packing list', async () => {
+      await stockMovementShowPage.packingListTable.isLoaded();
       await expect(
         stockMovementShowPage.packingListTable.row(1).binLocation
       ).toHaveText(binLocationName);

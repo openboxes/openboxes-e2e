@@ -1,10 +1,16 @@
-import { Locator, Page } from '@playwright/test';
+import { expect, Locator, Page } from '@playwright/test';
 
 import BasePageModel from '@/pages/BasePageModel';
 
 class DocumentsListTable extends BasePageModel {
   constructor(page: Page) {
     super(page);
+  }
+
+  async isLoaded() {
+    await expect(
+      this.page.getByRole('heading').getByText('Documents')
+    ).toBeVisible();
   }
 
   get table() {

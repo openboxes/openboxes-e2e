@@ -381,6 +381,7 @@ test.describe('Edit original line to other product in the middle of receipt', ()
         stockMovementShowPage.packingListTable.row(1).product
       ).toHaveText(PRODUCT_FOUR.name);
       await stockMovementShowPage.receiptTab.click();
+      await stockMovementShowPage.receiptListTable.isLoaded();
       await expect(
         stockMovementShowPage.receiptListTable.row(1).product
       ).toHaveText(PRODUCT_FIVE.name);

@@ -148,6 +148,7 @@ test.describe('Receive inbound stock movement in location without pick and putaw
     });
 
     await test.step('Assert Default bin on Packing list', async () => {
+      await stockMovementShowPage.packingListTable.isLoaded();
       await expect(
         stockMovementShowPage.packingListTable.row(1).binLocation
       ).toHaveText('Default');

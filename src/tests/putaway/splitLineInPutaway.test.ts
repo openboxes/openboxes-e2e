@@ -160,6 +160,7 @@ test.describe('Split line in Putaway', () => {
 
     await test.step('Assert content of items status table', async () => {
       await putawayDetailsPage.itemStatusTab.click();
+      await putawayDetailsPage.itemStatusTable.isLoaded();
       await expect(
         putawayDetailsPage.itemStatusTable.row(1).itemStatus
       ).toHaveText('COMPLETED');
@@ -330,6 +331,7 @@ test.describe('Split line in Putaway', () => {
 
     await test.step('Assert content of items status table', async () => {
       await putawayDetailsPage.itemStatusTab.click();
+      await putawayDetailsPage.itemStatusTable.isLoaded();
       await expect(
         putawayDetailsPage.itemStatusTable.row(1).itemStatus
       ).toHaveText('COMPLETED');

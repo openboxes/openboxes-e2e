@@ -125,6 +125,7 @@ test.describe('Cancel qty in the middle of receipt', () => {
     await test.step('Assert canceled qty on stock movement show page', async () => {
       await expect(stockMovementShowPage.statusTag).toHaveText('Received');
       await stockMovementShowPage.receiptTab.click();
+      await stockMovementShowPage.receiptListTable.isLoaded();
       await expect(
         stockMovementShowPage.receiptListTable.row(1).quantityCanceled
       ).toHaveText('50');
@@ -177,6 +178,7 @@ test.describe('Cancel qty in the middle of receipt', () => {
     await test.step('Assert canceled qty on stock movement show page', async () => {
       await expect(stockMovementShowPage.statusTag).toHaveText('Receiving');
       await stockMovementShowPage.receiptTab.click();
+      await stockMovementShowPage.receiptListTable.isLoaded();
       await expect(
         stockMovementShowPage.receiptListTable.row(1).quantityReceived
       ).toHaveText('50');
@@ -234,6 +236,7 @@ test.describe('Cancel qty in the middle of receipt', () => {
     await test.step('Assert canceled qty on stock movement show page', async () => {
       await expect(stockMovementShowPage.statusTag).toHaveText('Received');
       await stockMovementShowPage.receiptTab.click();
+      await stockMovementShowPage.receiptListTable.isLoaded();
       await expect(
         stockMovementShowPage.receiptListTable.row(2).quantityCanceled
       ).toHaveText('10');
@@ -303,6 +306,7 @@ test.describe('Cancel qty in the middle of receipt', () => {
     await test.step('Assert canceled and received qty on stock movement show page', async () => {
       await expect(stockMovementShowPage.statusTag).toHaveText('Received');
       await stockMovementShowPage.receiptTab.click();
+      await stockMovementShowPage.receiptListTable.isLoaded();
       await expect(
         stockMovementShowPage.receiptListTable.row(1).quantityCanceled
       ).toHaveText('0');
@@ -374,6 +378,7 @@ test.describe('Cancel qty in the middle of receipt', () => {
     await test.step('Assert canceled qty on stock movement show page', async () => {
       await expect(stockMovementShowPage.statusTag).toHaveText('Received');
       await stockMovementShowPage.receiptTab.click();
+      await stockMovementShowPage.receiptListTable.isLoaded();
       await expect(
         stockMovementShowPage.receiptListTable.row(1).quantityCanceled
       ).toHaveText('50');
@@ -438,6 +443,7 @@ test.describe('Cancel qty in the middle of receipt', () => {
     await test.step('Assert canceled and received qty on stock movement show page', async () => {
       await expect(stockMovementShowPage.statusTag).toHaveText('Receiving');
       await stockMovementShowPage.packingListTab.click();
+      await stockMovementShowPage.packingListTable.isLoaded();
       await expect(
         stockMovementShowPage.packingListTable.row(1).quantityShipped
       ).toHaveText('100');
@@ -486,6 +492,7 @@ test.describe('Cancel qty in the middle of receipt', () => {
     await test.step('Assert canceled and received qty on stock movement show page', async () => {
       await expect(stockMovementShowPage.statusTag).toHaveText('Receiving');
       await stockMovementShowPage.packingListTab.click();
+      await stockMovementShowPage.packingListTable.isLoaded();
       await expect(
         stockMovementShowPage.packingListTable.row(2).quantityShipped
       ).toHaveText('10');

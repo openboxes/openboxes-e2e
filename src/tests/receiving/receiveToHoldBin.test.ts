@@ -131,6 +131,7 @@ test.describe('Receive item into hold bin', () => {
     });
 
     await test.step('Assert edited bin on Packing list', async () => {
+      await stockMovementShowPage.packingListTable.isLoaded();
       await expect(
         stockMovementShowPage.packingListTable.row(1).binLocation
       ).toHaveText(holdBinLocationName);

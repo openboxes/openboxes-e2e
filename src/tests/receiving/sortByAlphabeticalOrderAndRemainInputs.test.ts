@@ -105,9 +105,11 @@ test.describe('Apply sorting by alphabetical order and remain inputs', () => {
       await createInboundPage.nextButton.click();
       await createInboundPage.sendStep.isLoaded();
       await expect(createInboundPage.sendStep.sendShipmentButton).toBeVisible();
-      await createInboundPage.sendStep.sendShipmentButton.focus();
-      await createInboundPage.sendStep.sendShipmentButton.click();
-      await stockMovementShowPage.waitForUrl();
+      await expect(createInboundPage.sendStep.sendShipmentButton).toBeEnabled();
+      await Promise.all([
+        stockMovementShowPage.waitForUrl(),
+        createInboundPage.sendStep.sendShipmentButton.click(),
+      ]);
       await stockMovementShowPage.isLoaded();
     });
 

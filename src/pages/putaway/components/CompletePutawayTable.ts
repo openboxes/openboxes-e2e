@@ -35,6 +35,14 @@ class Row extends BasePageModel {
   get quantity() {
     return this.row.getByTestId('table-cell').nth(7);
   }
+
+  get preferredBin() {
+    return this.row.getByTestId('table-cell').nth(8);
+  }
+
+  get currentBin() {
+    return this.row.getByTestId('table-cell').nth(9);
+  }
 }
 
 export default CompletePutawayTable;

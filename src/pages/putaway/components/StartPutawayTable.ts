@@ -73,6 +73,10 @@ class Row extends BasePageModel {
     return this.row.getByTestId('select-bin');
   }
 
+  get expandPutawayBinSelect() {
+    return this.putawayBinSelect.locator('.react-select__dropdown-indicator');
+  }
+
   getPutawayBin(putawayBin: string) {
     return this.page
       .getByTestId('custom-select-dropdown-menu')
@@ -86,6 +90,10 @@ class Row extends BasePageModel {
 
   get preferredBin() {
     return this.row.getByTestId('table-cell').nth(8);
+  }
+
+  get currentdBin() {
+    return this.row.getByTestId('table-cell').nth(9);
   }
 
   get quantityField() {
@@ -106,6 +114,13 @@ class Row extends BasePageModel {
 
   get expiryDateField() {
     return this.row.getByTestId('table-cell').nth(5);
+  }
+
+  getZoneLocation(zoneLocation: string) {
+    return this.page
+      .getByTestId('custom-select-dropdown-menu')
+      .locator('.css-5ih5ya-group react-select__group-heading')
+      .getByText(zoneLocation, { exact: true });
   }
 }
 

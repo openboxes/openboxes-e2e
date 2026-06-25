@@ -2,16 +2,19 @@ import AppConfig from '@/config/AppConfig';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
 import { Product } from '@/generated/ProductCodes.generated';
-import { StockMovementResponse } from '@/types';
+import { ProductResponse, StockMovementResponse } from '@/types';
 import RefreshCachesUtils from '@/utils/RefreshCaches';
 import {
   deleteReceivedShipment,
   getShipmentId,
   getShipmentItemId,
 } from '@/utils/shipmentUtils';
+import { byNameAsc } from '@/utils/sortUtils';
 
 test.describe('Putaway to preferred bin and default bin', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
+  let product: ProductResponse;
+  let product2: ProductResponse;
 
   test.beforeEach(
     async ({
@@ -28,8 +31,10 @@ test.describe('Putaway to preferred bin and default bin', () => {
         originId: supplierLocation.id,
       });
 
-      const product = await productService.getProduct(Product.FIVE);
-      const product2 = await productService.getProduct(Product.FOUR);
+      [product, product2] = [
+        await productService.getProduct(Product.FIVE),
+        await productService.getProduct(Product.FOUR),
+      ].sort(byNameAsc);
 
       await stockMovementService.addItemsToInboundStockMovement(
         STOCK_MOVEMENT.id,
@@ -122,12 +127,9 @@ test.describe('Putaway to preferred bin and default bin', () => {
     internalLocationService,
     productShowPage,
     putawayDetailsPage,
-    productService,
   }) => {
     const receivingBin =
       AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
-    const product = await productService.getProduct(Product.FIVE);
-    const product2 = await productService.getProduct(Product.FOUR);
     const internalLocation = await internalLocationService.getLocation();
 
     await test.step('Go to create putaway page', async () => {
@@ -220,11 +222,10 @@ test.describe('Putaway to preferred bin and default bin', () => {
     internalLocation2Service,
     productShowPage,
     putawayDetailsPage,
-    productService,
   }) => {
     const receivingBin =
       AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
-    const product2 = await productService.getProduct(Product.FOUR);
+
     const internalLocation = await internalLocationService.getLocation();
     const internalLocation2 = await internalLocation2Service.getLocation();
 

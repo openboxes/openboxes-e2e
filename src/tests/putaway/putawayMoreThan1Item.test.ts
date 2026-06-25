@@ -2,16 +2,19 @@ import AppConfig from '@/config/AppConfig';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
 import { Product } from '@/generated/ProductCodes.generated';
-import { StockMovementResponse } from '@/types';
+import { ProductResponse, StockMovementResponse } from '@/types';
 import RefreshCachesUtils from '@/utils/RefreshCaches';
 import {
   deleteReceivedShipment,
   getShipmentId,
   getShipmentItemId,
 } from '@/utils/shipmentUtils';
+import { byNameAsc } from '@/utils/sortUtils';
 
 test.describe('Create putaway for more than 1 item, separate putaways', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
+  let product: ProductResponse;
+  let product2: ProductResponse;
 
   test.beforeEach(
     async ({
@@ -25,8 +28,10 @@ test.describe('Create putaway for more than 1 item, separate putaways', () => {
         originId: supplierLocation.id,
       });
 
-      const product = await productService.getProduct(Product.FIVE);
-      const product2 = await productService.getProduct(Product.FOUR);
+      [product, product2] = [
+        await productService.getProduct(Product.FIVE),
+        await productService.getProduct(Product.FOUR),
+      ].sort(byNameAsc);
 
       await stockMovementService.addItemsToInboundStockMovement(
         STOCK_MOVEMENT.id,
@@ -94,13 +99,10 @@ test.describe('Create putaway for more than 1 item, separate putaways', () => {
     internalLocationService,
     productShowPage,
     putawayDetailsPage,
-    productService,
     putawayListPage,
   }) => {
     const receivingBin =
       AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
-    const product = await productService.getProduct(Product.FIVE);
-    const product2 = await productService.getProduct(Product.FOUR);
     const internalLocation = await internalLocationService.getLocation();
 
     await test.step('Go to create putaway page', async () => {
@@ -245,6 +247,8 @@ test.describe('Create putaway for more than 1 item, separate putaways', () => {
 
 test.describe('Putaway 2 items in the same putaway', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
+  let product: ProductResponse;
+  let product2: ProductResponse;
 
   test.beforeEach(
     async ({
@@ -258,8 +262,10 @@ test.describe('Putaway 2 items in the same putaway', () => {
         originId: supplierLocation.id,
       });
 
-      const product = await productService.getProduct(Product.FIVE);
-      const product2 = await productService.getProduct(Product.FOUR);
+      [product, product2] = [
+        await productService.getProduct(Product.FIVE),
+        await productService.getProduct(Product.FOUR),
+      ].sort(byNameAsc);
 
       await stockMovementService.addItemsToInboundStockMovement(
         STOCK_MOVEMENT.id,
