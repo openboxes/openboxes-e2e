@@ -72,7 +72,7 @@ test.describe('Putaway to preferred bin and default bin', () => {
       await receivingService.completeReceipt(shipmentId);
 
       await productShowPage.goToPage(product2.id);
-      await productShowPage.editProductkButton.click();
+      await productShowPage.editProductButton.click();
       await productEditPage.inventoryLevelsTab.click();
       await productEditPage.inventoryLevelsTabSection.createStockLevelButton.click();
       await productEditPage.inventoryLevelsTabSection.createStockLevelModal.receivingTab.click();
@@ -108,7 +108,7 @@ test.describe('Putaway to preferred bin and default bin', () => {
       });
       const product2 = await productService.getProduct(Product.FOUR);
       await productShowPage.goToPage(product2.id);
-      await productShowPage.editProductkButton.click();
+      await productShowPage.editProductButton.click();
       await productEditPage.inventoryLevelsTab.click();
       await productEditPage.inventoryLevelsTabSection
         .row(1)

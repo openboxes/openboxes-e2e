@@ -125,7 +125,7 @@ test.describe('Assert zones on putaway pages', () => {
 
       await test.step('Assign bin with zone as preferred bin', async () => {
         await productShowPage.goToPage(productB.id);
-        await productShowPage.editProductkButton.click();
+        await productShowPage.editProductButton.click();
         await productEditPage.inventoryLevelsTab.click();
         await productEditPage.inventoryLevelsTabSection.createStockLevelButton.click();
         await productEditPage.inventoryLevelsTabSection.createStockLevelModal.receivingTab.click();
@@ -170,7 +170,7 @@ test.describe('Assert zones on putaway pages', () => {
 
       await test.step('Delete inventory level', async () => {
         await productShowPage.goToPage(product.id);
-        await productShowPage.editProductkButton.click();
+        await productShowPage.editProductButton.click();
         await productEditPage.inventoryLevelsTab.click();
         await productEditPage.inventoryLevelsTabSection
           .row(1)

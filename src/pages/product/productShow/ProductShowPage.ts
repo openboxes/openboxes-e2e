@@ -36,7 +36,7 @@ class ProductShowPage extends BasePageModel {
     return this.page.getByRole('link', { name: 'Stock History' });
   }
 
-  get editProductkButton() {
+  get editProductButton() {
     return this.page.getByRole('link', { name: 'Edit Product' });
   }
 }

@@ -122,7 +122,7 @@ test.describe('Sort putaway by current bin, preferred bin and original order', (
       // Remove preferred bins for A and B.
       for (const product of [productA, productB]) {
         await productShowPage.goToPage(product.id);
-        await productShowPage.editProductkButton.click();
+        await productShowPage.editProductButton.click();
         await productEditPage.inventoryLevelsTab.click();
         await productEditPage.inventoryLevelsTabSection
           .row(1)

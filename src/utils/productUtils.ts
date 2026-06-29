@@ -14,7 +14,7 @@ export async function assignPreferredBin(
   bin: LocationResponse
 ) {
   await productShowPage.goToPage(product.id);
-  await productShowPage.editProductkButton.click();
+  await productShowPage.editProductButton.click();
   await productEditPage.inventoryLevelsTab.click();
   await productEditPage.inventoryLevelsTabSection.createStockLevelButton.click();
   await productEditPage.inventoryLevelsTabSection.createStockLevelModal.receivingTab.click();
