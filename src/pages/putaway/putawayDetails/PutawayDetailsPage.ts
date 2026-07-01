@@ -134,6 +134,16 @@ class PutawayDetailsPage extends BasePageModel {
   get badgeCount() {
     return this.page.locator('li.tab-badge');
   }
+
+  get spinner() {
+    return this.page.locator('.loading');
+  }
+
+  async waitUntilSpinnerHides() {
+    await this.spinner.waitFor({
+      state: 'hidden',
+    });
+  }
 }
 
 export default PutawayDetailsPage;
