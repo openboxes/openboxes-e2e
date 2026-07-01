@@ -4,6 +4,7 @@ import FileHandler from '@/components/FileHandler';
 import BasePageModel from '@/pages/BasePageModel';
 
 import AuditingTable from './components/AuditingTable';
+import CommentsTable from './components/CommentsTable';
 import ItemDetailsTable from './components/ItemDetailsTable';
 import ItemStatusTable from './components/ItemStatusTable';
 import OrderHeaderTable from './components/OrderHeaderTable';
@@ -16,6 +17,7 @@ class PutawayDetailsPage extends BasePageModel {
   itemDetailsTable: ItemDetailsTable;
   auditingTable: AuditingTable;
   fileHandler: FileHandler;
+  commentsTable: CommentsTable;
 
   constructor(page: Page) {
     super(page);
@@ -25,6 +27,7 @@ class PutawayDetailsPage extends BasePageModel {
     this.itemDetailsTable = new ItemDetailsTable(page);
     this.auditingTable = new AuditingTable(page);
     this.fileHandler = new FileHandler(page);
+    this.commentsTable = new CommentsTable(page);
   }
 
   async isLoaded() {
@@ -126,6 +129,20 @@ class PutawayDetailsPage extends BasePageModel {
   async clickDeleteOrderButton() {
     this.page.once('dialog', (dialog) => dialog.accept());
     await this.actionsDeleteButton.click();
+  }
+
+  get badgeCount() {
+    return this.page.locator('li.tab-badge');
+  }
+
+  get spinner() {
+    return this.page.locator('.loading');
+  }
+
+  async waitUntilSpinnerHides() {
+    await this.spinner.waitFor({
+      state: 'hidden',
+    });
   }
 }
 
