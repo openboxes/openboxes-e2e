@@ -130,14 +130,26 @@ test.describe('Delete items from putaway', () => {
       await createPutawayPage.table.row(2).checkbox.click();
       await createPutawayPage.startPutawayButton.click();
       await createPutawayPage.startStep.isLoaded();
+    });
+
+    const putawayOrderIdentifier =
+      await createPutawayPage.startStep.orderNumberValue.textContent();
+
+    await test.step('Save putaway', async () => {
       await createPutawayPage.startStep.saveButton.click();
     });
 
     await test.step('Go to putaway list page and assert number of lines', async () => {
       await putawayListPage.goToPage();
       await putawayListPage.isLoaded();
-      await expect(putawayListPage.table.row(1).lineItems).toContainText('2');
-      const row = putawayListPage.table.row(1);
+      await expect(
+        putawayListPage.table.rowByOrderNumber(
+          `${putawayOrderIdentifier}`.toString().trim()
+        ).lineItems
+      ).toContainText('2');
+      const row = putawayListPage.table.rowByOrderNumber(
+        `${putawayOrderIdentifier}`.toString().trim()
+      );
       await row.actionsButton.click();
       await row.viewOrderDetails.click();
       await putawayDetailsPage.isLoaded();
@@ -186,8 +198,14 @@ test.describe('Delete items from putaway', () => {
     await test.step('Go to putaway list page and assert number of lines', async () => {
       await putawayListPage.goToPage();
       await putawayListPage.isLoaded();
-      await expect(putawayListPage.table.row(1).lineItems).toContainText('1');
-      const row = putawayListPage.table.row(1);
+      await expect(
+        putawayListPage.table.rowByOrderNumber(
+          `${putawayOrderIdentifier}`.toString().trim()
+        ).lineItems
+      ).toContainText('1');
+      const row = putawayListPage.table.rowByOrderNumber(
+        `${putawayOrderIdentifier}`.toString().trim()
+      );
       await row.actionsButton.click();
       await row.viewOrderDetails.click();
       await putawayDetailsPage.isLoaded();
@@ -267,8 +285,14 @@ test.describe('Delete items from putaway', () => {
     await test.step('Go to putaway list page and assert number of lines', async () => {
       await putawayListPage.goToPage();
       await putawayListPage.isLoaded();
-      await expect(putawayListPage.table.row(1).lineItems).toContainText('2');
-      const row = putawayListPage.table.row(1);
+      await expect(
+        putawayListPage.table.rowByOrderNumber(
+          `${putawayOrderIdentifier}`.toString().trim()
+        ).lineItems
+      ).toContainText('2');
+      const row = putawayListPage.table.rowByOrderNumber(
+        `${putawayOrderIdentifier}`.toString().trim()
+      );
       await row.actionsButton.click();
       await row.viewOrderDetails.click();
       await putawayDetailsPage.isLoaded();
@@ -351,9 +375,6 @@ test.describe('Delete items from putaway', () => {
       ).toHaveCount(2);
     });
 
-    const putawayOrderIdentifier =
-      await putawayDetailsPage.orderHeaderTable.orderNumberValue.textContent();
-
     await test.step('Assert completed putaway on list putaway and assert number of lines', async () => {
       await putawayListPage.goToPage();
       await putawayListPage.clearFilteringButton.click();
@@ -361,10 +382,16 @@ test.describe('Delete items from putaway', () => {
         `${putawayOrderIdentifier}`.toString().trim()
       );
       await putawayListPage.searchButton.click();
-      await expect(putawayListPage.table.row(1).statusTag).toHaveText(
-        'Completed'
-      );
-      await expect(putawayListPage.table.row(1).lineItems).toContainText('2');
+      await expect(
+        putawayListPage.table.rowByOrderNumber(
+          `${putawayOrderIdentifier}`.toString().trim()
+        ).statusTag
+      ).toHaveText('Completed');
+      await expect(
+        putawayListPage.table.rowByOrderNumber(
+          `${putawayOrderIdentifier}`.toString().trim()
+        ).lineItems
+      ).toContainText('2');
     });
   });
 });

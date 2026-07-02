@@ -119,6 +119,9 @@ test.describe('Add comment to Putaway', () => {
       await createPutawayPage.startStep.isLoaded();
     });
 
+    const putawayOrderIdentifier =
+      await createPutawayPage.startStep.orderNumberValue.textContent();
+
     await test.step('Select bin to putaway', async () => {
       await createPutawayPage.startStep.table.row(0).putawayBinSelect.click();
       await createPutawayPage.startStep.table
@@ -131,13 +134,17 @@ test.describe('Add comment to Putaway', () => {
     await test.step('Go to putaway list page', async () => {
       await putawayListPage.goToPage();
       await putawayListPage.isLoaded();
-      await expect(putawayListPage.table.row(1).statusTag).toHaveText(
-        'Pending'
-      );
+      await expect(
+        putawayListPage.table.rowByOrderNumber(
+          `${putawayOrderIdentifier}`.toString().trim()
+        ).statusTag
+      ).toHaveText('Pending');
     });
 
     await test.step('Go to putaway view page', async () => {
-      const row = putawayListPage.table.row(1);
+      const row = putawayListPage.table.rowByOrderNumber(
+        `${putawayOrderIdentifier}`.toString().trim()
+      );
       await row.actionsButton.click();
       await row.viewOrderDetails.click();
       await putawayDetailsPage.isLoaded();

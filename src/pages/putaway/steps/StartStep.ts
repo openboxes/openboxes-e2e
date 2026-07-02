@@ -55,6 +55,12 @@ class StartStep extends BasePageModel {
   async closeDisplayedError() {
     return this.page.locator('.alert-close-icon').first().click();
   }
+
+  get orderNumberValue() {
+    return this.page.locator(
+      '[data-testid=\'wizardTitle\'] > div > span:nth-of-type(2)'
+    );
+  }
 }
 
 export default StartStep;

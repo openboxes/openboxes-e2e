@@ -145,6 +145,12 @@ test.describe('Create putaway for more than 1 item, separate putaways', () => {
         .row(1)
         .getPutawayBin(internalLocation.name)
         .click();
+    });
+
+    const putawayOrderIdentifier =
+      await createPutawayPage.startStep.orderNumberValue.textContent();
+
+    await test.step('Save putaway', async () => {
       await createPutawayPage.startStep.saveButton.click();
     });
 
@@ -168,7 +174,9 @@ test.describe('Create putaway for more than 1 item, separate putaways', () => {
     await test.step('Go to putaway list page and edit created pending putaway', async () => {
       await putawayListPage.goToPage();
       await putawayListPage.isLoaded();
-      const row = putawayListPage.table.row(1);
+      const row = putawayListPage.table.rowByOrderNumber(
+        `${putawayOrderIdentifier}`.toString().trim()
+      );
       await row.actionsButton.click();
       await row.viewOrderDetails.click();
       await putawayDetailsPage.isLoaded();

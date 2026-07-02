@@ -101,7 +101,7 @@ test.describe('Perform putaway as manager user', () => {
     internalLocationService,
   }) => {
     const receivingBin =
-      AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;;
+      AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
     const internalLocation = await internalLocationService.getLocation();
 
     const managerUserPage = await managerUserContext.newPage();
@@ -274,6 +274,12 @@ test.describe('Perform putaway as manager user', () => {
         .row(2)
         .getPutawayBin(internalLocation.name)
         .click();
+    });
+
+    const putawayOrderIdentifier =
+      await createPutawayPageManagerUser.startStep.orderNumberValue.textContent();
+
+    await test.step('Save putaway', async () => {
       await createPutawayPageManagerUser.startStep.saveButton.click();
       await managerUserPage.close();
     });
@@ -281,12 +287,11 @@ test.describe('Perform putaway as manager user', () => {
     await test.step('Go to list putaway page as main user and use filters', async () => {
       await putawayListPage.goToPage();
       await putawayListPage.isLoaded();
-      await expect(putawayListPage.table.row(1).statusTag).toHaveText(
-        'Pending'
-      );
-      const putawayOrderIdentifier = await putawayListPage.table
-        .row(1)
-        .orderNumber.textContent();
+      await expect(
+        putawayListPage.table.rowByOrderNumber(
+          `${putawayOrderIdentifier}`.toString().trim()
+        ).statusTag
+      ).toHaveText('Pending');
       await putawayListPage.searchField.fill(
         `${putawayOrderIdentifier}`.toString().trim()
       );
@@ -294,15 +299,14 @@ test.describe('Perform putaway as manager user', () => {
       await putawayListPage.orderedByTextInput.fill(managerUser.name);
       await putawayListPage.getOrderedBy(managerUser.name);
       await putawayListPage.searchButton.click();
-      await expect(putawayListPage.table.row(1).orderedBy).toContainText(
-        managerUser.name
-      );
+      await expect(
+        putawayListPage.table.rowByOrderNumber(
+          `${putawayOrderIdentifier}`.toString().trim()
+        ).orderedBy
+      ).toContainText(managerUser.name);
     });
 
     await test.step('Clear applied filters and filter by created by ans status', async () => {
-      const putawayOrderIdentifier = await putawayListPage.table
-        .row(1)
-        .orderNumber.textContent();
       await putawayListPage.isLoaded();
       await putawayListPage.clearFilteringButton.click();
       await putawayListPage.statusFilter.click();
@@ -312,17 +316,25 @@ test.describe('Perform putaway as manager user', () => {
       await putawayListPage.createdByTextInput.fill(managerUser.name);
       await putawayListPage.getCreatedBy(managerUser.name);
       await putawayListPage.searchButton.click();
-      await expect(putawayListPage.table.row(1).orderNumber).toContainText(
-        `${putawayOrderIdentifier}`
-      );
-      await expect(putawayListPage.table.row(1).statusTag).toHaveText(
-        'Pending'
-      );
+      await expect(
+        putawayListPage.table.rowByOrderNumber(
+          `${putawayOrderIdentifier}`.toString().trim()
+        ).orderNumber
+      ).toContainText(`${putawayOrderIdentifier}`);
+      await expect(
+        putawayListPage.table.rowByOrderNumber(
+          `${putawayOrderIdentifier}`.toString().trim()
+        ).statusTag
+      ).toHaveText('Pending');
     });
 
     await test.step('Go to putaway details page', async () => {
-      await putawayListPage.table.row(1).actionsButton.click();
-      await putawayListPage.table.row(1).viewOrderDetails.click();
+      await putawayListPage.table
+        .rowByOrderNumber(`${putawayOrderIdentifier}`.toString().trim())
+        .actionsButton.click();
+      await putawayListPage.table
+        .rowByOrderNumber(`${putawayOrderIdentifier}`.toString().trim())
+        .viewOrderDetails.click();
       await putawayDetailsPage.isLoaded();
     });
 

@@ -12,6 +12,7 @@ import {
 
 test.describe('Change location on putaway create page and list pages', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
+  let putawayOrderIdentifier: string | undefined;
 
   test.beforeEach(
     async ({
@@ -20,6 +21,7 @@ test.describe('Change location on putaway create page and list pages', () => {
       productService,
       receivingService,
     }) => {
+      putawayOrderIdentifier = undefined;
       const supplierLocation = await supplierLocationService.getLocation();
       STOCK_MOVEMENT = await stockMovementService.createInbound({
         originId: supplierLocation.id,
@@ -63,8 +65,11 @@ test.describe('Change location on putaway create page and list pages', () => {
       putawayListPage,
       oldViewShipmentPage,
     }) => {
+      if (!putawayOrderIdentifier) return;
       await putawayListPage.goToPage();
-      await putawayListPage.table.row(1).actionsButton.click();
+      await putawayListPage.table
+        .rowByOrderNumber(`${putawayOrderIdentifier}`.toString().trim())
+        .actionsButton.click();
       await putawayListPage.table.clickDeleteOrderButton(1);
       await putawayListPage.emptyPutawayList.isVisible();
 
@@ -150,20 +155,25 @@ test.describe('Change location on putaway create page and list pages', () => {
       await createPutawayPage.table.row(1).checkbox.click();
       await createPutawayPage.startPutawayButton.click();
       await createPutawayPage.startStep.isLoaded();
+    });
+
+    putawayOrderIdentifier =
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      (await createPutawayPage.startStep.orderNumberValue.textContent())!;
+
+    await test.step('Save pending putaway', async () => {
       await createPutawayPage.startStep.saveButton.click();
     });
 
     await test.step('Go to list page and assert putaway is created', async () => {
       await putawayListPage.goToPage();
       await putawayListPage.isLoaded();
-      await expect(putawayListPage.table.row(1).statusTag).toHaveText(
-        'Pending'
-      );
+      await expect(
+        putawayListPage.table.rowByOrderNumber(
+          `${putawayOrderIdentifier}`.toString().trim()
+        ).statusTag
+      ).toHaveText('Pending');
     });
-
-    const putawayOrderIdentifier = await putawayListPage.table
-      .row(1)
-      .orderNumber.textContent();
 
     await test.step('Change location to another depot', async () => {
       await navbar.locationChooserButton.click();

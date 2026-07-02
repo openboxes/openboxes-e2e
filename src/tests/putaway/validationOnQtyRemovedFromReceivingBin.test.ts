@@ -214,6 +214,12 @@ test.describe('Assert validation on qty removed from receiving bin', () => {
       await expect(createPutawayPage.startStep.table.rows).toHaveCount(2);
       await expect(createPutawayPage.startStep.saveButton).toBeEnabled();
       await expect(createPutawayPage.startStep.nextButton).toBeEnabled();
+    });
+
+    const putawayOrderIdentifier =
+      await createPutawayPage.startStep.orderNumberValue.textContent();
+
+    await test.step('Save putaway', async () => {
       await createPutawayPage.startStep.saveButton.click();
     });
 
@@ -233,7 +239,9 @@ test.describe('Assert validation on qty removed from receiving bin', () => {
     await test.step('Go to putaway list page and edit created pending putaway', async () => {
       await putawayListPage.goToPage();
       await putawayListPage.isLoaded();
-      const row = putawayListPage.table.row(1);
+      const row = putawayListPage.table.rowByOrderNumber(
+        `${putawayOrderIdentifier}`.toString().trim()
+      );
       await row.actionsButton.click();
       await row.viewOrderDetails.click();
       await putawayDetailsPage.isLoaded();
