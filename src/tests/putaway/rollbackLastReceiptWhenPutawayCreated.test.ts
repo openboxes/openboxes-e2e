@@ -114,6 +114,10 @@ test.describe('Rollback last receipt behavior when putaway created', () => {
     const putawayOrderIdentifier =
       await createPutawayPage.startStep.orderNumberValue.textContent();
 
+    const putawayOrderIdentifierContent = `${putawayOrderIdentifier}`
+      .toString()
+      .trim();
+
     await test.step('Select bin to putaway', async () => {
       const internalLocation = await internalLocationService.getLocation();
       await createPutawayPage.startStep.table.row(0).putawayBinSelect.click();
@@ -162,7 +166,7 @@ test.describe('Rollback last receipt behavior when putaway created', () => {
 
     await test.step('Open putaway details page', async () => {
       const row = putawayListPage.table.rowByOrderNumber(
-        `${putawayOrderIdentifier}`.toString().trim()
+        putawayOrderIdentifierContent
       );
       await row.actionsButton.click();
       await row.viewOrderDetails.click();

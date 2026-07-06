@@ -161,6 +161,10 @@ test.describe('Change location on putaway create page and list pages', () => {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       (await createPutawayPage.startStep.orderNumberValue.textContent())!;
 
+    const putawayOrderIdentifierContent = `${putawayOrderIdentifier}`
+      .toString()
+      .trim();
+
     await test.step('Save pending putaway', async () => {
       await createPutawayPage.startStep.saveButton.click();
     });
@@ -169,9 +173,8 @@ test.describe('Change location on putaway create page and list pages', () => {
       await putawayListPage.goToPage();
       await putawayListPage.isLoaded();
       await expect(
-        putawayListPage.table.rowByOrderNumber(
-          `${putawayOrderIdentifier}`.toString().trim()
-        ).statusTag
+        putawayListPage.table.rowByOrderNumber(putawayOrderIdentifierContent)
+          .statusTag
       ).toHaveText('Pending');
     });
 
@@ -182,9 +185,7 @@ test.describe('Change location on putaway create page and list pages', () => {
         .click();
       await locationChooser.getLocation(depotLocation.name).click();
       await putawayListPage.goToPage();
-      await putawayListPage.searchField.fill(
-        `${putawayOrderIdentifier}`.toString().trim()
-      );
+      await putawayListPage.searchField.fill(putawayOrderIdentifierContent);
       await putawayListPage.searchButton.click();
       await putawayListPage.emptyPutawayList.isVisible();
     });
@@ -194,9 +195,7 @@ test.describe('Change location on putaway create page and list pages', () => {
       await expect(putawayListPage.destinationFilter).toContainText(
         depotLocation.name
       );
-      await putawayListPage.searchField.fill(
-        `${putawayOrderIdentifier}`.toString().trim()
-      );
+      await putawayListPage.searchField.fill(putawayOrderIdentifierContent);
       await putawayListPage.searchButton.click();
       await putawayListPage.emptyPutawayList.isVisible();
     });

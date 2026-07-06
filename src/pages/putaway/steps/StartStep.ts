@@ -57,9 +57,7 @@ class StartStep extends BasePageModel {
   }
 
   get orderNumberValue() {
-    return this.page.locator(
-      '[data-testid=\'wizardTitle\'] > div > span:nth-of-type(2)'
-    );
+    return this.page.getByTestId('wizardTitle').locator('> div > span').nth(1);
   }
 }
 

@@ -122,6 +122,10 @@ test.describe('Add comment to Putaway', () => {
     const putawayOrderIdentifier =
       await createPutawayPage.startStep.orderNumberValue.textContent();
 
+    const putawayOrderIdentifierContent = `${putawayOrderIdentifier}`
+      .toString()
+      .trim();
+
     await test.step('Select bin to putaway', async () => {
       await createPutawayPage.startStep.table.row(0).putawayBinSelect.click();
       await createPutawayPage.startStep.table
@@ -135,15 +139,14 @@ test.describe('Add comment to Putaway', () => {
       await putawayListPage.goToPage();
       await putawayListPage.isLoaded();
       await expect(
-        putawayListPage.table.rowByOrderNumber(
-          `${putawayOrderIdentifier}`.toString().trim()
-        ).statusTag
+        putawayListPage.table.rowByOrderNumber(putawayOrderIdentifierContent)
+          .statusTag
       ).toHaveText('Pending');
     });
 
     await test.step('Go to putaway view page', async () => {
       const row = putawayListPage.table.rowByOrderNumber(
-        `${putawayOrderIdentifier}`.toString().trim()
+        putawayOrderIdentifierContent
       );
       await row.actionsButton.click();
       await row.viewOrderDetails.click();
@@ -189,9 +192,9 @@ test.describe('Add comment to Putaway', () => {
     });
 
     await test.step('Assert content of added comment', async () => {
-      await expect(
-        putawayDetailsPage.commentsTable.row(2).commentContent
-      ).toHaveText('add comment');
+      await expect(putawayDetailsPage.commentsTable.row(2).comment).toHaveText(
+        'add comment'
+      );
     });
 
     await test.step('Edit added comment', async () => {
@@ -218,9 +221,9 @@ test.describe('Add comment to Putaway', () => {
 
     await test.step('Assert content of added comment', async () => {
       await expect(putawayDetailsPage.commentsTable.rows).toHaveCount(3);
-      await expect(
-        putawayDetailsPage.commentsTable.row(2).commentContent
-      ).toHaveText('edit added comment');
+      await expect(putawayDetailsPage.commentsTable.row(2).comment).toHaveText(
+        'edit added comment'
+      );
     });
 
     await test.step('Add another comment to pending putaway', async () => {
@@ -321,14 +324,14 @@ test.describe('Add comment to Putaway', () => {
     await test.step('Assert content of added comment', async () => {
       await expect(putawayDetailsPage.commentsTable.rows).toHaveCount(3);
       await expect(
-        putawayDetailsPage.commentsTable.row(2).recipientContent
+        putawayDetailsPage.commentsTable.row(2).recipient
       ).toContainText(managerUser.name);
       await expect(
-        putawayDetailsPage.commentsTable.row(2).senderContent
+        putawayDetailsPage.commentsTable.row(2).sender
       ).toContainText(mainUser.name);
-      await expect(
-        putawayDetailsPage.commentsTable.row(2).commentContent
-      ).toHaveText('add comment to completed putaway');
+      await expect(putawayDetailsPage.commentsTable.row(2).comment).toHaveText(
+        'add comment to completed putaway'
+      );
     });
   });
 });

@@ -135,6 +135,10 @@ test.describe('Assert putaway details page', () => {
     const putawayOrderIdentifier =
       await createPutawayPage.startStep.orderNumberValue.textContent();
 
+    const putawayOrderIdentifierContent = `${putawayOrderIdentifier}`
+      .toString()
+      .trim();
+
     await test.step('Select bin to putaway', async () => {
       await createPutawayPage.startStep.table.row(0).putawayBinSelect.click();
       await createPutawayPage.startStep.table
@@ -154,9 +158,8 @@ test.describe('Assert putaway details page', () => {
       await expect(putawayListPage.statusFilter).toContainText('Pending');
       await expect(putawayListPage.statusFilter).toBeEnabled();
       await expect(
-        putawayListPage.table.rowByOrderNumber(
-          `${putawayOrderIdentifier}`.toString().trim()
-        ).statusTag
+        putawayListPage.table.rowByOrderNumber(putawayOrderIdentifierContent)
+          .statusTag
       ).toHaveText('Pending');
       await expect(putawayListPage.destinationFilter).toContainText(
         currentLocation.name
@@ -165,7 +168,7 @@ test.describe('Assert putaway details page', () => {
 
     await test.step('Go to putaway view page and assert page elements', async () => {
       const row = putawayListPage.table.rowByOrderNumber(
-        `${putawayOrderIdentifier}`.toString().trim()
+        putawayOrderIdentifierContent
       );
       await row.actionsButton.click();
       await row.viewOrderDetails.click();
@@ -370,14 +373,11 @@ test.describe('Assert putaway details page', () => {
       await expect(putawayListPage.destinationFilter).toContainText(
         currentLocation.name
       );
-      await putawayListPage.searchField.fill(
-        `${putawayOrderIdentifier}`.toString().trim()
-      );
+      await putawayListPage.searchField.fill(putawayOrderIdentifierContent);
       await putawayListPage.searchButton.click();
       await expect(
-        putawayListPage.table.rowByOrderNumber(
-          `${putawayOrderIdentifier}`.toString().trim()
-        ).statusTag
+        putawayListPage.table.rowByOrderNumber(putawayOrderIdentifierContent)
+          .statusTag
       ).toHaveText('Completed');
     });
 
@@ -385,7 +385,7 @@ test.describe('Assert putaway details page', () => {
       const generatePutawayPdfFileName =
         'Putaway ' + `${putawayOrderIdentifier}`.toString().trim() + '.pdf';
       const row = putawayListPage.table.rowByOrderNumber(
-        `${putawayOrderIdentifier}`.toString().trim()
+        putawayOrderIdentifierContent
       );
       await row.actionsButton.click();
       await row.generatePdf.click();

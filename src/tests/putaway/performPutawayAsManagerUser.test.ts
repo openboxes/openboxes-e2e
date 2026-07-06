@@ -279,6 +279,10 @@ test.describe('Perform putaway as manager user', () => {
     const putawayOrderIdentifier =
       await createPutawayPageManagerUser.startStep.orderNumberValue.textContent();
 
+    const putawayOrderIdentifierContent = `${putawayOrderIdentifier}`
+      .toString()
+      .trim();
+
     await test.step('Save putaway', async () => {
       await createPutawayPageManagerUser.startStep.saveButton.click();
       await managerUserPage.close();
@@ -288,21 +292,17 @@ test.describe('Perform putaway as manager user', () => {
       await putawayListPage.goToPage();
       await putawayListPage.isLoaded();
       await expect(
-        putawayListPage.table.rowByOrderNumber(
-          `${putawayOrderIdentifier}`.toString().trim()
-        ).statusTag
+        putawayListPage.table.rowByOrderNumber(putawayOrderIdentifierContent)
+          .statusTag
       ).toHaveText('Pending');
-      await putawayListPage.searchField.fill(
-        `${putawayOrderIdentifier}`.toString().trim()
-      );
+      await putawayListPage.searchField.fill(putawayOrderIdentifierContent);
       await putawayListPage.orderedByFilter.click();
       await putawayListPage.orderedByTextInput.fill(managerUser.name);
       await putawayListPage.getOrderedBy(managerUser.name);
       await putawayListPage.searchButton.click();
       await expect(
-        putawayListPage.table.rowByOrderNumber(
-          `${putawayOrderIdentifier}`.toString().trim()
-        ).orderedBy
+        putawayListPage.table.rowByOrderNumber(putawayOrderIdentifierContent)
+          .orderedBy
       ).toContainText(managerUser.name);
     });
 
@@ -317,23 +317,21 @@ test.describe('Perform putaway as manager user', () => {
       await putawayListPage.getCreatedBy(managerUser.name);
       await putawayListPage.searchButton.click();
       await expect(
-        putawayListPage.table.rowByOrderNumber(
-          `${putawayOrderIdentifier}`.toString().trim()
-        ).orderNumber
+        putawayListPage.table.rowByOrderNumber(putawayOrderIdentifierContent)
+          .orderNumber
       ).toContainText(`${putawayOrderIdentifier}`);
       await expect(
-        putawayListPage.table.rowByOrderNumber(
-          `${putawayOrderIdentifier}`.toString().trim()
-        ).statusTag
+        putawayListPage.table.rowByOrderNumber(putawayOrderIdentifierContent)
+          .statusTag
       ).toHaveText('Pending');
     });
 
     await test.step('Go to putaway details page', async () => {
       await putawayListPage.table
-        .rowByOrderNumber(`${putawayOrderIdentifier}`.toString().trim())
+        .rowByOrderNumber(putawayOrderIdentifierContent)
         .actionsButton.click();
       await putawayListPage.table
-        .rowByOrderNumber(`${putawayOrderIdentifier}`.toString().trim())
+        .rowByOrderNumber(putawayOrderIdentifierContent)
         .viewOrderDetails.click();
       await putawayDetailsPage.isLoaded();
     });

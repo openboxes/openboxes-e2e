@@ -48,15 +48,15 @@ class Row extends BasePageModel {
     this.row = row;
   }
 
-  get commentContent() {
+  get comment() {
     return this.row.getByRole('cell').nth(2);
   }
 
-  get recipientContent() {
+  get recipient() {
     return this.row.getByRole('cell').nth(0);
   }
 
-  get senderContent() {
+  get sender() {
     return this.row.getByRole('cell').nth(1);
   }
 

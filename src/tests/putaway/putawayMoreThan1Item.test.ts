@@ -150,6 +150,10 @@ test.describe('Create putaway for more than 1 item, separate putaways', () => {
     const putawayOrderIdentifier =
       await createPutawayPage.startStep.orderNumberValue.textContent();
 
+    const putawayOrderIdentifierContent = `${putawayOrderIdentifier}`
+      .toString()
+      .trim();
+
     await test.step('Save putaway', async () => {
       await createPutawayPage.startStep.saveButton.click();
     });
@@ -175,7 +179,7 @@ test.describe('Create putaway for more than 1 item, separate putaways', () => {
       await putawayListPage.goToPage();
       await putawayListPage.isLoaded();
       const row = putawayListPage.table.rowByOrderNumber(
-        `${putawayOrderIdentifier}`.toString().trim()
+        putawayOrderIdentifierContent
       );
       await row.actionsButton.click();
       await row.viewOrderDetails.click();
