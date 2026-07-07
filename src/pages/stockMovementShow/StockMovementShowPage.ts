@@ -111,6 +111,20 @@ class StockMovementShowPage extends BasePageModel {
     this.page.once('dialog', (dialog) => dialog.accept());
     await this.deleteButton.click();
   }
+
+  async openReceiptsTab() {
+    await expect(async () => {
+      await this.receiptTab.click();
+      await this.receiptListTable.isLoaded();
+    }).toPass({ timeout: 20000, intervals: [500, 1000, 2000] });
+  }
+
+  async openDocumentsTab() {
+    await expect(async () => {
+      await this.documentTab.click();
+      await this.documentsListTable.isLoaded();
+    }).toPass({ timeout: 20000, intervals: [500, 1000, 2000] });
+  }
 }
 
 export default StockMovementShowPage;
