@@ -132,6 +132,13 @@ test.describe('Assert putaway details page', () => {
       await createPutawayPage.startStep.isLoaded();
     });
 
+    const putawayOrderIdentifier =
+      await createPutawayPage.startStep.orderNumberValue.textContent();
+
+    const putawayOrderIdentifierContent = `${putawayOrderIdentifier}`
+      .toString()
+      .trim();
+
     await test.step('Select bin to putaway', async () => {
       await createPutawayPage.startStep.table.row(0).putawayBinSelect.click();
       await createPutawayPage.startStep.table
@@ -150,16 +157,19 @@ test.describe('Assert putaway details page', () => {
       await expect(putawayListPage.orderTypeFilter).toBeDisabled();
       await expect(putawayListPage.statusFilter).toContainText('Pending');
       await expect(putawayListPage.statusFilter).toBeEnabled();
-      await expect(putawayListPage.table.row(1).statusTag).toHaveText(
-        'Pending'
-      );
+      await expect(
+        putawayListPage.table.rowByOrderNumber(putawayOrderIdentifierContent)
+          .statusTag
+      ).toHaveText('Pending');
       await expect(putawayListPage.destinationFilter).toContainText(
         currentLocation.name
       );
     });
 
     await test.step('Go to putaway view page and assert page elements', async () => {
-      const row = putawayListPage.table.row(1);
+      const row = putawayListPage.table.rowByOrderNumber(
+        putawayOrderIdentifierContent
+      );
       await row.actionsButton.click();
       await row.viewOrderDetails.click();
       await putawayDetailsPage.isLoaded();
@@ -266,9 +276,6 @@ test.describe('Assert putaway details page', () => {
       await putawayDetailsPage.summaryActionsButton.click();
     });
 
-    const putawayOrderIdentifier =
-      await putawayDetailsPage.orderHeaderTable.orderNumberValue.textContent();
-
     const detailsPagePdfFileName =
       'Putaway ' + `${putawayOrderIdentifier}`.toString().trim() + '.pdf';
 
@@ -366,19 +373,20 @@ test.describe('Assert putaway details page', () => {
       await expect(putawayListPage.destinationFilter).toContainText(
         currentLocation.name
       );
-      await putawayListPage.searchField.fill(
-        `${putawayOrderIdentifier}`.toString().trim()
-      );
+      await putawayListPage.searchField.fill(putawayOrderIdentifierContent);
       await putawayListPage.searchButton.click();
-      await expect(putawayListPage.table.row(1).statusTag).toHaveText(
-        'Completed'
-      );
+      await expect(
+        putawayListPage.table.rowByOrderNumber(putawayOrderIdentifierContent)
+          .statusTag
+      ).toHaveText('Completed');
     });
 
     await test.step('Download putaway pdf from putaway list', async () => {
       const generatePutawayPdfFileName =
         'Putaway ' + `${putawayOrderIdentifier}`.toString().trim() + '.pdf';
-      const row = putawayListPage.table.row(1);
+      const row = putawayListPage.table.rowByOrderNumber(
+        putawayOrderIdentifierContent
+      );
       await row.actionsButton.click();
       await row.generatePdf.click();
       await putawayDetailsPage.fileHandler.onDownload();

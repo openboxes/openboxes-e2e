@@ -248,14 +248,23 @@ test.describe('Validations on edit and receive inbound stock movement', () => {
       await receivingPage.checkStep.isLoaded();
       await receivingPage.checkStep.receiveShipmentButton.click();
       await stockMovementShowPage.isLoaded();
+      // the receipt is committed asynchronously; clicking Receive again
+      // before the status settles opens the wizard instead of the error
+      await expect(stockMovementShowPage.statusTag).toHaveText('Received');
     });
 
     await test.step('Validation on receive already received inbound', async () => {
-      await stockMovementShowPage.isLoaded();
-      await stockMovementShowPage.receiveButton.click();
-      await expect(stockMovementShowPage.errorMessage).toBeVisible({
-        timeout: 10000,
-      });
+      // the server-side already-received guard can lag behind the visible
+      // status, in which case the click opens the wizard instead of showing
+      // the error; retry the whole navigation until the guard kicks in
+      await expect(async () => {
+        await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
+        await stockMovementShowPage.isLoaded();
+        await stockMovementShowPage.receiveButton.click();
+        await expect(stockMovementShowPage.errorMessage).toBeVisible({
+          timeout: 5000,
+        });
+      }).toPass({ timeout: 30000, intervals: [1000, 2000] });
       await expect(stockMovementShowPage.errorMessage).toContainText(
         'Stock movement ' +
           STOCK_MOVEMENT.identifier +

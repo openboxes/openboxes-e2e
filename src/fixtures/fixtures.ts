@@ -30,6 +30,7 @@ import ProductEditPage from '@/pages/product/productEdit/ProductEditPage';
 import ProductShowPage from '@/pages/product/productShow/ProductShowPage';
 import CreatePutawayPage from '@/pages/putaway/CreatePutawayPage';
 import PutawayListPage from '@/pages/putaway/list/PutawayListPage';
+import AddCommentToPutawayPage from '@/pages/putaway/putawayDetails/AddCommentToPutawayPage';
 import PutawayDetailsPage from '@/pages/putaway/putawayDetails/PutawayDetailsPage';
 import ReceivingPage from '@/pages/receiving/ReceivingPage';
 import OldViewShipmentPage from '@/pages/stockMovementShow/OldViewShipmentPage';
@@ -74,6 +75,7 @@ type Fixtures = {
   putawayListPage: PutawayListPage;
   productEditPage: ProductEditPage;
   editTransactionPage: EditTransactionPage;
+  addCommentToPutawayPage: AddCommentToPutawayPage;
   // COMPONENTS
   navbar: Navbar;
   locationChooser: LocationChooser;
@@ -153,6 +155,8 @@ export const test = baseTest.extend<Fixtures>({
   productEditPage: async ({ page }, use) => use(new ProductEditPage(page)),
   editTransactionPage: async ({ page }, use) =>
     use(new EditTransactionPage(page)),
+  addCommentToPutawayPage: async ({ page }, use) =>
+    use(new AddCommentToPutawayPage(page)),
   // COMPONENTS
   navbar: async ({ page }, use) => use(new Navbar(page)),
   locationChooser: async ({ page }, use) => use(new LocationChooser(page)),

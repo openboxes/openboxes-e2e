@@ -51,14 +51,20 @@ test.describe('Receive inbound stock movement in location without partial receiv
       oldViewShipmentPage,
       stockMovementService,
     }) => {
-      await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
-      await deleteReceivedShipment({
-        stockMovementShowPage,
-        oldViewShipmentPage,
-        stockMovementService,
-        STOCK_MOVEMENT,
-      });
-      await authService.changeLocation(AppConfig.instance.locations.main.id);
+      // the shipment must be deleted while the session is still at the depot,
+      // but the location has to be restored even when the cleanup fails,
+      // otherwise the next test file runs against the wrong location
+      try {
+        await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
+        await deleteReceivedShipment({
+          stockMovementShowPage,
+          oldViewShipmentPage,
+          stockMovementService,
+          STOCK_MOVEMENT,
+        });
+      } finally {
+        await authService.changeLocation(AppConfig.instance.locations.main.id);
+      }
     }
   );
 

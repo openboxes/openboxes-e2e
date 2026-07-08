@@ -104,6 +104,11 @@ test.describe('Apply sorting by alphabetical order and remain inputs', () => {
     await test.step('Send shipment', async () => {
       await createInboundPage.nextButton.click();
       await createInboundPage.sendStep.isLoaded();
+      // wait until the last added item shows up in the table, otherwise the send step
+      // is still re-rendering after data fetch and the click below can get lost
+      await expect(
+        createInboundPage.sendStep.table.row(2).productCode.field
+      ).toBeVisible();
       await expect(createInboundPage.sendStep.sendShipmentButton).toBeVisible();
       await expect(createInboundPage.sendStep.sendShipmentButton).toBeEnabled();
       await Promise.all([
@@ -111,6 +116,7 @@ test.describe('Apply sorting by alphabetical order and remain inputs', () => {
         createInboundPage.sendStep.sendShipmentButton.click(),
       ]);
       await stockMovementShowPage.isLoaded();
+      await expect(stockMovementShowPage.statusTag).toHaveText('Shipped');
     });
 
     await test.step('Go to shipment receiving page', async () => {

@@ -110,6 +110,16 @@ test.describe('Delete pending putaways', () => {
       await createPutawayPage.table.row(1).checkbox.click();
       await createPutawayPage.startPutawayButton.click();
       await createPutawayPage.startStep.isLoaded();
+    });
+
+    const putawayOrderIdentifier =
+      await createPutawayPage.startStep.orderNumberValue.textContent();
+
+    const putawayOrderIdentifierContent = `${putawayOrderIdentifier}`
+      .toString()
+      .trim();
+
+    await test.step('Save putaway', async () => {
       await createPutawayPage.startStep.saveButton.click();
     });
 
@@ -119,7 +129,9 @@ test.describe('Delete pending putaways', () => {
       await expect(
         putawayListPage.table.rows.filter({ has: page.locator('td') })
       ).toHaveCount(1);
-      const row = putawayListPage.table.row(1);
+      const row = putawayListPage.table.rowByOrderNumber(
+        putawayOrderIdentifierContent
+      );
       await row.actionsButton.click();
       await putawayListPage.table.clickDeleteOrderButton(1);
       await putawayListPage.emptyPutawayList.isVisible();
@@ -161,6 +173,16 @@ test.describe('Delete pending putaways', () => {
       await createPutawayPage.table.row(1).checkbox.click();
       await createPutawayPage.startPutawayButton.click();
       await createPutawayPage.startStep.isLoaded();
+    });
+
+    const putawayOrderIdentifier =
+      await createPutawayPage.startStep.orderNumberValue.textContent();
+
+    const putawayOrderIdentifierContent = `${putawayOrderIdentifier}`
+      .toString()
+      .trim();
+
+    await test.step('Save putaway', async () => {
       await createPutawayPage.startStep.saveButton.click();
     });
 
@@ -170,7 +192,9 @@ test.describe('Delete pending putaways', () => {
       await expect(
         putawayListPage.table.rows.filter({ has: page.locator('td') })
       ).toHaveCount(1);
-      const row = putawayListPage.table.row(1);
+      const row = putawayListPage.table.rowByOrderNumber(
+        putawayOrderIdentifierContent
+      );
       await row.actionsButton.click();
       await row.viewOrderDetails.click();
     });
@@ -220,6 +244,16 @@ test.describe('Delete pending putaways', () => {
       await createPutawayPage.table.row(1).checkbox.click();
       await createPutawayPage.startPutawayButton.click();
       await createPutawayPage.startStep.isLoaded();
+    });
+
+    const putawayOrderIdentifier =
+      await createPutawayPage.startStep.orderNumberValue.textContent();
+
+    const putawayOrderIdentifierContent = `${putawayOrderIdentifier}`
+      .toString()
+      .trim();
+
+    await test.step('Save putaway', async () => {
       await createPutawayPage.startStep.saveButton.click();
     });
 
@@ -231,7 +265,9 @@ test.describe('Delete pending putaways', () => {
           has: managerUserPage.locator('td'),
         })
       ).toHaveCount(1);
-      const row = putawayListPage.table.row(1);
+      const row = putawayListPage.table.rowByOrderNumber(
+        putawayOrderIdentifierContent
+      );
       await row.actionsButton.click();
       await putawayListPage.table.clickDeleteOrderButton(1);
       await putawayListPage.emptyPutawayList.isVisible();
@@ -276,6 +312,16 @@ test.describe('Delete pending putaways', () => {
       await createPutawayPage.table.row(1).checkbox.click();
       await createPutawayPage.startPutawayButton.click();
       await createPutawayPage.startStep.isLoaded();
+    });
+
+    const putawayOrderIdentifier =
+      await createPutawayPage.startStep.orderNumberValue.textContent();
+
+    const putawayOrderIdentifierContent = `${putawayOrderIdentifier}`
+      .toString()
+      .trim();
+
+    await test.step('Save putaway', async () => {
       await createPutawayPage.startStep.saveButton.click();
     });
 
@@ -287,7 +333,9 @@ test.describe('Delete pending putaways', () => {
           has: managerUserPage.locator('td'),
         })
       ).toHaveCount(1);
-      const row = putawayListPage.table.row(1);
+      const row = putawayListPage.table.rowByOrderNumber(
+        putawayOrderIdentifierContent
+      );
       await row.actionsButton.click();
       await row.viewOrderDetails.click();
     });
@@ -338,6 +386,16 @@ test.describe('Delete pending putaways', () => {
       await createPutawayPage.table.row(1).checkbox.click();
       await createPutawayPage.startPutawayButton.click();
       await createPutawayPage.startStep.isLoaded();
+    });
+
+    const putawayOrderIdentifier =
+      await createPutawayPage.startStep.orderNumberValue.textContent();
+
+    const putawayOrderIdentifierContent = `${putawayOrderIdentifier}`
+      .toString()
+      .trim();
+
+    await test.step('Save putaway', async () => {
       await createPutawayPage.startStep.saveButton.click();
     });
 
@@ -349,7 +407,9 @@ test.describe('Delete pending putaways', () => {
           has: adminUserPage.locator('td'),
         })
       ).toHaveCount(1);
-      const row = putawayListPage.table.row(1);
+      const row = putawayListPage.table.rowByOrderNumber(
+        putawayOrderIdentifierContent
+      );
       await row.actionsButton.click();
       await putawayListPage.table.clickDeleteOrderButton(1);
       await putawayListPage.emptyPutawayList.isVisible();
@@ -394,6 +454,16 @@ test.describe('Delete pending putaways', () => {
       await createPutawayPage.table.row(1).checkbox.click();
       await createPutawayPage.startPutawayButton.click();
       await createPutawayPage.startStep.isLoaded();
+    });
+
+    const putawayOrderIdentifier =
+      await createPutawayPage.startStep.orderNumberValue.textContent();
+
+    const putawayOrderIdentifierContent = `${putawayOrderIdentifier}`
+      .toString()
+      .trim();
+
+    await test.step('Save putaway', async () => {
       await createPutawayPage.startStep.saveButton.click();
     });
 
@@ -405,7 +475,9 @@ test.describe('Delete pending putaways', () => {
           has: adminUserPage.locator('td'),
         })
       ).toHaveCount(1);
-      const row = putawayListPage.table.row(1);
+      const row = putawayListPage.table.rowByOrderNumber(
+        putawayOrderIdentifierContent
+      );
       await row.actionsButton.click();
       await row.viewOrderDetails.click();
     });
@@ -456,6 +528,16 @@ test.describe('Delete pending putaways', () => {
       await createPutawayPage.table.row(1).checkbox.click();
       await createPutawayPage.startPutawayButton.click();
       await createPutawayPage.startStep.isLoaded();
+    });
+
+    const putawayOrderIdentifier =
+      await createPutawayPage.startStep.orderNumberValue.textContent();
+
+    const putawayOrderIdentifierContent = `${putawayOrderIdentifier}`
+      .toString()
+      .trim();
+
+    await test.step('Save putaway', async () => {
       await createPutawayPage.startStep.saveButton.click();
     });
 
@@ -467,7 +549,9 @@ test.describe('Delete pending putaways', () => {
           has: assistantUserPage.locator('td'),
         })
       ).toHaveCount(1);
-      const row = putawayListPage.table.row(1);
+      const row = putawayListPage.table.rowByOrderNumber(
+        putawayOrderIdentifierContent
+      );
       await row.actionsButton.click();
       await putawayListPage.table.clickDeleteOrderButton(1);
       await putawayListPage.emptyPutawayList.isVisible();
@@ -512,6 +596,16 @@ test.describe('Delete pending putaways', () => {
       await createPutawayPage.table.row(1).checkbox.click();
       await createPutawayPage.startPutawayButton.click();
       await createPutawayPage.startStep.isLoaded();
+    });
+
+    const putawayOrderIdentifier =
+      await createPutawayPage.startStep.orderNumberValue.textContent();
+
+    const putawayOrderIdentifierContent = `${putawayOrderIdentifier}`
+      .toString()
+      .trim();
+
+    await test.step('Save putaway', async () => {
       await createPutawayPage.startStep.saveButton.click();
     });
 
@@ -523,7 +617,9 @@ test.describe('Delete pending putaways', () => {
           has: assistantUserPage.locator('td'),
         })
       ).toHaveCount(1);
-      const row = putawayListPage.table.row(1);
+      const row = putawayListPage.table.rowByOrderNumber(
+        putawayOrderIdentifierContent
+      );
       await row.actionsButton.click();
       await row.viewOrderDetails.click();
     });

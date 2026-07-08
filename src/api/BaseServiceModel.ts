@@ -6,6 +6,10 @@ class BaseServiceModel {
   constructor(request: APIRequestContext) {
     this.request = request;
   }
+
+  getRequestContext() {
+    return this.request;
+  }
 }
 
 export default BaseServiceModel;

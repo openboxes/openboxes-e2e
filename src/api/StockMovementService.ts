@@ -68,10 +68,13 @@ class StockMovementService extends BaseServiceModel {
   }
 
   async deleteStockMovement(id: string) {
-    try {
-      await this.request.delete(STOCK_MOVEMENT_BY_ID(id));
-    } catch (error) {
-      throw new Error('Problem deleting stock movement');
+    // request.delete does not throw on HTTP error statuses, and a swallowed
+    // failed delete leaves the stock movement behind for the next tests
+    const apiResponse = await this.request.delete(STOCK_MOVEMENT_BY_ID(id));
+    if (!apiResponse.ok()) {
+      throw new Error(
+        `Problem deleting stock movement ${id}: ${apiResponse.status()}`
+      );
     }
   }
 

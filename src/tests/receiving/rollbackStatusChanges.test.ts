@@ -105,8 +105,7 @@ test.describe('Status changes on sm view page when rollback receipts', () => {
 
     await test.step('Assert statuses on stock movmenent show page after receiving item partially', async () => {
       await expect(stockMovementShowPage.statusTag).toHaveText('Receiving');
-      await stockMovementShowPage.receiptTab.click();
-      await stockMovementShowPage.receiptListTable.isLoaded();
+      await stockMovementShowPage.openReceiptsTab();
       await stockMovementShowPage.receiptTab.isVisible();
       await expect(
         stockMovementShowPage.receiptListTable.row(1).receiptStatus
@@ -128,8 +127,7 @@ test.describe('Status changes on sm view page when rollback receipts', () => {
     });
 
     await test.step('Assert empty receipt tab after rollback last receipt', async () => {
-      await stockMovementShowPage.receiptTab.click();
-      await stockMovementShowPage.receiptListTable.isLoaded();
+      await stockMovementShowPage.openReceiptsTab();
       await stockMovementShowPage.receiptTab.isVisible();
       await expect(stockMovementShowPage.emptyReceiptTab).toBeVisible();
     });
@@ -166,8 +164,7 @@ test.describe('Status changes on sm view page when rollback receipts', () => {
 
     await test.step('Assert statuses on stock movmenent show page after receiving fully 1 of items', async () => {
       await expect(stockMovementShowPage.statusTag).toHaveText('Receiving');
-      await stockMovementShowPage.receiptTab.click();
-      await stockMovementShowPage.receiptListTable.isLoaded();
+      await stockMovementShowPage.openReceiptsTab();
       await stockMovementShowPage.receiptTab.isVisible();
       await expect(
         stockMovementShowPage.receiptListTable.row(1).receiptStatus
@@ -189,8 +186,7 @@ test.describe('Status changes on sm view page when rollback receipts', () => {
     });
 
     await test.step('Assert empty receipt tab after rollback last receipt', async () => {
-      await stockMovementShowPage.receiptTab.click();
-      await stockMovementShowPage.receiptListTable.isLoaded();
+      await stockMovementShowPage.openReceiptsTab();
       await stockMovementShowPage.receiptTab.isVisible();
       await expect(stockMovementShowPage.emptyReceiptTab).toBeVisible();
     });
@@ -249,8 +245,7 @@ test.describe('Status changes on sm view page when rollback receipts', () => {
 
     await test.step('Assert statuses on stock movmenent show page after receiving items', async () => {
       await expect(stockMovementShowPage.statusTag).toHaveText('Received');
-      await stockMovementShowPage.receiptTab.click();
-      await stockMovementShowPage.receiptListTable.isLoaded();
+      await stockMovementShowPage.openReceiptsTab();
       await stockMovementShowPage.receiptTab.isVisible();
       await expect(
         stockMovementShowPage.receiptListTable.row(3).receiptStatus
@@ -270,8 +265,7 @@ test.describe('Status changes on sm view page when rollback receipts', () => {
 
     await test.step('Assert statuses on stock movmenent show page after receiving items', async () => {
       await expect(stockMovementShowPage.statusTag).toHaveText('Receiving');
-      await stockMovementShowPage.receiptTab.click();
-      await stockMovementShowPage.receiptListTable.isLoaded();
+      await stockMovementShowPage.openReceiptsTab();
       await stockMovementShowPage.receiptTab.isVisible();
       await expect(
         stockMovementShowPage.receiptListTable.row(1).receiptStatus
@@ -303,8 +297,7 @@ test.describe('Status changes on sm view page when rollback receipts', () => {
     });
 
     await test.step('Assert empty receipt tab after rollback both receipts', async () => {
-      await stockMovementShowPage.receiptTab.click();
-      await stockMovementShowPage.receiptListTable.isLoaded();
+      await stockMovementShowPage.openReceiptsTab();
       await stockMovementShowPage.receiptTab.isVisible();
       await expect(stockMovementShowPage.emptyReceiptTab).toBeVisible();
     });

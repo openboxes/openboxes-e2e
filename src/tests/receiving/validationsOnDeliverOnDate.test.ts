@@ -4,7 +4,7 @@ import { expect, test } from '@/fixtures/fixtures';
 import { Product } from '@/generated/ProductCodes.generated';
 import { StockMovementResponse } from '@/types';
 import BinLocationUtils from '@/utils/BinLocationUtils';
-import { getDateByOffset } from '@/utils/DateUtils';
+import { formatDate, getDateByOffset } from '@/utils/DateUtils';
 import { deleteReceivedShipment } from '@/utils/shipmentUtils';
 
 test.describe('Validations on edit Deliver On Date when receiving shipment', () => {
@@ -115,11 +115,21 @@ test.describe('Validations on edit Deliver On Date when receiving shipment', () 
     });
 
     await test.step('Edit Delivered on Date on check page to past date', async () => {
+      const pastDate = getDateByOffset(new Date(), -1);
+      // the date picker re-renders the committed value with seconds zeroed,
+      // so fill with :00 to make the value comparable after the commit
+      pastDate.setSeconds(0, 0);
       await receivingPage.checkStep.isLoaded();
       await receivingPage.checkStep.deliveredOnDateField.fillWithFormat(
-        getDateByOffset(new Date(), -1),
+        pastDate,
         'MM/DD/YYYY HH:mm:ss Z'
       );
+      // when the receive request fires before the date picker commits the
+      // value, the shipment gets received with the original valid date and
+      // the expected validation never appears
+      await expect(
+        receivingPage.checkStep.deliveredOnDateField.textbox
+      ).toHaveValue(formatDate(pastDate, 'MM/DD/YYYY HH:mm:ss Z'));
       await receivingPage.checkStep.isLoaded();
       await receivingPage.checkStep.receiveShipmentButton.click();
       await expect(

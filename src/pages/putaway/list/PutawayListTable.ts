@@ -15,6 +15,15 @@ class PutawayListTable extends BasePageModel {
     return new Row(this.page, this.rows.nth(index));
   }
 
+  rowByOrderNumber(orderNumber: string) {
+    return new Row(
+      this.page,
+      this.rows.filter({
+        has: this.page.getByTestId('order-number').getByText(orderNumber),
+      })
+    );
+  }
+
   async clickDeleteOrderButton(index: number) {
     this.page.once('dialog', (dialog) => dialog.accept());
     await this.row(index).deleteOrder.click();

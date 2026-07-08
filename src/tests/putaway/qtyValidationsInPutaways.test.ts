@@ -12,6 +12,7 @@ import {
 
 test.describe('Assert qty validations in putaways', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
+  let putawayOrderIdentifier: string | undefined;
 
   test.beforeEach(
     async ({
@@ -20,6 +21,7 @@ test.describe('Assert qty validations in putaways', () => {
       productService,
       receivingService,
     }) => {
+      putawayOrderIdentifier = undefined;
       const supplierLocation = await supplierLocationService.getLocation();
       STOCK_MOVEMENT = await stockMovementService.createInbound({
         originId: supplierLocation.id,
@@ -63,10 +65,16 @@ test.describe('Assert qty validations in putaways', () => {
       stockMovementService,
       oldViewShipmentPage,
     }) => {
-      await putawayListPage.goToPage();
-      await putawayListPage.table.row(1).actionsButton.click();
-      await putawayListPage.table.clickDeleteOrderButton(1);
-      await putawayListPage.emptyPutawayList.isVisible();
+      // the received shipment must be cleaned up even when the test fails
+      // before the putaway is started
+      if (putawayOrderIdentifier) {
+        await putawayListPage.goToPage();
+        await putawayListPage.table
+          .rowByOrderNumber(`${putawayOrderIdentifier}`.toString().trim())
+          .actionsButton.click();
+        await putawayListPage.table.clickDeleteOrderButton(1);
+        await putawayListPage.emptyPutawayList.isVisible();
+      }
 
       await deleteReceivedShipment({
         stockMovementShowPage,
@@ -104,6 +112,10 @@ test.describe('Assert qty validations in putaways', () => {
       await createPutawayPage.startPutawayButton.click();
       await createPutawayPage.startStep.isLoaded();
     });
+
+    putawayOrderIdentifier =
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      (await createPutawayPage.startStep.orderNumberValue.textContent())!;
 
     await test.step('Try to edit qty to higher and assert validations', async () => {
       await createPutawayPage.startStep.table.row(0).editButton.click();

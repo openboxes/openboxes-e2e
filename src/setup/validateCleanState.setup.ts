@@ -25,8 +25,8 @@ function assertNoPutawayCandidates(
   const details = candidates
     .map(
       (candidate) =>
-        `${candidate.product?.productCode ?? '?'} ${candidate.product?.name ?? ''} ` +
-        `(bin: ${candidate.currentLocation?.name ?? '?'}, qty: ${candidate.quantity ?? '?'}, ` +
+        `${candidate['product.productCode'] ?? '?'} ${candidate['product.name'] ?? ''} ` +
+        `(bin: ${candidate['currentLocation.name'] ?? '?'}, qty: ${candidate.quantity ?? '?'}, ` +
         `status: ${candidate.putawayStatus ?? '?'})`
     )
     .join('; ');

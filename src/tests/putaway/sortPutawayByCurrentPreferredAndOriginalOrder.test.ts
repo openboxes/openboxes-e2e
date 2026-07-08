@@ -22,7 +22,7 @@ import { byNameAsc } from '@/utils/sortUtils';
 */
 test.describe('Sort putaway by current bin, preferred bin and original order', () => {
   let inboundOne: StockMovementResponse;
-  let inboundTwo: StockMovementResponse;
+  let inboundTwo: StockMovementResponse | undefined;
 
   let productA: ProductResponse;
   let productB: ProductResponse;
@@ -30,6 +30,8 @@ test.describe('Sort putaway by current bin, preferred bin and original order', (
 
   let binOne: LocationResponse;
   let binTwo: LocationResponse;
+
+  let putawayOrderIdentifier: string | undefined;
 
   test.beforeEach(
     async ({
@@ -42,6 +44,8 @@ test.describe('Sort putaway by current bin, preferred bin and original order', (
       productShowPage,
       productEditPage,
     }) => {
+      putawayOrderIdentifier = undefined;
+      inboundTwo = undefined;
       [productA, productB, productC] = [
         await productService.getProduct(Product.ONE),
         await productService.getProduct(Product.TWO),
@@ -93,25 +97,33 @@ test.describe('Sort putaway by current bin, preferred bin and original order', (
       productShowPage,
       productEditPage,
     }) => {
-      // Remove the pending 2nd putaway
-      await putawayListPage.goToPage();
-      await putawayListPage.isLoaded();
-      await putawayListPage.table.row(1).actionsButton.click();
-      await putawayListPage.table.clickDeleteOrderButton(1);
+      // Remove the pending 2nd putaway and the 3 transactions created along
+      // the way; they exist only once the 2nd putaway has been started, but
+      // the shipments and preferred bins must be cleaned up regardless of
+      // how far the test got
+      if (putawayOrderIdentifier) {
+        await putawayListPage.goToPage();
+        await putawayListPage.isLoaded();
+        await putawayListPage.table
+          .rowByOrderNumber(`${putawayOrderIdentifier}`.toString().trim())
+          .actionsButton.click();
+        await putawayListPage.table.clickDeleteOrderButton(1);
 
-      // Delete the 3 created transactions
-      await navbar.configurationButton.click();
-      await navbar.transactions.click();
-      for (let i = 0; i < 3; i++) {
-        await transactionListPage.deleteTransaction(1);
+        await navbar.configurationButton.click();
+        await navbar.transactions.click();
+        for (let i = 0; i < 3; i++) {
+          await transactionListPage.deleteTransaction(1);
+        }
       }
 
-      await deleteReceivedShipment({
-        stockMovementShowPage,
-        oldViewShipmentPage,
-        stockMovementService,
-        STOCK_MOVEMENT: inboundTwo,
-      });
+      if (inboundTwo) {
+        await deleteReceivedShipment({
+          stockMovementShowPage,
+          oldViewShipmentPage,
+          stockMovementService,
+          STOCK_MOVEMENT: inboundTwo,
+        });
+      }
       await deleteReceivedShipment({
         stockMovementShowPage,
         oldViewShipmentPage,
@@ -122,7 +134,7 @@ test.describe('Sort putaway by current bin, preferred bin and original order', (
       // Remove preferred bins for A and B.
       for (const product of [productA, productB]) {
         await productShowPage.goToPage(product.id);
-        await productShowPage.editProductkButton.click();
+        await productShowPage.editProductButton.click();
         await productEditPage.inventoryLevelsTab.click();
         await productEditPage.inventoryLevelsTabSection
           .row(1)
@@ -194,7 +206,8 @@ test.describe('Sort putaway by current bin, preferred bin and original order', (
     const allProducts = [productA.name, productB.name, productC.name];
 
     await test.step('go to create putaway page and start putaway for all items', async () => {
-      await stockMovementShowPage.goToPage(inboundTwo.id);
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      await stockMovementShowPage.goToPage(inboundTwo!.id);
       await stockMovementShowPage.isLoaded();
       await RefreshCachesUtils.refreshCaches({ navbar });
       await navbar.inbound.click();
@@ -215,6 +228,10 @@ test.describe('Sort putaway by current bin, preferred bin and original order', (
       await createPutawayPage.startPutawayButton.click();
       await createPutawayPage.startStep.isLoaded();
     });
+
+    putawayOrderIdentifier =
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      (await createPutawayPage.startStep.orderNumberValue.textContent())!;
 
     await test.step('assert original order of items', async () => {
       await expect(createPutawayPage.startStep.sortButton).toContainText(
