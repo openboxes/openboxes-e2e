@@ -34,11 +34,16 @@ type StockMovementListResponse = {
   totalCount: number;
 };
 
+// GET /api/putaways returns rows flattened into dotted keys
+// (e.g. "product.name"), not nested objects
 type PutawayCandidate = {
-  product?: { name?: string; productCode?: string };
-  currentLocation?: { name?: string };
-  quantity?: number;
-  putawayStatus?: string;
+  'stockMovement.id'?: string | null;
+  'stockMovement.name'?: string | null;
+  'product.productCode'?: string | null;
+  'product.name'?: string | null;
+  'currentLocation.name'?: string | null;
+  quantity?: number | null;
+  putawayStatus?: string | null;
 };
 
 type LocationResponse = {

@@ -65,13 +65,16 @@ test.describe('Assert qty validations in putaways', () => {
       stockMovementService,
       oldViewShipmentPage,
     }) => {
-      if (!putawayOrderIdentifier) return;
-      await putawayListPage.goToPage();
-      await putawayListPage.table
-        .rowByOrderNumber(`${putawayOrderIdentifier}`.toString().trim())
-        .actionsButton.click();
-      await putawayListPage.table.clickDeleteOrderButton(1);
-      await putawayListPage.emptyPutawayList.isVisible();
+      // the received shipment must be cleaned up even when the test fails
+      // before the putaway is started
+      if (putawayOrderIdentifier) {
+        await putawayListPage.goToPage();
+        await putawayListPage.table
+          .rowByOrderNumber(`${putawayOrderIdentifier}`.toString().trim())
+          .actionsButton.click();
+        await putawayListPage.table.clickDeleteOrderButton(1);
+        await putawayListPage.emptyPutawayList.isVisible();
+      }
 
       await deleteReceivedShipment({
         stockMovementShowPage,
