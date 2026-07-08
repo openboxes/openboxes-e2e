@@ -257,7 +257,11 @@ test.describe('Export receiving template', () => {
       await receivingPage.receivingStep.table
         .row(3)
         .commentField.textbox.fill('e2e_comment');
+      // the exported template is generated server-side, so the save request
+      // must complete before downloading it
+      const dataSaved = receivingPage.receivingStep.waitForData();
       await receivingPage.receivingStep.saveButton.click();
+      await dataSaved;
     });
 
     await test.step('Download export template after input data', async () => {

@@ -113,7 +113,14 @@ class StockMovementShowPage extends BasePageModel {
   }
 
   async openReceiptsTab() {
+    // tab content is fetched once per page load, so when it fails to render,
+    // re-clicking the tab never refetches it — only a reload does
+    let reloadOnRetry = false;
     await expect(async () => {
+      if (reloadOnRetry) {
+        await this.page.reload();
+      }
+      reloadOnRetry = true;
       await this.receiptTab.click();
       await this.receiptListTable.isLoaded();
     }).toPass({ timeout: 20000, intervals: [500, 1000, 2000] });
