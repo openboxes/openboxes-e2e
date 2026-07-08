@@ -1,8 +1,13 @@
+import path from 'node:path';
+
 import AppConfig from '@/config/AppConfig';
+import { PUTAWAY_URL } from '@/constants/applicationUrls';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
 import { Product } from '@/generated/ProductCodes.generated';
 import { ProductResponse, StockMovementResponse } from '@/types';
+import { deleteFile, writeBufferToFile } from '@/utils/FileIOUtils';
+import { extractPdfColumnValues } from '@/utils/pdfUtils';
 import RefreshCachesUtils from '@/utils/RefreshCaches';
 import {
   deleteShipment,
@@ -15,6 +20,7 @@ test.describe('Putaway to preferred bin and default bin', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
   let product: ProductResponse;
   let product2: ProductResponse;
+  const downloadedFilePaths: string[] = [];
 
   test.beforeEach(
     async ({
@@ -110,6 +116,10 @@ test.describe('Putaway to preferred bin and default bin', () => {
         productEditPage.inventoryLevelsTabSection.table
       ).toBeVisible();
       await productEditPage.inventoryLevelsTabSection.createStockLevelModal.clickDeleteInventoryLevel();
+
+      while (downloadedFilePaths.length) {
+        deleteFile(downloadedFilePaths.pop() as string);
+      }
     }
   );
 
@@ -120,6 +130,7 @@ test.describe('Putaway to preferred bin and default bin', () => {
     internalLocationService,
     productShowPage,
     putawayDetailsPage,
+    page,
   }) => {
     const receivingBin =
       AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
@@ -160,6 +171,35 @@ test.describe('Putaway to preferred bin and default bin', () => {
       await expect(
         createPutawayPage.startStep.table.row(2).putawayBinSelect
       ).toContainText(internalLocation.name);
+    });
+
+    await test.step('Generate putaway pdf and assert bin columns', async () => {
+      const pdfResponsePromise = page.waitForResponse(
+        (resp) =>
+          PUTAWAY_URL.generatePdfPattern.test(resp.url()) &&
+          resp.status() === 200
+      );
+      const downloadPromise = page.waitForEvent('download');
+      await createPutawayPage.startStep.generatePutawayListButton.click();
+      const [pdfResponse, download] = await Promise.all([
+        pdfResponsePromise,
+        downloadPromise,
+      ]);
+
+      const pdfFilePath = path.join(
+        AppConfig.LOCAL_FILES_DIR_PATH,
+        download.suggestedFilename()
+      );
+      writeBufferToFile(pdfFilePath, await pdfResponse.body());
+      downloadedFilePaths.push(pdfFilePath);
+
+      expect(
+        await extractPdfColumnValues(pdfFilePath, 'Preferred Bins')
+      ).toEqual(['', internalLocation.name]);
+      expect(await extractPdfColumnValues(pdfFilePath, 'Putaway Bin')).toEqual([
+        '',
+        internalLocation.name,
+      ]);
     });
 
     await test.step('Assert confirm complete putaway dialog when empty putaway bin', async () => {
@@ -215,6 +255,7 @@ test.describe('Putaway to preferred bin and default bin', () => {
     internalLocation2Service,
     productShowPage,
     putawayDetailsPage,
+    page,
   }) => {
     const receivingBin =
       AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
@@ -252,12 +293,68 @@ test.describe('Putaway to preferred bin and default bin', () => {
       ).toContainText(internalLocation.name);
     });
 
+    await test.step('Generate putaway pdf and assert bin columns', async () => {
+      const pdfResponsePromise = page.waitForResponse(
+        (resp) =>
+          PUTAWAY_URL.generatePdfPattern.test(resp.url()) &&
+          resp.status() === 200
+      );
+      const downloadPromise = page.waitForEvent('download');
+      await createPutawayPage.startStep.generatePutawayListButton.click();
+      const [pdfResponse, download] = await Promise.all([
+        pdfResponsePromise,
+        downloadPromise,
+      ]);
+
+      const pdfFilePath = path.join(
+        AppConfig.LOCAL_FILES_DIR_PATH,
+        download.suggestedFilename()
+      );
+      writeBufferToFile(pdfFilePath, await pdfResponse.body());
+      downloadedFilePaths.push(pdfFilePath);
+
+      expect(
+        await extractPdfColumnValues(pdfFilePath, 'Preferred Bins')
+      ).toEqual([internalLocation.name]);
+      expect(await extractPdfColumnValues(pdfFilePath, 'Putaway Bin')).toEqual([
+        internalLocation.name,
+      ]);
+    });
+
     await test.step('Edit putaway bin', async () => {
       await createPutawayPage.startStep.table.row(1).putawayBinSelect.click();
       await createPutawayPage.startStep.table
         .row(1)
         .getPutawayBin(internalLocation2.name)
         .click();
+    });
+
+    await test.step('Generate putaway pdf again and assert edited putaway bin', async () => {
+      const pdfResponsePromise = page.waitForResponse(
+        (resp) =>
+          PUTAWAY_URL.generatePdfPattern.test(resp.url()) &&
+          resp.status() === 200
+      );
+      const downloadPromise = page.waitForEvent('download');
+      await createPutawayPage.startStep.generatePutawayListButton.click();
+      const [pdfResponse, download] = await Promise.all([
+        pdfResponsePromise,
+        downloadPromise,
+      ]);
+
+      const pdfFilePath = path.join(
+        AppConfig.LOCAL_FILES_DIR_PATH,
+        download.suggestedFilename()
+      );
+      writeBufferToFile(pdfFilePath, await pdfResponse.body());
+      downloadedFilePaths.push(pdfFilePath);
+
+      expect(
+        await extractPdfColumnValues(pdfFilePath, 'Preferred Bins')
+      ).toEqual([internalLocation.name]);
+      expect(await extractPdfColumnValues(pdfFilePath, 'Putaway Bin')).toEqual([
+        internalLocation2.name,
+      ]);
     });
 
     await test.step('Go to next page and assert edited putaway bin', async () => {

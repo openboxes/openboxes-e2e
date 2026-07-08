@@ -1,9 +1,13 @@
+import path from 'node:path';
+
 import AppConfig from '@/config/AppConfig';
-import { LOCATION_URL } from '@/constants/applicationUrls';
+import { LOCATION_URL, PUTAWAY_URL } from '@/constants/applicationUrls';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
 import { Product } from '@/generated/ProductCodes.generated';
 import { ProductResponse, StockMovementResponse } from '@/types';
+import { deleteFile, writeBufferToFile } from '@/utils/FileIOUtils';
+import { extractPdfColumnValues } from '@/utils/pdfUtils';
 import RefreshCachesUtils from '@/utils/RefreshCaches';
 import {
   deleteShipment,
@@ -19,6 +23,7 @@ test.describe('Assert zones on putaway pages', () => {
   let productB: ProductResponse;
   const uniqueIdentifier = new UniqueIdentifier();
   const zoneLocationName = uniqueIdentifier.generateUniqueString('zone');
+  const downloadedFilePaths: string[] = [];
 
   test.beforeEach(
     async ({
@@ -217,6 +222,10 @@ test.describe('Assert zones on putaway pages', () => {
         await createLocationPage.locationConfigurationTabSection.activeCheckbox.uncheck();
         await createLocationPage.locationConfigurationTabSection.saveButton.click();
       });
+
+      while (downloadedFilePaths.length) {
+        deleteFile(downloadedFilePaths.pop() as string);
+      }
     }
   );
 
@@ -226,6 +235,7 @@ test.describe('Assert zones on putaway pages', () => {
     createPutawayPage,
     internalLocationService,
     putawayDetailsPage,
+    page,
   }) => {
     const receivingBin =
       AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
@@ -269,10 +279,35 @@ test.describe('Assert zones on putaway pages', () => {
         .row(1)
         .getPutawayBin(internalLocation.name)
         .click();
-      await createPutawayPage.startStep.nextButton.click();
+    });
+
+    await test.step('Generate putaway pdf and assert putaway bin column', async () => {
+      const pdfResponsePromise = page.waitForResponse(
+        (resp) =>
+          PUTAWAY_URL.generatePdfPattern.test(resp.url()) &&
+          resp.status() === 200
+      );
+      const downloadPromise = page.waitForEvent('download');
+      await createPutawayPage.startStep.generatePutawayListButton.click();
+      const [pdfResponse, download] = await Promise.all([
+        pdfResponsePromise,
+        downloadPromise,
+      ]);
+
+      const pdfFilePath = path.join(
+        AppConfig.LOCAL_FILES_DIR_PATH,
+        download.suggestedFilename()
+      );
+      writeBufferToFile(pdfFilePath, await pdfResponse.body());
+      downloadedFilePaths.push(pdfFilePath);
+
+      expect(await extractPdfColumnValues(pdfFilePath, 'Putaway Bin')).toEqual([
+        `${zoneLocationName}: ${internalLocation.name}`,
+      ]);
     });
 
     await test.step('Assert zones on confirm page', async () => {
+      await createPutawayPage.startStep.nextButton.click();
       await createPutawayPage.completeStep.isLoaded();
       await expect(
         createPutawayPage.completeStep.table.row(2).putawayBin
@@ -313,7 +348,7 @@ test.describe('Assert zones on putaway pages', () => {
 
     await test.step('Assert zones on start putaway page', async () => {
       await expect(
-        createPutawayPage.startStep.table.row(1).currentdBin
+        createPutawayPage.startStep.table.row(1).currentBin
       ).toContainText(`${zoneLocationName}: ${internalLocation.name}`);
       await createPutawayPage.startStep.table
         .row(1)
@@ -351,17 +386,81 @@ test.describe('Assert zones on putaway pages', () => {
         .click();
     });
 
+    await test.step('Generate putaway pdf and assert bin columns', async () => {
+      const pdfResponsePromise = page.waitForResponse(
+        (resp) =>
+          PUTAWAY_URL.generatePdfPattern.test(resp.url()) &&
+          resp.status() === 200
+      );
+      const downloadPromise = page.waitForEvent('download');
+      await createPutawayPage.startStep.generatePutawayListButton.click();
+      const [pdfResponse, download] = await Promise.all([
+        pdfResponsePromise,
+        downloadPromise,
+      ]);
+
+      const pdfFilePath = path.join(
+        AppConfig.LOCAL_FILES_DIR_PATH,
+        download.suggestedFilename()
+      );
+      writeBufferToFile(pdfFilePath, await pdfResponse.body());
+      downloadedFilePaths.push(pdfFilePath);
+
+      expect(
+        await extractPdfColumnValues(pdfFilePath, 'Preferred Bins')
+      ).toEqual(['', `${zoneLocationName}: ${internalLocation.name}`]);
+      expect(
+        await extractPdfColumnValues(pdfFilePath, 'Current Bins')
+      ).toEqual([`${zoneLocationName}: ${internalLocation.name}`, 'null']);
+      expect(await extractPdfColumnValues(pdfFilePath, 'Putaway Bin')).toEqual([
+        `${zoneLocationName}: ${internalLocation.name}`,
+        `${zoneLocationName}: ${internalLocation.name}`,
+      ]);
+    });
+
     await test.step('Apply ordering by current bin', async () => {
       await createPutawayPage.startStep.sortButton.click();
       await expect(createPutawayPage.startStep.sortButton).toContainText(
         'Sort by current bins'
       );
       await expect(
-        createPutawayPage.startStep.table.row(1).currentdBin
+        createPutawayPage.startStep.table.row(1).currentBin
       ).toContainText(`${zoneLocationName}: ${internalLocation.name}`);
       await expect(
         createPutawayPage.startStep.table.row(2).preferredBin
       ).toContainText(`${zoneLocationName}: ${internalLocation.name}`);
+    });
+
+    await test.step('Generate putaway pdf and assert bin columns after sorting by current bin', async () => {
+      const pdfResponsePromise = page.waitForResponse(
+        (resp) =>
+          PUTAWAY_URL.generatePdfPattern.test(resp.url()) &&
+          resp.status() === 200
+      );
+      const downloadPromise = page.waitForEvent('download');
+      await createPutawayPage.startStep.generatePutawayListButton.click();
+      const [pdfResponse, download] = await Promise.all([
+        pdfResponsePromise,
+        downloadPromise,
+      ]);
+
+      const pdfFilePath = path.join(
+        AppConfig.LOCAL_FILES_DIR_PATH,
+        download.suggestedFilename()
+      );
+      writeBufferToFile(pdfFilePath, await pdfResponse.body());
+      downloadedFilePaths.push(pdfFilePath);
+
+      expect(
+        await extractPdfColumnValues(pdfFilePath, 'Preferred Bins')
+      ).toEqual(['', `${zoneLocationName}: ${internalLocation.name}`]);
+      expect(
+        await extractPdfColumnValues(pdfFilePath, 'Current Bins')
+      ).toEqual([`${zoneLocationName}: ${internalLocation.name}`, 'null']);
+      expect(await extractPdfColumnValues(pdfFilePath, 'Putaway Bin')).toEqual([
+        `${zoneLocationName}: ${internalLocation.name}`,
+        `${zoneLocationName}: ${internalLocation.name}`,
+      ]);
     });
 
     await test.step('Apply ordering by preferred bin', async () => {
@@ -370,11 +469,43 @@ test.describe('Assert zones on putaway pages', () => {
         'Sort by preferred bin'
       );
       await expect(
-        createPutawayPage.startStep.table.row(2).currentdBin
+        createPutawayPage.startStep.table.row(2).currentBin
       ).toContainText(`${zoneLocationName}: ${internalLocation.name}`);
       await expect(
         createPutawayPage.startStep.table.row(1).preferredBin
       ).toContainText(`${zoneLocationName}: ${internalLocation.name}`);
+    });
+
+    await test.step('Generate putaway pdf and assert bin columns after sorting by preferred bin', async () => {
+      const pdfResponsePromise = page.waitForResponse(
+        (resp) =>
+          PUTAWAY_URL.generatePdfPattern.test(resp.url()) &&
+          resp.status() === 200
+      );
+      const downloadPromise = page.waitForEvent('download');
+      await createPutawayPage.startStep.generatePutawayListButton.click();
+      const [pdfResponse, download] = await Promise.all([
+        pdfResponsePromise,
+        downloadPromise,
+      ]);
+
+      const pdfFilePath = path.join(
+        AppConfig.LOCAL_FILES_DIR_PATH,
+        download.suggestedFilename()
+      );
+      writeBufferToFile(pdfFilePath, await pdfResponse.body());
+      downloadedFilePaths.push(pdfFilePath);
+
+      expect(
+        await extractPdfColumnValues(pdfFilePath, 'Preferred Bins')
+      ).toEqual([`${zoneLocationName}: ${internalLocation.name}`, '']);
+      expect(
+        await extractPdfColumnValues(pdfFilePath, 'Current Bins')
+      ).toEqual(['null', `${zoneLocationName}: ${internalLocation.name}`]);
+      expect(await extractPdfColumnValues(pdfFilePath, 'Putaway Bin')).toEqual([
+        `${zoneLocationName}: ${internalLocation.name}`,
+        `${zoneLocationName}: ${internalLocation.name}`,
+      ]);
     });
 
     await test.step('Return to original order', async () => {
@@ -383,7 +514,7 @@ test.describe('Assert zones on putaway pages', () => {
         'Sort by current bins'
       );
       await expect(
-        createPutawayPage.startStep.table.row(1).currentdBin
+        createPutawayPage.startStep.table.row(1).currentBin
       ).toContainText(`${zoneLocationName}: ${internalLocation.name}`);
       await expect(
         createPutawayPage.startStep.table.row(2).preferredBin

@@ -1,8 +1,13 @@
+import path from 'node:path';
+
 import AppConfig from '@/config/AppConfig';
+import { PUTAWAY_URL } from '@/constants/applicationUrls';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
 import { Product } from '@/generated/ProductCodes.generated';
 import { StockMovementResponse } from '@/types';
+import { deleteFile, writeBufferToFile } from '@/utils/FileIOUtils';
+import { extractPdfColumnValues } from '@/utils/pdfUtils';
 import RefreshCachesUtils from '@/utils/RefreshCaches';
 import {
   deleteShipment,
@@ -12,6 +17,7 @@ import {
 
 test.describe('Create more than 1 putaway from the same item', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
+  const downloadedFilePaths: string[] = [];
 
   test.beforeEach(
     async ({
@@ -68,6 +74,10 @@ test.describe('Create more than 1 putaway from the same item', () => {
       await expect(transactionListPage.successMessage).toBeVisible();
 
       await deleteShipment({ stockMovementService, STOCK_MOVEMENT });
+
+      while (downloadedFilePaths.length) {
+        deleteFile(downloadedFilePaths.pop() as string);
+      }
     }
   );
 
@@ -79,6 +89,7 @@ test.describe('Create more than 1 putaway from the same item', () => {
     productShowPage,
     putawayDetailsPage,
     productService,
+    page,
   }) => {
     const product = await productService.getProduct(Product.FIVE);
     const internalLocation = await internalLocationService.getLocation();
@@ -192,10 +203,35 @@ test.describe('Create more than 1 putaway from the same item', () => {
         .row(0)
         .getPutawayBin(internalLocation.name)
         .click();
-      await createPutawayPage.startStep.nextButton.click();
+    });
+
+    await test.step('Generate putaway pdf and assert current bins column', async () => {
+      const pdfResponsePromise = page.waitForResponse(
+        (resp) =>
+          PUTAWAY_URL.generatePdfPattern.test(resp.url()) &&
+          resp.status() === 200
+      );
+      const downloadPromise = page.waitForEvent('download');
+      await createPutawayPage.startStep.generatePutawayListButton.click();
+      const [pdfResponse, download] = await Promise.all([
+        pdfResponsePromise,
+        downloadPromise,
+      ]);
+
+      const pdfFilePath = path.join(
+        AppConfig.LOCAL_FILES_DIR_PATH,
+        download.suggestedFilename()
+      );
+      writeBufferToFile(pdfFilePath, await pdfResponse.body());
+      downloadedFilePaths.push(pdfFilePath);
+
+      expect(
+        await extractPdfColumnValues(pdfFilePath, 'Current Bins')
+      ).toEqual([internalLocation.name]);
     });
 
     await test.step('Complete putaway', async () => {
+      await createPutawayPage.startStep.nextButton.click();
       await createPutawayPage.completeStep.isLoaded();
       await createPutawayPage.completeStep.completePutawayButton.click();
     });
