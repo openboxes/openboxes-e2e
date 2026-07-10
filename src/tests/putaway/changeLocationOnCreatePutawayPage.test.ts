@@ -3,6 +3,7 @@ import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
 import { Product } from '@/generated/ProductCodes.generated';
 import { StockMovementResponse } from '@/types';
+import { cleanupPendingPutaways } from '@/utils/putawayUtils';
 import RefreshCachesUtils from '@/utils/RefreshCaches';
 import {
   deleteShipment,
@@ -12,7 +13,7 @@ import {
 
 test.describe('Change location on putaway create page and list pages', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
-  let putawayOrderIdentifier: string | undefined;
+  let PUTAWAY_ORDER_IDS: string[] = [];
 
   test.beforeEach(
     async ({
@@ -21,7 +22,7 @@ test.describe('Change location on putaway create page and list pages', () => {
       productService,
       receivingService,
     }) => {
-      putawayOrderIdentifier = undefined;
+      PUTAWAY_ORDER_IDS = [];
       const supplierLocation = await supplierLocationService.getLocation();
       STOCK_MOVEMENT = await stockMovementService.createInbound({
         originId: supplierLocation.id,
@@ -58,17 +59,12 @@ test.describe('Change location on putaway create page and list pages', () => {
     }
   );
 
-  test.afterEach(async ({ stockMovementService, putawayListPage }) => {
-    // the received shipment must be cleaned up even when the test fails
-    // before the putaway is created
-    if (putawayOrderIdentifier) {
-      await putawayListPage.goToPage();
-      await putawayListPage.table
-        .rowByOrderNumber(`${putawayOrderIdentifier}`.toString().trim())
-        .actionsButton.click();
-      await putawayListPage.table.clickDeleteOrderButton(1);
-      await putawayListPage.emptyPutawayList.isVisible();
-    }
+  test.afterEach(async ({ stockMovementService, putawayService }, testInfo) => {
+    await cleanupPendingPutaways({
+      putawayService,
+      putawayOrderIds: PUTAWAY_ORDER_IDS,
+      testInfo,
+    });
 
     await deleteShipment({ stockMovementService, STOCK_MOVEMENT });
   });
@@ -144,13 +140,12 @@ test.describe('Change location on putaway create page and list pages', () => {
         .getExpandBinLocation(receivingBin)
         .click();
       await createPutawayPage.table.row(1).checkbox.click();
-      await createPutawayPage.startPutawayButton.click();
+      PUTAWAY_ORDER_IDS.push(await createPutawayPage.startPutaway());
       await createPutawayPage.startStep.isLoaded();
     });
 
-    putawayOrderIdentifier =
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      (await createPutawayPage.startStep.orderNumberValue.textContent())!;
+    const putawayOrderIdentifier =
+      await createPutawayPage.startStep.orderNumberValue.textContent();
 
     const putawayOrderIdentifierContent = `${putawayOrderIdentifier}`
       .toString()

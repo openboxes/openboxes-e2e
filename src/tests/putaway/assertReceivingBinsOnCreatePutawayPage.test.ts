@@ -4,6 +4,7 @@ import { expect, test } from '@/fixtures/fixtures';
 import { Product } from '@/generated/ProductCodes.generated';
 import { StockMovementResponse } from '@/types';
 import { formatDate, getDateByOffset } from '@/utils/DateUtils';
+import { cleanupPendingPutaways } from '@/utils/putawayUtils';
 import RefreshCachesUtils from '@/utils/RefreshCaches';
 import {
   deleteShipment,
@@ -17,6 +18,7 @@ test.describe('Assert receiving bin on create putaway page', () => {
   let SECONDARY_STOCK_MOVEMENT: StockMovementResponse;
   const uniqueIdentifier = new UniqueIdentifier();
   const lot = uniqueIdentifier.generateUniqueString('lot');
+  let PUTAWAY_ORDER_IDS: string[] = [];
 
   test.beforeEach(
     async ({
@@ -25,6 +27,7 @@ test.describe('Assert receiving bin on create putaway page', () => {
       productService,
       receivingService,
     }) => {
+      PUTAWAY_ORDER_IDS = [];
       const supplierLocation = await supplierLocationService.getLocation();
 
       await test.step('Create 1st stock movement', async () => {
@@ -123,11 +126,22 @@ test.describe('Assert receiving bin on create putaway page', () => {
   );
 
   test.afterEach(
-    async ({ stockMovementService, navbar, transactionListPage }) => {
-      await navbar.configurationButton.click();
-      await navbar.transactions.click();
-      for (let n = 1; n < 4; n++) {
-        await transactionListPage.deleteTransaction(1);
+    async (
+      { stockMovementService, navbar, transactionListPage, putawayService },
+      testInfo
+    ) => {
+      const { allPutawaysCompleted } = await cleanupPendingPutaways({
+        putawayService,
+        putawayOrderIds: PUTAWAY_ORDER_IDS,
+        testInfo,
+      });
+
+      if (allPutawaysCompleted) {
+        await navbar.configurationButton.click();
+        await navbar.transactions.click();
+        for (let n = 1; n < 4; n++) {
+          await transactionListPage.deleteTransaction(1);
+        }
       }
 
       await deleteShipment({
@@ -289,7 +303,7 @@ test.describe('Assert receiving bin on create putaway page', () => {
     await test.step('Start putaway', async () => {
       await createPutawayPage.table.row(1).checkbox.click();
       await createPutawayPage.table.row(2).checkbox.click();
-      await createPutawayPage.startPutawayButton.click();
+      PUTAWAY_ORDER_IDS.push(await createPutawayPage.startPutaway());
       await createPutawayPage.startStep.isLoaded();
     });
 

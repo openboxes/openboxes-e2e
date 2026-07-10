@@ -3,6 +3,7 @@ import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
 import { Product } from '@/generated/ProductCodes.generated';
 import { ProductResponse, StockMovementResponse } from '@/types';
+import { cleanupPendingPutaways } from '@/utils/putawayUtils';
 import RefreshCachesUtils from '@/utils/RefreshCaches';
 import {
   deleteShipment,
@@ -13,6 +14,7 @@ import { byNameAsc } from '@/utils/sortUtils';
 
 test.describe('Create putaway for more than 1 item, separate putaways', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
+  let PUTAWAY_ORDER_IDS: string[] = [];
   let product: ProductResponse;
   let product2: ProductResponse;
 
@@ -23,6 +25,7 @@ test.describe('Create putaway for more than 1 item, separate putaways', () => {
       productService,
       receivingService,
     }) => {
+      PUTAWAY_ORDER_IDS = [];
       const supplierLocation = await supplierLocationService.getLocation();
       STOCK_MOVEMENT = await stockMovementService.createInbound({
         originId: supplierLocation.id,
@@ -71,11 +74,22 @@ test.describe('Create putaway for more than 1 item, separate putaways', () => {
   );
 
   test.afterEach(
-    async ({ stockMovementService, navbar, transactionListPage }) => {
-      await navbar.configurationButton.click();
-      await navbar.transactions.click();
-      for (let n = 1; n < 4; n++) {
-        await transactionListPage.deleteTransaction(1);
+    async (
+      { stockMovementService, navbar, transactionListPage, putawayService },
+      testInfo
+    ) => {
+      const { allPutawaysCompleted } = await cleanupPendingPutaways({
+        putawayService,
+        putawayOrderIds: PUTAWAY_ORDER_IDS,
+        testInfo,
+      });
+
+      if (allPutawaysCompleted) {
+        await navbar.configurationButton.click();
+        await navbar.transactions.click();
+        for (let n = 1; n < 4; n++) {
+          await transactionListPage.deleteTransaction(1);
+        }
       }
       await deleteShipment({ stockMovementService, STOCK_MOVEMENT });
     }
@@ -121,7 +135,7 @@ test.describe('Create putaway for more than 1 item, separate putaways', () => {
         createPutawayPage.table.row(2).getProductName(product2.name)
       ).toBeVisible();
       await createPutawayPage.table.row(1).checkbox.click();
-      await createPutawayPage.startPutawayButton.click();
+      PUTAWAY_ORDER_IDS.push(await createPutawayPage.startPutaway());
       await createPutawayPage.startStep.isLoaded();
     });
 
@@ -204,7 +218,7 @@ test.describe('Create putaway for more than 1 item, separate putaways', () => {
         createPutawayPage.table.row(1).getProductName(product2.name)
       ).toBeVisible();
       await createPutawayPage.table.row(1).checkbox.click();
-      await createPutawayPage.startPutawayButton.click();
+      PUTAWAY_ORDER_IDS.push(await createPutawayPage.startPutaway());
       await createPutawayPage.startStep.isLoaded();
     });
 
@@ -248,6 +262,7 @@ test.describe('Create putaway for more than 1 item, separate putaways', () => {
 
 test.describe('Putaway 2 items in the same putaway', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
+  let PUTAWAY_ORDER_IDS: string[] = [];
   let product: ProductResponse;
   let product2: ProductResponse;
 
@@ -258,6 +273,7 @@ test.describe('Putaway 2 items in the same putaway', () => {
       productService,
       receivingService,
     }) => {
+      PUTAWAY_ORDER_IDS = [];
       const supplierLocation = await supplierLocationService.getLocation();
       STOCK_MOVEMENT = await stockMovementService.createInbound({
         originId: supplierLocation.id,
@@ -306,17 +322,29 @@ test.describe('Putaway 2 items in the same putaway', () => {
   );
 
   test.afterEach(
-    async ({
-      stockMovementShowPage,
-      stockMovementService,
-      navbar,
-      transactionListPage,
-      oldViewShipmentPage,
-    }) => {
-      await navbar.configurationButton.click();
-      await navbar.transactions.click();
-      await transactionListPage.deleteTransaction(1);
-      await transactionListPage.deleteTransaction(1);
+    async (
+      {
+        stockMovementShowPage,
+        stockMovementService,
+        navbar,
+        transactionListPage,
+        oldViewShipmentPage,
+        putawayService,
+      },
+      testInfo
+    ) => {
+      const { allPutawaysCompleted } = await cleanupPendingPutaways({
+        putawayService,
+        putawayOrderIds: PUTAWAY_ORDER_IDS,
+        testInfo,
+      });
+
+      if (allPutawaysCompleted) {
+        await navbar.configurationButton.click();
+        await navbar.transactions.click();
+        await transactionListPage.deleteTransaction(1);
+        await transactionListPage.deleteTransaction(1);
+      }
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
       await stockMovementShowPage.detailsListTable.oldViewShipmentPage.click();
       await oldViewShipmentPage.undoStatusChangeButton.click();
@@ -370,7 +398,7 @@ test.describe('Putaway 2 items in the same putaway', () => {
       ).toBeVisible();
       await createPutawayPage.table.row(1).checkbox.click();
       await createPutawayPage.table.row(2).checkbox.click();
-      await createPutawayPage.startPutawayButton.click();
+      PUTAWAY_ORDER_IDS.push(await createPutawayPage.startPutaway());
       await createPutawayPage.startStep.isLoaded();
     });
 

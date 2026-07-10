@@ -8,6 +8,7 @@ import { Product } from '@/generated/ProductCodes.generated';
 import { ProductResponse, StockMovementResponse } from '@/types';
 import { deleteFile, writeBufferToFile } from '@/utils/FileIOUtils';
 import { extractPdfColumnValues } from '@/utils/pdfUtils';
+import { cleanupPendingPutaways } from '@/utils/putawayUtils';
 import RefreshCachesUtils from '@/utils/RefreshCaches';
 import {
   deleteShipment,
@@ -24,6 +25,7 @@ test.describe('Assert zones on putaway pages', () => {
   const uniqueIdentifier = new UniqueIdentifier();
   const zoneLocationName = uniqueIdentifier.generateUniqueString('zone');
   const downloadedFilePaths: string[] = [];
+  let PUTAWAY_ORDER_IDS: string[] = [];
 
   test.beforeEach(
     async ({
@@ -39,6 +41,7 @@ test.describe('Assert zones on putaway pages', () => {
       locationListPage,
       createLocationPage,
     }) => {
+      PUTAWAY_ORDER_IDS = [];
       const supplierLocation = await supplierLocationService.getLocation();
       const mainLocation = await mainLocationService.getLocation();
       const internalLocation = await internalLocationService.getLocation();
@@ -145,23 +148,35 @@ test.describe('Assert zones on putaway pages', () => {
   );
 
   test.afterEach(
-    async ({
-      stockMovementService,
-      navbar,
-      transactionListPage,
-      productService,
-      productShowPage,
-      productEditPage,
-      page,
-      locationListPage,
-      mainLocationService,
-      createLocationPage,
-      internalLocationService,
-    }) => {
-      await navbar.configurationButton.click();
-      await navbar.transactions.click();
-      for (let n = 1; n < 4; n++) {
-        await transactionListPage.deleteTransaction(1);
+    async (
+      {
+        stockMovementService,
+        navbar,
+        transactionListPage,
+        productService,
+        productShowPage,
+        productEditPage,
+        page,
+        locationListPage,
+        mainLocationService,
+        createLocationPage,
+        internalLocationService,
+        putawayService,
+      },
+      testInfo
+    ) => {
+      const { allPutawaysCompleted } = await cleanupPendingPutaways({
+        putawayService,
+        putawayOrderIds: PUTAWAY_ORDER_IDS,
+        testInfo,
+      });
+
+      if (allPutawaysCompleted) {
+        await navbar.configurationButton.click();
+        await navbar.transactions.click();
+        for (let n = 1; n < 4; n++) {
+          await transactionListPage.deleteTransaction(1);
+        }
       }
       await deleteShipment({ stockMovementService, STOCK_MOVEMENT });
       const product = await productService.getProduct(Product.FOUR);
@@ -258,7 +273,7 @@ test.describe('Assert zones on putaway pages', () => {
         .getExpandBinLocation(receivingBin)
         .click();
       await createPutawayPage.table.row(1).checkbox.click();
-      await createPutawayPage.startPutawayButton.click();
+      PUTAWAY_ORDER_IDS.push(await createPutawayPage.startPutaway());
       await createPutawayPage.startStep.isLoaded();
       await createPutawayPage.startStep.table.row(0).editButton.click();
       await createPutawayPage.startStep.table.row(0).quantityInput.fill('5');
@@ -342,7 +357,7 @@ test.describe('Assert zones on putaway pages', () => {
         .click();
       await createPutawayPage.table.row(1).checkbox.click();
       await createPutawayPage.table.row(2).checkbox.click();
-      await createPutawayPage.startPutawayButton.click();
+      PUTAWAY_ORDER_IDS.push(await createPutawayPage.startPutaway());
       await createPutawayPage.startStep.isLoaded();
     });
 
@@ -409,9 +424,9 @@ test.describe('Assert zones on putaway pages', () => {
       expect(
         await extractPdfColumnValues(pdfFilePath, 'Preferred Bins')
       ).toEqual(['', `${zoneLocationName}: ${internalLocation.name}`]);
-      expect(
-        await extractPdfColumnValues(pdfFilePath, 'Current Bins')
-      ).toEqual([`${zoneLocationName}: ${internalLocation.name}`, 'null']);
+      expect(await extractPdfColumnValues(pdfFilePath, 'Current Bins')).toEqual(
+        [`${zoneLocationName}: ${internalLocation.name}`, 'null']
+      );
       expect(await extractPdfColumnValues(pdfFilePath, 'Putaway Bin')).toEqual([
         `${zoneLocationName}: ${internalLocation.name}`,
         `${zoneLocationName}: ${internalLocation.name}`,
@@ -454,9 +469,9 @@ test.describe('Assert zones on putaway pages', () => {
       expect(
         await extractPdfColumnValues(pdfFilePath, 'Preferred Bins')
       ).toEqual(['', `${zoneLocationName}: ${internalLocation.name}`]);
-      expect(
-        await extractPdfColumnValues(pdfFilePath, 'Current Bins')
-      ).toEqual([`${zoneLocationName}: ${internalLocation.name}`, 'null']);
+      expect(await extractPdfColumnValues(pdfFilePath, 'Current Bins')).toEqual(
+        [`${zoneLocationName}: ${internalLocation.name}`, 'null']
+      );
       expect(await extractPdfColumnValues(pdfFilePath, 'Putaway Bin')).toEqual([
         `${zoneLocationName}: ${internalLocation.name}`,
         `${zoneLocationName}: ${internalLocation.name}`,
@@ -499,9 +514,9 @@ test.describe('Assert zones on putaway pages', () => {
       expect(
         await extractPdfColumnValues(pdfFilePath, 'Preferred Bins')
       ).toEqual([`${zoneLocationName}: ${internalLocation.name}`, '']);
-      expect(
-        await extractPdfColumnValues(pdfFilePath, 'Current Bins')
-      ).toEqual(['null', `${zoneLocationName}: ${internalLocation.name}`]);
+      expect(await extractPdfColumnValues(pdfFilePath, 'Current Bins')).toEqual(
+        ['null', `${zoneLocationName}: ${internalLocation.name}`]
+      );
       expect(await extractPdfColumnValues(pdfFilePath, 'Putaway Bin')).toEqual([
         `${zoneLocationName}: ${internalLocation.name}`,
         `${zoneLocationName}: ${internalLocation.name}`,

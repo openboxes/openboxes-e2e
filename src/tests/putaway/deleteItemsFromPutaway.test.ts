@@ -3,6 +3,7 @@ import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
 import { Product } from '@/generated/ProductCodes.generated';
 import { ProductResponse, StockMovementResponse } from '@/types';
+import { cleanupPendingPutaways } from '@/utils/putawayUtils';
 import RefreshCachesUtils from '@/utils/RefreshCaches';
 import {
   deleteShipment,
@@ -13,6 +14,7 @@ import { byNameAsc } from '@/utils/sortUtils';
 
 test.describe('Delete items from putaway', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
+  let PUTAWAY_ORDER_IDS: string[] = [];
   let product: ProductResponse;
   let product2: ProductResponse;
 
@@ -23,6 +25,7 @@ test.describe('Delete items from putaway', () => {
       productService,
       receivingService,
     }) => {
+      PUTAWAY_ORDER_IDS = [];
       const supplierLocation = await supplierLocationService.getLocation();
       STOCK_MOVEMENT = await stockMovementService.createInbound({
         originId: supplierLocation.id,
@@ -71,11 +74,22 @@ test.describe('Delete items from putaway', () => {
   );
 
   test.afterEach(
-    async ({ stockMovementService, navbar, transactionListPage }) => {
-      await navbar.configurationButton.click();
-      await navbar.transactions.click();
-      for (let n = 1; n < 3; n++) {
-        await transactionListPage.deleteTransaction(1);
+    async (
+      { stockMovementService, navbar, transactionListPage, putawayService },
+      testInfo
+    ) => {
+      const { allPutawaysCompleted } = await cleanupPendingPutaways({
+        putawayService,
+        putawayOrderIds: PUTAWAY_ORDER_IDS,
+        testInfo,
+      });
+
+      if (allPutawaysCompleted) {
+        await navbar.configurationButton.click();
+        await navbar.transactions.click();
+        for (let n = 1; n < 3; n++) {
+          await transactionListPage.deleteTransaction(1);
+        }
       }
       await deleteShipment({ stockMovementService, STOCK_MOVEMENT });
     }
@@ -117,7 +131,7 @@ test.describe('Delete items from putaway', () => {
       ).toBeVisible();
       await createPutawayPage.table.row(1).checkbox.click();
       await createPutawayPage.table.row(2).checkbox.click();
-      await createPutawayPage.startPutawayButton.click();
+      PUTAWAY_ORDER_IDS.push(await createPutawayPage.startPutaway());
       await createPutawayPage.startStep.isLoaded();
     });
 

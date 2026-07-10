@@ -8,6 +8,7 @@ import { Product } from '@/generated/ProductCodes.generated';
 import { ProductResponse, StockMovementResponse } from '@/types';
 import { deleteFile, writeBufferToFile } from '@/utils/FileIOUtils';
 import { extractPdfColumnValues } from '@/utils/pdfUtils';
+import { cleanupPendingPutaways } from '@/utils/putawayUtils';
 import RefreshCachesUtils from '@/utils/RefreshCaches';
 import {
   deleteShipment,
@@ -18,6 +19,7 @@ import { byNameAsc } from '@/utils/sortUtils';
 
 test.describe('Putaway to preferred bin and default bin', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
+  let PUTAWAY_ORDER_IDS: string[] = [];
   let product: ProductResponse;
   let product2: ProductResponse;
   const downloadedFilePaths: string[] = [];
@@ -32,6 +34,7 @@ test.describe('Putaway to preferred bin and default bin', () => {
       productEditPage,
       internalLocationService,
     }) => {
+      PUTAWAY_ORDER_IDS = [];
       const supplierLocation = await supplierLocationService.getLocation();
       STOCK_MOVEMENT = await stockMovementService.createInbound({
         originId: supplierLocation.id,
@@ -92,18 +95,30 @@ test.describe('Putaway to preferred bin and default bin', () => {
   );
 
   test.afterEach(
-    async ({
-      stockMovementService,
-      navbar,
-      transactionListPage,
-      productService,
-      productShowPage,
-      productEditPage,
-    }) => {
-      await navbar.configurationButton.click();
-      await navbar.transactions.click();
-      await transactionListPage.deleteTransaction(1);
-      await transactionListPage.deleteTransaction(1);
+    async (
+      {
+        stockMovementService,
+        navbar,
+        transactionListPage,
+        productService,
+        productShowPage,
+        productEditPage,
+        putawayService,
+      },
+      testInfo
+    ) => {
+      const { allPutawaysCompleted } = await cleanupPendingPutaways({
+        putawayService,
+        putawayOrderIds: PUTAWAY_ORDER_IDS,
+        testInfo,
+      });
+
+      if (allPutawaysCompleted) {
+        await navbar.configurationButton.click();
+        await navbar.transactions.click();
+        await transactionListPage.deleteTransaction(1);
+        await transactionListPage.deleteTransaction(1);
+      }
       await deleteShipment({ stockMovementService, STOCK_MOVEMENT });
       const product2 = await productService.getProduct(Product.FOUR);
       await productShowPage.goToPage(product2.id);
@@ -154,7 +169,7 @@ test.describe('Putaway to preferred bin and default bin', () => {
         .click();
       await createPutawayPage.table.row(1).checkbox.click();
       await createPutawayPage.table.row(2).checkbox.click();
-      await createPutawayPage.startPutawayButton.click();
+      PUTAWAY_ORDER_IDS.push(await createPutawayPage.startPutaway());
       await createPutawayPage.startStep.isLoaded();
     });
 
@@ -280,7 +295,7 @@ test.describe('Putaway to preferred bin and default bin', () => {
         .getExpandBinLocation(receivingBin)
         .click();
       await createPutawayPage.table.row(2).checkbox.click();
-      await createPutawayPage.startPutawayButton.click();
+      PUTAWAY_ORDER_IDS.push(await createPutawayPage.startPutaway());
       await createPutawayPage.startStep.isLoaded();
     });
 

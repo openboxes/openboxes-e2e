@@ -8,6 +8,7 @@ import PutawayListPage from '@/pages/putaway/list/PutawayListPage';
 import PutawayDetailsPage from '@/pages/putaway/putawayDetails/PutawayDetailsPage';
 import StockMovementShowPage from '@/pages/stockMovementShow/StockMovementShowPage';
 import { StockMovementResponse } from '@/types';
+import { cleanupPendingPutaways } from '@/utils/putawayUtils';
 import RefreshCachesUtils from '@/utils/RefreshCaches';
 import {
   deleteShipment,
@@ -17,6 +18,7 @@ import {
 
 test.describe('Delete pending putaways', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
+  let PUTAWAY_ORDER_IDS: string[] = [];
 
   test.beforeEach(
     async ({
@@ -25,6 +27,7 @@ test.describe('Delete pending putaways', () => {
       productService,
       receivingService,
     }) => {
+      PUTAWAY_ORDER_IDS = [];
       const supplierLocation = await supplierLocationService.getLocation();
       STOCK_MOVEMENT = await stockMovementService.createInbound({
         originId: supplierLocation.id,
@@ -61,7 +64,13 @@ test.describe('Delete pending putaways', () => {
     }
   );
 
-  test.afterEach(async ({ stockMovementService }) => {
+  test.afterEach(async ({ stockMovementService, putawayService }, testInfo) => {
+    await cleanupPendingPutaways({
+      putawayService,
+      putawayOrderIds: PUTAWAY_ORDER_IDS,
+      testInfo,
+    });
+
     await deleteShipment({ stockMovementService, STOCK_MOVEMENT });
   });
 
@@ -97,7 +106,7 @@ test.describe('Delete pending putaways', () => {
         createPutawayPage.table.row(1).getProductName(product.name)
       ).toBeVisible();
       await createPutawayPage.table.row(1).checkbox.click();
-      await createPutawayPage.startPutawayButton.click();
+      PUTAWAY_ORDER_IDS.push(await createPutawayPage.startPutaway());
       await createPutawayPage.startStep.isLoaded();
     });
 
@@ -160,7 +169,7 @@ test.describe('Delete pending putaways', () => {
         createPutawayPage.table.row(1).getProductName(product.name)
       ).toBeVisible();
       await createPutawayPage.table.row(1).checkbox.click();
-      await createPutawayPage.startPutawayButton.click();
+      PUTAWAY_ORDER_IDS.push(await createPutawayPage.startPutaway());
       await createPutawayPage.startStep.isLoaded();
     });
 
@@ -231,7 +240,7 @@ test.describe('Delete pending putaways', () => {
         createPutawayPage.table.row(1).getProductName(product.name)
       ).toBeVisible();
       await createPutawayPage.table.row(1).checkbox.click();
-      await createPutawayPage.startPutawayButton.click();
+      PUTAWAY_ORDER_IDS.push(await createPutawayPage.startPutaway());
       await createPutawayPage.startStep.isLoaded();
     });
 
@@ -299,7 +308,7 @@ test.describe('Delete pending putaways', () => {
         createPutawayPage.table.row(1).getProductName(product.name)
       ).toBeVisible();
       await createPutawayPage.table.row(1).checkbox.click();
-      await createPutawayPage.startPutawayButton.click();
+      PUTAWAY_ORDER_IDS.push(await createPutawayPage.startPutaway());
       await createPutawayPage.startStep.isLoaded();
     });
 
@@ -373,7 +382,7 @@ test.describe('Delete pending putaways', () => {
         createPutawayPage.table.row(1).getProductName(product.name)
       ).toBeVisible();
       await createPutawayPage.table.row(1).checkbox.click();
-      await createPutawayPage.startPutawayButton.click();
+      PUTAWAY_ORDER_IDS.push(await createPutawayPage.startPutaway());
       await createPutawayPage.startStep.isLoaded();
     });
 
@@ -441,7 +450,7 @@ test.describe('Delete pending putaways', () => {
         createPutawayPage.table.row(1).getProductName(product.name)
       ).toBeVisible();
       await createPutawayPage.table.row(1).checkbox.click();
-      await createPutawayPage.startPutawayButton.click();
+      PUTAWAY_ORDER_IDS.push(await createPutawayPage.startPutaway());
       await createPutawayPage.startStep.isLoaded();
     });
 
@@ -515,7 +524,7 @@ test.describe('Delete pending putaways', () => {
         createPutawayPage.table.row(1).getProductName(product.name)
       ).toBeVisible();
       await createPutawayPage.table.row(1).checkbox.click();
-      await createPutawayPage.startPutawayButton.click();
+      PUTAWAY_ORDER_IDS.push(await createPutawayPage.startPutaway());
       await createPutawayPage.startStep.isLoaded();
     });
 
@@ -583,7 +592,7 @@ test.describe('Delete pending putaways', () => {
         createPutawayPage.table.row(1).getProductName(product.name)
       ).toBeVisible();
       await createPutawayPage.table.row(1).checkbox.click();
-      await createPutawayPage.startPutawayButton.click();
+      PUTAWAY_ORDER_IDS.push(await createPutawayPage.startPutaway());
       await createPutawayPage.startStep.isLoaded();
     });
 
