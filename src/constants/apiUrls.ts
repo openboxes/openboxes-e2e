@@ -40,6 +40,12 @@ export const STOCK_MOVEMENT_ITEMS = (id: string) =>
 
 // PUTAWAY
 export const PUTAWAY_API = `${API}/putaways`;
+export const PUTAWAY_BY_ID = (id: string) => `${PUTAWAY_API}/${id}`;
+
+// STOCK TRANSFER
+export const STOCK_TRANSFER_API = `${API}/stockTransfers`;
+export const STOCK_TRANSFER_BY_ID = (id: string) =>
+  `${STOCK_TRANSFER_API}/${id}`;
 
 // PARTIAL RECEIVING
 export const PARTIAL_RECEIVING_BY_ID = (id: string) =>

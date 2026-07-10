@@ -1,8 +1,12 @@
 import { APIRequestContext } from '@playwright/test';
 
 import BaseServiceModel from '@/api/BaseServiceModel';
-import { PUTAWAY_API } from '@/constants/apiUrls';
-import { ApiResponse, PutawayCandidate } from '@/types';
+import {
+  PUTAWAY_API,
+  PUTAWAY_BY_ID,
+  STOCK_TRANSFER_BY_ID,
+} from '@/constants/apiUrls';
+import { ApiResponse, PutawayCandidate, PutawayResponse } from '@/types';
 import { parseRequestToJSON } from '@/utils/ServiceUtils';
 
 class PutawayService extends BaseServiceModel {
@@ -21,6 +25,35 @@ class PutawayService extends BaseServiceModel {
     } catch (error) {
       throw new Error(
         `Problem fetching putaway candidates for location: ${locationId}`
+      );
+    }
+  }
+
+  /**
+    Returns null when the putaway order does not exist (anymore).
+  */
+  async getPutaway(
+    orderId: string
+  ): Promise<ApiResponse<PutawayResponse> | null> {
+    const apiResponse = await this.request.get(PUTAWAY_BY_ID(orderId));
+    if (!apiResponse.ok()) {
+      return null;
+    }
+    return await parseRequestToJSON(apiResponse);
+  }
+
+  /**
+    Putaway orders are transfer orders under the hood, so they are deleted
+    through the stock transfer API. The server only allows deleting orders
+    that have not been completed yet.
+  */
+  async deletePutawayOrder(orderId: string) {
+    const apiResponse = await this.request.delete(
+      STOCK_TRANSFER_BY_ID(orderId)
+    );
+    if (!apiResponse.ok()) {
+      throw new Error(
+        `Problem deleting putaway order ${orderId}: ${apiResponse.status()}`
       );
     }
   }
