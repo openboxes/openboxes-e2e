@@ -6,7 +6,7 @@ import InboundListPage from '@/pages/inbound/list/InboundListPage';
 import StockMovementShowPage from '@/pages/stockMovementShow/StockMovementShowPage';
 import { StockMovementResponse } from '@/types';
 import { getToday } from '@/utils/DateUtils';
-import { deleteReceivedShipment } from '@/utils/shipmentUtils';
+import { deleteShipment } from '@/utils/shipmentUtils';
 
 test.describe('Status changes on sm view page when receive shipment in location without partial receiving', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
@@ -46,24 +46,11 @@ test.describe('Status changes on sm view page when receive shipment in location 
     }
   );
 
-  test.afterEach(
-    async ({
-      stockMovementShowPage,
-      authService,
-      oldViewShipmentPage,
-      stockMovementService,
-    }) => {
-      await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
-      await deleteReceivedShipment({
-        stockMovementShowPage,
-        oldViewShipmentPage,
-        stockMovementService,
-        STOCK_MOVEMENT,
-      });
+  test.afterEach(async ({ authService, stockMovementService }) => {
+    await deleteShipment({ stockMovementService, STOCK_MOVEMENT });
 
-      await authService.changeLocation(AppConfig.instance.locations.main.id);
-    }
-  );
+    await authService.changeLocation(AppConfig.instance.locations.main.id);
+  });
 
   test('Assert status changes on view page and receipt tab when receive 1 item partially', async ({
     stockMovementShowPage,

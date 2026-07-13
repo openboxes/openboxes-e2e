@@ -4,7 +4,7 @@ import { expect, test } from '@/fixtures/fixtures';
 import { Product } from '@/generated/ProductCodes.generated';
 import { StockMovementResponse } from '@/types';
 import BinLocationUtils from '@/utils/BinLocationUtils';
-import { deleteReceivedShipment } from '@/utils/shipmentUtils';
+import { deleteShipment } from '@/utils/shipmentUtils';
 
 test.describe('Assert bin location not clearable', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
@@ -40,22 +40,13 @@ test.describe('Assert bin location not clearable', () => {
 
   test.afterEach(
     async ({
-      stockMovementShowPage,
       stockMovementService,
       mainLocationService,
       page,
       locationListPage,
       createLocationPage,
-      oldViewShipmentPage,
     }) => {
-      await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
-
-      await deleteReceivedShipment({
-        stockMovementShowPage,
-        oldViewShipmentPage,
-        stockMovementService,
-        STOCK_MOVEMENT,
-      });
+      await deleteShipment({ stockMovementService, STOCK_MOVEMENT });
       const receivingBin =
         AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
       await BinLocationUtils.deactivateReceivingBin({

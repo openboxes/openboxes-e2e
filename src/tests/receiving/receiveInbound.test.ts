@@ -5,7 +5,7 @@ import { Product } from '@/generated/ProductCodes.generated';
 import { StockMovementResponse } from '@/types';
 import BinLocationUtils from '@/utils/BinLocationUtils';
 import { formatDate, getToday } from '@/utils/DateUtils';
-import { deleteReceivedShipment } from '@/utils/shipmentUtils';
+import { deleteShipment } from '@/utils/shipmentUtils';
 
 test.describe('Receive inbound stock movement', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
@@ -45,22 +45,13 @@ test.describe('Receive inbound stock movement', () => {
 
   test.afterEach(
     async ({
-      stockMovementShowPage,
       stockMovementService,
       mainLocationService,
       page,
       locationListPage,
       createLocationPage,
-      oldViewShipmentPage,
     }) => {
-      await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
-
-      await deleteReceivedShipment({
-        stockMovementShowPage,
-        oldViewShipmentPage,
-        stockMovementService,
-        STOCK_MOVEMENT,
-      });
+      await deleteShipment({ stockMovementService, STOCK_MOVEMENT });
 
       const receivingBin =
         AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
@@ -414,23 +405,10 @@ test.describe('Receive from different locations', () => {
     }
   );
 
-  test.afterEach(
-    async ({
-      authService,
-      stockMovementShowPage,
-      stockMovementService,
-      oldViewShipmentPage,
-    }) => {
-      await authService.changeLocation(AppConfig.instance.locations.main.id);
-      await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
-      await deleteReceivedShipment({
-        stockMovementShowPage,
-        oldViewShipmentPage,
-        stockMovementService,
-        STOCK_MOVEMENT,
-      });
-    }
-  );
+  test.afterEach(async ({ authService, stockMovementService }) => {
+    await authService.changeLocation(AppConfig.instance.locations.main.id);
+    await deleteShipment({ stockMovementService, STOCK_MOVEMENT });
+  });
 
   test('Receiving should not be available from other location than which is specfied as destination location', async ({
     stockMovementShowPage,
