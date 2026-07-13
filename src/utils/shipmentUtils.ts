@@ -5,8 +5,6 @@ import ReceivingService from '@/api/ReceivingService';
 import StockMovementService from '@/api/StockMovementService';
 import AppConfig from '@/config/AppConfig';
 import { ShipmentType } from '@/constants/ShipmentType';
-import OldViewShipmentPage from '@/pages/stockMovementShow/OldViewShipmentPage';
-import StockMovementShowPage from '@/pages/stockMovementShow/StockMovementShowPage';
 import { ReceiptResponse, StockMovementResponse } from '@/types';
 
 export const getShipmentId = (stockMovement: StockMovementResponse) => {
@@ -62,22 +60,18 @@ export async function receiveInbound(
   await receivingService.completeReceipt(shipmentId);
 }
 
-export async function deleteReceivedShipment({
-  stockMovementShowPage,
-  oldViewShipmentPage,
+/**
+  Deletes a stock movement through the API regardless of the shipment status,
+  rolling back the received and shipped events first when needed.
+*/
+export async function deleteShipment({
   stockMovementService,
   STOCK_MOVEMENT,
 }: {
   STOCK_MOVEMENT: StockMovementResponse;
   stockMovementService: StockMovementService;
-  stockMovementShowPage: StockMovementShowPage;
-  oldViewShipmentPage: OldViewShipmentPage;
 }) {
-  await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
-  await stockMovementShowPage.detailsListTable.oldViewShipmentPage.click();
-  await oldViewShipmentPage.undoStatusChangeButton.click();
-  await stockMovementShowPage.isLoaded();
-  await stockMovementShowPage.rollbackButton.click();
+  await stockMovementService.rollbackShipmentToPending(STOCK_MOVEMENT.id);
   await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
 
   // The server clears receiving-bin stock asynchronously after the stock
