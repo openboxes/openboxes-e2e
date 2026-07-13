@@ -5,7 +5,7 @@ import { Product } from '@/generated/ProductCodes.generated';
 import { ProductResponse, StockMovementResponse } from '@/types';
 import RefreshCachesUtils from '@/utils/RefreshCaches';
 import {
-  deleteReceivedShipment,
+  deleteShipment,
   getShipmentId,
   getShipmentItemId,
 } from '@/utils/shipmentUtils';
@@ -87,11 +87,9 @@ test.describe('Putaway to preferred bin and default bin', () => {
 
   test.afterEach(
     async ({
-      stockMovementShowPage,
       stockMovementService,
       navbar,
       transactionListPage,
-      oldViewShipmentPage,
       productService,
       productShowPage,
       productEditPage,
@@ -100,12 +98,7 @@ test.describe('Putaway to preferred bin and default bin', () => {
       await navbar.transactions.click();
       await transactionListPage.deleteTransaction(1);
       await transactionListPage.deleteTransaction(1);
-      await deleteReceivedShipment({
-        stockMovementShowPage,
-        oldViewShipmentPage,
-        stockMovementService,
-        STOCK_MOVEMENT,
-      });
+      await deleteShipment({ stockMovementService, STOCK_MOVEMENT });
       const product2 = await productService.getProduct(Product.FOUR);
       await productShowPage.goToPage(product2.id);
       await productShowPage.editProductButton.click();

@@ -7,7 +7,7 @@ import {
 } from '@/types';
 import { assignPreferredBin } from '@/utils/productUtils';
 import RefreshCachesUtils from '@/utils/RefreshCaches';
-import { deleteReceivedShipment, receiveInbound } from '@/utils/shipmentUtils';
+import { deleteShipment, receiveInbound } from '@/utils/shipmentUtils';
 import { byNameAsc } from '@/utils/sortUtils';
 
 /**
@@ -88,9 +88,7 @@ test.describe('Sort putaway by current bin, preferred bin and original order', (
 
   test.afterEach(
     async ({
-      stockMovementShowPage,
       stockMovementService,
-      oldViewShipmentPage,
       navbar,
       transactionListPage,
       putawayListPage,
@@ -117,16 +115,12 @@ test.describe('Sort putaway by current bin, preferred bin and original order', (
       }
 
       if (inboundTwo) {
-        await deleteReceivedShipment({
-          stockMovementShowPage,
-          oldViewShipmentPage,
+        await deleteShipment({
           stockMovementService,
           STOCK_MOVEMENT: inboundTwo,
         });
       }
-      await deleteReceivedShipment({
-        stockMovementShowPage,
-        oldViewShipmentPage,
+      await deleteShipment({
         stockMovementService,
         STOCK_MOVEMENT: inboundOne,
       });

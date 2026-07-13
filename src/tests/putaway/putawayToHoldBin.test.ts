@@ -6,7 +6,7 @@ import { StockMovementResponse } from '@/types';
 import BinLocationUtils from '@/utils/BinLocationUtils';
 import RefreshCachesUtils from '@/utils/RefreshCaches';
 import {
-  deleteReceivedShipment,
+  deleteShipment,
   getShipmentId,
   getShipmentItemId,
 } from '@/utils/shipmentUtils';
@@ -80,13 +80,11 @@ test.describe('Putaway item into hold bin', () => {
     async ({
       navbar,
       transactionListPage,
-      stockMovementShowPage,
       stockMovementService,
       page,
       locationListPage,
       mainLocationService,
       createLocationPage,
-      oldViewShipmentPage,
     }) => {
       const receivingBin =
         AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
@@ -99,12 +97,7 @@ test.describe('Putaway item into hold bin', () => {
       await transactionListPage.table.deleteButton.click();
       await expect(transactionListPage.successMessage).toBeVisible();
 
-      await deleteReceivedShipment({
-        stockMovementShowPage,
-        oldViewShipmentPage,
-        stockMovementService,
-        STOCK_MOVEMENT,
-      });
+      await deleteShipment({ stockMovementService, STOCK_MOVEMENT });
 
       await test.step('Deactivate created bin location', async () => {
         await BinLocationUtils.deactivateCreatedBin({

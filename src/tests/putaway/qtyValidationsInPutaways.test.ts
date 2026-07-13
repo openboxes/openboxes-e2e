@@ -5,7 +5,7 @@ import { Product } from '@/generated/ProductCodes.generated';
 import { StockMovementResponse } from '@/types';
 import RefreshCachesUtils from '@/utils/RefreshCaches';
 import {
-  deleteReceivedShipment,
+  deleteShipment,
   getShipmentId,
   getShipmentItemId,
 } from '@/utils/shipmentUtils';
@@ -58,32 +58,20 @@ test.describe('Assert qty validations in putaways', () => {
     }
   );
 
-  test.afterEach(
-    async ({
-      putawayListPage,
-      stockMovementShowPage,
-      stockMovementService,
-      oldViewShipmentPage,
-    }) => {
-      // the received shipment must be cleaned up even when the test fails
-      // before the putaway is started
-      if (putawayOrderIdentifier) {
-        await putawayListPage.goToPage();
-        await putawayListPage.table
-          .rowByOrderNumber(`${putawayOrderIdentifier}`.toString().trim())
-          .actionsButton.click();
-        await putawayListPage.table.clickDeleteOrderButton(1);
-        await putawayListPage.emptyPutawayList.isVisible();
-      }
-
-      await deleteReceivedShipment({
-        stockMovementShowPage,
-        oldViewShipmentPage,
-        stockMovementService,
-        STOCK_MOVEMENT,
-      });
+  test.afterEach(async ({ putawayListPage, stockMovementService }) => {
+    // the received shipment must be cleaned up even when the test fails
+    // before the putaway is started
+    if (putawayOrderIdentifier) {
+      await putawayListPage.goToPage();
+      await putawayListPage.table
+        .rowByOrderNumber(`${putawayOrderIdentifier}`.toString().trim())
+        .actionsButton.click();
+      await putawayListPage.table.clickDeleteOrderButton(1);
+      await putawayListPage.emptyPutawayList.isVisible();
     }
-  );
+
+    await deleteShipment({ stockMovementService, STOCK_MOVEMENT });
+  });
 
   test('Assert qty validations in putaways', async ({
     stockMovementShowPage,
