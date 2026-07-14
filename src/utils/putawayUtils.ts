@@ -3,9 +3,9 @@ import { TestInfo } from '@playwright/test';
 import PutawayService from '@/api/PutawayService';
 
 /**
-  Deletes the putaway order when it is still pending. Returns true when a
-  pending putaway was deleted, false when there was nothing to delete (the
-  putaway was completed, or was already removed within the test body).
+  Deletes the putaway order if it is still in PENDING status. Returns true
+  when a pending putaway was deleted, false when there was nothing to delete
+  (the order was completed or no longer exists).
 */
 async function deletePutawayOrderIfPending(
   putawayService: PutawayService,
@@ -20,15 +20,13 @@ async function deletePutawayOrderIfPending(
 }
 
 /**
-  Shared afterEach cleanup for putaway tests. Extends the hook timeout first (a
-  failed test may have used up most of the shared test timeout), then deletes
-  every recorded putaway order that is still pending, so a putaway stuck by a
-  mid-test failure never leaks to the next test.
+  Shared afterEach cleanup for putaway tests: extends the hook timeout to
+  leave room for the cleanup itself, then deletes every recorded putaway
+  order that is still pending.
 
-  Returns flags describing what the deletes found, so callers can tell whether
-  the transactions created by completing a putaway exist and can be removed —
-  deleting transaction rows by position after a mid-test failure would peel
-  unrelated rows instead.
+  Returns flags describing whether the putaways had already been completed,
+  so callers know whether the side effects of completing a putaway (e.g.
+  transactions) exist and need their own cleanup.
 */
 export async function cleanupPendingPutaways({
   putawayService,

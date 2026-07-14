@@ -30,7 +30,7 @@ class PutawayService extends BaseServiceModel {
   }
 
   /**
-    Returns null when the putaway order does not exist (anymore).
+    Fetches a putaway order by id. Returns null when the order does not exist.
   */
   async getPutaway(
     orderId: string

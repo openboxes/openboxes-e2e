@@ -41,8 +41,7 @@ class CreatePutawayPage extends BasePageModel {
 
   /**
     Clicks "Start Putaway" and returns the id of the pending putaway order
-    created by the click, so that the test can delete the putaway via API
-    even when it fails before completing it.
+    created by the click, captured from the create API response.
   */
   async startPutaway(): Promise<string> {
     const createResponsePromise = this.page.waitForResponse(
