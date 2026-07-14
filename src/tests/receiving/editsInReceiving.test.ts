@@ -5,7 +5,7 @@ import { Product } from '@/generated/ProductCodes.generated';
 import { StockMovementResponse } from '@/types';
 import BinLocationUtils from '@/utils/BinLocationUtils';
 import { formatDate, getDateByOffset, getToday } from '@/utils/DateUtils';
-import { deleteReceivedShipment } from '@/utils/shipmentUtils';
+import { deleteShipment } from '@/utils/shipmentUtils';
 import UniqueIdentifier from '@/utils/UniqueIdentifier';
 
 test.describe('Edit items in the middle of receipt', () => {
@@ -51,22 +51,13 @@ test.describe('Edit items in the middle of receipt', () => {
 
   test.afterEach(
     async ({
-      stockMovementShowPage,
       stockMovementService,
       mainLocationService,
       page,
       locationListPage,
       createLocationPage,
-      oldViewShipmentPage,
     }) => {
-      await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
-
-      await deleteReceivedShipment({
-        stockMovementShowPage,
-        oldViewShipmentPage,
-        stockMovementService,
-        STOCK_MOVEMENT,
-      });
+      await deleteShipment({ stockMovementService, STOCK_MOVEMENT });
 
       const receivingBin =
         AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;

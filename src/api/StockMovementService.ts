@@ -78,6 +78,39 @@ class StockMovementService extends BaseServiceModel {
     }
   }
 
+  async rollbackLastShipmentStatus(id: string) {
+    // request.delete does not throw on HTTP error statuses, and a swallowed
+    // failed rollback makes the follow-up delete fail with a status error
+    const apiResponse = await this.request.delete(STOCK_MOVEMENT_STATUS(id));
+    if (!apiResponse.ok()) {
+      throw new Error(
+        `Problem rolling back shipment status of stock movement ${id}: ${apiResponse.status()}`
+      );
+    }
+  }
+
+  /*
+    Rolls back shipment events (received, shipped) one by one until the
+    shipment reaches the given status, e.g. back to PENDING so the stock
+    movement can be deleted regardless of the status it reached in the test.
+  */
+  async rollbackShipmentToStatus(id: string, status: string) {
+    // a shipment accumulates one shipped event plus one receipt event per
+    // (partial) receipt, so a sane shipment needs just a few rollbacks
+    const maxRollbacks = 10;
+    for (let i = 0; i < maxRollbacks; i++) {
+      const { data } = await this.getStockMovement(id);
+      const shipmentStatus = data?.associations?.shipment?.status;
+      if (!shipmentStatus || shipmentStatus === status) {
+        return;
+      }
+      await this.rollbackLastShipmentStatus(id);
+    }
+    throw new Error(
+      `Shipment of stock movement ${id} did not get back to ${status} after ${maxRollbacks} rollbacks`
+    );
+  }
+
   async getStockMovement(
     id: string
   ): Promise<ApiResponse<StockMovementResponse>> {

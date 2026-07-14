@@ -6,7 +6,7 @@ import { StockMovementResponse } from '@/types';
 import { formatDate, getDateByOffset } from '@/utils/DateUtils';
 import RefreshCachesUtils from '@/utils/RefreshCaches';
 import {
-  deleteReceivedShipment,
+  deleteShipment,
   getShipmentId,
   getShipmentItemId,
 } from '@/utils/shipmentUtils';
@@ -123,29 +123,19 @@ test.describe('Assert receiving bin on create putaway page', () => {
   );
 
   test.afterEach(
-    async ({
-      stockMovementShowPage,
-      stockMovementService,
-      navbar,
-      transactionListPage,
-      oldViewShipmentPage,
-    }) => {
+    async ({ stockMovementService, navbar, transactionListPage }) => {
       await navbar.configurationButton.click();
       await navbar.transactions.click();
       for (let n = 1; n < 4; n++) {
         await transactionListPage.deleteTransaction(1);
       }
 
-      await deleteReceivedShipment({
-        stockMovementShowPage,
-        oldViewShipmentPage,
+      await deleteShipment({
         stockMovementService,
         STOCK_MOVEMENT: PRIMARY_STOCK_MOVEMENT,
       });
 
-      await deleteReceivedShipment({
-        stockMovementShowPage,
-        oldViewShipmentPage,
+      await deleteShipment({
         stockMovementService,
         STOCK_MOVEMENT: SECONDARY_STOCK_MOVEMENT,
       });

@@ -5,7 +5,7 @@ import { Product } from '@/generated/ProductCodes.generated';
 import { StockMovementResponse } from '@/types';
 import BinLocationUtils from '@/utils/BinLocationUtils';
 import { formatDate, getDateByOffset, getToday } from '@/utils/DateUtils';
-import { deleteReceivedShipment } from '@/utils/shipmentUtils';
+import { deleteShipment } from '@/utils/shipmentUtils';
 import UniqueIdentifier from '@/utils/UniqueIdentifier';
 
 test.describe('Lot number system expiry date modification on receiving workflow', () => {
@@ -19,7 +19,6 @@ test.describe('Lot number system expiry date modification on receiving workflow'
       page,
       locationListPage,
       createLocationPage,
-      oldViewShipmentPage,
     }) => {
       // TODO: Improve this one, it is prone to getting stuck if there are not deleted SMs in the tested location
       while (STOCK_MOVEMENTS.length > 0) {
@@ -32,12 +31,7 @@ test.describe('Lot number system expiry date modification on receiving workflow'
         });
 
         await test.step(`Delete stock movement "${STOCK_MOVEMENT.id}"`, async () => {
-          await deleteReceivedShipment({
-            stockMovementShowPage,
-            oldViewShipmentPage,
-            stockMovementService,
-            STOCK_MOVEMENT,
-          });
+          await deleteShipment({ stockMovementService, STOCK_MOVEMENT });
         });
 
         const receivingBin =

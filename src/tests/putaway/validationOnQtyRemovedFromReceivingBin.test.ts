@@ -8,7 +8,7 @@ import ProductShowPage from '@/pages/product/productShow/ProductShowPage';
 import { ProductResponse, StockMovementResponse } from '@/types';
 import RefreshCachesUtils from '@/utils/RefreshCaches';
 import {
-  deleteReceivedShipment,
+  deleteShipment,
   getShipmentId,
   getShipmentItemId,
 } from '@/utils/shipmentUtils';
@@ -74,24 +74,13 @@ test.describe('Assert validation on qty removed from receiving bin', () => {
   );
 
   test.afterEach(
-    async ({
-      stockMovementShowPage,
-      stockMovementService,
-      navbar,
-      transactionListPage,
-      oldViewShipmentPage,
-    }) => {
+    async ({ stockMovementService, navbar, transactionListPage }) => {
       await navbar.configurationButton.click();
       await navbar.transactions.click();
       for (let n = 1; n < 6; n++) {
         await transactionListPage.deleteTransaction(1);
       }
-      await deleteReceivedShipment({
-        stockMovementShowPage,
-        oldViewShipmentPage,
-        stockMovementService,
-        STOCK_MOVEMENT,
-      });
+      await deleteShipment({ stockMovementService, STOCK_MOVEMENT });
     }
   );
 

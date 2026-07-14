@@ -5,7 +5,7 @@ import { Product } from '@/generated/ProductCodes.generated';
 import { StockMovementResponse } from '@/types';
 import RefreshCachesUtils from '@/utils/RefreshCaches';
 import {
-  deleteReceivedShipment,
+  deleteShipment,
   getShipmentId,
   getShipmentItemId,
 } from '@/utils/shipmentUtils';
@@ -58,32 +58,20 @@ test.describe('Change location on putaway create page and list pages', () => {
     }
   );
 
-  test.afterEach(
-    async ({
-      stockMovementShowPage,
-      stockMovementService,
-      putawayListPage,
-      oldViewShipmentPage,
-    }) => {
-      // the received shipment must be cleaned up even when the test fails
-      // before the putaway is created
-      if (putawayOrderIdentifier) {
-        await putawayListPage.goToPage();
-        await putawayListPage.table
-          .rowByOrderNumber(`${putawayOrderIdentifier}`.toString().trim())
-          .actionsButton.click();
-        await putawayListPage.table.clickDeleteOrderButton(1);
-        await putawayListPage.emptyPutawayList.isVisible();
-      }
-
-      await deleteReceivedShipment({
-        stockMovementShowPage,
-        oldViewShipmentPage,
-        stockMovementService,
-        STOCK_MOVEMENT,
-      });
+  test.afterEach(async ({ stockMovementService, putawayListPage }) => {
+    // the received shipment must be cleaned up even when the test fails
+    // before the putaway is created
+    if (putawayOrderIdentifier) {
+      await putawayListPage.goToPage();
+      await putawayListPage.table
+        .rowByOrderNumber(`${putawayOrderIdentifier}`.toString().trim())
+        .actionsButton.click();
+      await putawayListPage.table.clickDeleteOrderButton(1);
+      await putawayListPage.emptyPutawayList.isVisible();
     }
-  );
+
+    await deleteShipment({ stockMovementService, STOCK_MOVEMENT });
+  });
 
   test('Change location on putaway create page and list page', async ({
     stockMovementShowPage,

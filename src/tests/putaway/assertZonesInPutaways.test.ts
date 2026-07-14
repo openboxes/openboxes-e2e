@@ -6,7 +6,7 @@ import { Product } from '@/generated/ProductCodes.generated';
 import { ProductResponse, StockMovementResponse } from '@/types';
 import RefreshCachesUtils from '@/utils/RefreshCaches';
 import {
-  deleteReceivedShipment,
+  deleteShipment,
   getShipmentId,
   getShipmentItemId,
 } from '@/utils/shipmentUtils';
@@ -141,11 +141,9 @@ test.describe('Assert zones on putaway pages', () => {
 
   test.afterEach(
     async ({
-      stockMovementShowPage,
       stockMovementService,
       navbar,
       transactionListPage,
-      oldViewShipmentPage,
       productService,
       productShowPage,
       productEditPage,
@@ -160,12 +158,7 @@ test.describe('Assert zones on putaway pages', () => {
       for (let n = 1; n < 4; n++) {
         await transactionListPage.deleteTransaction(1);
       }
-      await deleteReceivedShipment({
-        stockMovementShowPage,
-        oldViewShipmentPage,
-        stockMovementService,
-        STOCK_MOVEMENT,
-      });
+      await deleteShipment({ stockMovementService, STOCK_MOVEMENT });
       const product = await productService.getProduct(Product.FOUR);
 
       await test.step('Delete inventory level', async () => {

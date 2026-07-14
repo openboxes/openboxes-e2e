@@ -222,6 +222,7 @@ type StockMovementResponse = {
   associations: {
     shipment: {
       id: string;
+      status: string;
     };
   };
 };

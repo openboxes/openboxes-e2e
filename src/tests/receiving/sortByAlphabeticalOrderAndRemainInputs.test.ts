@@ -4,7 +4,7 @@ import { Product } from '@/generated/ProductCodes.generated';
 import { StockMovementResponse } from '@/types';
 import BinLocationUtils from '@/utils/BinLocationUtils';
 import { getDateByOffset, getToday } from '@/utils/DateUtils';
-import { deleteReceivedShipment } from '@/utils/shipmentUtils';
+import { deleteShipment } from '@/utils/shipmentUtils';
 
 test.describe('Apply sorting by alphabetical order and remain inputs', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
@@ -38,21 +38,13 @@ test.describe('Apply sorting by alphabetical order and remain inputs', () => {
 
   test.afterEach(
     async ({
-      stockMovementShowPage,
       stockMovementService,
       mainLocationService,
       page,
       locationListPage,
       createLocationPage,
-      oldViewShipmentPage,
     }) => {
-      await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
-      await deleteReceivedShipment({
-        stockMovementShowPage,
-        oldViewShipmentPage,
-        stockMovementService,
-        STOCK_MOVEMENT,
-      });
+      await deleteShipment({ stockMovementService, STOCK_MOVEMENT });
 
       const receivingBin =
         AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;

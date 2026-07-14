@@ -7,7 +7,7 @@ import { Product } from '@/generated/ProductCodes.generated';
 import { StockMovementResponse } from '@/types';
 import BinLocationUtils from '@/utils/BinLocationUtils';
 import { formatDate, getDateByOffset } from '@/utils/DateUtils';
-import { deleteReceivedShipment } from '@/utils/shipmentUtils';
+import { deleteShipment } from '@/utils/shipmentUtils';
 import UniqueIdentifier from '@/utils/UniqueIdentifier';
 import { WorkbookUtils } from '@/utils/WorkbookUtils';
 
@@ -54,22 +54,13 @@ test.describe('Export receiving template', () => {
 
   test.afterEach(
     async ({
-      stockMovementShowPage,
       stockMovementService,
       mainLocationService,
       page,
       locationListPage,
       createLocationPage,
-      oldViewShipmentPage,
     }) => {
-      await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
-
-      await deleteReceivedShipment({
-        stockMovementShowPage,
-        oldViewShipmentPage,
-        stockMovementService,
-        STOCK_MOVEMENT,
-      });
+      await deleteShipment({ stockMovementService, STOCK_MOVEMENT });
 
       for (const workbook of workbooks) {
         workbook.delete();

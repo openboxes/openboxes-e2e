@@ -5,7 +5,7 @@ import { Product } from '@/generated/ProductCodes.generated';
 import { StockMovementResponse } from '@/types';
 import BinLocationUtils from '@/utils/BinLocationUtils';
 import { getToday } from '@/utils/DateUtils';
-import { deleteReceivedShipment } from '@/utils/shipmentUtils';
+import { deleteShipment } from '@/utils/shipmentUtils';
 
 test.describe('Assert validation on try to receive not yet shipped inbound', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
@@ -38,9 +38,8 @@ test.describe('Assert validation on try to receive not yet shipped inbound', () 
     }
   );
 
-  test.afterEach(async ({ stockMovementShowPage, stockMovementService }) => {
-    await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
-    await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
+  test.afterEach(async ({ stockMovementService }) => {
+    await deleteShipment({ stockMovementService, STOCK_MOVEMENT });
   });
 
   test('Assert validation on try to receive not yet shipped inbound', async ({
@@ -99,21 +98,13 @@ test.describe('Validations on edit and receive inbound stock movement', () => {
 
   test.afterEach(
     async ({
-      stockMovementShowPage,
       stockMovementService,
       mainLocationService,
       page,
       locationListPage,
       createLocationPage,
-      oldViewShipmentPage,
     }) => {
-      await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
-      await deleteReceivedShipment({
-        stockMovementShowPage,
-        oldViewShipmentPage,
-        stockMovementService,
-        STOCK_MOVEMENT,
-      });
+      await deleteShipment({ stockMovementService, STOCK_MOVEMENT });
 
       const receivingBin =
         AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;

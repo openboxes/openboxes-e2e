@@ -10,7 +10,7 @@ import { deleteFile, writeBufferToFile } from '@/utils/FileIOUtils';
 import { pdfContainsValues } from '@/utils/pdfUtils';
 import RefreshCachesUtils from '@/utils/RefreshCaches';
 import {
-  deleteReceivedShipment,
+  deleteShipment,
   getShipmentId,
   getShipmentItemId,
 } from '@/utils/shipmentUtils';
@@ -65,13 +65,7 @@ test.describe('Assert putaway details page', () => {
   );
 
   test.afterEach(
-    async ({
-      stockMovementShowPage,
-      stockMovementService,
-      navbar,
-      transactionListPage,
-      oldViewShipmentPage,
-    }) => {
+    async ({ stockMovementService, navbar, transactionListPage }) => {
       await navbar.configurationButton.click();
       await navbar.transactions.click();
       await transactionListPage.table.row(1).actionsButton.click();
@@ -81,12 +75,7 @@ test.describe('Assert putaway details page', () => {
       await transactionListPage.table.deleteButton.click();
       await expect(transactionListPage.successMessage).toBeVisible();
 
-      await deleteReceivedShipment({
-        stockMovementShowPage,
-        oldViewShipmentPage,
-        stockMovementService,
-        STOCK_MOVEMENT,
-      });
+      await deleteShipment({ stockMovementService, STOCK_MOVEMENT });
 
       while (downloadedFilePaths.length) {
         deleteFile(downloadedFilePaths.pop() as string);

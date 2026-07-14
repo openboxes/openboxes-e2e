@@ -10,7 +10,7 @@ import StockMovementShowPage from '@/pages/stockMovementShow/StockMovementShowPa
 import { StockMovementResponse } from '@/types';
 import RefreshCachesUtils from '@/utils/RefreshCaches';
 import {
-  deleteReceivedShipment,
+  deleteShipment,
   getShipmentId,
   getShipmentItemId,
 } from '@/utils/shipmentUtils';
@@ -61,20 +61,9 @@ test.describe('Delete pending putaways', () => {
     }
   );
 
-  test.afterEach(
-    async ({
-      stockMovementShowPage,
-      stockMovementService,
-      oldViewShipmentPage,
-    }) => {
-      await deleteReceivedShipment({
-        stockMovementShowPage,
-        oldViewShipmentPage,
-        stockMovementService,
-        STOCK_MOVEMENT,
-      });
-    }
-  );
+  test.afterEach(async ({ stockMovementService }) => {
+    await deleteShipment({ stockMovementService, STOCK_MOVEMENT });
+  });
 
   test('Delete pending putaway as superuser from list page', async ({
     stockMovementShowPage,
