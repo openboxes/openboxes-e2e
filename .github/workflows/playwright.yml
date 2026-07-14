@@ -30,7 +30,7 @@ concurrency:
 
 jobs:
   test:
-    timeout-minutes: 60
+    timeout-minutes: 90
     runs-on: ubuntu-latest
     permissions:
       id-token: write

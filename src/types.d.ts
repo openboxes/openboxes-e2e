@@ -34,6 +34,13 @@ type StockMovementListResponse = {
   totalCount: number;
 };
 
+// GET /api/putaways/<orderId>
+type PutawayResponse = {
+  id: string;
+  putawayNumber?: string | null;
+  putawayStatus?: string | null;
+};
+
 // GET /api/putaways returns rows flattened into dotted keys
 // (e.g. "product.name"), not nested objects
 type PutawayCandidate = {

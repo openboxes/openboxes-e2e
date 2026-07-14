@@ -6,6 +6,7 @@ import {
   StockMovementResponse,
 } from '@/types';
 import { assignPreferredBin } from '@/utils/productUtils';
+import { cleanupPendingPutaways } from '@/utils/putawayUtils';
 import RefreshCachesUtils from '@/utils/RefreshCaches';
 import { deleteShipment, receiveInbound } from '@/utils/shipmentUtils';
 import { byNameAsc } from '@/utils/sortUtils';
@@ -31,7 +32,7 @@ test.describe('Sort putaway by current bin, preferred bin and original order', (
   let binOne: LocationResponse;
   let binTwo: LocationResponse;
 
-  let putawayOrderIdentifier: string | undefined;
+  let PUTAWAY_ORDER_IDS: string[] = [];
 
   test.beforeEach(
     async ({
@@ -44,7 +45,7 @@ test.describe('Sort putaway by current bin, preferred bin and original order', (
       productShowPage,
       productEditPage,
     }) => {
-      putawayOrderIdentifier = undefined;
+      PUTAWAY_ORDER_IDS = [];
       inboundTwo = undefined;
       [productA, productB, productC] = [
         await productService.getProduct(Product.ONE),
@@ -87,26 +88,24 @@ test.describe('Sort putaway by current bin, preferred bin and original order', (
   );
 
   test.afterEach(
-    async ({
-      stockMovementService,
-      navbar,
-      transactionListPage,
-      putawayListPage,
-      productShowPage,
-      productEditPage,
-    }) => {
-      // Remove the pending 2nd putaway and the 3 transactions created along
-      // the way; they exist only once the 2nd putaway has been started, but
-      // the shipments and preferred bins must be cleaned up regardless of
-      // how far the test got
-      if (putawayOrderIdentifier) {
-        await putawayListPage.goToPage();
-        await putawayListPage.isLoaded();
-        await putawayListPage.table
-          .rowByOrderNumber(`${putawayOrderIdentifier}`.toString().trim())
-          .actionsButton.click();
-        await putawayListPage.table.clickDeleteOrderButton(1);
+    async (
+      {
+        stockMovementService,
+        navbar,
+        transactionListPage,
+        putawayService,
+        productShowPage,
+        productEditPage,
+      },
+      testInfo
+    ) => {
+      const { anyPutawayCompleted } = await cleanupPendingPutaways({
+        putawayService,
+        putawayOrderIds: PUTAWAY_ORDER_IDS,
+        testInfo,
+      });
 
+      if (anyPutawayCompleted) {
         await navbar.configurationButton.click();
         await navbar.transactions.click();
         for (let i = 0; i < 3; i++) {
@@ -166,7 +165,7 @@ test.describe('Sort putaway by current bin, preferred bin and original order', (
       await createPutawayPage.table
         .rowByProductName(productA.name)
         .checkbox.click();
-      await createPutawayPage.startPutawayButton.click();
+      PUTAWAY_ORDER_IDS.push(await createPutawayPage.startPutaway());
       await createPutawayPage.startStep.isLoaded();
 
       // Putaway A into binTwo (its preferred bin is auto-suggested).
@@ -219,13 +218,9 @@ test.describe('Sort putaway by current bin, preferred bin and original order', (
       await createPutawayPage.table
         .rowByProductName(productC.name)
         .checkbox.click();
-      await createPutawayPage.startPutawayButton.click();
+      PUTAWAY_ORDER_IDS.push(await createPutawayPage.startPutaway());
       await createPutawayPage.startStep.isLoaded();
     });
-
-    putawayOrderIdentifier =
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      (await createPutawayPage.startStep.orderNumberValue.textContent())!;
 
     await test.step('assert original order of items', async () => {
       await expect(createPutawayPage.startStep.sortButton).toContainText(

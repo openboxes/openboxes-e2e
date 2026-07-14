@@ -92,7 +92,7 @@ class Row extends BasePageModel {
     return this.row.getByTestId('table-cell').nth(8);
   }
 
-  get currentdBin() {
+  get currentBin() {
     return this.row.getByTestId('table-cell').nth(9);
   }
 

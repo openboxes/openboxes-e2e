@@ -7,6 +7,7 @@ import CreatePutawayPage from '@/pages/putaway/CreatePutawayPage';
 import PutawayDetailsPage from '@/pages/putaway/putawayDetails/PutawayDetailsPage';
 import StockMovementShowPage from '@/pages/stockMovementShow/StockMovementShowPage';
 import { ProductResponse, StockMovementResponse } from '@/types';
+import { cleanupPendingPutaways } from '@/utils/putawayUtils';
 import RefreshCachesUtils from '@/utils/RefreshCaches';
 import {
   deleteShipment,
@@ -17,6 +18,7 @@ import { byNameAsc } from '@/utils/sortUtils';
 
 test.describe('Perform putaway as manager user', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
+  let PUTAWAY_ORDER_IDS: string[] = [];
   let product: ProductResponse;
   let product2: ProductResponse;
 
@@ -27,6 +29,7 @@ test.describe('Perform putaway as manager user', () => {
       productService,
       receivingService,
     }) => {
+      PUTAWAY_ORDER_IDS = [];
       const supplierLocation = await supplierLocationService.getLocation();
       STOCK_MOVEMENT = await stockMovementService.createInbound({
         originId: supplierLocation.id,
@@ -75,17 +78,29 @@ test.describe('Perform putaway as manager user', () => {
   );
 
   test.afterEach(
-    async ({
-      stockMovementShowPage,
-      stockMovementService,
-      navbar,
-      transactionListPage,
-    }) => {
+    async (
+      {
+        stockMovementShowPage,
+        stockMovementService,
+        navbar,
+        transactionListPage,
+        putawayService,
+      },
+      testInfo
+    ) => {
+      const { allPutawaysCompleted } = await cleanupPendingPutaways({
+        putawayService,
+        putawayOrderIds: PUTAWAY_ORDER_IDS,
+        testInfo,
+      });
+
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
-      await navbar.configurationButton.click();
-      await navbar.transactions.click();
-      await transactionListPage.deleteTransaction(1);
-      await transactionListPage.deleteTransaction(1);
+      if (allPutawaysCompleted) {
+        await navbar.configurationButton.click();
+        await navbar.transactions.click();
+        await transactionListPage.deleteTransaction(1);
+        await transactionListPage.deleteTransaction(1);
+      }
       await deleteShipment({ stockMovementService, STOCK_MOVEMENT });
     }
   );
@@ -128,7 +143,7 @@ test.describe('Perform putaway as manager user', () => {
       ).toBeVisible();
       await createPutawayPage.table.row(1).checkbox.click();
       await createPutawayPage.table.row(2).checkbox.click();
-      await createPutawayPage.startPutawayButton.click();
+      PUTAWAY_ORDER_IDS.push(await createPutawayPage.startPutaway());
       await createPutawayPage.startStep.isLoaded();
     });
 
@@ -249,7 +264,7 @@ test.describe('Perform putaway as manager user', () => {
 
     await test.step('Start putaway', async () => {
       await createPutawayPageManagerUser.table.row(0).checkbox.click();
-      await createPutawayPageManagerUser.startPutawayButton.click();
+      PUTAWAY_ORDER_IDS.push(await createPutawayPageManagerUser.startPutaway());
       await createPutawayPageManagerUser.startStep.isLoaded();
     });
 

@@ -4,6 +4,7 @@ import { expect, test } from '@/fixtures/fixtures';
 import { Product } from '@/generated/ProductCodes.generated';
 import { StockMovementResponse } from '@/types';
 import BinLocationUtils from '@/utils/BinLocationUtils';
+import { cleanupPendingPutaways } from '@/utils/putawayUtils';
 import RefreshCachesUtils from '@/utils/RefreshCaches';
 import {
   deleteShipment,
@@ -16,6 +17,7 @@ test.describe('Putaway item into hold bin', () => {
   test.describe.configure({ timeout: 60000 });
   //timeout has been added for this test to make sure that the content on bin location tab will load as it can include a lot of data
   let STOCK_MOVEMENT: StockMovementResponse;
+  let PUTAWAY_ORDER_IDS: string[] = [];
   const uniqueIdentifier = new UniqueIdentifier();
   const holdBinLocationName = uniqueIdentifier.generateUniqueString('holdbin');
 
@@ -30,6 +32,7 @@ test.describe('Putaway item into hold bin', () => {
       locationListPage,
       createLocationPage,
     }) => {
+      PUTAWAY_ORDER_IDS = [];
       const supplierLocation = await supplierLocationService.getLocation();
       const product = await productService.getProduct(Product.FIVE);
 
@@ -77,25 +80,37 @@ test.describe('Putaway item into hold bin', () => {
   );
 
   test.afterEach(
-    async ({
-      navbar,
-      transactionListPage,
-      stockMovementService,
-      page,
-      locationListPage,
-      mainLocationService,
-      createLocationPage,
-    }) => {
+    async (
+      {
+        navbar,
+        transactionListPage,
+        stockMovementService,
+        page,
+        locationListPage,
+        mainLocationService,
+        createLocationPage,
+        putawayService,
+      },
+      testInfo
+    ) => {
+      const { allPutawaysCompleted } = await cleanupPendingPutaways({
+        putawayService,
+        putawayOrderIds: PUTAWAY_ORDER_IDS,
+        testInfo,
+      });
+
       const receivingBin =
         AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
-      await navbar.configurationButton.click();
-      await navbar.transactions.click();
-      await transactionListPage.table.row(1).actionsButton.click();
-      await transactionListPage.table.deleteButton.click();
-      await expect(transactionListPage.successMessage).toBeVisible();
-      await transactionListPage.table.row(1).actionsButton.click();
-      await transactionListPage.table.deleteButton.click();
-      await expect(transactionListPage.successMessage).toBeVisible();
+      if (allPutawaysCompleted) {
+        await navbar.configurationButton.click();
+        await navbar.transactions.click();
+        await transactionListPage.table.row(1).actionsButton.click();
+        await transactionListPage.table.deleteButton.click();
+        await expect(transactionListPage.successMessage).toBeVisible();
+        await transactionListPage.table.row(1).actionsButton.click();
+        await transactionListPage.table.deleteButton.click();
+        await expect(transactionListPage.successMessage).toBeVisible();
+      }
 
       await deleteShipment({ stockMovementService, STOCK_MOVEMENT });
 
@@ -144,7 +159,7 @@ test.describe('Putaway item into hold bin', () => {
 
     await test.step('Start putaway', async () => {
       await createPutawayPage.table.row(0).checkbox.click();
-      await createPutawayPage.startPutawayButton.click();
+      PUTAWAY_ORDER_IDS.push(await createPutawayPage.startPutaway());
       await createPutawayPage.startStep.isLoaded();
     });
 

@@ -39,6 +39,21 @@ class CreatePutawayPage extends BasePageModel {
     return this.page.getByTestId('start-putaway').nth(0);
   }
 
+  /**
+    Clicks "Start Putaway" and returns the id of the pending putaway order
+    created by the click, captured from the create API response.
+  */
+  async startPutaway(): Promise<string> {
+    const createResponsePromise = this.page.waitForResponse(
+      (response) =>
+        response.url().includes('/api/putaways') &&
+        response.request().method() === 'POST'
+    );
+    await this.startPutawayButton.click();
+    const createResponse = await createResponsePromise;
+    return (await createResponse.json()).data.id;
+  }
+
   get showByStockMovementFilter() {
     return this.page.getByTestId('show-by-button');
   }

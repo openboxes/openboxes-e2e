@@ -3,6 +3,7 @@ import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
 import { Product } from '@/generated/ProductCodes.generated';
 import { StockMovementResponse } from '@/types';
+import { cleanupPendingPutaways } from '@/utils/putawayUtils';
 import RefreshCachesUtils from '@/utils/RefreshCaches';
 import {
   deleteShipment,
@@ -12,6 +13,7 @@ import {
 
 test.describe('Rollback last receipt behavior when putaway created', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
+  let PUTAWAY_ORDER_IDS: string[] = [];
 
   test.beforeEach(
     async ({
@@ -20,6 +22,7 @@ test.describe('Rollback last receipt behavior when putaway created', () => {
       productService,
       receivingService,
     }) => {
+      PUTAWAY_ORDER_IDS = [];
       const supplierLocation = await supplierLocationService.getLocation();
       STOCK_MOVEMENT = await stockMovementService.createInbound({
         originId: supplierLocation.id,
@@ -57,15 +60,26 @@ test.describe('Rollback last receipt behavior when putaway created', () => {
   );
 
   test.afterEach(
-    async ({ stockMovementService, navbar, transactionListPage }) => {
-      await navbar.configurationButton.click();
-      await navbar.transactions.click();
-      await transactionListPage.table.row(1).actionsButton.click();
-      await transactionListPage.table.deleteButton.click();
-      await expect(transactionListPage.successMessage).toBeVisible();
-      await transactionListPage.table.row(1).actionsButton.click();
-      await transactionListPage.table.deleteButton.click();
-      await expect(transactionListPage.successMessage).toBeVisible();
+    async (
+      { stockMovementService, navbar, transactionListPage, putawayService },
+      testInfo
+    ) => {
+      const { allPutawaysCompleted } = await cleanupPendingPutaways({
+        putawayService,
+        putawayOrderIds: PUTAWAY_ORDER_IDS,
+        testInfo,
+      });
+
+      if (allPutawaysCompleted) {
+        await navbar.configurationButton.click();
+        await navbar.transactions.click();
+        await transactionListPage.table.row(1).actionsButton.click();
+        await transactionListPage.table.deleteButton.click();
+        await expect(transactionListPage.successMessage).toBeVisible();
+        await transactionListPage.table.row(1).actionsButton.click();
+        await transactionListPage.table.deleteButton.click();
+        await expect(transactionListPage.successMessage).toBeVisible();
+      }
       await deleteShipment({ stockMovementService, STOCK_MOVEMENT });
     }
   );
@@ -96,7 +110,7 @@ test.describe('Rollback last receipt behavior when putaway created', () => {
 
     await test.step('Start putaway', async () => {
       await createPutawayPage.table.row(0).checkbox.click();
-      await createPutawayPage.startPutawayButton.click();
+      PUTAWAY_ORDER_IDS.push(await createPutawayPage.startPutaway());
       await createPutawayPage.startStep.isLoaded();
     });
 

@@ -1,8 +1,14 @@
+import path from 'node:path';
+
 import AppConfig from '@/config/AppConfig';
+import { PUTAWAY_URL } from '@/constants/applicationUrls';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
 import { Product } from '@/generated/ProductCodes.generated';
 import { StockMovementResponse } from '@/types';
+import { deleteFile, writeBufferToFile } from '@/utils/FileIOUtils';
+import { extractPdfColumnValues } from '@/utils/pdfUtils';
+import { cleanupPendingPutaways } from '@/utils/putawayUtils';
 import RefreshCachesUtils from '@/utils/RefreshCaches';
 import {
   deleteShipment,
@@ -12,6 +18,8 @@ import {
 
 test.describe('Putaway received inbound shipment', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
+  let PUTAWAY_ORDER_IDS: string[] = [];
+  const downloadedFilePaths: string[] = [];
 
   test.beforeEach(
     async ({
@@ -20,6 +28,7 @@ test.describe('Putaway received inbound shipment', () => {
       productService,
       receivingService,
     }) => {
+      PUTAWAY_ORDER_IDS = [];
       const supplierLocation = await supplierLocationService.getLocation();
       STOCK_MOVEMENT = await stockMovementService.createInbound({
         originId: supplierLocation.id,
@@ -57,17 +66,32 @@ test.describe('Putaway received inbound shipment', () => {
   );
 
   test.afterEach(
-    async ({ stockMovementService, navbar, transactionListPage }) => {
-      await navbar.configurationButton.click();
-      await navbar.transactions.click();
-      await transactionListPage.table.row(1).actionsButton.click();
-      await transactionListPage.table.deleteButton.click();
-      await expect(transactionListPage.successMessage).toBeVisible();
-      await transactionListPage.table.row(1).actionsButton.click();
-      await transactionListPage.table.deleteButton.click();
-      await expect(transactionListPage.successMessage).toBeVisible();
+    async (
+      { stockMovementService, navbar, transactionListPage, putawayService },
+      testInfo
+    ) => {
+      const { allPutawaysCompleted } = await cleanupPendingPutaways({
+        putawayService,
+        putawayOrderIds: PUTAWAY_ORDER_IDS,
+        testInfo,
+      });
+
+      if (allPutawaysCompleted) {
+        await navbar.configurationButton.click();
+        await navbar.transactions.click();
+        await transactionListPage.table.row(1).actionsButton.click();
+        await transactionListPage.table.deleteButton.click();
+        await expect(transactionListPage.successMessage).toBeVisible();
+        await transactionListPage.table.row(1).actionsButton.click();
+        await transactionListPage.table.deleteButton.click();
+        await expect(transactionListPage.successMessage).toBeVisible();
+      }
 
       await deleteShipment({ stockMovementService, STOCK_MOVEMENT });
+
+      while (downloadedFilePaths.length) {
+        deleteFile(downloadedFilePaths.pop() as string);
+      }
     }
   );
 
@@ -79,7 +103,10 @@ test.describe('Putaway received inbound shipment', () => {
     productShowPage,
     putawayDetailsPage,
     productService,
+    page,
   }) => {
+    const internalLocation = await internalLocationService.getLocation();
+
     await test.step('Go to stock movement show page and assert received status', async () => {
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
       await stockMovementShowPage.isLoaded();
@@ -97,21 +124,66 @@ test.describe('Putaway received inbound shipment', () => {
 
     await test.step('Start putaway', async () => {
       await createPutawayPage.table.row(0).checkbox.click();
-      await createPutawayPage.startPutawayButton.click();
+      PUTAWAY_ORDER_IDS.push(await createPutawayPage.startPutaway());
       await createPutawayPage.startStep.isLoaded();
     });
 
     await test.step('Select bin to putaway', async () => {
-      const internalLocation = await internalLocationService.getLocation();
       await createPutawayPage.startStep.table.row(0).putawayBinSelect.click();
       await createPutawayPage.startStep.table
         .row(0)
         .getPutawayBin(internalLocation.name)
         .click();
+    });
+
+    const downloadPutawayListPdf = async () => {
+      const pdfResponsePromise = page.waitForResponse(
+        (resp) =>
+          PUTAWAY_URL.generatePdfPattern.test(resp.url()) &&
+          resp.status() === 200
+      );
+      const downloadPromise = page.waitForEvent('download');
+      await createPutawayPage.startStep.generatePutawayListButton.click();
+      const [pdfResponse, download] = await Promise.all([
+        pdfResponsePromise,
+        downloadPromise,
+      ]);
+
+      const fullFilePath = path.join(
+        AppConfig.LOCAL_FILES_DIR_PATH,
+        download.suggestedFilename()
+      );
+      writeBufferToFile(fullFilePath, await pdfResponse.body());
+      downloadedFilePaths.push(fullFilePath);
+      return fullFilePath;
+    };
+
+    await test.step('Generate putaway pdf', async () => {
+      const pdfFilePath = await downloadPutawayListPdf();
+      expect(await extractPdfColumnValues(pdfFilePath, 'Putaway Bin')).toEqual([
+        internalLocation.name,
+      ]);
+    });
+
+    await test.step('Go to next page', async () => {
       await createPutawayPage.startStep.nextButton.click();
+      await createPutawayPage.completeStep.isLoaded();
+    });
+
+    await test.step('Go back to start step', async () => {
+      await createPutawayPage.completeStep.editButton.click();
+      await createPutawayPage.startStep.isLoaded();
+    });
+
+    await test.step('Generate putaway pdf again', async () => {
+      const pdfFilePath = await downloadPutawayListPdf();
+      expect(await extractPdfColumnValues(pdfFilePath, 'Putaway Bin')).toEqual([
+        internalLocation.name,
+      ]);
     });
 
     await test.step('Go to next page and complete putaway', async () => {
+      await createPutawayPage.startStep.nextButton.click();
       await createPutawayPage.completeStep.isLoaded();
       await createPutawayPage.completeStep.completePutawayButton.click();
     });
@@ -127,7 +199,6 @@ test.describe('Putaway received inbound shipment', () => {
       await productShowPage.goToPage(product.id);
       await productShowPage.inStockTab.click();
       await productShowPage.inStockTabSection.isLoaded();
-      const internalLocation = await internalLocationService.getLocation();
       await expect(
         productShowPage.inStockTabSection.row(1).binLocation
       ).toHaveText(internalLocation.name);
