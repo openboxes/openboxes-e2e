@@ -91,23 +91,23 @@ class StockMovementService extends BaseServiceModel {
 
   /*
     Rolls back shipment events (received, shipped) one by one until the
-    shipment is back in the pending state, so the stock movement can be
-    deleted regardless of the status it reached in the test.
+    shipment reaches the given status, e.g. back to PENDING so the stock
+    movement can be deleted regardless of the status it reached in the test.
   */
-  async rollbackShipmentToPending(id: string) {
+  async rollbackShipmentToStatus(id: string, status: string) {
     // a shipment accumulates one shipped event plus one receipt event per
     // (partial) receipt, so a sane shipment needs just a few rollbacks
     const maxRollbacks = 10;
     for (let i = 0; i < maxRollbacks; i++) {
       const { data } = await this.getStockMovement(id);
       const shipmentStatus = data?.associations?.shipment?.status;
-      if (!shipmentStatus || shipmentStatus === 'PENDING') {
+      if (!shipmentStatus || shipmentStatus === status) {
         return;
       }
       await this.rollbackLastShipmentStatus(id);
     }
     throw new Error(
-      `Shipment of stock movement ${id} did not get back to pending after ${maxRollbacks} rollbacks`
+      `Shipment of stock movement ${id} did not get back to ${status} after ${maxRollbacks} rollbacks`
     );
   }
 

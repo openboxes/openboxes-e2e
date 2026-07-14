@@ -71,7 +71,10 @@ export async function deleteShipment({
   STOCK_MOVEMENT: StockMovementResponse;
   stockMovementService: StockMovementService;
 }) {
-  await stockMovementService.rollbackShipmentToPending(STOCK_MOVEMENT.id);
+  await stockMovementService.rollbackShipmentToStatus(
+    STOCK_MOVEMENT.id,
+    'PENDING'
+  );
   await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
 
   // The server clears receiving-bin stock asynchronously after the stock
