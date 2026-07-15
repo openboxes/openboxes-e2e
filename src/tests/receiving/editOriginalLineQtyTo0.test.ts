@@ -193,7 +193,7 @@ test.describe('Edit qty of original line to 0', () => {
     });
 
     await test.step('Assert received lines on Receipt tab', async () => {
-      await stockMovementShowPage.receiptTab.click();
+      await stockMovementShowPage.openReceiptsTab();
       await expect(stockMovementShowPage.receiptListTable.rows).toHaveCount(3);
       await expect(
         stockMovementShowPage.receiptListTable.row(1).serialLotNumber
@@ -204,7 +204,7 @@ test.describe('Edit qty of original line to 0', () => {
     });
 
     await test.step('Assert received lines on Packing list', async () => {
-      await stockMovementShowPage.packingListTab.click();
+      await stockMovementShowPage.openPackingListTab();
       await expect(
         stockMovementShowPage.packingListTable.row(1).lotNumber
       ).not.toHaveText(lot);
@@ -358,7 +358,7 @@ test.describe('Edit original line to other product in the middle of receipt', ()
     await test.step('Assert received product on stock movement show page', async () => {
       const PRODUCT_FOUR = await productService.getProduct(Product.FOUR);
       const PRODUCT_FIVE = await productService.getProduct(Product.FIVE);
-      await stockMovementShowPage.packingListTab.isVisible();
+      await stockMovementShowPage.openPackingListTab();
       await expect(
         stockMovementShowPage.packingListTable.row(1).product
       ).toHaveText(PRODUCT_FOUR.name);

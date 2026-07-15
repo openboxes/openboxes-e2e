@@ -133,6 +133,10 @@ class StockMovementShowPage extends BasePageModel {
     await this.openTab(this.receiptTab, this.receiptListTable);
   }
 
+  async openPackingListTab() {
+    await this.openTab(this.packingListTab, this.packingListTable);
+  }
+
   async openDocumentsTab() {
     await this.openTab(this.documentTab, this.documentsListTable);
   }

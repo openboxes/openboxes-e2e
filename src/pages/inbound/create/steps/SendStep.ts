@@ -79,6 +79,14 @@ class SendStep extends BasePageModel {
     await expect(this.driverNameField.textbox).toBeVisible();
     await expect(this.commentField.textbox).toBeVisible();
   }
+
+  getShipmentStatus(status: string) {
+    return this.page.locator('.shipment-status').getByText(status);
+  }
+
+  get rollbackButton() {
+    return this.page.getByRole('button', { name: 'Rollback' });
+  }
 }
 
 export default SendStep;
