@@ -11,6 +11,7 @@ class CommentsTable extends BasePageModel {
     await expect(
       this.page.getByRole('heading').getByText('Comments')
     ).toBeVisible();
+    await expect(this.table.or(this.emptyCommentTable).first()).toBeVisible();
   }
 
   get table() {

@@ -135,14 +135,8 @@ class PutawayDetailsPage extends BasePageModel {
     return this.page.locator('li.tab-badge');
   }
 
-  get spinner() {
-    return this.page.locator('.loading');
-  }
-
-  async waitUntilSpinnerHides() {
-    await this.spinner.waitFor({
-      state: 'hidden',
-    });
+  async openCommentsTab() {
+    await this.openTab(this.commentsTab, this.commentsTable);
   }
 }
 
