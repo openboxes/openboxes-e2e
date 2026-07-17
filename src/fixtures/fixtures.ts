@@ -6,6 +6,7 @@ import LocationService from '@/api/LocationService';
 import PutawayService from '@/api/PutawayService';
 import ReceivingService from '@/api/ReceivingService';
 import StockMovementService from '@/api/StockMovementService';
+import TransactionService from '@/api/TransactionService';
 import ImpersonateBanner from '@/components/ImpersonateBanner';
 import LocationChooser from '@/components/LocationChooser';
 import Navbar from '@/components/Navbar';
@@ -87,6 +88,7 @@ type Fixtures = {
   stockMovementService: StockMovementService;
   receivingService: ReceivingService;
   putawayService: PutawayService;
+  transactionService: TransactionService;
   // LOCATIONS DATA
   mainLocationService: LocationData;
   noManageInventoryDepotService: LocationData;
@@ -173,6 +175,8 @@ export const test = baseTest.extend<Fixtures>({
     use(new ReceivingService(page.request)),
   putawayService: async ({ page }, use) =>
     use(new PutawayService(page.request)),
+  transactionService: async ({ page }, use) =>
+    use(new TransactionService(page.request)),
   // LOCATIONS
   mainLocationService: async ({ page }, use) =>
     use(new LocationData(LOCATION_KEY.MAIN, page.request)),

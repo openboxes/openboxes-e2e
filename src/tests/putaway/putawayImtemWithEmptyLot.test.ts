@@ -61,7 +61,7 @@ test.describe('Putaway item with empty lot', () => {
 
   test.afterEach(
     async (
-      { stockMovementService, navbar, transactionListPage, putawayService },
+      { stockMovementService, navbar, transactionService, putawayService },
       testInfo
     ) => {
       const { allPutawaysCompleted } = await cleanupPendingPutaways({
@@ -71,11 +71,7 @@ test.describe('Putaway item with empty lot', () => {
       });
 
       if (allPutawaysCompleted) {
-        await navbar.configurationButton.click();
-        await navbar.transactions.click();
-        for (let n = 1; n < 5; n++) {
-          await transactionListPage.deleteTransaction(1);
-        }
+        await transactionService.deleteRecentTransactions(6);
       }
       await deleteShipment({ stockMovementService, STOCK_MOVEMENT });
       await RefreshCachesUtils.refreshCaches({

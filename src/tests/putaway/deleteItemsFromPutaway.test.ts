@@ -75,7 +75,7 @@ test.describe('Delete items from putaway', () => {
 
   test.afterEach(
     async (
-      { stockMovementService, navbar, transactionListPage, putawayService },
+      { stockMovementService, transactionService, putawayService },
       testInfo
     ) => {
       const { allPutawaysCompleted } = await cleanupPendingPutaways({
@@ -85,11 +85,7 @@ test.describe('Delete items from putaway', () => {
       });
 
       if (allPutawaysCompleted) {
-        await navbar.configurationButton.click();
-        await navbar.transactions.click();
-        for (let n = 1; n < 3; n++) {
-          await transactionListPage.deleteTransaction(1);
-        }
+        await transactionService.deleteRecentTransactions(4);
       }
       await deleteShipment({ stockMovementService, STOCK_MOVEMENT });
     }

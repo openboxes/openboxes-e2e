@@ -19,12 +19,6 @@ class TransactionTable extends BasePageModel {
     return new Row(this.page, this.rows.nth(index));
   }
 
-  get deleteButton() {
-    return this.page
-      .locator('.action-menu-item')
-      .getByRole('link', { name: 'Delete' });
-  }
-
   get editButton() {
     return this.page
       .locator('.action-menu-item')

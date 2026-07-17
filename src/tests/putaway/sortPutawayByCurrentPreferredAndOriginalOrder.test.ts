@@ -91,8 +91,7 @@ test.describe('Sort putaway by current bin, preferred bin and original order', (
     async (
       {
         stockMovementService,
-        navbar,
-        transactionListPage,
+        transactionService,
         putawayService,
         productShowPage,
         productEditPage,
@@ -106,11 +105,7 @@ test.describe('Sort putaway by current bin, preferred bin and original order', (
       });
 
       if (anyPutawayCompleted) {
-        await navbar.configurationButton.click();
-        await navbar.transactions.click();
-        for (let i = 0; i < 3; i++) {
-          await transactionListPage.deleteTransaction(1);
-        }
+        await transactionService.deleteRecentTransactions(3);
       }
 
       if (inboundTwo) {

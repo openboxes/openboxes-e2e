@@ -1,4 +1,4 @@
-import { expect, Page } from '@playwright/test';
+import { Page } from '@playwright/test';
 
 import BasePageModel from '@/pages/BasePageModel';
 
@@ -9,16 +9,6 @@ class TransactionListPage extends BasePageModel {
   constructor(page: Page) {
     super(page);
     this.table = new TransactionTable(page);
-  }
-
-  get successMessage() {
-    return this.page.locator('.message');
-  }
-
-  async deleteTransaction(n: number) {
-    await this.table.row(n).actionsButton.click();
-    await this.table.deleteButton.click();
-    await expect(this.page.locator('.message')).toBeVisible();
   }
 }
 

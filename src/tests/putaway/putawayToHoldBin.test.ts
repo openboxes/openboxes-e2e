@@ -82,8 +82,7 @@ test.describe('Putaway item into hold bin', () => {
   test.afterEach(
     async (
       {
-        navbar,
-        transactionListPage,
+        transactionService,
         stockMovementService,
         page,
         locationListPage,
@@ -102,14 +101,7 @@ test.describe('Putaway item into hold bin', () => {
       const receivingBin =
         AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
       if (allPutawaysCompleted) {
-        await navbar.configurationButton.click();
-        await navbar.transactions.click();
-        await transactionListPage.table.row(1).actionsButton.click();
-        await transactionListPage.table.deleteButton.click();
-        await expect(transactionListPage.successMessage).toBeVisible();
-        await transactionListPage.table.row(1).actionsButton.click();
-        await transactionListPage.table.deleteButton.click();
-        await expect(transactionListPage.successMessage).toBeVisible();
+        await transactionService.deleteRecentTransactions(2);
       }
 
       await deleteShipment({ stockMovementService, STOCK_MOVEMENT });

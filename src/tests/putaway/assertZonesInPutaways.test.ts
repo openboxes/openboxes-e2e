@@ -151,8 +151,7 @@ test.describe('Assert zones on putaway pages', () => {
     async (
       {
         stockMovementService,
-        navbar,
-        transactionListPage,
+        transactionService,
         productService,
         productShowPage,
         productEditPage,
@@ -172,11 +171,7 @@ test.describe('Assert zones on putaway pages', () => {
       });
 
       if (allPutawaysCompleted) {
-        await navbar.configurationButton.click();
-        await navbar.transactions.click();
-        for (let n = 1; n < 4; n++) {
-          await transactionListPage.deleteTransaction(1);
-        }
+        await transactionService.deleteRecentTransactions(5);
       }
       await deleteShipment({ stockMovementService, STOCK_MOVEMENT });
       const product = await productService.getProduct(Product.FOUR);

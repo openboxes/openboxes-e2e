@@ -127,7 +127,7 @@ test.describe('Assert receiving bin on create putaway page', () => {
 
   test.afterEach(
     async (
-      { stockMovementService, navbar, transactionListPage, putawayService },
+      { stockMovementService, transactionService, putawayService },
       testInfo
     ) => {
       const { allPutawaysCompleted } = await cleanupPendingPutaways({
@@ -137,11 +137,7 @@ test.describe('Assert receiving bin on create putaway page', () => {
       });
 
       if (allPutawaysCompleted) {
-        await navbar.configurationButton.click();
-        await navbar.transactions.click();
-        for (let n = 1; n < 4; n++) {
-          await transactionListPage.deleteTransaction(1);
-        }
+        await transactionService.deleteRecentTransactions(5);
       }
 
       await deleteShipment({

@@ -61,7 +61,7 @@ test.describe('Rollback last receipt behavior when putaway created', () => {
 
   test.afterEach(
     async (
-      { stockMovementService, navbar, transactionListPage, putawayService },
+      { stockMovementService, transactionService, putawayService },
       testInfo
     ) => {
       const { allPutawaysCompleted } = await cleanupPendingPutaways({
@@ -71,14 +71,7 @@ test.describe('Rollback last receipt behavior when putaway created', () => {
       });
 
       if (allPutawaysCompleted) {
-        await navbar.configurationButton.click();
-        await navbar.transactions.click();
-        await transactionListPage.table.row(1).actionsButton.click();
-        await transactionListPage.table.deleteButton.click();
-        await expect(transactionListPage.successMessage).toBeVisible();
-        await transactionListPage.table.row(1).actionsButton.click();
-        await transactionListPage.table.deleteButton.click();
-        await expect(transactionListPage.successMessage).toBeVisible();
+        await transactionService.deleteRecentTransactions(2);
       }
       await deleteShipment({ stockMovementService, STOCK_MOVEMENT });
     }

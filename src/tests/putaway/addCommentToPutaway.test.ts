@@ -61,7 +61,7 @@ test.describe('Add comment to Putaway', () => {
 
   test.afterEach(
     async (
-      { stockMovementService, navbar, transactionListPage, putawayService },
+      { stockMovementService, transactionService, putawayService },
       testInfo
     ) => {
       const { allPutawaysCompleted } = await cleanupPendingPutaways({
@@ -71,14 +71,7 @@ test.describe('Add comment to Putaway', () => {
       });
 
       if (allPutawaysCompleted) {
-        await navbar.configurationButton.click();
-        await navbar.transactions.click();
-        await transactionListPage.table.row(1).actionsButton.click();
-        await transactionListPage.table.deleteButton.click();
-        await expect(transactionListPage.successMessage).toBeVisible();
-        await transactionListPage.table.row(1).actionsButton.click();
-        await transactionListPage.table.deleteButton.click();
-        await expect(transactionListPage.successMessage).toBeVisible();
+        await transactionService.deleteRecentTransactions(2);
       }
 
       await deleteShipment({ stockMovementService, STOCK_MOVEMENT });
@@ -166,9 +159,7 @@ test.describe('Add comment to Putaway', () => {
 
     await test.step('Assert comment is indicated on putaway details page', async () => {
       await putawayDetailsPage.isLoaded();
-      await putawayDetailsPage.commentsTab.click();
-      await putawayDetailsPage.waitUntilSpinnerHides();
-      await putawayDetailsPage.commentsTable.isLoaded();
+      await putawayDetailsPage.openCommentsTab();
       await expect(putawayDetailsPage.badgeCount).toBeVisible();
       await expect(putawayDetailsPage.badgeCount).toHaveAttribute(
         'data-count',
@@ -212,9 +203,7 @@ test.describe('Add comment to Putaway', () => {
 
     await test.step('Assert comment is indicated on putaway details page', async () => {
       await putawayDetailsPage.isLoaded();
-      await putawayDetailsPage.commentsTab.click();
-      await putawayDetailsPage.waitUntilSpinnerHides();
-      await putawayDetailsPage.commentsTable.isLoaded();
+      await putawayDetailsPage.openCommentsTab();
       await expect(putawayDetailsPage.badgeCount).toBeVisible();
       await expect(putawayDetailsPage.badgeCount).toHaveAttribute(
         'data-count',
@@ -239,15 +228,12 @@ test.describe('Add comment to Putaway', () => {
 
     await test.step('Assert comment is indicated on putaway details page', async () => {
       await putawayDetailsPage.isLoaded();
-      await putawayDetailsPage.commentsTab.click();
-      await putawayDetailsPage.waitUntilSpinnerHides();
-      await putawayDetailsPage.commentsTable.isLoaded();
+      await putawayDetailsPage.openCommentsTab();
       await expect(putawayDetailsPage.badgeCount).toBeVisible();
       await expect(putawayDetailsPage.badgeCount).toHaveAttribute(
         'data-count',
         '2'
       );
-      await putawayDetailsPage.commentsTable.isLoaded();
       await expect(putawayDetailsPage.commentsTable.rows).toHaveCount(4);
     });
 
@@ -258,9 +244,7 @@ test.describe('Add comment to Putaway', () => {
 
     await test.step('Assert delete comment is indicated on putaway details page', async () => {
       await putawayDetailsPage.isLoaded();
-      await putawayDetailsPage.commentsTab.click();
-      await putawayDetailsPage.waitUntilSpinnerHides();
-      await putawayDetailsPage.commentsTable.isLoaded();
+      await putawayDetailsPage.openCommentsTab();
       await expect(putawayDetailsPage.badgeCount).toBeVisible();
       await expect(putawayDetailsPage.badgeCount).toHaveAttribute(
         'data-count',
@@ -272,9 +256,7 @@ test.describe('Add comment to Putaway', () => {
     await test.step('Assert delete added comments', async () => {
       await putawayDetailsPage.commentsTable.clickDeleteCommentButton(2);
       await putawayDetailsPage.isLoaded();
-      await putawayDetailsPage.commentsTab.click();
-      await putawayDetailsPage.waitUntilSpinnerHides();
-      await putawayDetailsPage.commentsTable.isLoaded();
+      await putawayDetailsPage.openCommentsTab();
       await expect(
         putawayDetailsPage.commentsTable.emptyCommentTable
       ).toBeVisible();
@@ -314,9 +296,7 @@ test.describe('Add comment to Putaway', () => {
 
     await test.step('Assert comment is indicated on putaway details page', async () => {
       await putawayDetailsPage.isLoaded();
-      await putawayDetailsPage.commentsTab.click();
-      await putawayDetailsPage.waitUntilSpinnerHides();
-      await putawayDetailsPage.commentsTable.isLoaded();
+      await putawayDetailsPage.openCommentsTab();
       await expect(putawayDetailsPage.badgeCount).toBeVisible();
       await expect(putawayDetailsPage.badgeCount).toHaveAttribute(
         'data-count',

@@ -75,7 +75,7 @@ test.describe('Create putaway for more than 1 item, separate putaways', () => {
 
   test.afterEach(
     async (
-      { stockMovementService, navbar, transactionListPage, putawayService },
+      { stockMovementService, transactionService, putawayService },
       testInfo
     ) => {
       const { allPutawaysCompleted } = await cleanupPendingPutaways({
@@ -85,11 +85,7 @@ test.describe('Create putaway for more than 1 item, separate putaways', () => {
       });
 
       if (allPutawaysCompleted) {
-        await navbar.configurationButton.click();
-        await navbar.transactions.click();
-        for (let n = 1; n < 4; n++) {
-          await transactionListPage.deleteTransaction(1);
-        }
+        await transactionService.deleteRecentTransactions(3);
       }
       await deleteShipment({ stockMovementService, STOCK_MOVEMENT });
     }
@@ -326,8 +322,7 @@ test.describe('Putaway 2 items in the same putaway', () => {
       {
         stockMovementShowPage,
         stockMovementService,
-        navbar,
-        transactionListPage,
+        transactionService,
         oldViewShipmentPage,
         putawayService,
       },
@@ -340,10 +335,7 @@ test.describe('Putaway 2 items in the same putaway', () => {
       });
 
       if (allPutawaysCompleted) {
-        await navbar.configurationButton.click();
-        await navbar.transactions.click();
-        await transactionListPage.deleteTransaction(1);
-        await transactionListPage.deleteTransaction(1);
+        await transactionService.deleteRecentTransactions(2);
       }
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
       await stockMovementShowPage.detailsListTable.oldViewShipmentPage.click();
