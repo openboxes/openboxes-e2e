@@ -39,20 +39,16 @@ test.describe('Apply sorting by alphabetical order and remain inputs', () => {
   test.afterEach(
     async ({
       stockMovementService,
+      locationService,
       mainLocationService,
-      page,
-      locationListPage,
-      createLocationPage,
     }) => {
       await deleteShipment({ stockMovementService, STOCK_MOVEMENT });
 
       const receivingBin =
         AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
-      await BinLocationUtils.deactivateReceivingBin({
+      await BinLocationUtils.deleteReceivingBin({
+        locationService,
         mainLocationService,
-        locationListPage,
-        createLocationPage,
-        page,
         receivingBin,
       });
     }

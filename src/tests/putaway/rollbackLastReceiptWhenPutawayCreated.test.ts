@@ -3,6 +3,7 @@ import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
 import { Product } from '@/generated/ProductCodes.generated';
 import { StockMovementResponse } from '@/types';
+import BinLocationUtils from '@/utils/BinLocationUtils';
 import { cleanupPendingPutaways } from '@/utils/putawayUtils';
 import RefreshCachesUtils from '@/utils/RefreshCaches';
 import {
@@ -61,7 +62,13 @@ test.describe('Rollback last receipt behavior when putaway created', () => {
 
   test.afterEach(
     async (
-      { stockMovementService, transactionService, putawayService },
+      {
+        stockMovementService,
+        transactionService,
+        locationService,
+        mainLocationService,
+        putawayService,
+      },
       testInfo
     ) => {
       const { allPutawaysCompleted } = await cleanupPendingPutaways({
@@ -74,6 +81,14 @@ test.describe('Rollback last receipt behavior when putaway created', () => {
         await transactionService.deleteRecentTransactions(2);
       }
       await deleteShipment({ stockMovementService, STOCK_MOVEMENT });
+
+      const receivingBin =
+        AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
+      await BinLocationUtils.deactivateReceivingBin({
+        locationService,
+        mainLocationService,
+        receivingBin,
+      });
     }
   );
 

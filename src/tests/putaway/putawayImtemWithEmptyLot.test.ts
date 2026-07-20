@@ -3,6 +3,7 @@ import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
 import { Product } from '@/generated/ProductCodes.generated';
 import { StockMovementResponse } from '@/types';
+import BinLocationUtils from '@/utils/BinLocationUtils';
 import { cleanupPendingPutaways } from '@/utils/putawayUtils';
 import RefreshCachesUtils from '@/utils/RefreshCaches';
 import {
@@ -61,7 +62,14 @@ test.describe('Putaway item with empty lot', () => {
 
   test.afterEach(
     async (
-      { stockMovementService, navbar, transactionService, putawayService },
+      {
+        stockMovementService,
+        navbar,
+        transactionService,
+        locationService,
+        mainLocationService,
+        putawayService,
+      },
       testInfo
     ) => {
       const { allPutawaysCompleted } = await cleanupPendingPutaways({
@@ -74,8 +82,17 @@ test.describe('Putaway item with empty lot', () => {
         await transactionService.deleteRecentTransactions(6);
       }
       await deleteShipment({ stockMovementService, STOCK_MOVEMENT });
+
       await RefreshCachesUtils.refreshCaches({
         navbar,
+      });
+
+      const receivingBin =
+        AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
+      await BinLocationUtils.deactivateReceivingBin({
+        locationService,
+        mainLocationService,
+        receivingBin,
       });
     }
   );

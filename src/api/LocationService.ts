@@ -1,5 +1,6 @@
 import BaseServiceModel from '@/api/BaseServiceModel';
 import {
+  INTERNAL_LOCATIONS_SEARCH,
   LOCATION_API,
   LOCATION_BY_ID,
   LOCATION_TYPES,
@@ -34,6 +35,42 @@ class LocationService extends BaseServiceModel {
       return await parseRequestToJSON(apiResponse);
     } catch (error) {
       throw new Error('Problem creating a location');
+    }
+  }
+
+  async searchInternalLocations(
+    searchTerm: string,
+    parentLocationId: string
+  ): Promise<ApiResponse<LocationResponse[]>> {
+    try {
+      const apiResponse = await this.request.get(INTERNAL_LOCATIONS_SEARCH, {
+        params: {
+          searchTerm,
+          'parentLocation.id': parentLocationId,
+          includeInactive: true,
+        },
+      });
+      return await parseRequestToJSON(apiResponse);
+    } catch (error) {
+      throw new Error(
+        `Problem searching internal locations by term: ${searchTerm}`
+      );
+    }
+  }
+
+  async deleteLocation(id: string): Promise<boolean> {
+    const apiResponse = await this.request.delete(LOCATION_BY_ID(id));
+    return apiResponse.ok();
+  }
+
+  async updateLocation(id: string, payload: { active: boolean }) {
+    try {
+      const apiResponse = await this.request.post(LOCATION_BY_ID(id), {
+        data: payload,
+      });
+      return await parseRequestToJSON(apiResponse);
+    } catch (error) {
+      throw new Error(`Problem updating location with id: ${id}`);
     }
   }
 

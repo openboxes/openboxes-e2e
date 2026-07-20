@@ -3,6 +3,7 @@ import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
 import { Product } from '@/generated/ProductCodes.generated';
 import { ProductResponse, StockMovementResponse } from '@/types';
+import BinLocationUtils from '@/utils/BinLocationUtils';
 import { cleanupPendingPutaways } from '@/utils/putawayUtils';
 import RefreshCachesUtils from '@/utils/RefreshCaches';
 import {
@@ -75,7 +76,13 @@ test.describe('Create putaway for more than 1 item, separate putaways', () => {
 
   test.afterEach(
     async (
-      { stockMovementService, transactionService, putawayService },
+      {
+        stockMovementService,
+        transactionService,
+        locationService,
+        mainLocationService,
+        putawayService,
+      },
       testInfo
     ) => {
       const { allPutawaysCompleted } = await cleanupPendingPutaways({
@@ -88,6 +95,14 @@ test.describe('Create putaway for more than 1 item, separate putaways', () => {
         await transactionService.deleteRecentTransactions(3);
       }
       await deleteShipment({ stockMovementService, STOCK_MOVEMENT });
+
+      const receivingBin =
+        AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
+      await BinLocationUtils.deactivateReceivingBin({
+        locationService,
+        mainLocationService,
+        receivingBin,
+      });
     }
   );
 
@@ -323,6 +338,8 @@ test.describe('Putaway 2 items in the same putaway', () => {
         stockMovementShowPage,
         stockMovementService,
         transactionService,
+        locationService,
+        mainLocationService,
         oldViewShipmentPage,
         putawayService,
       },
@@ -344,6 +361,14 @@ test.describe('Putaway 2 items in the same putaway', () => {
       await stockMovementShowPage.rollbackButton.click();
 
       await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
+
+      const receivingBin =
+        AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
+      await BinLocationUtils.deactivateReceivingBin({
+        locationService,
+        mainLocationService,
+        receivingBin,
+      });
     }
   );
 

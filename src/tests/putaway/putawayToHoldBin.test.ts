@@ -84,6 +84,7 @@ test.describe('Putaway item into hold bin', () => {
       {
         transactionService,
         stockMovementService,
+        locationService,
         page,
         locationListPage,
         mainLocationService,
@@ -117,10 +118,8 @@ test.describe('Putaway item into hold bin', () => {
       });
 
       await BinLocationUtils.deactivateReceivingBin({
+        locationService,
         mainLocationService,
-        locationListPage,
-        createLocationPage,
-        page,
         receivingBin,
       });
     }

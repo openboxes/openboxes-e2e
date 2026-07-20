@@ -6,6 +6,7 @@ import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
 import { Product } from '@/generated/ProductCodes.generated';
 import { ProductResponse, StockMovementResponse } from '@/types';
+import BinLocationUtils from '@/utils/BinLocationUtils';
 import { deleteFile, writeBufferToFile } from '@/utils/FileIOUtils';
 import { extractPdfColumnValues } from '@/utils/pdfUtils';
 import { cleanupPendingPutaways } from '@/utils/putawayUtils';
@@ -152,6 +153,7 @@ test.describe('Assert zones on putaway pages', () => {
       {
         stockMovementService,
         transactionService,
+        locationService,
         productService,
         productShowPage,
         productEditPage,
@@ -174,6 +176,7 @@ test.describe('Assert zones on putaway pages', () => {
         await transactionService.deleteRecentTransactions(5);
       }
       await deleteShipment({ stockMovementService, STOCK_MOVEMENT });
+
       const product = await productService.getProduct(Product.FOUR);
 
       await test.step('Delete inventory level', async () => {
@@ -236,6 +239,14 @@ test.describe('Assert zones on putaway pages', () => {
       while (downloadedFilePaths.length) {
         deleteFile(downloadedFilePaths.pop() as string);
       }
+
+      const receivingBin =
+        AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
+      await BinLocationUtils.deactivateReceivingBin({
+        locationService,
+        mainLocationService,
+        receivingBin,
+      });
     }
   );
 

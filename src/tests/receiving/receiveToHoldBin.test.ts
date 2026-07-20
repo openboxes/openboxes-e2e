@@ -55,6 +55,7 @@ test.describe('Receive item into hold bin', () => {
   test.afterEach(
     async ({
       stockMovementService,
+      locationService,
       page,
       locationListPage,
       mainLocationService,
@@ -74,11 +75,9 @@ test.describe('Receive item into hold bin', () => {
         });
       });
 
-      await BinLocationUtils.deactivateReceivingBin({
+      await BinLocationUtils.deleteReceivingBin({
+        locationService,
         mainLocationService,
-        locationListPage,
-        createLocationPage,
-        page,
         receivingBin,
       });
     }

@@ -1,3 +1,4 @@
+import AppConfig from '@/config/AppConfig';
 import { expect, test } from '@/fixtures/fixtures';
 import { Product } from '@/generated/ProductCodes.generated';
 import {
@@ -5,6 +6,7 @@ import {
   ProductResponse,
   StockMovementResponse,
 } from '@/types';
+import BinLocationUtils from '@/utils/BinLocationUtils';
 import { assignPreferredBin } from '@/utils/productUtils';
 import { cleanupPendingPutaways } from '@/utils/putawayUtils';
 import RefreshCachesUtils from '@/utils/RefreshCaches';
@@ -92,6 +94,8 @@ test.describe('Sort putaway by current bin, preferred bin and original order', (
       {
         stockMovementService,
         transactionService,
+        locationService,
+        mainLocationService,
         putawayService,
         productShowPage,
         productEditPage,
@@ -132,6 +136,21 @@ test.describe('Sort putaway by current bin, preferred bin and original order', (
         ).toBeVisible();
         await productEditPage.inventoryLevelsTabSection.createStockLevelModal.clickDeleteInventoryLevel();
       }
+
+      if (inboundTwo) {
+        await BinLocationUtils.deactivateReceivingBin({
+          locationService,
+          mainLocationService,
+          receivingBin:
+            AppConfig.instance.receivingBinPrefix + inboundTwo.identifier,
+        });
+      }
+      await BinLocationUtils.deactivateReceivingBin({
+        locationService,
+        mainLocationService,
+        receivingBin:
+          AppConfig.instance.receivingBinPrefix + inboundOne.identifier,
+      });
     }
   );
 
