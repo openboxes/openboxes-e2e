@@ -40,14 +40,15 @@ class LocationService extends BaseServiceModel {
 
   async searchInternalLocations(
     searchTerm: string,
-    parentLocationId: string
+    parentLocationId: string,
+    includeInactive = true
   ): Promise<ApiResponse<LocationResponse[]>> {
     try {
       const apiResponse = await this.request.get(INTERNAL_LOCATIONS_SEARCH, {
         params: {
           searchTerm,
           'parentLocation.id': parentLocationId,
-          includeInactive: true,
+          includeInactive,
         },
       });
       return await parseRequestToJSON(apiResponse);
@@ -63,7 +64,7 @@ class LocationService extends BaseServiceModel {
     return apiResponse.ok();
   }
 
-  async updateLocation(id: string, payload: { active: boolean }) {
+  async updateLocation(id: string, payload: Partial<CreateLocationPayload>) {
     try {
       const apiResponse = await this.request.post(LOCATION_BY_ID(id), {
         data: payload,
@@ -72,6 +73,10 @@ class LocationService extends BaseServiceModel {
     } catch (error) {
       throw new Error(`Problem updating location with id: ${id}`);
     }
+  }
+
+  async deactivateLocation(id: string) {
+    return this.updateLocation(id, { active: false });
   }
 
   async getLocationTypes(): Promise<ApiResponse<LocationType[]>> {

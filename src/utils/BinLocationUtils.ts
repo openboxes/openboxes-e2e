@@ -57,7 +57,7 @@ class BinLocationUtils {
       return;
     }
 
-    await locationService.updateLocation(binLocation.id, { active: false });
+    await locationService.deactivateLocation(binLocation.id);
   }
 
   private static async findReceivingBin({
