@@ -43,19 +43,15 @@ test.describe('Cancel qty in the middle of receipt', () => {
   test.afterEach(
     async ({
       stockMovementService,
+      locationService,
       mainLocationService,
-      page,
-      locationListPage,
-      createLocationPage,
     }) => {
       await deleteShipment({ stockMovementService, STOCK_MOVEMENT });
       const receivingBin =
         AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
-      await BinLocationUtils.deactivateReceivingBin({
+      await BinLocationUtils.deleteReceivingBin({
+        locationService,
         mainLocationService,
-        locationListPage,
-        createLocationPage,
-        page,
         receivingBin,
       });
     }

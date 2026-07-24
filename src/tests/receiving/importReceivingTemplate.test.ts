@@ -54,10 +54,8 @@ test.describe('Import receiving template', () => {
   test.afterEach(
     async ({
       stockMovementService,
+      locationService,
       mainLocationService,
-      page,
-      locationListPage,
-      createLocationPage,
     }) => {
       await deleteShipment({ stockMovementService, STOCK_MOVEMENT });
 
@@ -67,11 +65,9 @@ test.describe('Import receiving template', () => {
 
       const receivingBin =
         AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
-      await BinLocationUtils.deactivateReceivingBin({
+      await BinLocationUtils.deleteReceivingBin({
+        locationService,
         mainLocationService,
-        locationListPage,
-        createLocationPage,
-        page,
         receivingBin,
       });
     }

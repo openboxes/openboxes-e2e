@@ -3,6 +3,7 @@ import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
 import { Product } from '@/generated/ProductCodes.generated';
 import { ProductResponse, StockMovementResponse } from '@/types';
+import BinLocationUtils from '@/utils/BinLocationUtils';
 import { cleanupPendingPutaways } from '@/utils/putawayUtils';
 import RefreshCachesUtils from '@/utils/RefreshCaches';
 import {
@@ -75,7 +76,13 @@ test.describe('Create putaway for more than 1 item, separate putaways', () => {
 
   test.afterEach(
     async (
-      { stockMovementService, navbar, transactionListPage, putawayService },
+      {
+        stockMovementService,
+        transactionService,
+        locationService,
+        mainLocationService,
+        putawayService,
+      },
       testInfo
     ) => {
       const { allPutawaysCompleted } = await cleanupPendingPutaways({
@@ -85,13 +92,17 @@ test.describe('Create putaway for more than 1 item, separate putaways', () => {
       });
 
       if (allPutawaysCompleted) {
-        await navbar.configurationButton.click();
-        await navbar.transactions.click();
-        for (let n = 1; n < 4; n++) {
-          await transactionListPage.deleteTransaction(1);
-        }
+        await transactionService.deleteRecentTransactions(3);
       }
       await deleteShipment({ stockMovementService, STOCK_MOVEMENT });
+
+      const receivingBin =
+        AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
+      await BinLocationUtils.deactivateReceivingBin({
+        locationService,
+        mainLocationService,
+        receivingBin,
+      });
     }
   );
 
@@ -326,8 +337,9 @@ test.describe('Putaway 2 items in the same putaway', () => {
       {
         stockMovementShowPage,
         stockMovementService,
-        navbar,
-        transactionListPage,
+        transactionService,
+        locationService,
+        mainLocationService,
         oldViewShipmentPage,
         putawayService,
       },
@@ -340,10 +352,7 @@ test.describe('Putaway 2 items in the same putaway', () => {
       });
 
       if (allPutawaysCompleted) {
-        await navbar.configurationButton.click();
-        await navbar.transactions.click();
-        await transactionListPage.deleteTransaction(1);
-        await transactionListPage.deleteTransaction(1);
+        await transactionService.deleteRecentTransactions(2);
       }
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
       await stockMovementShowPage.detailsListTable.oldViewShipmentPage.click();
@@ -352,6 +361,14 @@ test.describe('Putaway 2 items in the same putaway', () => {
       await stockMovementShowPage.rollbackButton.click();
 
       await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
+
+      const receivingBin =
+        AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
+      await BinLocationUtils.deactivateReceivingBin({
+        locationService,
+        mainLocationService,
+        receivingBin,
+      });
     }
   );
 

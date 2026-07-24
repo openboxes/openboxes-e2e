@@ -22,6 +22,9 @@ export const LOCATION_API = `${API}/locations`;
 export const LOCATION_BY_ID = (id: string) => `${LOCATION_API}/${id}`;
 export const LOCATION_TYPES = `${LOCATION_API}/locationTypes`;
 
+// INTERNAL LOCATIONS
+export const INTERNAL_LOCATIONS_SEARCH = `${API}/internalLocations/search`;
+
 // STOCK MOVEMENT
 export const STOCK_MOVEMENT_API = `${API}/stockMovements`;
 export const STOCK_MOVEMENT_API_PATTERN = `${STOCK_MOVEMENT_API}?**`;

@@ -3,6 +3,7 @@ import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
 import { Product } from '@/generated/ProductCodes.generated';
 import { StockMovementResponse } from '@/types';
+import BinLocationUtils from '@/utils/BinLocationUtils';
 import { cleanupPendingPutaways } from '@/utils/putawayUtils';
 import RefreshCachesUtils from '@/utils/RefreshCaches';
 import {
@@ -59,15 +60,33 @@ test.describe('Assert qty validations in putaways', () => {
     }
   );
 
-  test.afterEach(async ({ stockMovementService, putawayService }, testInfo) => {
-    await cleanupPendingPutaways({
-      putawayService,
-      putawayOrderIds: PUTAWAY_ORDER_IDS,
-      testInfo,
-    });
+  test.afterEach(
+    async (
+      {
+        stockMovementService,
+        locationService,
+        mainLocationService,
+        putawayService,
+      },
+      testInfo
+    ) => {
+      await cleanupPendingPutaways({
+        putawayService,
+        putawayOrderIds: PUTAWAY_ORDER_IDS,
+        testInfo,
+      });
 
-    await deleteShipment({ stockMovementService, STOCK_MOVEMENT });
-  });
+      await deleteShipment({ stockMovementService, STOCK_MOVEMENT });
+
+      const receivingBin =
+        AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
+      await BinLocationUtils.deleteReceivingBin({
+        locationService,
+        mainLocationService,
+        receivingBin,
+      });
+    }
+  );
 
   test('Assert qty validations in putaways', async ({
     stockMovementShowPage,

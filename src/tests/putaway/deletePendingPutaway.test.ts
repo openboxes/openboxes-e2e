@@ -8,6 +8,7 @@ import PutawayListPage from '@/pages/putaway/list/PutawayListPage';
 import PutawayDetailsPage from '@/pages/putaway/putawayDetails/PutawayDetailsPage';
 import StockMovementShowPage from '@/pages/stockMovementShow/StockMovementShowPage';
 import { StockMovementResponse } from '@/types';
+import BinLocationUtils from '@/utils/BinLocationUtils';
 import { cleanupPendingPutaways } from '@/utils/putawayUtils';
 import RefreshCachesUtils from '@/utils/RefreshCaches';
 import {
@@ -64,15 +65,33 @@ test.describe('Delete pending putaways', () => {
     }
   );
 
-  test.afterEach(async ({ stockMovementService, putawayService }, testInfo) => {
-    await cleanupPendingPutaways({
-      putawayService,
-      putawayOrderIds: PUTAWAY_ORDER_IDS,
-      testInfo,
-    });
+  test.afterEach(
+    async (
+      {
+        stockMovementService,
+        locationService,
+        mainLocationService,
+        putawayService,
+      },
+      testInfo
+    ) => {
+      await cleanupPendingPutaways({
+        putawayService,
+        putawayOrderIds: PUTAWAY_ORDER_IDS,
+        testInfo,
+      });
 
-    await deleteShipment({ stockMovementService, STOCK_MOVEMENT });
-  });
+      await deleteShipment({ stockMovementService, STOCK_MOVEMENT });
+
+      const receivingBin =
+        AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
+      await BinLocationUtils.deleteReceivingBin({
+        locationService,
+        mainLocationService,
+        receivingBin,
+      });
+    }
+  );
 
   test('Delete pending putaway as superuser from list page', async ({
     stockMovementShowPage,

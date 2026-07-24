@@ -3,6 +3,7 @@ import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
 import { Product } from '@/generated/ProductCodes.generated';
 import { StockMovementResponse } from '@/types';
+import BinLocationUtils from '@/utils/BinLocationUtils';
 import { formatDate, getDateByOffset } from '@/utils/DateUtils';
 import { cleanupPendingPutaways } from '@/utils/putawayUtils';
 import RefreshCachesUtils from '@/utils/RefreshCaches';
@@ -127,7 +128,13 @@ test.describe('Assert receiving bin on create putaway page', () => {
 
   test.afterEach(
     async (
-      { stockMovementService, navbar, transactionListPage, putawayService },
+      {
+        stockMovementService,
+        transactionService,
+        locationService,
+        mainLocationService,
+        putawayService,
+      },
       testInfo
     ) => {
       const { allPutawaysCompleted } = await cleanupPendingPutaways({
@@ -137,11 +144,7 @@ test.describe('Assert receiving bin on create putaway page', () => {
       });
 
       if (allPutawaysCompleted) {
-        await navbar.configurationButton.click();
-        await navbar.transactions.click();
-        for (let n = 1; n < 4; n++) {
-          await transactionListPage.deleteTransaction(1);
-        }
+        await transactionService.deleteRecentTransactions(5);
       }
 
       await deleteShipment({
@@ -152,6 +155,22 @@ test.describe('Assert receiving bin on create putaway page', () => {
       await deleteShipment({
         stockMovementService,
         STOCK_MOVEMENT: SECONDARY_STOCK_MOVEMENT,
+      });
+
+      await BinLocationUtils.deactivateReceivingBin({
+        locationService,
+        mainLocationService,
+        receivingBin:
+          AppConfig.instance.receivingBinPrefix +
+          PRIMARY_STOCK_MOVEMENT.identifier,
+      });
+
+      await BinLocationUtils.deactivateReceivingBin({
+        locationService,
+        mainLocationService,
+        receivingBin:
+          AppConfig.instance.receivingBinPrefix +
+          SECONDARY_STOCK_MOVEMENT.identifier,
       });
     }
   );

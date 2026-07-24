@@ -7,6 +7,7 @@ import CreatePutawayPage from '@/pages/putaway/CreatePutawayPage';
 import PutawayDetailsPage from '@/pages/putaway/putawayDetails/PutawayDetailsPage';
 import StockMovementShowPage from '@/pages/stockMovementShow/StockMovementShowPage';
 import { ProductResponse, StockMovementResponse } from '@/types';
+import BinLocationUtils from '@/utils/BinLocationUtils';
 import { cleanupPendingPutaways } from '@/utils/putawayUtils';
 import RefreshCachesUtils from '@/utils/RefreshCaches';
 import {
@@ -82,8 +83,9 @@ test.describe('Perform putaway as manager user', () => {
       {
         stockMovementShowPage,
         stockMovementService,
-        navbar,
-        transactionListPage,
+        transactionService,
+        locationService,
+        mainLocationService,
         putawayService,
       },
       testInfo
@@ -96,12 +98,17 @@ test.describe('Perform putaway as manager user', () => {
 
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
       if (allPutawaysCompleted) {
-        await navbar.configurationButton.click();
-        await navbar.transactions.click();
-        await transactionListPage.deleteTransaction(1);
-        await transactionListPage.deleteTransaction(1);
+        await transactionService.deleteRecentTransactions(3);
       }
       await deleteShipment({ stockMovementService, STOCK_MOVEMENT });
+
+      const receivingBin =
+        AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
+      await BinLocationUtils.deactivateReceivingBin({
+        locationService,
+        mainLocationService,
+        receivingBin,
+      });
     }
   );
 

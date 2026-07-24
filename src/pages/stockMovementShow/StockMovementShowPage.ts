@@ -1,4 +1,4 @@
-import { expect, Locator, Page } from '@playwright/test';
+import { expect, Page } from '@playwright/test';
 
 import { STOCK_MOVEMENT_URL } from '@/constants/applicationUrls';
 import BasePageModel from '@/pages/BasePageModel';
@@ -110,23 +110,6 @@ class StockMovementShowPage extends BasePageModel {
   async clickDeleteShipment() {
     this.page.once('dialog', (dialog) => dialog.accept());
     await this.deleteButton.click();
-  }
-
-  // tab content is fetched once per page load, so when it fails to render,
-  // re-clicking the tab never refetches it — only a reload does
-  private async openTab(
-    tab: Locator,
-    tabContent: { isLoaded: () => Promise<void> }
-  ) {
-    let reloadOnRetry = false;
-    await expect(async () => {
-      if (reloadOnRetry) {
-        await this.page.reload();
-      }
-      reloadOnRetry = true;
-      await tab.click();
-      await tabContent.isLoaded();
-    }).toPass({ timeout: 45000, intervals: [500, 1000, 2000] });
   }
 
   async openReceiptsTab() {

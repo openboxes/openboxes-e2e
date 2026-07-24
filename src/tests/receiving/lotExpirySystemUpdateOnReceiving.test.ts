@@ -15,10 +15,8 @@ test.describe('Lot number system expiry date modification on receiving workflow'
     async ({
       stockMovementShowPage,
       stockMovementService,
+      locationService,
       mainLocationService,
-      page,
-      locationListPage,
-      createLocationPage,
     }) => {
       // TODO: Improve this one, it is prone to getting stuck if there are not deleted SMs in the tested location
       while (STOCK_MOVEMENTS.length > 0) {
@@ -36,11 +34,9 @@ test.describe('Lot number system expiry date modification on receiving workflow'
 
         const receivingBin =
           AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
-        await BinLocationUtils.deactivateReceivingBin({
+        await BinLocationUtils.deleteReceivingBin({
+          locationService,
           mainLocationService,
-          locationListPage,
-          createLocationPage,
-          page,
           receivingBin,
         });
       }

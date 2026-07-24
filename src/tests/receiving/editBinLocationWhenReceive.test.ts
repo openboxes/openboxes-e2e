@@ -70,6 +70,7 @@ test.describe('Edit Bin Location when receive inbound stock movement', () => {
   test.afterEach(
     async ({
       stockMovementService,
+      locationService,
       page,
       locationListPage,
       mainLocationService,
@@ -105,11 +106,9 @@ test.describe('Edit Bin Location when receive inbound stock movement', () => {
         await createLocationPage.locationConfigurationTabSection.saveButton.click();
       });
 
-      await BinLocationUtils.deactivateReceivingBin({
+      await BinLocationUtils.deleteReceivingBin({
+        locationService,
         mainLocationService,
-        locationListPage,
-        createLocationPage,
-        page,
         receivingBin,
       });
     }
@@ -258,6 +257,7 @@ test.describe('Edit Bin Location to bin with zone when receive inbound stock mov
   test.afterEach(
     async ({
       stockMovementService,
+      locationService,
       page,
       locationListPage,
       mainLocationService,
@@ -309,11 +309,9 @@ test.describe('Edit Bin Location to bin with zone when receive inbound stock mov
         await createLocationPage.locationConfigurationTabSection.saveButton.click();
       });
 
-      await BinLocationUtils.deactivateReceivingBin({
+      await BinLocationUtils.deleteReceivingBin({
+        locationService,
         mainLocationService,
-        locationListPage,
-        createLocationPage,
-        page,
         receivingBin,
       });
     }
@@ -448,6 +446,7 @@ test.describe('Edit Bin Location when receive for all lines', () => {
   test.afterEach(
     async ({
       stockMovementService,
+      locationService,
       page,
       locationListPage,
       mainLocationService,
@@ -483,11 +482,9 @@ test.describe('Edit Bin Location when receive for all lines', () => {
         await createLocationPage.locationConfigurationTabSection.saveButton.click();
       });
 
-      await BinLocationUtils.deactivateReceivingBin({
+      await BinLocationUtils.deleteReceivingBin({
+        locationService,
         mainLocationService,
-        locationListPage,
-        createLocationPage,
-        page,
         receivingBin,
       });
     }

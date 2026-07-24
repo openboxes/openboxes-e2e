@@ -1,40 +1,81 @@
-import { Page } from '@playwright/test';
+import { expect, Page } from '@playwright/test';
 
+import LocationService from '@/api/LocationService';
 import { LOCATION_URL } from '@/constants/applicationUrls';
 import CreateLocationPage from '@/pages/location/createLocation/CreateLocationPage';
 import LocationListPage from '@/pages/location/LocationListPage';
 import LocationData from '@/utils/LocationData';
 
 class BinLocationUtils {
-  static async deactivateReceivingBin({
+  // Only safe for bins that never went through a completed putaway (e.g. a
+  // plain receive, or a putaway that was left pending and deleted): once
+  // stock has been putaway out of the bin, product_availability keeps a
+  // zero-quantity row until a scheduled refresh job clears it, which can
+  // outlast any reasonable test timeout and make the delete fail for a
+  // long time. Use deactivateReceivingBin for those cases instead.
+  static async deleteReceivingBin({
+    locationService,
     mainLocationService,
-    locationListPage,
-    createLocationPage,
-    page,
     receivingBin,
   }: {
+    locationService: LocationService;
     mainLocationService: LocationData;
-    locationListPage: LocationListPage;
-    createLocationPage: CreateLocationPage;
-    page: Page;
+    receivingBin: string;
+  }) {
+    const binLocation = await BinLocationUtils.findReceivingBin({
+      locationService,
+      mainLocationService,
+      receivingBin,
+    });
+    if (!binLocation) {
+      return;
+    }
+
+    await expect
+      .poll(async () => locationService.deleteLocation(binLocation.id), {
+        message: `Problem deleting receiving bin: ${receivingBin}`,
+        timeout: 30_000,
+      })
+      .toBe(true);
+  }
+
+  static async deactivateReceivingBin({
+    locationService,
+    mainLocationService,
+    receivingBin,
+  }: {
+    locationService: LocationService;
+    mainLocationService: LocationData;
+    receivingBin: string;
+  }) {
+    const binLocation = await BinLocationUtils.findReceivingBin({
+      locationService,
+      mainLocationService,
+      receivingBin,
+    });
+    if (!binLocation) {
+      return;
+    }
+
+    await locationService.deactivateLocation(binLocation.id);
+  }
+
+  private static async findReceivingBin({
+    locationService,
+    mainLocationService,
+    receivingBin,
+  }: {
+    locationService: LocationService;
+    mainLocationService: LocationData;
     receivingBin: string;
   }) {
     const mainLocation = await mainLocationService.getLocation();
-    await page.goto(LOCATION_URL.list());
-    await locationListPage.searchByLocationNameField.fill(mainLocation.name);
-    await locationListPage.findButton.click();
-    await locationListPage.getLocationEditButton(mainLocation.name).click();
-    await createLocationPage.binLocationTab.click();
-    await createLocationPage.binLocationTabSection.isLoaded();
-    await createLocationPage.binLocationTabSection.searchField.fill(
-      receivingBin
-    );
-    await createLocationPage.binLocationTabSection.searchField.press('Enter');
-    await createLocationPage.binLocationTabSection.isLoaded();
-    await createLocationPage.binLocationTabSection.editBinButton.click();
-    await createLocationPage.locationConfigurationTab.click();
-    await createLocationPage.locationConfigurationTabSection.activeCheckbox.uncheck();
-    await createLocationPage.locationConfigurationTabSection.saveButton.click();
+    const { data: binLocations } =
+      await locationService.searchInternalLocations(
+        receivingBin,
+        mainLocation.id
+      );
+    return binLocations.find((bin) => bin.name === receivingBin);
   }
 
   static async createHoldBin({

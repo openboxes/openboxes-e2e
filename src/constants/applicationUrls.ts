@@ -31,6 +31,14 @@ const PRODUCT_URL = {
   edit: (id: string) => `${PRODUCT_URL.base}/edit/${id}`,
 };
 
+const INVENTORY_URL = {
+  base: './inventory',
+  listTransactions: (params: { max: number }) =>
+    `${INVENTORY_URL.base}/listTransactions?max=${params.max}`,
+  deleteTransaction: (id: string) =>
+    `${INVENTORY_URL.base}/deleteTransaction/${id}`,
+};
+
 const INVENTORY_ITEM_URL = {
   base: './inventoryItem',
   showStockCard: (id: string) => `${INVENTORY_ITEM_URL.base}/showStockCard/${id}`,
@@ -85,6 +93,7 @@ export {
   AUTH_URL,
   DASHBOARD_URL,
   INVENTORY_ITEM_URL,
+  INVENTORY_URL,
   INVOICE_URL,
   LOCATION_GROUP_URL,
   LOCATION_URL,

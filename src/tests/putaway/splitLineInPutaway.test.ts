@@ -3,6 +3,7 @@ import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
 import { Product } from '@/generated/ProductCodes.generated';
 import { StockMovementResponse } from '@/types';
+import BinLocationUtils from '@/utils/BinLocationUtils';
 import { cleanupPendingPutaways } from '@/utils/putawayUtils';
 import RefreshCachesUtils from '@/utils/RefreshCaches';
 import {
@@ -61,7 +62,13 @@ test.describe('Split line in Putaway', () => {
 
   test.afterEach(
     async (
-      { stockMovementService, navbar, transactionListPage, putawayService },
+      {
+        stockMovementService,
+        transactionService,
+        locationService,
+        mainLocationService,
+        putawayService,
+      },
       testInfo
     ) => {
       const { allPutawaysCompleted } = await cleanupPendingPutaways({
@@ -71,20 +78,18 @@ test.describe('Split line in Putaway', () => {
       });
 
       if (allPutawaysCompleted) {
-        await navbar.configurationButton.click();
-        await navbar.transactions.click();
-        await transactionListPage.table.row(1).actionsButton.click();
-        await transactionListPage.table.deleteButton.click();
-        await expect(transactionListPage.successMessage).toBeVisible();
-        await transactionListPage.table.row(1).actionsButton.click();
-        await transactionListPage.table.deleteButton.click();
-        await expect(transactionListPage.successMessage).toBeVisible();
-        await transactionListPage.table.row(1).actionsButton.click();
-        await transactionListPage.table.deleteButton.click();
-        await expect(transactionListPage.successMessage).toBeVisible();
+        await transactionService.deleteRecentTransactions(5);
       }
 
       await deleteShipment({ stockMovementService, STOCK_MOVEMENT });
+
+      const receivingBin =
+        AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
+      await BinLocationUtils.deactivateReceivingBin({
+        locationService,
+        mainLocationService,
+        receivingBin,
+      });
     }
   );
 

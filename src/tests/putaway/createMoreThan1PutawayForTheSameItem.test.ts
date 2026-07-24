@@ -6,6 +6,7 @@ import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
 import { Product } from '@/generated/ProductCodes.generated';
 import { StockMovementResponse } from '@/types';
+import BinLocationUtils from '@/utils/BinLocationUtils';
 import { deleteFile, writeBufferToFile } from '@/utils/FileIOUtils';
 import { extractPdfColumnValues } from '@/utils/pdfUtils';
 import { cleanupPendingPutaways } from '@/utils/putawayUtils';
@@ -67,7 +68,13 @@ test.describe('Create more than 1 putaway from the same item', () => {
 
   test.afterEach(
     async (
-      { stockMovementService, navbar, transactionListPage, putawayService },
+      {
+        stockMovementService,
+        transactionService,
+        locationService,
+        mainLocationService,
+        putawayService,
+      },
       testInfo
     ) => {
       const { allPutawaysCompleted } = await cleanupPendingPutaways({
@@ -77,14 +84,7 @@ test.describe('Create more than 1 putaway from the same item', () => {
       });
 
       if (allPutawaysCompleted) {
-        await navbar.configurationButton.click();
-        await navbar.transactions.click();
-        await transactionListPage.table.row(1).actionsButton.click();
-        await transactionListPage.table.deleteButton.click();
-        await expect(transactionListPage.successMessage).toBeVisible();
-        await transactionListPage.table.row(1).actionsButton.click();
-        await transactionListPage.table.deleteButton.click();
-        await expect(transactionListPage.successMessage).toBeVisible();
+        await transactionService.deleteRecentTransactions(4);
       }
 
       await deleteShipment({ stockMovementService, STOCK_MOVEMENT });
@@ -92,6 +92,14 @@ test.describe('Create more than 1 putaway from the same item', () => {
       while (downloadedFilePaths.length) {
         deleteFile(downloadedFilePaths.pop() as string);
       }
+
+      const receivingBin =
+        AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
+      await BinLocationUtils.deactivateReceivingBin({
+        locationService,
+        mainLocationService,
+        receivingBin,
+      });
     }
   );
 

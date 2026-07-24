@@ -6,6 +6,7 @@ import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
 import { Product } from '@/generated/ProductCodes.generated';
 import { ProductResponse, StockMovementResponse } from '@/types';
+import BinLocationUtils from '@/utils/BinLocationUtils';
 import { deleteFile, writeBufferToFile } from '@/utils/FileIOUtils';
 import { extractPdfColumnValues } from '@/utils/pdfUtils';
 import { cleanupPendingPutaways } from '@/utils/putawayUtils';
@@ -98,8 +99,9 @@ test.describe('Putaway to preferred bin and default bin', () => {
     async (
       {
         stockMovementService,
-        navbar,
-        transactionListPage,
+        transactionService,
+        locationService,
+        mainLocationService,
         productService,
         productShowPage,
         productEditPage,
@@ -114,12 +116,10 @@ test.describe('Putaway to preferred bin and default bin', () => {
       });
 
       if (allPutawaysCompleted) {
-        await navbar.configurationButton.click();
-        await navbar.transactions.click();
-        await transactionListPage.deleteTransaction(1);
-        await transactionListPage.deleteTransaction(1);
+        await transactionService.deleteRecentTransactions(2);
       }
       await deleteShipment({ stockMovementService, STOCK_MOVEMENT });
+
       const product2 = await productService.getProduct(Product.FOUR);
       await productShowPage.goToPage(product2.id);
       await productShowPage.editProductButton.click();
@@ -135,6 +135,14 @@ test.describe('Putaway to preferred bin and default bin', () => {
       while (downloadedFilePaths.length) {
         deleteFile(downloadedFilePaths.pop() as string);
       }
+
+      const receivingBin =
+        AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
+      await BinLocationUtils.deactivateReceivingBin({
+        locationService,
+        mainLocationService,
+        receivingBin,
+      });
     }
   );
 
