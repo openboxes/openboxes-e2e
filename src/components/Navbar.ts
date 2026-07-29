@@ -34,6 +34,12 @@ class Navbar extends BasePageModel {
       .filter({ visible: true });
   }
 
+  getSectionNavItem(sectionName: string, itemName: string) {
+    return this.getSectionTitle(sectionName)
+      .locator('..')
+      .getByRole('menuitem', { name: itemName, exact: true });
+  }
+
   get editProfileButton() {
     return this.navbar.getByRole('menuitem', { name: 'Edit Profile' });
   }
