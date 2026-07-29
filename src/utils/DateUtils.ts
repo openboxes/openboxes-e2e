@@ -1,7 +1,14 @@
 import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+
+dayjs.extend(customParseFormat);
 
 const formatDate = (date: Date, format = 'MM/DD/YYYY') => {
   return dayjs(date).format(format);
+};
+
+const parseDate = (date: string, format: string) => {
+  return dayjs(date, format).toDate();
 };
 
 const getDateByOffset = (date: Date, offset: number) => {
@@ -15,4 +22,4 @@ const getDayOfMonth = (date: Date) => {
 
 const getToday = () => new Date(new Date().setHours(0, 0, 0, 0));
 
-export { formatDate, getDateByOffset, getDayOfMonth, getToday };
+export { formatDate, getDateByOffset, getDayOfMonth, getToday, parseDate };

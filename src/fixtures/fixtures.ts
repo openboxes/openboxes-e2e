@@ -21,6 +21,11 @@ import CreateLocationGroupPage from '@/pages/locationGroup/CreateLocationGroupPa
 import EditLocationGroupPage from '@/pages/locationGroup/EditLocationGroupPage';
 import LocationGroupsListPage from '@/pages/locationGroup/LocationGroupsListPage';
 import LoginPage from '@/pages/LoginPage';
+import ConfirmToCountStepPage from '@/pages/manageCycleCount/ConfirmToCountStepPage';
+import ConfirmToRecountStepPage from '@/pages/manageCycleCount/ConfirmToRecountStepPage';
+import CountStepPage from '@/pages/manageCycleCount/CountStepPage';
+import ManageCycleCountPage from '@/pages/manageCycleCount/ManageCycleCountPage';
+import RecountStepPage from '@/pages/manageCycleCount/RecountStepPage';
 import CreateOrganizationPage from '@/pages/oranization/CreateOrganizationPage';
 import EditOrganizationPage from '@/pages/oranization/EditOrganizationPage';
 import OrganizationListPage from '@/pages/oranization/OrganizationListPage';
@@ -77,6 +82,11 @@ type Fixtures = {
   productEditPage: ProductEditPage;
   editTransactionPage: EditTransactionPage;
   addCommentToPutawayPage: AddCommentToPutawayPage;
+  manageCycleCountPage: ManageCycleCountPage;
+  countStepPage: CountStepPage;
+  confirmToCountStepPage: ConfirmToCountStepPage;
+  recountStepPage: RecountStepPage;
+  confirmToRecountStepPage: ConfirmToRecountStepPage;
   // COMPONENTS
   navbar: Navbar;
   locationChooser: LocationChooser;
@@ -99,6 +109,7 @@ type Fixtures = {
   noPickAndPutawayStockDepotService: LocationData;
   internalLocationService: LocationData;
   internalLocation2Service: LocationData;
+  ccDepotService: LocationData;
 
   // PRODUCT DATA
   productService: ProductData;
@@ -159,6 +170,14 @@ export const test = baseTest.extend<Fixtures>({
     use(new EditTransactionPage(page)),
   addCommentToPutawayPage: async ({ page }, use) =>
     use(new AddCommentToPutawayPage(page)),
+  manageCycleCountPage: async ({ page }, use) =>
+    use(new ManageCycleCountPage(page)),
+  countStepPage: async ({ page }, use) => use(new CountStepPage(page)),
+  confirmToCountStepPage: async ({ page }, use) =>
+    use(new ConfirmToCountStepPage(page)),
+  recountStepPage: async ({ page }, use) => use(new RecountStepPage(page)),
+  confirmToRecountStepPage: async ({ page }, use) =>
+    use(new ConfirmToRecountStepPage(page)),
   // COMPONENTS
   navbar: async ({ page }, use) => use(new Navbar(page)),
   locationChooser: async ({ page }, use) => use(new LocationChooser(page)),
@@ -196,6 +215,8 @@ export const test = baseTest.extend<Fixtures>({
     use(new LocationData(LOCATION_KEY.BIN_LOCATION, page.request)),
   internalLocation2Service: async ({ page }, use) =>
     use(new LocationData(LOCATION_KEY.BIN_LOCATION2, page.request)),
+  ccDepotService: async ({ page }, use) =>
+    use(new LocationData(LOCATION_KEY.CC_DEPOT, page.request)),
   // PRODUCTS
   productService: async ({ page }, use) => use(new ProductData(page.request)),
   // USERS
