@@ -5,6 +5,7 @@ import {
   LOCATION_BY_ID,
   LOCATION_TYPES,
 } from '@/constants/apiUrls';
+import { LocationTypeCode } from '@/constants/LocationTypeCode';
 import {
   ApiResponse,
   CreateLocationPayload,
@@ -87,6 +88,40 @@ class LocationService extends BaseServiceModel {
     } catch (error) {
       throw new Error('Problem fetching location types');
     }
+  }
+
+  /**
+    Returns the id of the bin location with the given name under the given
+    parent location, creating it first if it doesn't exist yet.
+  */
+  async getOrCreateBinLocation(
+    name: string,
+    parentLocationId: string
+  ): Promise<string> {
+    const { data: existingLocations } = await this.searchInternalLocations(
+      name,
+      parentLocationId
+    );
+    const existingLocation = existingLocations.find(
+      (location) => location.name === name
+    );
+    if (existingLocation) {
+      return existingLocation.id;
+    }
+
+    const { data: locationTypes } = await this.getLocationTypes();
+    const binLocationType = locationTypes.find(
+      (locationType) =>
+        locationType.locationTypeCode === LocationTypeCode.BIN_LOCATION
+    );
+
+    const { data: createdLocation } = await this.createLocation({
+      active: true,
+      name,
+      locationType: binLocationType,
+      parentLocation: { id: parentLocationId },
+    });
+    return createdLocation.id;
   }
 }
 

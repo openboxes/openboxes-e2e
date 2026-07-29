@@ -25,8 +25,10 @@ export default defineConfig({
   forbidOnly: !!appConfig.isCI,
   /* Retry on CI only */
   retries: appConfig.isCI ? 2 : 0,
-  /* Opt out of parallel tests on CI. */
-  workers: 1,
+  /* Total worker pool. Each project below caps itself at 1 worker,
+   * so this just lets the cycleCount project run on its own worker
+   * alongside the rest of the suite instead of queuing behind it. */
+  workers: 2,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: 'html',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
@@ -58,6 +60,12 @@ export default defineConfig({
       dependencies: ['validate-data-setup'],
     },
     {
+      name: 'auth-setup-cycleCount',
+      testMatch: 'authCycleCount.setup.ts',
+      testDir: './src/setup',
+      dependencies: ['auth-setup'],
+    },
+    {
       name: 'create-data-setup',
       testMatch: 'createData.setup.ts',
       testDir: './src/setup',
@@ -86,6 +94,8 @@ export default defineConfig({
     },
     {
       name: 'chromium',
+      testIgnore: '**/cycleCount/**',
+      workers: 1,
       use: {
         ...devices['Desktop Chrome'],
         viewport: { width: 1366, height: 768 },
@@ -93,6 +103,22 @@ export default defineConfig({
       },
       dependencies: [
         'auth-setup',
+        'create-data-setup',
+        'data-import-setup',
+        'validate-clean-state',
+      ],
+    },
+    {
+      name: 'chromium-cycleCount',
+      testDir: './src/tests/cycleCount',
+      workers: 1,
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: { width: 1366, height: 768 },
+        storageState: appConfig.users['main'].ccStoragePath,
+      },
+      dependencies: [
+        'auth-setup-cycleCount',
         'create-data-setup',
         'data-import-setup',
         'validate-clean-state',
