@@ -39,6 +39,10 @@ const INVENTORY_URL = {
     `${INVENTORY_URL.base}/deleteTransaction/${id}`,
 };
 
+const CYCLE_COUNT_URL = {
+  base: './inventory/cycleCount',
+};
+
 const INVENTORY_ITEM_URL = {
   base: './inventoryItem',
   showStockCard: (id: string) => `${INVENTORY_ITEM_URL.base}/showStockCard/${id}`,
@@ -91,6 +95,7 @@ const ORDER_URL = {
 
 export {
   AUTH_URL,
+  CYCLE_COUNT_URL,
   DASHBOARD_URL,
   INVENTORY_ITEM_URL,
   INVENTORY_URL,

@@ -5,4 +5,6 @@ Id,Active,ProductCode,ProductType,Name,ProductFamily,Category,GLAccount,Descript
 ,true,4,Default,E2E-product-four,,ARVS,,,,,,,,,,,,,,,,,,,,,
 ,true,5,Default,E2E-product-five,,ARVS,,,,,,,,,,,,,,,,,,,,,
 ,true,6,Default,E2E-product-six,,ARVS,,,,,,,,,,,,,,,,,,,,,
+,true,7,Default,CC-product-one,,Anesteshia,,,,,,,,,,,,,,,,,,,,,
+
 
