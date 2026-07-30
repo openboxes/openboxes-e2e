@@ -54,7 +54,7 @@ test.describe('Perform cycle count for item', () => {
     });
 
     await test.step('Open Manage Cycle count and assert tabs', async () => {
-      await navbar.getNavItem('Manage Cycle Count').click();
+      await manageCycleCountPage.goToPage();
       await manageCycleCountPage.isLoaded();
       await expect(manageCycleCountPage.allProductsTab).toBeVisible();
       await expect(manageCycleCountPage.toCountTab).toBeVisible();
