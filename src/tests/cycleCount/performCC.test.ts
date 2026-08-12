@@ -321,8 +321,11 @@ test.describe('Perform cycle count for item', () => {
       await productShowPage.stockHistoryTab.click();
       await productShowPage.stockHistoryTabSection.isLoaded();
 
-      const { secondToLast, last } =
-        await productShowPage.stockHistoryTabSection.lastTwoRows();
+      const rowCount = await productShowPage.stockHistoryTabSection.rows.count();
+      const secondToLast = productShowPage.stockHistoryTabSection.row(
+        rowCount - 2
+      );
+      const last = productShowPage.stockHistoryTabSection.row(rowCount - 1);
 
       await expect(secondToLast.transactionLink).toContainText(
         'Inventory Baseline'

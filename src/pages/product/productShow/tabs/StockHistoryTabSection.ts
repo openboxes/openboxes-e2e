@@ -16,19 +16,10 @@ class StockHistoryTabSection extends BasePageModel {
     return this.table.locator('.dataRow');
   }
 
+  // rows are ordered oldest-first, so the most recently added transactions
+  // are the last rows, not the first
   row(index: number) {
     return new Row(this.page, this.rows.nth(index));
-  }
-
-  // rows are ordered oldest-first, so the most recently added transactions
-  // are the last rows, not the first - callers assert what type each one
-  // actually is (transactionLink), this just gets them by position
-  async lastTwoRows() {
-    const count = await this.rows.count();
-    return {
-      secondToLast: this.row(count - 2),
-      last: this.row(count - 1),
-    };
   }
 }
 
