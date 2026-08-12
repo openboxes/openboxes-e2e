@@ -61,7 +61,16 @@ test('import cycle count data', async ({ request }) => {
 
   await test.step(`creating ${binNames.length} bin locations`, async () => {
     for (const binName of binNames) {
-      await locationService.getOrCreateBinLocation(binName, ccDepotId);
+      const existingBinId = await locationService.getBinLocation(
+        binName,
+        ccDepotId
+      );
+      // eslint-disable-next-line playwright/no-conditional-in-test
+      if (existingBinId) {
+        continue;
+      }
+
+      await locationService.createBinLocation(binName, ccDepotId);
     }
   });
 

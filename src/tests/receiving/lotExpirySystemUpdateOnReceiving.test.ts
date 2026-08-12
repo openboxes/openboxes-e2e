@@ -1,4 +1,5 @@
 import AppConfig from '@/config/AppConfig';
+import { DateFormat } from '@/constants/DateFormats';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
 import { Product } from '@/generated/ProductCodes.generated';
@@ -161,7 +162,9 @@ test.describe('Lot number system expiry date modification on receiving workflow'
         productShowPage.recordStock.lineItemsTable
           .getRowByLot(TEST_INPUT_STOCK_NEW_LOT.lotNumber)
           .first()
-      ).toContainText(formatDate(UPDATED_EXPIRY_DATE_NEW_LOT, 'DD/MMM/YYYY'));
+      ).toContainText(
+        formatDate(UPDATED_EXPIRY_DATE_NEW_LOT, DateFormat.DISPLAY)
+      );
     });
   });
 
@@ -373,7 +376,7 @@ test.describe('Lot number system expiry date modification on receiving workflow'
         ).toContainText(
           formatDate(
             TEST_INPUT_STOCK_EXISTING_LOT.expirationDate,
-            'DD/MMM/YYYY'
+            DateFormat.DISPLAY
           )
         );
       });
@@ -484,7 +487,7 @@ test.describe('Lot number system expiry date modification on receiving workflow'
           productShowPage.recordStock.lineItemsTable
             .getRowByLot(TEST_INPUT_STOCK_EXISTING_LOT.lotNumber)
             .first()
-        ).toContainText(formatDate(UPDATED_EXPIRY_DATE, 'DD/MMM/YYYY'));
+        ).toContainText(formatDate(UPDATED_EXPIRY_DATE, DateFormat.DISPLAY));
       });
     });
   });

@@ -5,6 +5,7 @@ import _ from 'lodash';
 import DatePicker from '@/components/DatePicker';
 import Select from '@/components/Select';
 import TextField from '@/components/TextField';
+import { DateFormat } from '@/constants/DateFormats';
 import BasePageModel from '@/pages/BasePageModel';
 import { CreateInboundAddItemsTableEntity } from '@/types';
 import { formatDate } from '@/utils/DateUtils';
@@ -116,7 +117,7 @@ class Row extends BasePageModel {
     if (!_.isNil(rowValues.expirationDate)) {
       await test.step('Assert value in expiry date field', async () => {
         await expect(this.expirationDate.textbox).toHaveValue(
-          formatDate(rowValues.expirationDate as Date, 'DD/MMM/YYYY')
+          formatDate(rowValues.expirationDate as Date, DateFormat.DISPLAY)
         );
       });
     }

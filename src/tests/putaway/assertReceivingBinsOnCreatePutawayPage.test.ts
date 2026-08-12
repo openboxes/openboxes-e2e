@@ -1,4 +1,5 @@
 import AppConfig from '@/config/AppConfig';
+import { DateFormat } from '@/constants/DateFormats';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
 import { Product } from '@/generated/ProductCodes.generated';
@@ -342,7 +343,7 @@ test.describe('Assert receiving bin on create putaway page', () => {
       ).toHaveText(lot);
       await expect(
         createPutawayPage.startStep.table.row(2).expiryDateField
-      ).toHaveText(formatDate(expDate, 'MM/DD/YYYY'));
+      ).toHaveText(formatDate(expDate, DateFormat.DEFAULT));
     });
 
     await test.step('Go to next page and complete putaway', async () => {

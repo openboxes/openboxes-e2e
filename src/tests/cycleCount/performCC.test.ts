@@ -1,32 +1,38 @@
 import AppConfig from '@/config/AppConfig';
 import { DASHBOARD_URL } from '@/constants/applicationUrls';
+import { DateFormat } from '@/constants/DateFormats';
 import { expect, test } from '@/fixtures/fixtures';
-import { formatDate, getToday } from '@/utils/DateUtils';
+import { formatDate, getToday, parseDate } from '@/utils/DateUtils';
 
 test.describe('Perform cycle count for item', () => {
-  // let lastStockCountDate: string;
+  let lastStockCountDate: string;
   const productCode = '7';
   const productName = AppConfig.instance.products[productCode].name;
+  const facilityId = AppConfig.instance.locations.ccDepot.readId();
+  let cycleCountId: string | undefined;
 
-  // test.beforeEach(async ({ productShowPage }) => {
-  //   const productId = AppConfig.instance.products[productCode].readId();
-  //   await productShowPage.goToPage(productId);
-  //
-  //   const lastStockCountTitle =
-  //     await productShowPage.productStatus.lastStockCountDate.getAttribute(
-  //       'title'
-  //     );
-  //   if (!lastStockCountTitle) {
-  //     throw new Error('Missing title attribute on last stock count element');
-  //   }
-  //   lastStockCountDate = formatDate(
-  //     parseDate(lastStockCountTitle, 'D MMMM YYYY hh:mm A'),
-  //     'DD/MMM/YYYY'
-  //   );
-  // });
+  test.beforeEach(async ({ productShowPage }) => {
+    const productId = AppConfig.instance.products[productCode].readId();
+    await productShowPage.goToPage(productId);
 
-  test.afterEach(async ({ transactionService }) => {
-    await transactionService.deleteRecentTransactions(2);
+    const lastStockCountTitle =
+      await productShowPage.productStatus.lastStockCountDate.getAttribute(
+        'title'
+      );
+    if (!lastStockCountTitle) {
+      throw new Error('Missing title attribute on last stock count element');
+    }
+    lastStockCountDate = formatDate(
+      parseDate(lastStockCountTitle, 'D MMMM YYYY hh:mm A'),
+      DateFormat.DISPLAY
+    );
+  });
+
+  test.afterEach(async ({ cycleCountService }) => {
+    if (!cycleCountId) {
+      return;
+    }
+    await cycleCountService.deleteCycleCount(facilityId, cycleCountId);
   });
 
   test('Perform cycle count for item', async ({
@@ -67,10 +73,10 @@ test.describe('Perform cycle count for item', () => {
       await expect(manageCycleCountPage.allProductsTable.rows).toHaveCount(1);
     });
 
-    // await test.step('Assert Last Counted date on All Products tab matches stock card', async () => {
-    //   const row = manageCycleCountPage.allProductsTable.row(0);
-    //   await expect(row.lastCounted).toHaveText(lastStockCountDate);
-    // });
+    await test.step('Assert Last Counted date on All Products tab matches stock card', async () => {
+      const row = manageCycleCountPage.allProductsTable.row(0);
+      await expect(row.lastCounted).toHaveText(lastStockCountDate);
+    });
 
     await test.step('Assert product name in table', async () => {
       const row = manageCycleCountPage.allProductsTable.row(0);
@@ -113,7 +119,12 @@ test.describe('Perform cycle count for item', () => {
 
     await test.step('Start count', async () => {
       await expect(manageCycleCountPage.startCountButton).toBeEnabled();
-      await manageCycleCountPage.startCountButton.click();
+      const [response] = await Promise.all([
+        page.waitForResponse((res) => res.url().includes('/start/batch')),
+        manageCycleCountPage.startCountButton.click(),
+      ]);
+      const { data } = await response.json();
+      cycleCountId = data[0].id;
       await countStepPage.isLoaded();
     });
 
@@ -123,7 +134,7 @@ test.describe('Perform cycle count for item', () => {
     });
 
     await test.step('Assert Date counted is filled with todays date', async () => {
-      const today = formatDate(getToday(), 'DD/MMM/YYYY');
+      const today = formatDate(getToday(), DateFormat.DISPLAY);
       await expect(countStepPage.dateCountedValue).toHaveText(today);
       await expect(countStepPage.countedBySelectedValue).toHaveCount(0);
     });
@@ -140,7 +151,7 @@ test.describe('Perform cycle count for item', () => {
     });
 
     await test.step('Assert Date counted and Counted by on confirm page', async () => {
-      const today = formatDate(getToday(), 'DD/MMM/YYYY');
+      const today = formatDate(getToday(), DateFormat.DISPLAY);
       await expect(confirmToCountStepPage.dateCountedValue).toHaveText(today);
       await expect(confirmToCountStepPage.countedByValue).toContainText(
         USER.firstName
@@ -186,7 +197,7 @@ test.describe('Perform cycle count for item', () => {
     });
 
     await test.step('Assert Date counted, Counted by, Date recounted and Recounted by', async () => {
-      const today = formatDate(getToday(), 'DD/MMM/YYYY');
+      const today = formatDate(getToday(), DateFormat.DISPLAY);
       await expect(recountStepPage.dateCountedValue).toHaveText(today);
       await expect(recountStepPage.countedByValue).toContainText(
         USER.firstName
@@ -244,7 +255,7 @@ test.describe('Perform cycle count for item', () => {
     });
 
     await test.step('Assert data on confirm to recount page', async () => {
-      const today = formatDate(getToday(), 'DD/MMM/YYYY');
+      const today = formatDate(getToday(), DateFormat.DISPLAY);
       await expect(confirmToRecountStepPage.dateCountedValue).toHaveText(today);
       await expect(confirmToRecountStepPage.countedByValue).toContainText(
         USER.firstName
@@ -327,15 +338,24 @@ test.describe('Perform cycle count for item', () => {
       await expect(last.balance).toHaveText('50');
     });
 
-    // await test.step('Assert Last Counted date and quantity on All Products tab', async () => {
-    //   await manageCycleCountPage.openAllProductsTab();
-    //   await manageCycleCountPage.searchProduct(productName);
-    //   await expect(manageCycleCountPage.allProductsTable.rows).toHaveCount(1);
-    //
-    //   const row = manageCycleCountPage.allProductsTable.row(0);
-    //   const today = formatDate(getToday(), 'DD/MMM/YYYY');
-    //   await expect(row.lastCounted).toHaveText(today);
-    //   await expect(row.quantity).toHaveText('50');
-    // });
+    await test.step('Assert Last Counted date and quantity on All Products tab', async () => {
+      // candidates data is fetched once per page load, so a retry must
+      // reload the page to see the up-to-date quantityOnHand, not just
+      // re-search (same reasoning as BasePageModel.openTab)
+      const today = formatDate(getToday(), DateFormat.DISPLAY);
+      await expect(async () => {
+        await manageCycleCountPage.goToPage();
+        await manageCycleCountPage.isLoaded();
+        await manageCycleCountPage.openAllProductsTab();
+        await manageCycleCountPage.searchProduct(productName);
+        await expect(manageCycleCountPage.allProductsTable.rows).toHaveCount(
+          1
+        );
+
+        const row = manageCycleCountPage.allProductsTable.row(0);
+        await expect(row.lastCounted).toHaveText(today);
+        await expect(row.quantity).toHaveText('50');
+      }).toPass({ timeout: 30_000, intervals: [2000, 3000, 5000] });
+    });
   });
 });

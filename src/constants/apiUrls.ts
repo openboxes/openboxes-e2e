@@ -64,3 +64,7 @@ export const PRODUCT_IMPORT = `${PRODUCT_API}/import`;
 // INVENTORY
 export const INVENTORY_IMPORT = (facilityId: string) =>
   `${API}/facilities/${facilityId}/inventories/import`;
+
+// CYCLE COUNT
+export const CYCLE_COUNT_BY_ID = (facilityId: string, cycleCountId: string) =>
+  `${API}/facilities/${facilityId}/cycle-counts/${cycleCountId}`;

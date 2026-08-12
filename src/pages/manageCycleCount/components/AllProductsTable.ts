@@ -53,6 +53,7 @@ class Row extends BasePageModel {
   get binLocation() {
     return this.cells.nth(4);
   }
+  
   async openBinLocationTooltip() {
     const trigger = this.binLocation.locator('[data-tooltipped]');
     await trigger.hover();

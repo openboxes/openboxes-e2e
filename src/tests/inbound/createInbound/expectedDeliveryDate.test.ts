@@ -1,3 +1,4 @@
+import { DateFormat } from '@/constants/DateFormats';
 import { expect, test } from '@/fixtures/fixtures';
 import { Product } from '@/generated/ProductCodes.generated';
 import { StockMovementResponse, User } from '@/types';
@@ -116,7 +117,7 @@ test.describe('Expected delivery date tests', () => {
       await createInboundPage.sendStep.isLoaded();
       await createInboundPage.sendStep.expectedDeliveryDatePicker.fillWithFormat(
         getDateByOffset(new Date(), -1),
-        'MM/DD/YYYY'
+        DateFormat.DEFAULT
       );
       await createInboundPage.sendStep.shipDateDatePicker.fillWithFormat(
         getDateByOffset(new Date(), -2),
@@ -136,7 +137,7 @@ test.describe('Expected delivery date tests', () => {
       await expect(
         stockMovementShowPage.auditingTable.dateShippedRow
       ).toContainText(
-        `${formatDate(getDateByOffset(new Date(), -2), 'DD/MMM/YYYY')} by ${USER.name}`
+        `${formatDate(getDateByOffset(new Date(), -2), DateFormat.DISPLAY)} by ${USER.name}`
       );
     });
 
@@ -177,7 +178,7 @@ test.describe('Expected delivery date tests', () => {
       await createInboundPage.sendStep.isLoaded();
       await createInboundPage.sendStep.expectedDeliveryDatePicker.fillWithFormat(
         getDateByOffset(new Date(), 1),
-        'MM/DD/YYYY'
+        DateFormat.DEFAULT
       );
       await createInboundPage.sendStep.shipmentTypeSelect.findAndSelectOption(
         SHIPMENT_TYPE
@@ -191,7 +192,7 @@ test.describe('Expected delivery date tests', () => {
       await createInboundPage.sendStep.isLoaded();
       await createInboundPage.sendStep.expectedDeliveryDatePicker.fillWithFormat(
         getDateByOffset(new Date(), 2),
-        'MM/DD/YYYY'
+        DateFormat.DEFAULT
       );
       await createInboundPage.sendStep.saveAndExitButton.click();
     });

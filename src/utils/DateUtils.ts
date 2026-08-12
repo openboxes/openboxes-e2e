@@ -1,9 +1,12 @@
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 
+import { DateFormat } from '@/constants/DateFormats';
+
+// required for parseDate to accept non-standard formats like 'D MMMM YYYY hh:mm A'
 dayjs.extend(customParseFormat);
 
-const formatDate = (date: Date, format = 'MM/DD/YYYY') => {
+const formatDate = (date: Date, format: string = DateFormat.DEFAULT) => {
   return dayjs(date).format(format);
 };
 

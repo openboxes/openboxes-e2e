@@ -92,12 +92,12 @@ class LocationService extends BaseServiceModel {
 
   /**
     Returns the id of the bin location with the given name under the given
-    parent location, creating it first if it doesn't exist yet.
+    parent location, or undefined if it doesn't exist.
   */
-  async getOrCreateBinLocation(
+  async getBinLocation(
     name: string,
     parentLocationId: string
-  ): Promise<string> {
+  ): Promise<string | undefined> {
     const { data: existingLocations } = await this.searchInternalLocations(
       name,
       parentLocationId
@@ -105,10 +105,17 @@ class LocationService extends BaseServiceModel {
     const existingLocation = existingLocations.find(
       (location) => location.name === name
     );
-    if (existingLocation) {
-      return existingLocation.id;
-    }
+    return existingLocation?.id;
+  }
 
+  /**
+    Creates a bin location with the given name under the given parent
+    location and returns its id.
+  */
+  async createBinLocation(
+    name: string,
+    parentLocationId: string
+  ): Promise<string> {
     const { data: locationTypes } = await this.getLocationTypes();
     const binLocationType = locationTypes.find(
       (locationType) =>
