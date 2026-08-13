@@ -1,3 +1,4 @@
+import { DateFormat } from '@/constants/DateFormats';
 import { expect, test } from '@/fixtures/fixtures';
 import { Product } from '@/generated/ProductCodes.generated';
 import InboundListPage from '@/pages/inbound/list/InboundListPage';
@@ -173,7 +174,7 @@ test.describe('Status changes for inbound sm on view sm and inbound list page', 
       ).toHaveText(`${ROWS[0].lotNumber}`);
       await expect(
         stockMovementShowPage.packingListTable.row(2).expirationDate
-      ).toContainText(formatDate(ROWS[0].expirationDate, 'DD/MMM/YYYY'));
+      ).toContainText(formatDate(ROWS[0].expirationDate, DateFormat.DISPLAY));
       await expect(
         stockMovementShowPage.packingListTable.row(2).quantityShipped
       ).toHaveText('50');
@@ -220,7 +221,7 @@ test.describe('Status changes for inbound sm on view sm and inbound list page', 
       ).toHaveText(`${ROWS[0].lotNumber}`);
       await expect(
         stockMovementShowPage.packingListTable.row(2).expirationDate
-      ).toContainText(formatDate(ROWS[0].expirationDate, 'DD/MMM/YYYY'));
+      ).toContainText(formatDate(ROWS[0].expirationDate, DateFormat.DISPLAY));
       await expect(
         stockMovementShowPage.packingListTable.row(2).quantityShipped
       ).toHaveText('50');

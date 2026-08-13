@@ -1,4 +1,5 @@
 import InventoryService from '@/api/InventoryService';
+import LocationService from '@/api/LocationService';
 import ProductService from '@/api/ProductService';
 import AppConfig from '@/config/AppConfig';
 import { test } from '@/fixtures/fixtures';
@@ -38,4 +39,42 @@ test('import data', async ({ request }) => {
   });
 
   writeToFile(AppConfig.TEST_DATA_FILE_PATH, seedData);
+})
+
+test('import cycle count data', async ({ request }) => {
+  const locationService = new LocationService(request);
+  const inventoryService = new InventoryService(request);
+
+  const ccDepotId = AppConfig.instance.locations.ccDepot.readId();
+
+  const inventoriesData = readCsvFile(
+    AppConfig.CYCLE_COUNT_INVENTORY_IMPORT_FILE_PATH
+  );
+
+  const binNames = [
+    ...new Set(
+      inventoriesData
+        .map((row) => row['Bin location'])
+        .filter((binName) => binName)
+    ),
+  ];
+
+  await test.step(`creating ${binNames.length} bin locations`, async () => {
+    for (const binName of binNames) {
+      const existingBinId = await locationService.getBinLocation(
+        binName,
+        ccDepotId
+      );
+      // eslint-disable-next-line playwright/no-conditional-in-test
+      if (existingBinId) {
+        continue;
+      }
+
+      await locationService.createBinLocation(binName, ccDepotId);
+    }
+  });
+
+  await test.step(`importing ${inventoriesData.length} cycle count inventories`, async () => {
+    await inventoryService.importInventories(inventoriesData, ccDepotId);
+  });
 })

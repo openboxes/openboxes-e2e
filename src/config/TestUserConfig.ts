@@ -12,6 +12,7 @@ class TestUserConfig {
   username: string;
   password: string;
   storagePath: string;
+  ccStoragePath: string;
   requiredRoles: Set<RoleType>;
 
   constructor({
@@ -34,6 +35,10 @@ class TestUserConfig {
     this.storagePath = path.join(
       AppConfig.AUTH_STORAGE_DIR_PATH,
       storageFileName
+    );
+    this.ccStoragePath = path.join(
+      AppConfig.AUTH_STORAGE_DIR_PATH,
+      storageFileName.replace('.json', '-CC.json')
     );
     this.requiredRoles = requiredRoles;
   }

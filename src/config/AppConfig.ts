@@ -29,6 +29,7 @@ export enum LOCATION_KEY {
   NO_PICK_AND_PUTAWAY_STOCK = 'noPickAndPutawayStockDepot',
   BIN_LOCATION = 'internalLocation',
   BIN_LOCATION2 = 'internalLocation2',
+  CC_DEPOT = 'ccDepot',
 }
 
 export enum PRODUCT_KEY {
@@ -69,6 +70,11 @@ class AppConfig {
   public static INVENTORY_IMPORT_FILE_PATH = path.join(
     AppConfig.DATA_IMPORT_DIRECTORY_PATH,
     '/inventory.csv'
+  );
+
+  public static CYCLE_COUNT_INVENTORY_IMPORT_FILE_PATH = path.join(
+    AppConfig.DATA_IMPORT_DIRECTORY_PATH,
+    '/cycleCountInventory.csv'
   );
 
   // Base URL to use in actions like `await page.goto('./dashboard')`.
@@ -308,6 +314,27 @@ class AppConfig {
         required: false,
         type: LocationTypeCode.BIN_LOCATION,
         parentLocation: env.get('LOCATION_MAIN').required().asString(),
+      }),
+      ccDepot: new LocationConfig({
+        key: LOCATION_KEY.CC_DEPOT,
+        id: env.get('LOCATION_CC_DEPOT').required().asString(),
+        requiredActivityCodes: new Set([
+          ActivityCode.MANAGE_INVENTORY,
+          ActivityCode.SUBMIT_REQUEST,
+          ActivityCode.SEND_STOCK,
+          ActivityCode.PLACE_REQUEST,
+          ActivityCode.PLACE_ORDER,
+          ActivityCode.FULFILL_REQUEST,
+          ActivityCode.EXTERNAL,
+          ActivityCode.RECEIVE_STOCK,
+          ActivityCode.PARTIAL_RECEIVING,
+          ActivityCode.PICK_STOCK,
+          ActivityCode.PUTAWAY_STOCK,
+          ActivityCode.CONSUME_STOCK,
+          ActivityCode.ADJUST_INVENTORY,
+        ]),
+        type: LocationTypeCode.DEPOT,
+        required: true,
       }),
     };
 

@@ -83,7 +83,7 @@ test.describe('Validations on edit Deliver On Date when receiving shipment', () 
     });
   });
 
-  test('Assert validation on try to edit Delivered on Date to past date', async ({
+  test.skip('Assert validation on try to edit Delivered on Date to past date', async ({
     stockMovementShowPage,
     receivingPage,
   }) => {

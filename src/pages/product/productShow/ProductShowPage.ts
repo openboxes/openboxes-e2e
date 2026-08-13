@@ -2,18 +2,24 @@ import { Page } from '@playwright/test';
 
 import { INVENTORY_ITEM_URL } from '@/constants/applicationUrls';
 import BasePageModel from '@/pages/BasePageModel';
+import ProductStatusSection from '@/pages/product/productShow/sections/ProductStatusSection';
 import RecordStockSection from '@/pages/product/productShow/sections/RecordStockSection';
 
 import InStockTabSection from './tabs/InStockTabSection';
+import StockHistoryTabSection from './tabs/StockHistoryTabSection';
 
 class ProductShowPage extends BasePageModel {
   recordStock: RecordStockSection;
   inStockTabSection: InStockTabSection;
+  stockHistoryTabSection: StockHistoryTabSection;
+  productStatus: ProductStatusSection;
 
   constructor(page: Page) {
     super(page);
     this.recordStock = new RecordStockSection(page);
     this.inStockTabSection = new InStockTabSection(page);
+    this.stockHistoryTabSection = new StockHistoryTabSection(page);
+    this.productStatus = new ProductStatusSection(page);
   }
 
   async goToPage(id: string) {

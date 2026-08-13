@@ -1,4 +1,5 @@
 import AppConfig from '@/config/AppConfig';
+import { DateFormat } from '@/constants/DateFormats';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
 import { Product } from '@/generated/ProductCodes.generated';
@@ -128,7 +129,7 @@ test.describe('Assert if quantity inputs remain when split lines', () => {
       ).toContainText(lot);
       await expect(
         receivingPage.receivingStep.table.getCellValue(2, 'Expiration date')
-      ).toContainText(formatDate(expDate, 'MM/DD/YYYY'));
+      ).toContainText(formatDate(expDate, DateFormat.DEFAULT));
     });
 
     await test.step('Autofill quantity after split line', async () => {
@@ -176,7 +177,7 @@ test.describe('Assert if quantity inputs remain when split lines', () => {
       ).toContainText(lot);
       await expect(
         receivingPage.receivingStep.table.getCellValue(5, 'Expiration date')
-      ).toContainText(formatDate(expDate, 'MM/DD/YYYY'));
+      ).toContainText(formatDate(expDate, DateFormat.DEFAULT));
     });
   });
 
@@ -260,7 +261,7 @@ test.describe('Assert if quantity inputs remain when split lines', () => {
       ).toContainText(lot);
       await expect(
         receivingPage.receivingStep.table.getCellValue(1, 'Expiration date')
-      ).toContainText(formatDate(expDate, 'MM/DD/YYYY'));
+      ).toContainText(formatDate(expDate, DateFormat.DEFAULT));
     });
 
     await test.step('Autofill quantity after split line', async () => {

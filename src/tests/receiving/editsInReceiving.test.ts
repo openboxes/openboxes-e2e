@@ -1,4 +1,5 @@
 import AppConfig from '@/config/AppConfig';
+import { DateFormat } from '@/constants/DateFormats';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
 import { Product } from '@/generated/ProductCodes.generated';
@@ -271,7 +272,7 @@ test.describe('Edit items in the middle of receipt', () => {
       ).toContainText(lot);
       await expect(
         receivingPage.receivingStep.table.getCellValue(2, 'Expiration date')
-      ).toContainText(formatDate(expDate, 'MM/DD/YYYY'));
+      ).toContainText(formatDate(expDate, DateFormat.DEFAULT));
     });
 
     await test.step('Select item to receive', async () => {
@@ -332,7 +333,7 @@ test.describe('Edit items in the middle of receipt', () => {
       ).toContainText(lot);
       await expect(
         receivingPage.receivingStep.table.getCellValue(2, 'Expiration date')
-      ).toContainText(formatDate(expDate, 'MM/DD/YYYY'));
+      ).toContainText(formatDate(expDate, DateFormat.DEFAULT));
       await expect(
         receivingPage.receivingStep.table.getCellValue(1, 'Shipped')
       ).toContainText('15');

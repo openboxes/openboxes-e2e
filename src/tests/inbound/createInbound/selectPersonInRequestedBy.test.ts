@@ -1,4 +1,5 @@
 import { PERSON_URL } from '@/constants/applicationUrls';
+import { DateFormat } from '@/constants/DateFormats';
 import { expect, test } from '@/fixtures/fixtures';
 import { Product } from '@/generated/ProductCodes.generated';
 import { AddItemsTableRow, LocationResponse } from '@/types';
@@ -136,7 +137,7 @@ test.describe('Select person in requested by', () => {
     await test.step('Assert requested by and recipient on sm show page', async () => {
       await expect(
         stockMovementShowPage.auditingTable.dateRequestedRow
-      ).toContainText(`${formatDate(new Date(), 'DD/MMM/YYYY')} by ${person}`);
+      ).toContainText(`${formatDate(new Date(), DateFormat.DISPLAY)} by ${person}`);
       await expect(
         stockMovementShowPage.packingListTable.row(1).recipient
       ).toContainText(`${person}`);

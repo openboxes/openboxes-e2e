@@ -1,3 +1,4 @@
+import { DateFormat } from '@/constants/DateFormats';
 import { expect, test } from '@/fixtures/fixtures';
 import { Product } from '@/generated/ProductCodes.generated';
 import { AddItemsTableRow, LocationResponse, User } from '@/types';
@@ -164,12 +165,12 @@ test.describe('Create inbound stock movement', () => {
       await expect(
         stockMovementShowPage.auditingTable.dateShippedRow
       ).toContainText(
-        `${formatDate(new Date(), 'DD/MMM/YYYY')} by ${USER.name}`
+        `${formatDate(new Date(), DateFormat.DISPLAY)} by ${USER.name}`
       );
       await expect(
         stockMovementShowPage.auditingTable.dateCreatedRow
       ).toContainText(
-        `${formatDate(new Date(), 'DD/MMM/YYYY')} by ${USER.name}`
+        `${formatDate(new Date(), DateFormat.DISPLAY)} by ${USER.name}`
       );
     });
   });
@@ -283,7 +284,7 @@ test.describe('Values persistance between steps', () => {
       ).toContainText(USER.name);
       await expect(
         createInboundPage.createStep.dateRequestedDatePicker.textbox
-      ).toHaveValue(formatDate(TODAY, 'DD/MMM/YYYY'));
+      ).toHaveValue(formatDate(TODAY, DateFormat.DISPLAY));
     });
 
     await test.step('Go next step (Add items)', async () => {
@@ -375,7 +376,7 @@ test.describe('Values persistance between steps', () => {
       );
       await expect(
         createInboundPage.sendStep.expectedDeliveryDatePicker.textbox
-      ).toHaveValue(formatDate(EXPECTED_DELIVERY_DATE, 'DD/MMM/YYYY'));
+      ).toHaveValue(formatDate(EXPECTED_DELIVERY_DATE, DateFormat.DISPLAY));
 
       for (let i = 0; i < ROWS.length; i++) {
         const data = ROWS[i];

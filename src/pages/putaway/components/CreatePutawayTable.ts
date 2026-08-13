@@ -1,5 +1,6 @@
 import { Locator, Page } from '@playwright/test';
 
+import { DateFormat } from '@/constants/DateFormats';
 import BasePageModel from '@/pages/BasePageModel';
 import { formatDate } from '@/utils/DateUtils';
 
@@ -61,7 +62,7 @@ class Row extends BasePageModel {
 
   getExpDate(expDate: Date) {
     return this.tableCell.getByText(
-      formatDate(expDate, 'MM/DD/YYYY').toString()
+      formatDate(expDate, DateFormat.DEFAULT).toString()
     );
   }
 }
