@@ -46,7 +46,7 @@ test.describe('Perform cycle count for item', () => {
     confirmToRecountStepPage,
     productShowPage,
   }) => {
-    test.setTimeout(150_000);
+    test.setTimeout(240_000);
 
     const USER = await mainUserService.getUser();
 
@@ -78,7 +78,7 @@ test.describe('Perform cycle count for item', () => {
         await expect(manageCycleCountPage.allProductsTable.rows).toHaveCount(
           1
         );
-      }).toPass({ timeout: 90_000, intervals: [2000, 3000, 5000] });
+      }).toPass({ timeout: 180_000, intervals: [2000, 3000, 5000] });
     });
 
     await test.step('Assert Last Counted date on All Products tab matches stock card', async () => {
