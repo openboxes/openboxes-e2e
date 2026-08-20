@@ -46,7 +46,7 @@ test.describe('Perform cycle count for item', () => {
     confirmToRecountStepPage,
     productShowPage,
   }) => {
-    test.setTimeout(240_000);
+    test.setTimeout(120_000);
 
     const USER = await mainUserService.getUser();
 
@@ -70,15 +70,14 @@ test.describe('Perform cycle count for item', () => {
     });
 
     await test.step('Search for product on All Products tab', async () => {
+      await manageCycleCountPage.openAllProductsTab();
+
       await expect(async () => {
-        await manageCycleCountPage.goToPage();
-        await manageCycleCountPage.isLoaded();
-        await manageCycleCountPage.openAllProductsTab();
         await manageCycleCountPage.searchProduct(productName);
         await expect(manageCycleCountPage.allProductsTable.rows).toHaveCount(
           1
         );
-      }).toPass({ timeout: 180_000, intervals: [2000, 3000, 5000] });
+      }).toPass({ timeout: 30_000, intervals: [2000, 3000, 5000] });
     });
 
     await test.step('Assert Last Counted date on All Products tab matches stock card', async () => {
