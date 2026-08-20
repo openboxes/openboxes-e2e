@@ -32,6 +32,10 @@ class InStockTabSection extends BasePageModel {
     return new Row(this.page, this.rows.nth(index));
   }
 
+  rowByBinLocation(binLocationName: string) {
+    return new Row(this.page, this.rows.filter({ hasText: binLocationName }).first());
+  }
+
   get stockTransferButton() {
     return this.page.getByRole('link', { name: 'Transfer Stock' });
   }

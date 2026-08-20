@@ -14,6 +14,10 @@ class RecountStepTable extends BasePageModel {
   row(index: number) {
     return new Row(this.page, this.rows.nth(index));
   }
+
+  rowByBinLocation(binLocationName: string) {
+    return new Row(this.page, this.rows.filter({ hasText: binLocationName }).first());
+  }
 }
 
 class Row extends BasePageModel {

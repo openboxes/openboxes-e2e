@@ -14,6 +14,10 @@ class CountStepTable extends BasePageModel {
   row(index: number) {
     return new Row(this.page, this.rows.nth(index));
   }
+
+  rowByBinLocation(binLocationName: string) {
+    return new Row(this.page, this.rows.filter({ hasText: binLocationName }).first());
+  }
 }
 
 class Row extends BasePageModel {
@@ -59,6 +63,7 @@ class Row extends BasePageModel {
       await this.quantityCountedInput.pressSequentially(value, {
         delay: 100,
       });
+      await this.page.waitForTimeout(300);
       await this.page.keyboard.press('Tab');
       await expect(this.quantityCountedInput).toHaveValue(value, {
         timeout: 2000,
