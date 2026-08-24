@@ -41,6 +41,7 @@ const INVENTORY_URL = {
 
 const CYCLE_COUNT_URL = {
   base: './inventory/cycleCount',
+  performCycleCount: () => `${CYCLE_COUNT_URL.base}?tab=TO_COUNT`,
 };
 
 const INVENTORY_ITEM_URL = {

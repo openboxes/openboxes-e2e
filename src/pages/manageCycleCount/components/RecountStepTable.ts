@@ -11,12 +11,16 @@ class RecountStepTable extends BasePageModel {
     return this.table.getByRole('row');
   }
 
-  row(index: number) {
-    return new Row(this.page, this.rows.nth(index));
+  row(indexOrLocator: number | Locator) {
+    const locator =
+      typeof indexOrLocator === 'number'
+        ? this.rows.nth(indexOrLocator)
+        : indexOrLocator;
+    return new Row(this.page, locator);
   }
 
-  rowByBinLocation(binLocationName: string) {
-    return new Row(this.page, this.rows.filter({ hasText: binLocationName }).first());
+  getRowsByBinLocation(binLocationName: string) {
+    return this.rows.filter({ hasText: binLocationName });
   }
 }
 

@@ -46,6 +46,9 @@ test.describe('Perform cycle count for item', () => {
     confirmToRecountStepPage,
     productShowPage,
   }) => {
+    // openAllProductsTab()'s own internal retry can take up to 45s on a slow
+    // tab load, and the search/filter step has its own 30s retry on top of
+    // that - comfortably over the default 60s test timeout in the worst case
     test.setTimeout(120_000);
 
     const USER = await mainUserService.getUser();

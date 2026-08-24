@@ -121,8 +121,9 @@ test.describe('Perform cycle count when item has negative inventory', () => {
       await productShowPage.inStockTab.click();
       await productShowPage.inStockTabSection.isLoaded();
 
-      const row =
-        productShowPage.inStockTabSection.rowByBinLocation(receivingBin);
+      const row = productShowPage.inStockTabSection.row(
+        productShowPage.inStockTabSection.getRowsByBinLocation(receivingBin).first()
+      );
       await row.actionsButton.click();
       await productShowPage.inStockTabSection.stockTransferButton.click();
       await productShowPage.inStockTabSection.stockTransferDialog.isLoaded();
@@ -140,8 +141,9 @@ test.describe('Perform cycle count when item has negative inventory', () => {
       await productShowPage.inStockTab.click();
       await productShowPage.inStockTabSection.isLoaded();
       await expect(
-        productShowPage.inStockTabSection.rowByBinLocation('CC-BIN-1')
-          .binLocation
+        productShowPage.inStockTabSection.row(
+          productShowPage.inStockTabSection.getRowsByBinLocation('CC-BIN-1').first()
+        ).binLocation
       ).toContainText('CC-BIN-1');
     });
 
@@ -168,8 +170,9 @@ test.describe('Perform cycle count when item has negative inventory', () => {
       await productShowPage.inStockTab.click();
       await productShowPage.inStockTabSection.isLoaded();
 
-      const row =
-        productShowPage.inStockTabSection.rowByBinLocation(receivingBin);
+      const row = productShowPage.inStockTabSection.row(
+        productShowPage.inStockTabSection.getRowsByBinLocation(receivingBin).first()
+      );
       await expect(row.quantityOnHand).toHaveText('-20');
     });
 
@@ -226,18 +229,21 @@ test.describe('Perform cycle count when item has negative inventory', () => {
     await test.step('Assert bin locations on count step and fill quantities', async () => {
       await expect(countStepPage.countStepTable.rows).toHaveCount(3);
 
-      const ccBin1Row =
-        countStepPage.countStepTable.rowByBinLocation('CC-BIN-1');
+      const ccBin1Row = countStepPage.countStepTable.row(
+        countStepPage.countStepTable.getRowsByBinLocation('CC-BIN-1').first()
+      );
       await expect(ccBin1Row.binLocation).toContainText('CC-BIN-1');
       await ccBin1Row.fillQuantityCounted('0');
 
-      const ccBin2Row =
-        countStepPage.countStepTable.rowByBinLocation('CC-BIN-2');
+      const ccBin2Row = countStepPage.countStepTable.row(
+        countStepPage.countStepTable.getRowsByBinLocation('CC-BIN-2').first()
+      );
       await expect(ccBin2Row.binLocation).toContainText('CC-BIN-2');
       await ccBin2Row.fillQuantityCounted('10');
 
-      const receivingBinRow =
-        countStepPage.countStepTable.rowByBinLocation(receivingBin);
+      const receivingBinRow = countStepPage.countStepTable.row(
+        countStepPage.countStepTable.getRowsByBinLocation(receivingBin).first()
+      );
       await expect(receivingBinRow.binLocation).toContainText(receivingBin);
       await receivingBinRow.fillQuantityCounted('0');
     });
@@ -286,16 +292,19 @@ test.describe('Perform cycle count when item has negative inventory', () => {
         await page.reload();
         await countStepPage.isLoaded();
 
-        const ccBin1Row =
-          countStepPage.countStepTable.rowByBinLocation('CC-BIN-1');
+        const ccBin1Row = countStepPage.countStepTable.row(
+          countStepPage.countStepTable.getRowsByBinLocation('CC-BIN-1').first()
+        );
         await expect(ccBin1Row.quantityCountedInput).toHaveValue('0');
 
-        const ccBin2Row =
-          countStepPage.countStepTable.rowByBinLocation('CC-BIN-2');
+        const ccBin2Row = countStepPage.countStepTable.row(
+          countStepPage.countStepTable.getRowsByBinLocation('CC-BIN-2').first()
+        );
         await expect(ccBin2Row.quantityCountedInput).toHaveValue('10');
 
-        const receivingBinRow =
-          countStepPage.countStepTable.rowByBinLocation(receivingBin);
+        const receivingBinRow = countStepPage.countStepTable.row(
+          countStepPage.countStepTable.getRowsByBinLocation(receivingBin).first()
+        );
         await expect(receivingBinRow.quantityCountedInput).toHaveValue('0');
       }).toPass({ timeout: 30_000, intervals: [2000, 3000, 5000] });
     });
@@ -338,8 +347,9 @@ test.describe('Perform cycle count when item has negative inventory', () => {
     await test.step('Assert bin locations and quantity counted on recount step, then fill quantity recounted', async () => {
       await expect(recountStepPage.recountStepTable.rows).toHaveCount(3);
 
-      const ccBin1Row =
-        recountStepPage.recountStepTable.rowByBinLocation('CC-BIN-1');
+      const ccBin1Row = recountStepPage.recountStepTable.row(
+        recountStepPage.recountStepTable.getRowsByBinLocation('CC-BIN-1').first()
+      );
       await expect(ccBin1Row.binLocation).toContainText('CC-BIN-1');
       await expect(ccBin1Row.quantityCounted).toHaveText('0');
       await expect(ccBin1Row.countDifferenceValue).toHaveText('20');
@@ -350,8 +360,9 @@ test.describe('Perform cycle count when item has negative inventory', () => {
       await expect(ccBin1Row.countDifferenceIcon).toBeVisible();
       await ccBin1Row.fillQuantityRecounted('0');
 
-      const ccBin2Row =
-        recountStepPage.recountStepTable.rowByBinLocation('CC-BIN-2');
+      const ccBin2Row = recountStepPage.recountStepTable.row(
+        recountStepPage.recountStepTable.getRowsByBinLocation('CC-BIN-2').first()
+      );
       await expect(ccBin2Row.binLocation).toContainText('CC-BIN-2');
       await expect(ccBin2Row.quantityCounted).toHaveText('10');
       await expect(ccBin2Row.countDifferenceValue).toHaveText('EQUAL');
@@ -362,8 +373,9 @@ test.describe('Perform cycle count when item has negative inventory', () => {
       await expect(ccBin2Row.countDifferenceIcon).toBeHidden();
       await ccBin2Row.fillQuantityRecounted('10');
 
-      const receivingBinRow =
-        recountStepPage.recountStepTable.rowByBinLocation(receivingBin);
+      const receivingBinRow = recountStepPage.recountStepTable.row(
+        recountStepPage.recountStepTable.getRowsByBinLocation(receivingBin).first()
+      );
       await expect(receivingBinRow.binLocation).toContainText(receivingBin);
       await expect(receivingBinRow.quantityCounted).toHaveText('0');
       await expect(receivingBinRow.countDifferenceValue).toHaveText('20');

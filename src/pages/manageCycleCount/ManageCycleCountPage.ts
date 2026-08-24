@@ -22,7 +22,7 @@ class ManageCycleCountPage extends BasePageModel {
   }
 
   async goToPerformCycleCount() {
-    await this.page.goto(`${CYCLE_COUNT_URL.base}?tab=TO_COUNT`);
+    await this.page.goto(CYCLE_COUNT_URL.performCycleCount());
   }
 
   async isLoaded() {
@@ -71,6 +71,8 @@ class ManageCycleCountPage extends BasePageModel {
 
   async searchProduct(productName: string) {
     await this.searchInput.click();
+    // select any existing text first, so pressSequentially replaces it
+    // instead of appending to it
     await this.page.keyboard.press('ControlOrMeta+A');
     await this.searchInput.pressSequentially(productName, { delay: 20 });
     await expect(this.searchInput).toHaveValue(productName);
