@@ -8,15 +8,21 @@ import ToCountTable from '@/pages/manageCycleCount/components/ToCountTable';
 class ManageCycleCountPage extends BasePageModel {
   allProductsTable: AllProductsTable;
   toCountTable: ToCountTable;
+  toResolveTable: ToCountTable;
 
   constructor(page: Page) {
     super(page);
     this.allProductsTable = new AllProductsTable(page);
     this.toCountTable = new ToCountTable(page);
+    this.toResolveTable = new ToCountTable(page);
   }
 
   async goToPage() {
     await this.page.goto(CYCLE_COUNT_URL.base);
+  }
+
+  async goToPerformCycleCount() {
+    await this.page.goto(CYCLE_COUNT_URL.performCycleCount());
   }
 
   async isLoaded() {
@@ -64,8 +70,30 @@ class ManageCycleCountPage extends BasePageModel {
   }
 
   async searchProduct(productName: string) {
-    await this.searchInput.fill(productName);
+    await this.searchInput.click();
+    // select any existing text first, so pressSequentially replaces it
+    // instead of appending to it
+    await this.page.keyboard.press('ControlOrMeta+A');
+    await this.searchInput.pressSequentially(productName, { delay: 20 });
+    await expect(this.searchInput).toHaveValue(productName);
     await this.filterButton.click();
+  }
+
+  get negativeQuantityFilterGroup() {
+    return this.page.locator('.filter-group', {
+      has: this.page.locator('label[for="negativeQuantity"]'),
+    });
+  }
+
+  get negativeQuantityCheckbox() {
+    return this.negativeQuantityFilterGroup.getByRole('checkbox');
+  }
+
+  async openNegativeQuantityTooltip() {
+    const trigger = this.negativeQuantityFilterGroup.locator('[data-tooltipped]');
+    await trigger.hover();
+    const describedBy = await trigger.getAttribute('aria-describedby');
+    return this.page.locator(`#${describedBy}`);
   }
 
   // ACTIONS
@@ -75,6 +103,10 @@ class ManageCycleCountPage extends BasePageModel {
 
   get startCountButton() {
     return this.page.getByRole('button', { name: 'Start Count' });
+  }
+
+  get startResolutionButton() {
+    return this.page.getByRole('button', { name: 'Start resolution' });
   }
 }
 

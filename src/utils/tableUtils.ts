@@ -1,4 +1,4 @@
-import { Locator } from '@playwright/test';
+import { expect, Locator } from '@playwright/test';
 
 export const captureRowValues = async <TRow>(
   rowCount: number,
@@ -15,4 +15,23 @@ export const captureRowValues = async <TRow>(
     .flat()
     .map((v) => v?.trim())
     .filter((v): v is string => Boolean(v));
+};
+
+// the row list can be briefly stale/empty right after a reload, so retry
+// the scan the same way a locator-based lookup would implicitly do via
+// expect()'s auto-retrying assertions
+export const findRowIndexByText = async (
+  rows: Locator,
+  text: string,
+  { timeout = 10000 } = {}
+): Promise<number> => {
+  let matchedIndex = -1;
+  await expect(async () => {
+    const texts = await rows.allTextContents();
+    matchedIndex = texts.findIndex((rowText) => rowText.includes(text));
+    if (matchedIndex === -1) {
+      throw new Error(`Row with text "${text}" not found`);
+    }
+  }).toPass({ timeout });
+  return matchedIndex;
 };

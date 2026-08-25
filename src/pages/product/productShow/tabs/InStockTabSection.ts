@@ -3,6 +3,7 @@ import { expect, Locator, Page } from '@playwright/test';
 import BasePageModel from '@/pages/BasePageModel';
 import EditItemDialog from '@/pages/product/productShow/sections/components/EditItemDialog';
 import StockTransferDialog from '@/pages/product/productShow/sections/components/StockTransferDialog';
+import { findRowIndexByText } from '@/utils/tableUtils';
 
 class InStockTabSection extends BasePageModel {
   stockTransferDialog: StockTransferDialog;
@@ -30,6 +31,10 @@ class InStockTabSection extends BasePageModel {
 
   row(index: number) {
     return new Row(this.page, this.rows.nth(index));
+  }
+
+  getRowIndexByBinLocation(binLocationName: string) {
+    return findRowIndexByText(this.rows, binLocationName);
   }
 
   get stockTransferButton() {

@@ -1,6 +1,7 @@
 import { expect, Locator, Page } from '@playwright/test';
 
 import BasePageModel from '@/pages/BasePageModel';
+import { findRowIndexByText } from '@/utils/tableUtils';
 
 class RecountStepTable extends BasePageModel {
   get table() {
@@ -13,6 +14,10 @@ class RecountStepTable extends BasePageModel {
 
   row(index: number) {
     return new Row(this.page, this.rows.nth(index));
+  }
+
+  getRowIndexByBinLocation(binLocationName: string) {
+    return findRowIndexByText(this.rows, binLocationName);
   }
 }
 

@@ -116,6 +116,10 @@ class Navbar extends BasePageModel {
   get inventory() {
     return this.getNavItem('Inventory');
   }
+
+  get performCycleCount() {
+    return this.getNavItem('Perform Cycle Count');
+  }
 }
 
 export default Navbar;
