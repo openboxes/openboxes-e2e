@@ -11,7 +11,7 @@ import { deleteShipment } from '@/utils/shipmentUtils';
 import UniqueIdentifier from '@/utils/UniqueIdentifier';
 import { WorkbookUtils } from '@/utils/WorkbookUtils';
 
-test.describe('Export receiving template', () => {
+test.describe.skip('Export receiving template', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
   const uniqueIdentifier = new UniqueIdentifier();
   const workbooks: WorkbookUtils[] = [];

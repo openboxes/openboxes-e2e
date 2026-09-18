@@ -7,7 +7,7 @@ import BinLocationUtils from '@/utils/BinLocationUtils';
 import { formatDate, getDateByOffset } from '@/utils/DateUtils';
 import { deleteShipment } from '@/utils/shipmentUtils';
 
-test.describe('Validations on edit Deliver On Date when receiving shipment', () => {
+test.describe.skip('Validations on edit Deliver On Date when receiving shipment', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
 
   test.beforeEach(

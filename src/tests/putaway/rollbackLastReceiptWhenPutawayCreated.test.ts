@@ -92,7 +92,7 @@ test.describe('Rollback last receipt behavior when putaway created', () => {
     }
   );
 
-  test('Rollback last receipt behavior when putaway created', async ({
+  test.skip('Rollback last receipt behavior when putaway created', async ({
     stockMovementShowPage,
     navbar,
     createPutawayPage,

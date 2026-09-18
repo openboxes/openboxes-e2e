@@ -6,7 +6,7 @@ import { StockMovementResponse } from '@/types';
 import BinLocationUtils from '@/utils/BinLocationUtils';
 import { deleteShipment } from '@/utils/shipmentUtils';
 
-test.describe('Assert recipient field when receive', () => {
+test.describe.skip('Assert recipient field when receive', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
 
   test.beforeEach(

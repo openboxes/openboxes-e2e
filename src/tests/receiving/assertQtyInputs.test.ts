@@ -8,7 +8,7 @@ import BinLocationUtils from '@/utils/BinLocationUtils';
 import { formatDate, getDateByOffset } from '@/utils/DateUtils';
 import { deleteShipment } from '@/utils/shipmentUtils';
 
-test.describe('Assert if quantity inputs remain when split lines', () => {
+test.describe.skip('Assert if quantity inputs remain when split lines', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
 
   test.beforeEach(

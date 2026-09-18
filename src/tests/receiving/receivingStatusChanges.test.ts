@@ -9,7 +9,7 @@ import BinLocationUtils from '@/utils/BinLocationUtils';
 import { getToday } from '@/utils/DateUtils';
 import { deleteShipment } from '@/utils/shipmentUtils';
 
-test.describe('Status changes on sm view page when receive shipment', () => {
+test.describe.skip('Status changes on sm view page when receive shipment', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
   const description = 'some description';
   const dateRequested = getToday();

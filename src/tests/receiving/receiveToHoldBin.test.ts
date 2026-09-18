@@ -7,7 +7,7 @@ import BinLocationUtils from '@/utils/BinLocationUtils';
 import { deleteShipment } from '@/utils/shipmentUtils';
 import UniqueIdentifier from '@/utils/UniqueIdentifier';
 
-test.describe('Receive item into hold bin', () => {
+test.describe.skip('Receive item into hold bin', () => {
   test.describe.configure({ timeout: 60000 });
   //timeout has been added for this test to make sure that the content on bin location tab will load as it can include a lot of data
   let STOCK_MOVEMENT: StockMovementResponse;

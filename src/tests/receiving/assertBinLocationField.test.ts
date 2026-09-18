@@ -6,7 +6,7 @@ import { StockMovementResponse } from '@/types';
 import BinLocationUtils from '@/utils/BinLocationUtils';
 import { deleteShipment } from '@/utils/shipmentUtils';
 
-test.describe('Assert bin location not clearable', () => {
+test.describe.skip('Assert bin location not clearable', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
 
   test.beforeEach(

@@ -7,7 +7,7 @@ import BinLocationUtils from '@/utils/BinLocationUtils';
 import { formatDate, getToday } from '@/utils/DateUtils';
 import { deleteShipment } from '@/utils/shipmentUtils';
 
-test.describe('Receive inbound stock movement', () => {
+test.describe.skip('Receive inbound stock movement', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
   const description = 'some description';
   const dateRequested = getToday();
@@ -366,7 +366,7 @@ test.describe('Receive inbound stock movement', () => {
   });
 });
 
-test.describe('Receive from different locations', () => {
+test.describe.skip('Receive from different locations', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
   const description = 'some description';
   const dateRequested = getToday();

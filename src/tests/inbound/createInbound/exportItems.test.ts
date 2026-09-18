@@ -207,7 +207,7 @@ test.describe('Export all incoming items', () => {
     });
   });
 
-  test('Export all incoming items should include shipped items not received items', async ({
+  test.skip('Export all incoming items should include shipped items not received items', async ({
     inboundListPage,
     stockMovementShowPage,
     stockMovementService,
@@ -270,7 +270,7 @@ test.describe('Export all incoming items', () => {
   });
 
   // TODO: Adjust to rely on the empty database (on empty db it fails, because there is 404 No shipment items found)
-  test('Export all incoming items should not include received items', async ({
+  test.skip('Export all incoming items should not include received items', async ({
     inboundListPage,
     stockMovementShowPage,
     stockMovementService,

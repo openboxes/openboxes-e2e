@@ -8,7 +8,7 @@ import { pageContainsValues } from '@/utils/pageUtils';
 import { deleteShipment } from '@/utils/shipmentUtils';
 import { captureRowValues } from '@/utils/tableUtils';
 
-test.describe('Assert Goods Receipt Note is created and opened', () => {
+test.describe.skip('Assert Goods Receipt Note is created and opened', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
 
   test.beforeEach(

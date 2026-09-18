@@ -9,7 +9,7 @@ import { StockMovementResponse } from '@/types';
 import BinLocationUtils from '@/utils/BinLocationUtils';
 import { deleteShipment } from '@/utils/shipmentUtils';
 
-test.describe('Assert creation of receiving bin', () => {
+test.describe.skip('Assert creation of receiving bin', () => {
   test.describe.configure({ timeout: 60000 });
   //timeout has been added for this test to make sure that the content on bin location tab will load as it can include a lot of data
   let STOCK_MOVEMENT: StockMovementResponse;

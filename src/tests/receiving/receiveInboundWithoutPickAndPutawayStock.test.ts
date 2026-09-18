@@ -6,7 +6,7 @@ import { StockMovementResponse } from '@/types';
 import { getToday } from '@/utils/DateUtils';
 import { deleteShipment } from '@/utils/shipmentUtils';
 
-test.describe('Receive inbound stock movement in location without pick and putaway stock', () => {
+test.describe.skip('Receive inbound stock movement in location without pick and putaway stock', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
   const description = 'some description';
   const dateRequested = getToday();

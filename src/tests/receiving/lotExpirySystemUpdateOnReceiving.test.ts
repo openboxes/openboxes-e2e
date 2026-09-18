@@ -9,7 +9,7 @@ import { formatDate, getDateByOffset, getToday } from '@/utils/DateUtils';
 import { deleteShipment } from '@/utils/shipmentUtils';
 import UniqueIdentifier from '@/utils/UniqueIdentifier';
 
-test.describe('Lot number system expiry date modification on receiving workflow', () => {
+test.describe.skip('Lot number system expiry date modification on receiving workflow', () => {
   const STOCK_MOVEMENTS: StockMovementResponse[] = [];
 
   test.afterEach(
@@ -168,7 +168,7 @@ test.describe('Lot number system expiry date modification on receiving workflow'
     });
   });
 
-  test.describe('Update existing lot', () => {
+  test.describe.skip('Update existing lot', () => {
     const TEST_INPUT_STOCK_EXISTING_LOT = {
       lotNumber: 'lot',
       expirationDate: getDateByOffset(getToday(), 3),

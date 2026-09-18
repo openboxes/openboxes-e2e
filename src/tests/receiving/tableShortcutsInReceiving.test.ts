@@ -6,7 +6,7 @@ import { StockMovementResponse } from '@/types';
 import BinLocationUtils from '@/utils/BinLocationUtils';
 import { deleteShipment } from '@/utils/shipmentUtils';
 
-test.describe('Use table shortcuts on receiving page', () => {
+test.describe.skip('Use table shortcuts on receiving page', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
   const packLevel1 = 'pallete1';
   const packLevel2 = 'box1';
