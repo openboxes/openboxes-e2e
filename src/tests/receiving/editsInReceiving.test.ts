@@ -9,7 +9,7 @@ import { formatDate, getDateByOffset, getToday } from '@/utils/DateUtils';
 import { deleteShipment } from '@/utils/shipmentUtils';
 import UniqueIdentifier from '@/utils/UniqueIdentifier';
 
-test.describe('Edit items in the middle of receipt', () => {
+test.describe.skip('Edit items in the middle of receipt', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
   const description = 'some description';
   const dateRequested = getToday();

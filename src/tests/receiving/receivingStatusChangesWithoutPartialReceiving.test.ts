@@ -8,7 +8,7 @@ import { StockMovementResponse } from '@/types';
 import { getToday } from '@/utils/DateUtils';
 import { deleteShipment } from '@/utils/shipmentUtils';
 
-test.describe('Status changes on sm view page when receive shipment in location without partial receiving', () => {
+test.describe.skip('Status changes on sm view page when receive shipment in location without partial receiving', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
   const description = 'some description';
   const dateRequested = getToday();

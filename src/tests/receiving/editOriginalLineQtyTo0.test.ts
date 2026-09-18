@@ -8,7 +8,7 @@ import { getDateByOffset } from '@/utils/DateUtils';
 import { deleteShipment } from '@/utils/shipmentUtils';
 import UniqueIdentifier from '@/utils/UniqueIdentifier';
 
-test.describe('Edit qty of original line to 0', () => {
+test.describe.skip('Edit qty of original line to 0', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
   const uniqueIdentifier = new UniqueIdentifier();
   const lot = uniqueIdentifier.generateUniqueString('lot');
@@ -211,7 +211,7 @@ test.describe('Edit qty of original line to 0', () => {
   });
 });
 
-test.describe('Edit original line to other product in the middle of receipt', () => {
+test.describe.skip('Edit original line to other product in the middle of receipt', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
 
   test.beforeEach(

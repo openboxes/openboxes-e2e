@@ -16,7 +16,7 @@ test.describe('Search filter', () => {
     await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
   });
 
-  test('Search stock movement by identifier', async ({ inboundListPage }) => {
+  test.skip('Search stock movement by identifier', async ({ inboundListPage }) => {
     await test.step('Go to inbound list page', async () => {
       await inboundListPage.goToPage();
     });

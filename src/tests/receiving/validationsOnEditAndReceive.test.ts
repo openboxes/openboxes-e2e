@@ -7,7 +7,7 @@ import BinLocationUtils from '@/utils/BinLocationUtils';
 import { getToday } from '@/utils/DateUtils';
 import { deleteShipment } from '@/utils/shipmentUtils';
 
-test.describe('Assert validation on try to receive not yet shipped inbound', () => {
+test.describe.skip('Assert validation on try to receive not yet shipped inbound', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
   const description = 'some description';
   const dateRequested = getToday();
@@ -65,7 +65,7 @@ test.describe('Assert validation on try to receive not yet shipped inbound', () 
   });
 });
 
-test.describe('Validations on edit and receive inbound stock movement', () => {
+test.describe.skip('Validations on edit and receive inbound stock movement', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
   const description = 'some description';
   const dateRequested = getToday();

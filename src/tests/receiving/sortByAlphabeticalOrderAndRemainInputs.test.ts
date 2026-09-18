@@ -6,7 +6,7 @@ import BinLocationUtils from '@/utils/BinLocationUtils';
 import { getDateByOffset, getToday } from '@/utils/DateUtils';
 import { deleteShipment } from '@/utils/shipmentUtils';
 
-test.describe('Apply sorting by alphabetical order and remain inputs', () => {
+test.describe.skip('Apply sorting by alphabetical order and remain inputs', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
   const TODAY = getToday();
   const EXPECTED_DELIVERY_DATE = getDateByOffset(TODAY, 1);

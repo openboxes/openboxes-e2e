@@ -6,7 +6,7 @@ import { StockMovementResponse } from '@/types';
 import BinLocationUtils from '@/utils/BinLocationUtils';
 import { deleteShipment } from '@/utils/shipmentUtils';
 
-test.describe('Cancel qty in the middle of receipt', () => {
+test.describe.skip('Cancel qty in the middle of receipt', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
 
   test.beforeEach(

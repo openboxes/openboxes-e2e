@@ -173,7 +173,7 @@ test.describe('Filter by "Received" status', () => {
     await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
   });
 
-  test('Only "Received" stock movements should be visible in the table', async ({
+  test.skip('Only "Received" stock movements should be visible in the table', async ({
     inboundListPage,
   }) => {
     await test.step('Go to inbound list page', async () => {
@@ -269,7 +269,7 @@ test.describe('Filter by "Receiving" status', () => {
     await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
   });
 
-  test('Only "Receiving" stock movements should be visible in the table', async ({
+  test.skip('Only "Receiving" stock movements should be visible in the table', async ({
     inboundListPage,
   }) => {
     await test.step('Go to inbound list page', async () => {

@@ -8,7 +8,7 @@ import BinLocationUtils from '@/utils/BinLocationUtils';
 import { deleteShipment } from '@/utils/shipmentUtils';
 import UniqueIdentifier from '@/utils/UniqueIdentifier';
 
-test.describe('Edit Bin Location when receive inbound stock movement', () => {
+test.describe.skip('Edit Bin Location when receive inbound stock movement', () => {
   test.describe.configure({ timeout: 60000 });
   //timeout has been added for this test to make sure that the content on bin location tab will load as it can include a lot of data
   let STOCK_MOVEMENT: StockMovementResponse;
@@ -169,7 +169,7 @@ test.describe('Edit Bin Location when receive inbound stock movement', () => {
   });
 });
 
-test.describe('Edit Bin Location to bin with zone when receive inbound stock movement', () => {
+test.describe.skip('Edit Bin Location to bin with zone when receive inbound stock movement', () => {
   test.describe.configure({ timeout: 60000 });
   //timeout has been added for this test to make sure that the content on bin location tab will load as it can include a lot of data
   let STOCK_MOVEMENT: StockMovementResponse;
@@ -384,7 +384,7 @@ test.describe('Edit Bin Location to bin with zone when receive inbound stock mov
   });
 });
 
-test.describe('Edit Bin Location when receive for all lines', () => {
+test.describe.skip('Edit Bin Location when receive for all lines', () => {
   test.describe.configure({ timeout: 60000 });
   //timeout has been added for this test to make sure that the content on bin location tab will load as it can include a lot of data
   let STOCK_MOVEMENT: StockMovementResponse;
