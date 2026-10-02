@@ -63,7 +63,18 @@ test('validate clean state', async ({
   const mainLocation = AppConfig.instance.locations['main'];
   const { data: putawayCandidates } =
     await putawayService.getPutawayCandidates(mainLocation.readId());
-  assertNoPutawayCandidates(mainLocation, putawayCandidates);
+
+  if (putawayCandidates.length > 0) {
+    // a candidate can be a stale product_availability row left behind by a
+    // shipment that was rolled back and deleted after it had already been
+    // received; refreshing recalculates it from the transaction ledger, so a
+    // genuine leftover still fails the assertion below while a stale one
+    // clears on its own
+    await putawayService.refreshProductAvailability(mainLocation.readId());
+  }
+  const { data: refreshedPutawayCandidates } =
+    await putawayService.getPutawayCandidates(mainLocation.readId());
+  assertNoPutawayCandidates(mainLocation, refreshedPutawayCandidates);
 
   // validate there are no leftover inbound stock movements at any location
   const locations = Object.values(AppConfig.instance.locations).filter(
