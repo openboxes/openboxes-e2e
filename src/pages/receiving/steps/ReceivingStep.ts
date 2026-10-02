@@ -25,6 +25,9 @@ class ReceivingStep extends BasePageModel {
 
   async isLoaded() {
     await expect(this.table.table).toBeVisible();
+    await expect(this.table.table.getByText('Loading...')).toBeHidden({
+      timeout: 20_000,
+    });
   }
 
   async waitForData() {
@@ -35,8 +38,12 @@ class ReceivingStep extends BasePageModel {
     return this.page.getByRole('button', { name: 'Autofill quantities' });
   }
 
+  get autosaveStatus() {
+    return this.page.getByTestId('receiving-autosave-status');
+  }
+
   get confirmReceivingDialog() {
-    return this.page.locator('.react-confirm-alert-body');
+    return this.page.getByTestId('zero-lines-confirm-modal');
   }
 
   get rejectConfirmReceivingDialog() {
@@ -47,12 +54,8 @@ class ReceivingStep extends BasePageModel {
     return this.confirmReceivingDialog.getByRole('button', { name: 'Yes' });
   }
 
-  get saveButton() {
-    return this.page.getByRole('button', { name: 'Save', exact: true });
-  }
-
   get saveAndExitButton() {
-    return this.page.getByRole('button').getByText('Save and Exit');
+    return this.page.getByRole('button', { name: 'Save & Exit' });
   }
 
   get exportTemplateButton() {

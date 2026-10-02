@@ -29,7 +29,7 @@ class ReceivingPage extends BasePageModel {
   }
 
   get wizzardTitle() {
-    return this.page.getByTestId('wizardTitle');
+    return this.page.getByTestId('wizard-title');
   }
 
   async assertHeaderIsVisible({
@@ -54,14 +54,16 @@ class ReceivingPage extends BasePageModel {
     return this.page.getByRole('tooltip');
   }
 
-  assertColumnHeaderTooltipOnReceivingStep = async (columnName: string) => {
-    await this.receivingStep.table.getColumnHeader(columnName).hover();
-    await expect(this.tooltip).toContainText(columnName);
+  assertColumnHeaderIsVisibleOnReceivingStep = async (columnName: string) => {
+    await expect(
+      this.receivingStep.table.getColumnHeader(columnName)
+    ).toBeVisible();
   };
 
-  assertColumnHeaderTooltipOnCheckingStep = async (columnName: string) => {
-    await this.checkStep.table.getColumnHeader(columnName).hover();
-    await expect(this.tooltip).toContainText(columnName);
+  assertColumnHeaderIsVisibleOnCheckingStep = async (columnName: string) => {
+    await expect(
+      this.checkStep.table.getColumnHeader(columnName)
+    ).toBeVisible();
   };
 }
 
