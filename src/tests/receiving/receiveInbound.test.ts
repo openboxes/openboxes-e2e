@@ -1,4 +1,5 @@
 import AppConfig from '@/config/AppConfig';
+import { DateFormat } from '@/constants/DateFormats';
 import { ShipmentType } from '@/constants/ShipmentType';
 import { expect, test } from '@/fixtures/fixtures';
 import { Product } from '@/generated/ProductCodes.generated';
@@ -7,7 +8,7 @@ import BinLocationUtils from '@/utils/BinLocationUtils';
 import { formatDate, getToday } from '@/utils/DateUtils';
 import { deleteShipment } from '@/utils/shipmentUtils';
 
-test.describe.skip('Receive inbound stock movement', () => {
+test.describe('Receive inbound stock movement', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
   const description = 'some description';
   const dateRequested = getToday();
@@ -85,44 +86,34 @@ test.describe.skip('Receive inbound stock movement', () => {
         origin: supplierLocation.name,
         destination: mainLocation.name,
         description: description,
-        date: formatDate(dateRequested),
+        date: formatDate(dateRequested, DateFormat.DISPLAY),
       });
     });
 
     await test.step('Assert table column headers on receiving page', async () => {
-      await receivingPage.assertColumnHeaderTooltipOnReceivingStep(
-        'Pack level 1'
+      await receivingPage.assertColumnHeaderIsVisibleOnReceivingStep('Code');
+      await receivingPage.assertColumnHeaderIsVisibleOnReceivingStep(
+        'Product'
       );
-      await receivingPage.assertColumnHeaderTooltipOnReceivingStep(
-        'Pack level 2'
+      await receivingPage.assertColumnHeaderIsVisibleOnReceivingStep(
+        'Shipped'
       );
-      await receivingPage.assertColumnHeaderTooltipOnReceivingStep('Code');
-      await receivingPage.assertColumnHeaderTooltipOnReceivingStep('Product');
-      await receivingPage.assertColumnHeaderTooltipOnReceivingStep(
-        'Lot/Serial No.'
-      );
-      await receivingPage.assertColumnHeaderTooltipOnReceivingStep(
-        'Expiration date'
-      );
-      await receivingPage.assertColumnHeaderTooltipOnReceivingStep(
-        'Bin Location'
-      );
-      await receivingPage.assertColumnHeaderTooltipOnReceivingStep('Recipient');
-      await receivingPage.assertColumnHeaderTooltipOnReceivingStep('Shipped');
-      await receivingPage.assertColumnHeaderTooltipOnReceivingStep('Received');
-      await receivingPage.assertColumnHeaderTooltipOnReceivingStep(
-        'To receive'
-      );
-      await receivingPage.assertColumnHeaderTooltipOnReceivingStep(
+      await receivingPage.assertColumnHeaderIsVisibleOnReceivingStep(
         'Receiving now'
       );
-      await receivingPage.assertColumnHeaderTooltipOnReceivingStep('Comment');
+      await receivingPage.assertColumnHeaderIsVisibleOnReceivingStep(
+        'Status'
+      );
+      await receivingPage.assertColumnHeaderIsVisibleOnReceivingStep(
+        'Actions'
+      );
     });
 
     await test.step('Assert product in receiving table', async () => {
       const item = await productService.getProduct(Product.ONE);
-      await receivingPage.receivingStep.table.row(1).getItem(item.name).hover();
-      await expect(receivingPage.tooltip).toContainText(item.name);
+      await expect(
+        receivingPage.receivingStep.table.row(1).getItem(item.name)
+      ).toBeVisible();
     });
 
     await test.step('Select all items to receive', async () => {
@@ -142,53 +133,48 @@ test.describe.skip('Receive inbound stock movement', () => {
         origin: supplierLocation.name,
         destination: mainLocation.name,
         description: description,
-        date: formatDate(dateRequested),
+        date: formatDate(dateRequested, DateFormat.DISPLAY),
       });
     });
 
     await test.step('Assert table column headers on checking page', async () => {
-      await receivingPage.assertColumnHeaderTooltipOnCheckingStep(
-        'Pack level 1'
+      await receivingPage.assertColumnHeaderIsVisibleOnCheckingStep('Code');
+      await receivingPage.assertColumnHeaderIsVisibleOnCheckingStep(
+        'Product'
       );
-      await receivingPage.assertColumnHeaderTooltipOnCheckingStep(
-        'Pack level 2'
+      await receivingPage.assertColumnHeaderIsVisibleOnCheckingStep(
+        'Shipped'
       );
-      await receivingPage.assertColumnHeaderTooltipOnCheckingStep('Code');
-      await receivingPage.assertColumnHeaderTooltipOnCheckingStep('Product');
-      await receivingPage.assertColumnHeaderTooltipOnCheckingStep(
-        'Lot/Serial No.'
-      );
-      await receivingPage.assertColumnHeaderTooltipOnCheckingStep(
-        'Expiration date'
-      );
-      await receivingPage.assertColumnHeaderTooltipOnCheckingStep(
-        'Bin Location'
-      );
-      await receivingPage.assertColumnHeaderTooltipOnCheckingStep('Recipient');
-      await receivingPage.assertColumnHeaderTooltipOnCheckingStep(
+      await receivingPage.assertColumnHeaderIsVisibleOnCheckingStep(
         'Receiving now'
       );
-      await receivingPage.assertColumnHeaderTooltipOnCheckingStep('Remaining');
-      await receivingPage.assertColumnHeaderTooltipOnCheckingStep(
-        'Cancel remaining'
+      await receivingPage.assertColumnHeaderIsVisibleOnCheckingStep('Status');
+      await receivingPage.assertColumnHeaderIsVisibleOnCheckingStep(
+        'Location'
       );
-      await receivingPage.assertColumnHeaderTooltipOnCheckingStep('Comment');
+      await receivingPage.assertColumnHeaderIsVisibleOnCheckingStep(
+        'Actions'
+      );
+      await receivingPage.assertColumnHeaderIsVisibleOnCheckingStep(
+        'Cancel Remaining'
+      );
     });
 
     await test.step('Assert product in checking table', async () => {
       const item = await productService.getProduct(Product.ONE);
-      await receivingPage.checkStep.table.row(1).getItem(item.name).hover();
-      await expect(receivingPage.tooltip).toContainText(item.name);
+      await expect(
+        receivingPage.checkStep.table.row(1).getItem(item.name)
+      ).toBeVisible();
     });
 
-    await test.step('Assert receiving now and remaining qty on checking table', async () => {
+    await test.step('Assert receiving now and status on checking table', async () => {
       await receivingPage.checkStep.isLoaded();
       await expect(
         receivingPage.checkStep.table.getCellValue(1, 'Receiving now')
       ).toContainText('10');
       await expect(
-        receivingPage.checkStep.table.getCellValue(1, 'Remaining')
-      ).toContainText('0');
+        receivingPage.checkStep.table.getCellValue(1, 'Status')
+      ).toContainText('Complete');
     });
 
     await test.step('Assert shipment information on checking table', async () => {
@@ -196,15 +182,14 @@ test.describe.skip('Receive inbound stock movement', () => {
       const destinationName = (await mainLocationService.getLocation()).name;
       await receivingPage.checkStep.isLoaded();
       await expect(receivingPage.checkStep.shimpentInformation).toBeVisible();
-      await expect(receivingPage.checkStep.originField).toHaveValue(originName);
-      await expect(receivingPage.checkStep.destinationField).toHaveValue(
+      await expect(receivingPage.checkStep.originField).toHaveText(
+        originName
+      );
+      await expect(receivingPage.checkStep.destinationField).toHaveText(
         destinationName
       );
-      await expect(receivingPage.checkStep.shippedOnField).toHaveValue(
-        formatDate(TODAY)
-      );
-      await expect(receivingPage.checkStep.shippedOnField).toHaveValue(
-        formatDate(TODAY)
+      await expect(receivingPage.checkStep.shippedOnField).toHaveText(
+        formatDate(TODAY, DateFormat.DISPLAY)
       );
     });
 
@@ -232,8 +217,10 @@ test.describe.skip('Receive inbound stock movement', () => {
       await receivingPage.receivingStep.isLoaded();
     });
 
-    await test.step('Check first item to be received', async () => {
-      await receivingPage.receivingStep.table.row(1).checkbox.check();
+    await test.step('Fill quantity for the first item to be received', async () => {
+      await receivingPage.receivingStep.table
+        .row(1)
+        .receivingNowField.numberbox.fill('10');
     });
 
     await test.step('Go to check page', async () => {
@@ -247,7 +234,7 @@ test.describe.skip('Receive inbound stock movement', () => {
     });
   });
 
-  test('Use Save button in receiving and assert saved qty', async ({
+  test('Assert quantities are auto-saved while receiving', async ({
     stockMovementShowPage,
     receivingPage,
   }) => {
@@ -261,17 +248,19 @@ test.describe.skip('Receive inbound stock movement', () => {
       await receivingPage.receivingStep.isLoaded();
     });
 
-    await test.step('Check first item to be received', async () => {
+    await test.step('Fill quantity to be received', async () => {
       await receivingPage.receivingStep.table
         .row(1)
-        .receivingNowField.textbox.fill('8');
+        .receivingNowField.numberbox.fill('8');
       await receivingPage.receivingStep.table
         .row(2)
-        .receivingNowField.textbox.fill('8');
+        .receivingNowField.numberbox.fill('8');
     });
 
-    await test.step('Click on Save button', async () => {
-      await receivingPage.receivingStep.saveButton.click();
+    await test.step('Wait for autosave and leave the page', async () => {
+      await expect(receivingPage.receivingStep.autosaveStatus).toContainText(
+        'Your work is auto-saved'
+      );
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
       await stockMovementShowPage.isLoaded();
     });
@@ -280,10 +269,10 @@ test.describe.skip('Receive inbound stock movement', () => {
       await stockMovementShowPage.receiveButton.click();
       await receivingPage.receivingStep.isLoaded();
       await expect(
-        receivingPage.receivingStep.table.row(1).receivingNowField.textbox
+        receivingPage.receivingStep.table.row(1).receivingNowField.numberbox
       ).toHaveValue('8');
       await expect(
-        receivingPage.receivingStep.table.row(2).receivingNowField.textbox
+        receivingPage.receivingStep.table.row(2).receivingNowField.numberbox
       ).toHaveValue('8');
     });
   });
@@ -302,13 +291,13 @@ test.describe.skip('Receive inbound stock movement', () => {
       await receivingPage.receivingStep.isLoaded();
     });
 
-    await test.step('Check first item to be received', async () => {
+    await test.step('Fill quantity to be received', async () => {
       await receivingPage.receivingStep.table
         .row(1)
-        .receivingNowField.textbox.fill('2');
+        .receivingNowField.numberbox.fill('2');
       await receivingPage.receivingStep.table
         .row(2)
-        .receivingNowField.textbox.fill('2');
+        .receivingNowField.numberbox.fill('2');
     });
 
     await test.step('Click on Save and Exit button', async () => {
@@ -320,17 +309,18 @@ test.describe.skip('Receive inbound stock movement', () => {
       await stockMovementShowPage.receiveButton.click();
       await receivingPage.receivingStep.isLoaded();
       await expect(
-        receivingPage.receivingStep.table.row(1).receivingNowField.textbox
+        receivingPage.receivingStep.table.row(1).receivingNowField.numberbox
       ).toHaveValue('2');
       await expect(
-        receivingPage.receivingStep.table.row(2).receivingNowField.textbox
+        receivingPage.receivingStep.table.row(2).receivingNowField.numberbox
       ).toHaveValue('2');
     });
   });
 
-  test.skip('Use Save button after removing qty and default to 0', async ({
+  test('Clearing a qty field autosaves it as empty, not the original shipped qty', async ({
     stockMovementShowPage,
     receivingPage,
+    page,
   }) => {
     await test.step('Go to stock movement show page', async () => {
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
@@ -345,28 +335,36 @@ test.describe.skip('Receive inbound stock movement', () => {
     await test.step('Input qty for an item to be received', async () => {
       await receivingPage.receivingStep.table
         .row(1)
-        .receivingNowField.textbox.fill('8');
+        .receivingNowField.numberbox.fill('8');
       await receivingPage.receivingStep.table
         .row(2)
-        .receivingNowField.textbox.fill('10');
+        .receivingNowField.numberbox.fill('10');
     });
 
-    await test.step('Clear qty field and click on Save button', async () => {
+    await test.step('Clear qty field and let autosave run', async () => {
       await receivingPage.receivingStep.table
         .row(1)
-        .receivingNowField.textbox.clear();
-      await receivingPage.receivingStep.saveButton.click();
+        .receivingNowField.numberbox.clear();
+      await page.keyboard.press('Tab');
+      await expect(receivingPage.receivingStep.autosaveStatus).toContainText(
+        'Your work is auto-saved'
+      );
+    });
+
+    await test.step('Reload and assert the cleared field stayed empty', async () => {
+      await page.reload();
+      await receivingPage.receivingStep.isLoaded();
       await expect(
-        receivingPage.receivingStep.table.row(1).receivingNowField.textbox
-      ).toHaveValue('0');
+        receivingPage.receivingStep.table.row(1).receivingNowField.numberbox
+      ).toHaveValue('');
       await expect(
-        receivingPage.receivingStep.table.row(2).receivingNowField.textbox
+        receivingPage.receivingStep.table.row(2).receivingNowField.numberbox
       ).toHaveValue('10');
     });
   });
 });
 
-test.describe.skip('Receive from different locations', () => {
+test.describe('Receive from different locations', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
   const description = 'some description';
   const dateRequested = getToday();

@@ -207,7 +207,7 @@ test.describe('Export all incoming items', () => {
     });
   });
 
-  test.skip('Export all incoming items should include shipped items not received items', async ({
+  test('Export all incoming items should include shipped items not received items', async ({
     inboundListPage,
     stockMovementShowPage,
     stockMovementService,
@@ -230,7 +230,7 @@ test.describe('Export all incoming items', () => {
       await receivingPage.receivingStep.isLoaded();
       await receivingPage.receivingStep.table
         .row(1)
-        .receivingNowField.textbox.fill('12');
+        .receivingNowField.numberbox.fill('12');
     });
 
     await test.step('Go to Check page', async () => {
@@ -270,7 +270,7 @@ test.describe('Export all incoming items', () => {
   });
 
   // TODO: Adjust to rely on the empty database (on empty db it fails, because there is 404 No shipment items found)
-  test.skip('Export all incoming items should not include received items', async ({
+  test('Export all incoming items should not include received items', async ({
     inboundListPage,
     stockMovementShowPage,
     stockMovementService,
@@ -293,10 +293,10 @@ test.describe('Export all incoming items', () => {
       await receivingPage.receivingStep.isLoaded();
       await receivingPage.receivingStep.table
         .row(1)
-        .receivingNowField.textbox.fill('12');
+        .receivingNowField.numberbox.fill('12');
       await receivingPage.receivingStep.table
         .row(2)
-        .receivingNowField.textbox.fill('12');
+        .receivingNowField.numberbox.fill('12');
     });
 
     await test.step('Go to Check page', async () => {

@@ -6,7 +6,7 @@ import { StockMovementResponse } from '@/types';
 import { getToday } from '@/utils/DateUtils';
 import { deleteShipment } from '@/utils/shipmentUtils';
 
-test.describe.skip('Receive inbound stock movement in location without pick and putaway stock', () => {
+test.describe('Receive inbound stock movement in location without pick and putaway stock', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
   const description = 'some description';
   const dateRequested = getToday();
@@ -71,30 +71,22 @@ test.describe.skip('Receive inbound stock movement in location without pick and 
     });
 
     await test.step('Assert table column headers on receiving page', async () => {
-      await receivingPage.assertColumnHeaderTooltipOnReceivingStep(
-        'Pack level 1'
+      await receivingPage.assertColumnHeaderIsVisibleOnReceivingStep('Code');
+      await receivingPage.assertColumnHeaderIsVisibleOnReceivingStep(
+        'Product'
       );
-      await receivingPage.assertColumnHeaderTooltipOnReceivingStep(
-        'Pack level 2'
+      await receivingPage.assertColumnHeaderIsVisibleOnReceivingStep(
+        'Shipped'
       );
-      await receivingPage.assertColumnHeaderTooltipOnReceivingStep('Code');
-      await receivingPage.assertColumnHeaderTooltipOnReceivingStep('Product');
-      await receivingPage.assertColumnHeaderTooltipOnReceivingStep(
-        'Lot/Serial No.'
-      );
-      await receivingPage.assertColumnHeaderTooltipOnReceivingStep(
-        'Expiration date'
-      );
-      await receivingPage.assertColumnHeaderTooltipOnReceivingStep('Recipient');
-      await receivingPage.assertColumnHeaderTooltipOnReceivingStep('Shipped');
-      await receivingPage.assertColumnHeaderTooltipOnReceivingStep('Received');
-      await receivingPage.assertColumnHeaderTooltipOnReceivingStep(
-        'To receive'
-      );
-      await receivingPage.assertColumnHeaderTooltipOnReceivingStep(
+      await receivingPage.assertColumnHeaderIsVisibleOnReceivingStep(
         'Receiving now'
       );
-      await receivingPage.assertColumnHeaderTooltipOnReceivingStep('Comment');
+      await receivingPage.assertColumnHeaderIsVisibleOnReceivingStep(
+        'Status'
+      );
+      await receivingPage.assertColumnHeaderIsVisibleOnReceivingStep(
+        'Actions'
+      );
     });
 
     await test.step('Autofill receiving qty', async () => {
@@ -108,29 +100,23 @@ test.describe.skip('Receive inbound stock movement in location without pick and 
     });
 
     await test.step('Assert table column headers on checking page', async () => {
-      await receivingPage.assertColumnHeaderTooltipOnCheckingStep(
-        'Pack level 1'
+      await receivingPage.assertColumnHeaderIsVisibleOnCheckingStep('Code');
+      await receivingPage.assertColumnHeaderIsVisibleOnCheckingStep(
+        'Product'
       );
-      await receivingPage.assertColumnHeaderTooltipOnCheckingStep(
-        'Pack level 2'
+      await receivingPage.assertColumnHeaderIsVisibleOnCheckingStep(
+        'Shipped'
       );
-      await receivingPage.assertColumnHeaderTooltipOnCheckingStep('Code');
-      await receivingPage.assertColumnHeaderTooltipOnCheckingStep('Product');
-      await receivingPage.assertColumnHeaderTooltipOnCheckingStep(
-        'Lot/Serial No.'
-      );
-      await receivingPage.assertColumnHeaderTooltipOnCheckingStep(
-        'Expiration date'
-      );
-      await receivingPage.assertColumnHeaderTooltipOnCheckingStep('Recipient');
-      await receivingPage.assertColumnHeaderTooltipOnCheckingStep(
+      await receivingPage.assertColumnHeaderIsVisibleOnCheckingStep(
         'Receiving now'
       );
-      await receivingPage.assertColumnHeaderTooltipOnCheckingStep('Remaining');
-      await receivingPage.assertColumnHeaderTooltipOnCheckingStep(
-        'Cancel remaining'
+      await receivingPage.assertColumnHeaderIsVisibleOnCheckingStep('Status');
+      await receivingPage.assertColumnHeaderIsVisibleOnCheckingStep(
+        'Actions'
       );
-      await receivingPage.assertColumnHeaderTooltipOnCheckingStep('Comment');
+      // a location without pick/putaway support has no per-line bin
+      // location concept (everything lands in a single "Default" bin), so
+      // there's no "Location" or "Cancel Remaining" column here either.
     });
 
     await test.step('Receive shipment', async () => {
