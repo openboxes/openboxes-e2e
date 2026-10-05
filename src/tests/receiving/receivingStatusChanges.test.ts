@@ -9,7 +9,7 @@ import BinLocationUtils from '@/utils/BinLocationUtils';
 import { getToday } from '@/utils/DateUtils';
 import { deleteShipment } from '@/utils/shipmentUtils';
 
-test.describe.skip('Status changes on sm view page when receive shipment', () => {
+test.describe('Status changes on sm view page when receive shipment', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
   const description = 'some description';
   const dateRequested = getToday();
@@ -90,7 +90,7 @@ test.describe.skip('Status changes on sm view page when receive shipment', () =>
       await receivingPage.receivingStep.isLoaded();
       await receivingPage.receivingStep.table
         .row(1)
-        .receivingNowField.textbox.fill('10');
+        .receivingNowField.numberbox.fill('10');
     });
 
     await test.step('Go to check page', async () => {
@@ -169,7 +169,7 @@ test.describe.skip('Status changes on sm view page when receive shipment', () =>
       await receivingPage.receivingStep.isLoaded();
       await receivingPage.receivingStep.table
         .row(1)
-        .receivingNowField.textbox.fill('20');
+        .receivingNowField.numberbox.fill('20');
     });
 
     await test.step('Go to check page', async () => {
@@ -248,10 +248,10 @@ test.describe.skip('Status changes on sm view page when receive shipment', () =>
       await receivingPage.receivingStep.isLoaded();
       await receivingPage.receivingStep.table
         .row(1)
-        .receivingNowField.textbox.fill('20');
+        .receivingNowField.numberbox.fill('20');
       await receivingPage.receivingStep.table
         .row(2)
-        .receivingNowField.textbox.fill('5');
+        .receivingNowField.numberbox.fill('5');
     });
 
     await test.step('Go to check page', async () => {
@@ -327,7 +327,7 @@ test.describe.skip('Status changes on sm view page when receive shipment', () =>
       await receivingPage.receivingStep.isLoaded();
       await receivingPage.receivingStep.table
         .row(2)
-        .receivingNowField.textbox.fill('5');
+        .receivingNowField.numberbox.fill('5');
     });
 
     await test.step('Go to check page and receive shipment', async () => {
@@ -395,7 +395,7 @@ test.describe.skip('Status changes on sm view page when receive shipment', () =>
       await receivingPage.receivingStep.isLoaded();
       await receivingPage.receivingStep.table
         .row(1)
-        .receivingNowField.textbox.fill('10');
+        .receivingNowField.numberbox.fill('10');
     });
 
     await test.step('Go to check page and receive item', async () => {
@@ -443,7 +443,7 @@ test.describe.skip('Status changes on sm view page when receive shipment', () =>
       await receivingPage.receivingStep.isLoaded();
       await receivingPage.receivingStep.table
         .row(1)
-        .receivingNowField.textbox.fill('20');
+        .receivingNowField.numberbox.fill('20');
     });
 
     await test.step('Go to check page and receive item', async () => {
@@ -491,10 +491,10 @@ test.describe.skip('Status changes on sm view page when receive shipment', () =>
       await receivingPage.receivingStep.isLoaded();
       await receivingPage.receivingStep.table
         .row(1)
-        .receivingNowField.textbox.fill('20');
+        .receivingNowField.numberbox.fill('20');
       await receivingPage.receivingStep.table
         .row(2)
-        .receivingNowField.textbox.fill('5');
+        .receivingNowField.numberbox.fill('5');
     });
 
     await test.step('Go to check page and receive item', async () => {
@@ -531,7 +531,7 @@ test.describe.skip('Status changes on sm view page when receive shipment', () =>
       await receivingPage.receivingStep.isLoaded();
       await receivingPage.receivingStep.table
         .row(2)
-        .receivingNowField.textbox.fill('5');
+        .receivingNowField.numberbox.fill('5');
     });
 
     await test.step('Go to check page and receive shipment', async () => {

@@ -4,6 +4,7 @@ import FileHandler from '@/components/FileHandler';
 import NewAlertPopup from '@/components/NewAlertPopup';
 import { PARTIAL_RECEIVING_API_PATTERN } from '@/constants/apiUrls';
 import BasePageModel from '@/pages/BasePageModel';
+import AutosaveStatus from '@/pages/receiving/components/AutosaveStatus';
 import EditModal from '@/pages/receiving/components/EditModal';
 import ReceivingTable from '@/pages/receiving/components/ReceivingTable';
 
@@ -14,6 +15,7 @@ class ReceivingStep extends BasePageModel {
 
   updateExpiryDatePopup: NewAlertPopup;
   fileHandler: FileHandler;
+  autosaveStatus: AutosaveStatus;
 
   constructor(page: Page) {
     super(page);
@@ -21,10 +23,14 @@ class ReceivingStep extends BasePageModel {
     this.editModal = new EditModal(page);
     this.updateExpiryDatePopup = new NewAlertPopup(page);
     this.fileHandler = new FileHandler(page);
+    this.autosaveStatus = new AutosaveStatus(page);
   }
 
   async isLoaded() {
     await expect(this.table.table).toBeVisible();
+    await expect(this.table.table.getByText('Loading...')).toBeHidden({
+      timeout: 20_000,
+    });
   }
 
   async waitForData() {
@@ -36,7 +42,7 @@ class ReceivingStep extends BasePageModel {
   }
 
   get confirmReceivingDialog() {
-    return this.page.locator('.react-confirm-alert-body');
+    return this.page.getByTestId('zero-lines-confirm-modal');
   }
 
   get rejectConfirmReceivingDialog() {
@@ -47,12 +53,8 @@ class ReceivingStep extends BasePageModel {
     return this.confirmReceivingDialog.getByRole('button', { name: 'Yes' });
   }
 
-  get saveButton() {
-    return this.page.getByRole('button', { name: 'Save', exact: true });
-  }
-
   get saveAndExitButton() {
-    return this.page.getByRole('button').getByText('Save and Exit');
+    return this.page.getByRole('button', { name: 'Save & Exit' });
   }
 
   get exportTemplateButton() {

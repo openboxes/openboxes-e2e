@@ -34,7 +34,7 @@ class StockMovementShowPage extends BasePageModel {
   }
 
   async isLoaded() {
-    await expect(this.summary).toBeVisible();
+    await expect(this.summary).toBeVisible({ timeout: 15_000 });
   }
 
   get summary() {

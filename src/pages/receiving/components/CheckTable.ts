@@ -8,15 +8,18 @@ class CheckTable extends BasePageModel {
   }
 
   get table() {
-    return this.page.getByTestId('items-table');
+    return this.page.getByTestId('confirm-receipt-table');
   }
 
   get rows() {
     return this.table.getByRole('row');
   }
 
+  // rows are 1-indexed by convention (row 1 is the first item). Unlike the
+  // old table, the header row no longer carries role="row", so it doesn't
+  // occupy index 0 on its own.
   row(index: number) {
-    return new Row(this.page, this.rows.nth(index));
+    return new Row(this.page, this.rows.nth(index - 1));
   }
 
   // rows mixes container rows with item rows (e.g. the first item is at
@@ -24,9 +27,7 @@ class CheckTable extends BasePageModel {
   // by item position.
   get itemRows() {
     return this.rows.filter({
-      has: this.page
-        .getByTestId('label-field')
-        .and(this.page.getByLabel('Code', { exact: true })),
+      has: this.page.locator('[aria-label="Code"]'),
     });
   }
 
@@ -36,15 +37,12 @@ class CheckTable extends BasePageModel {
 
   getColumnHeader(columnName: string) {
     return this.table
-      .locator('.table-header')
+      .locator('.rt-thead')
       .getByText(columnName, { exact: true });
   }
 
   getCellValue(row: number, column: string) {
-    return this.table
-      .getByRole('row')
-      .nth(row)
-      .getByRole('cell', { name: column, exact: true });
+    return this.rows.nth(row - 1).locator(`[aria-label="${column}"]`);
   }
 }
 
@@ -57,17 +55,17 @@ class Row extends BasePageModel {
   }
 
   getItem(name: string) {
-    return this.row.getByTestId('label-field').getByText(name);
+    return this.row.locator('[aria-label="Product"]').getByText(name);
   }
 
   get code() {
-    return this.row
-      .getByTestId('label-field')
-      .and(this.row.getByLabel('Code', { exact: true }));
+    return this.row.locator('[aria-label="Code"]');
   }
 
   get cancelRemainingCheckbox() {
-    return this.row.getByTestId('form-field').getByTestId('checkbox');
+    return this.row
+      .locator('[data-column-id="cancelRemaining"]')
+      .getByRole('checkbox');
   }
 }
 

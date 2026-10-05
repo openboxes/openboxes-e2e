@@ -150,7 +150,7 @@ test.describe('Filter by "Received" status', () => {
       await test.step('Select all items to receive', async () => {
         await receivingPage.receivingStep.table
           .row(1)
-          .receivingNowField.textbox.fill('2');
+          .receivingNowField.numberbox.fill('2');
       });
 
       await test.step('Go to Check page', async () => {
@@ -173,7 +173,7 @@ test.describe('Filter by "Received" status', () => {
     await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
   });
 
-  test.skip('Only "Received" stock movements should be visible in the table', async ({
+  test('Only "Received" stock movements should be visible in the table', async ({
     inboundListPage,
   }) => {
     await test.step('Go to inbound list page', async () => {
@@ -246,7 +246,7 @@ test.describe('Filter by "Receiving" status', () => {
       await test.step('Select all items to receiv', async () => {
         await receivingPage.receivingStep.table
           .row(1)
-          .receivingNowField.textbox.fill('2');
+          .receivingNowField.numberbox.fill('2');
       });
 
       await test.step('Go to Check page', async () => {
@@ -269,7 +269,7 @@ test.describe('Filter by "Receiving" status', () => {
     await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
   });
 
-  test.skip('Only "Receiving" stock movements should be visible in the table', async ({
+  test('Only "Receiving" stock movements should be visible in the table', async ({
     inboundListPage,
   }) => {
     await test.step('Go to inbound list page', async () => {

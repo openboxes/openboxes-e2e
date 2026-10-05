@@ -9,73 +9,51 @@ class ReceivingTable extends BasePageModel {
   }
 
   get table() {
-    return this.page.getByTestId('items-table');
+    return this.page.getByTestId('receiving-table');
   }
 
   get rows() {
     return this.table.getByRole('row');
   }
 
+  // rows are 1-indexed by convention (row 1 is the first item), matching the
+  // rest of the receiving page objects. Unlike the old table, the header row
+  // no longer carries role="row", so it doesn't occupy index 0 on its own.
   row(index: number) {
-    return new Row(this.page, this.rows.nth(index));
+    return new Row(this.page, this.rows.nth(index - 1));
   }
 
   getColumnHeader(columnName: string) {
-    return this.table.locator('.table-header').getByText(columnName);
+    return this.table
+      .locator('.rt-thead')
+      .getByText(columnName, { exact: true });
   }
 
   getCellValue(row: number, column: string) {
-    return this.table
-      .getByRole('row')
-      .nth(row)
-      .getByRole('cell', { name: column });
+    return this.rows.nth(row - 1).locator(`[aria-label="${column}"]`);
   }
 }
 
 class Row extends BasePageModel {
   row: Locator;
   receivingNowField: TextField;
-  commentField: TextField;
 
   constructor(page: Page, row: Locator) {
     super(page);
     this.row = row;
     this.receivingNowField = new TextField(page, 'Receiving now', row);
-    this.commentField = new TextField(page, 'Comment', row);
-  }
-
-  get checkbox() {
-    return this.row.getByRole('checkbox');
   }
 
   get editButton() {
     return this.row.getByRole('button', { name: 'Edit' });
   }
 
+  get commentButton() {
+    return this.row.getByRole('button', { name: 'Comment' });
+  }
+
   getItem(name: string) {
-    return this.row.getByTestId('label-field').getByText(name);
-  }
-
-  get binLocationSelect() {
-    return this.row.getByRole('cell', { name: 'Bin Location' });
-  }
-
-  getBinLocation(binLocation: string) {
-    return this.page
-      .getByTestId('custom-select-dropdown-menu')
-      .getByRole('listitem')
-      .getByText(binLocation, { exact: true });
-  }
-
-  getZoneLocation(zoneLocation: string) {
-    return this.page
-      .getByTestId('custom-select-dropdown-menu')
-      .locator('.css-5ih5ya-group react-select__group-heading')
-      .getByText(zoneLocation, { exact: true });
-  }
-
-  get recipientField() {
-    return this.row.getByRole('cell', { name: 'Recipient' });
+    return this.row.locator('[aria-label="Product"]').getByText(name);
   }
 }
 

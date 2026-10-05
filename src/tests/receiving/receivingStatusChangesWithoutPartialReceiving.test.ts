@@ -8,7 +8,7 @@ import { StockMovementResponse } from '@/types';
 import { getToday } from '@/utils/DateUtils';
 import { deleteShipment } from '@/utils/shipmentUtils';
 
-test.describe.skip('Status changes on sm view page when receive shipment in location without partial receiving', () => {
+test.describe('Status changes on sm view page when receive shipment in location without partial receiving', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
   const description = 'some description';
   const dateRequested = getToday();
@@ -82,7 +82,7 @@ test.describe.skip('Status changes on sm view page when receive shipment in loca
       await receivingPage.receivingStep.isLoaded();
       await receivingPage.receivingStep.table
         .row(1)
-        .receivingNowField.textbox.fill('10');
+        .receivingNowField.numberbox.fill('10');
     });
 
     await test.step('Go to next page and accept Confirm receiving dialog', async () => {
@@ -160,7 +160,7 @@ test.describe.skip('Status changes on sm view page when receive shipment in loca
       await receivingPage.receivingStep.isLoaded();
       await receivingPage.receivingStep.table
         .row(1)
-        .receivingNowField.textbox.fill('20');
+        .receivingNowField.numberbox.fill('20');
     });
 
     await test.step('Go to next page and accept Confirm receiving dialog', async () => {
@@ -238,10 +238,10 @@ test.describe.skip('Status changes on sm view page when receive shipment in loca
       await receivingPage.receivingStep.isLoaded();
       await receivingPage.receivingStep.table
         .row(1)
-        .receivingNowField.textbox.fill('20');
+        .receivingNowField.numberbox.fill('20');
       await receivingPage.receivingStep.table
         .row(2)
-        .receivingNowField.textbox.fill('5');
+        .receivingNowField.numberbox.fill('5');
     });
 
     await test.step('Go to next page and receive shipment', async () => {
@@ -315,10 +315,10 @@ test.describe.skip('Status changes on sm view page when receive shipment in loca
       await receivingPage.receivingStep.isLoaded();
       await receivingPage.receivingStep.table
         .row(1)
-        .receivingNowField.textbox.fill('20');
+        .receivingNowField.numberbox.fill('20');
       await receivingPage.receivingStep.table
         .row(2)
-        .receivingNowField.textbox.fill('5');
+        .receivingNowField.numberbox.fill('5');
     });
 
     await test.step('Go to next page and receive shipment', async () => {
@@ -417,7 +417,7 @@ test.describe.skip('Status changes on sm view page when receive shipment in loca
       await receivingPage.receivingStep.isLoaded();
       await receivingPage.receivingStep.table
         .row(1)
-        .receivingNowField.textbox.fill('10');
+        .receivingNowField.numberbox.fill('10');
     });
 
     await test.step('Go to next page and accept Confirm receiving dialog', async () => {
@@ -472,7 +472,7 @@ test.describe.skip('Status changes on sm view page when receive shipment in loca
       await receivingPage.receivingStep.isLoaded();
       await receivingPage.receivingStep.table
         .row(1)
-        .receivingNowField.textbox.fill('20');
+        .receivingNowField.numberbox.fill('20');
     });
 
     await test.step('Go to next page and accept Confirm receiving dialog', async () => {
@@ -527,10 +527,10 @@ test.describe.skip('Status changes on sm view page when receive shipment in loca
       await receivingPage.receivingStep.isLoaded();
       await receivingPage.receivingStep.table
         .row(1)
-        .receivingNowField.textbox.fill('20');
+        .receivingNowField.numberbox.fill('20');
       await receivingPage.receivingStep.table
         .row(2)
-        .receivingNowField.textbox.fill('5');
+        .receivingNowField.numberbox.fill('5');
     });
 
     await test.step('Go to next page and receive shipment', async () => {

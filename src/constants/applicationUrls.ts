@@ -94,6 +94,12 @@ const ORDER_URL = {
     `${ORDER_URL.list()}?orderType=PUTAWAY_ORDER&status=${status}`,
 };
 
+const MIGRATION_URL = {
+  base: './migration',
+  refreshProductAvailability: (locationId: string) =>
+    `${MIGRATION_URL.base}/refreshProductAvailability?location.id=${locationId}`,
+};
+
 export {
   AUTH_URL,
   CYCLE_COUNT_URL,
@@ -103,6 +109,7 @@ export {
   INVOICE_URL,
   LOCATION_GROUP_URL,
   LOCATION_URL,
+  MIGRATION_URL,
   ORDER_URL,
   ORGANIZATION_URL,
   PERSON_URL,

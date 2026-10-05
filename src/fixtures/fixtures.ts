@@ -3,6 +3,7 @@ import { BrowserContext, test as baseTest } from '@playwright/test';
 import AuthService from '@/api/AuthService';
 import CycleCountService from '@/api/CycleCountService';
 import GenericService from '@/api/GenericService';
+import InventoryService from '@/api/InventoryService';
 import LocationService from '@/api/LocationService';
 import PutawayService from '@/api/PutawayService';
 import ReceivingService from '@/api/ReceivingService';
@@ -101,6 +102,7 @@ type Fixtures = {
   putawayService: PutawayService;
   transactionService: TransactionService;
   cycleCountService: CycleCountService;
+  inventoryService: InventoryService;
   // LOCATIONS DATA
   mainLocationService: LocationData;
   noManageInventoryDepotService: LocationData;
@@ -200,6 +202,8 @@ export const test = baseTest.extend<Fixtures>({
     use(new TransactionService(page.request)),
   cycleCountService: async ({ page }, use) =>
     use(new CycleCountService(page.request)),
+  inventoryService: async ({ page }, use) =>
+    use(new InventoryService(page.request)),
   // LOCATIONS
   mainLocationService: async ({ page }, use) =>
     use(new LocationData(LOCATION_KEY.MAIN, page.request)),

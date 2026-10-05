@@ -16,30 +16,44 @@ class CheckStep extends BasePageModel {
 
   async isLoaded() {
     await expect(this.table.table).toBeVisible();
+    await expect(this.table.table.getByText('Loading...')).toBeHidden({
+      timeout: 20_000,
+    });
   }
 
   get receiveShipmentButton() {
-    return this.page.getByRole('button', { name: 'Receive shipment' });
+    return this.page
+      .locator('.submit-buttons')
+      .getByRole('button', { name: 'Complete Receipt' });
   }
 
   get shimpentInformation() {
-    return this.page.locator('.form-title');
+    return this.page.getByTestId('confirm-receipt-details');
   }
 
   get originField() {
-    return this.page.getByRole('textbox', { name: 'Origin' });
+    return this.shimpentInformation
+      .locator('.item-details__field')
+      .filter({ hasText: 'Origin:' })
+      .locator('.item-details__value');
   }
 
   get destinationField() {
-    return this.page.getByRole('textbox', { name: 'Destination' });
+    return this.shimpentInformation
+      .locator('.item-details__field')
+      .filter({ hasText: 'Destination:' })
+      .locator('.item-details__value');
   }
 
   get shippedOnField() {
-    return this.page.getByRole('textbox', { name: 'Shipped on' });
+    return this.shimpentInformation
+      .locator('.item-details__field')
+      .filter({ hasText: 'Shipped on:' })
+      .locator('.item-details__value');
   }
 
   get cancelAllRemainingButton() {
-    return this.page.getByRole('button', { name: 'Cancel all remaining' });
+    return this.page.getByRole('button', { name: 'Cancel All Remaining' });
   }
 
   get validationOnDeliveredOnPastDatePopup() {

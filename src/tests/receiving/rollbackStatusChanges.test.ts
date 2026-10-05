@@ -9,7 +9,7 @@ import BinLocationUtils from '@/utils/BinLocationUtils';
 import { getToday } from '@/utils/DateUtils';
 import { deleteShipment } from '@/utils/shipmentUtils';
 
-test.describe.skip('Status changes on sm view page when rollback receipts', () => {
+test.describe('Status changes on sm view page when rollback receipts', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
   const description = 'some description';
   const dateRequested = getToday();
@@ -81,7 +81,7 @@ test.describe.skip('Status changes on sm view page when rollback receipts', () =
       await receivingPage.receivingStep.isLoaded();
       await receivingPage.receivingStep.table
         .row(1)
-        .receivingNowField.textbox.fill('15');
+        .receivingNowField.numberbox.fill('15');
     });
 
     await test.step('Go to check page and finish receipt', async () => {
@@ -140,7 +140,7 @@ test.describe.skip('Status changes on sm view page when rollback receipts', () =
       await receivingPage.receivingStep.isLoaded();
       await receivingPage.receivingStep.table
         .row(1)
-        .receivingNowField.textbox.fill('20');
+        .receivingNowField.numberbox.fill('20');
     });
 
     await test.step('Go to check page and finish receipt', async () => {
@@ -199,10 +199,10 @@ test.describe.skip('Status changes on sm view page when rollback receipts', () =
       await receivingPage.receivingStep.isLoaded();
       await receivingPage.receivingStep.table
         .row(1)
-        .receivingNowField.textbox.fill('10');
+        .receivingNowField.numberbox.fill('10');
       await receivingPage.receivingStep.table
         .row(2)
-        .receivingNowField.textbox.fill('10');
+        .receivingNowField.numberbox.fill('10');
     });
 
     await test.step('Go to check page and finish 1st receipt', async () => {
@@ -221,7 +221,7 @@ test.describe.skip('Status changes on sm view page when rollback receipts', () =
       await receivingPage.receivingStep.isLoaded();
       await receivingPage.receivingStep.table
         .row(1)
-        .receivingNowField.textbox.fill('10');
+        .receivingNowField.numberbox.fill('10');
     });
 
     await test.step('Go to check page and finish 2nd receipt', async () => {
@@ -311,7 +311,7 @@ test.describe.skip('Status changes on sm view page when rollback receipts', () =
       await receivingPage.receivingStep.isLoaded();
       await receivingPage.receivingStep.table
         .row(1)
-        .receivingNowField.textbox.fill('15');
+        .receivingNowField.numberbox.fill('15');
     });
 
     await test.step('Go to check page and finish receipt', async () => {
@@ -382,7 +382,7 @@ test.describe.skip('Status changes on sm view page when rollback receipts', () =
       await receivingPage.receivingStep.isLoaded();
       await receivingPage.receivingStep.table
         .row(1)
-        .receivingNowField.textbox.fill('20');
+        .receivingNowField.numberbox.fill('20');
     });
 
     await test.step('Go to check page and finish receipt', async () => {
@@ -453,10 +453,10 @@ test.describe.skip('Status changes on sm view page when rollback receipts', () =
       await receivingPage.receivingStep.isLoaded();
       await receivingPage.receivingStep.table
         .row(1)
-        .receivingNowField.textbox.fill('10');
+        .receivingNowField.numberbox.fill('10');
       await receivingPage.receivingStep.table
         .row(2)
-        .receivingNowField.textbox.fill('10');
+        .receivingNowField.numberbox.fill('10');
     });
 
     await test.step('Go to check page and finish 1st receipt', async () => {
@@ -475,7 +475,7 @@ test.describe.skip('Status changes on sm view page when rollback receipts', () =
       await receivingPage.receivingStep.isLoaded();
       await receivingPage.receivingStep.table
         .row(1)
-        .receivingNowField.textbox.fill('10');
+        .receivingNowField.numberbox.fill('10');
     });
 
     await test.step('Go to check page and finish 2nd receipt', async () => {

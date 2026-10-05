@@ -35,10 +35,16 @@ type StockMovementListResponse = {
 };
 
 // GET /api/putaways/<orderId>
+// putawayItems rows are flattened into dotted keys (e.g. "product.id"), same
+// convention as PutawayCandidate below, not nested objects
 type PutawayResponse = {
   id: string;
   putawayNumber?: string | null;
   putawayStatus?: string | null;
+  putawayItems?: {
+    'product.id'?: string | null;
+    quantityAvailable?: number | null;
+  }[];
 };
 
 // GET /api/putaways returns rows flattened into dotted keys
