@@ -6,7 +6,6 @@ import {
   PUTAWAY_BY_ID,
   STOCK_TRANSFER_BY_ID,
 } from '@/constants/apiUrls';
-import { MIGRATION_URL } from '@/constants/applicationUrls';
 import { ApiResponse, PutawayCandidate, PutawayResponse } from '@/types';
 import { parseRequestToJSON } from '@/utils/ServiceUtils';
 
@@ -26,24 +25,6 @@ class PutawayService extends BaseServiceModel {
     } catch (error) {
       throw new Error(
         `Problem fetching putaway candidates for location: ${locationId}`
-      );
-    }
-  }
-
-  /**
-    Recalculates product_availability for a location from the transaction
-    ledger. Putaway candidates are read from product_availability rather than
-    the ledger directly, so a candidate can go stale (stuck at a quantity the
-    ledger no longer backs) after a shipment gets rolled back and deleted;
-    this is the app's own admin action for reconciling it.
-  */
-  async refreshProductAvailability(locationId: string) {
-    const apiResponse = await this.request.post(
-      MIGRATION_URL.refreshProductAvailability(locationId)
-    );
-    if (!apiResponse.ok()) {
-      throw new Error(
-        `Problem refreshing product availability for location: ${locationId}`
       );
     }
   }

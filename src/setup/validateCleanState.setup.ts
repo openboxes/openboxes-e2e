@@ -58,6 +58,7 @@ function assertNoInbounds(
 test('validate clean state', async ({
   putawayService,
   stockMovementService,
+  inventoryService,
 }) => {
   // validate there are no putaways waiting at the main location
   const mainLocation = AppConfig.instance.locations['main'];
@@ -70,7 +71,7 @@ test('validate clean state', async ({
     // received; refreshing recalculates it from the transaction ledger, so a
     // genuine leftover still fails the assertion below while a stale one
     // clears on its own
-    await putawayService.refreshProductAvailability(mainLocation.readId());
+    await inventoryService.refreshProductAvailability(mainLocation.readId());
   }
   const { data: refreshedPutawayCandidates } =
     await putawayService.getPutawayCandidates(mainLocation.readId());
