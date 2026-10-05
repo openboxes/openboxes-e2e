@@ -258,9 +258,7 @@ test.describe('Receive inbound stock movement', () => {
     });
 
     await test.step('Wait for autosave and leave the page', async () => {
-      await expect(receivingPage.receivingStep.autosaveStatus).toContainText(
-        'Your work is auto-saved'
-      );
+      await receivingPage.receivingStep.autosaveStatus.isSaved();
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
       await stockMovementShowPage.isLoaded();
     });
@@ -346,9 +344,7 @@ test.describe('Receive inbound stock movement', () => {
         .row(1)
         .receivingNowField.numberbox.clear();
       await page.keyboard.press('Tab');
-      await expect(receivingPage.receivingStep.autosaveStatus).toContainText(
-        'Your work is auto-saved'
-      );
+      await receivingPage.receivingStep.autosaveStatus.isSaved();
     });
 
     await test.step('Reload and assert the cleared field stayed empty', async () => {

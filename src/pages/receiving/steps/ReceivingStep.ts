@@ -4,6 +4,7 @@ import FileHandler from '@/components/FileHandler';
 import NewAlertPopup from '@/components/NewAlertPopup';
 import { PARTIAL_RECEIVING_API_PATTERN } from '@/constants/apiUrls';
 import BasePageModel from '@/pages/BasePageModel';
+import AutosaveStatus from '@/pages/receiving/components/AutosaveStatus';
 import EditModal from '@/pages/receiving/components/EditModal';
 import ReceivingTable from '@/pages/receiving/components/ReceivingTable';
 
@@ -14,6 +15,7 @@ class ReceivingStep extends BasePageModel {
 
   updateExpiryDatePopup: NewAlertPopup;
   fileHandler: FileHandler;
+  autosaveStatus: AutosaveStatus;
 
   constructor(page: Page) {
     super(page);
@@ -21,6 +23,7 @@ class ReceivingStep extends BasePageModel {
     this.editModal = new EditModal(page);
     this.updateExpiryDatePopup = new NewAlertPopup(page);
     this.fileHandler = new FileHandler(page);
+    this.autosaveStatus = new AutosaveStatus(page);
   }
 
   async isLoaded() {
@@ -36,10 +39,6 @@ class ReceivingStep extends BasePageModel {
 
   get autofillQuantitiesButton() {
     return this.page.getByRole('button', { name: 'Autofill quantities' });
-  }
-
-  get autosaveStatus() {
-    return this.page.getByTestId('receiving-autosave-status');
   }
 
   get confirmReceivingDialog() {
