@@ -1,4 +1,4 @@
-import Navbar from '@/components/Navbar';
+import PutawayService from '@/api/PutawayService';
 import AppConfig from '@/config/AppConfig';
 import { DASHBOARD_URL } from '@/constants/applicationUrls';
 import { ShipmentType } from '@/constants/ShipmentType';
@@ -16,7 +16,44 @@ import {
 } from '@/utils/shipmentUtils';
 import { byNameAsc } from '@/utils/sortUtils';
 
+/**
+  "Refresh Caches" only triggers RefreshProductAvailabilityJob (a Quartz job
+  recomputing the whole location from the transaction ledger) and returns
+  immediately - it does not wait for that job to finish, and the job's
+  duration is highly variable (milliseconds to minutes depending on server
+  load). Polling the putaway's own quantityAvailable is the only reliable way
+  to know the job has actually caught up with an external stock change.
+*/
+async function waitForQuantityAvailable({
+  putawayService,
+  orderId,
+  productId,
+  expectedQuantity,
+}: {
+  putawayService: PutawayService;
+  orderId: string;
+  productId: string;
+  expectedQuantity: number;
+}) {
+  await expect
+    .poll(
+      async () => {
+        const putaway = await putawayService.getPutaway(orderId);
+        const item = putaway?.data.putawayItems?.find(
+          (it) => it['product.id'] === productId
+        );
+        return item?.quantityAvailable;
+      },
+      {
+        message: `Waiting for the recorded stock change for product ${productId} to be reflected in putaway ${orderId}`,
+        timeout: 120_000,
+      }
+    )
+    .toBe(expectedQuantity);
+}
+
 test.describe('Assert validation on qty removed from receiving bin', () => {
+  test.describe.configure({ timeout: 300_000 });
   let STOCK_MOVEMENT: StockMovementResponse;
   let PUTAWAY_ORDER_IDS: string[] = [];
   let product: ProductResponse;
@@ -119,6 +156,7 @@ test.describe('Assert validation on qty removed from receiving bin', () => {
     productShowPage,
     putawayDetailsPage,
     putawayListPage,
+    putawayService,
     browser,
     navbar,
   }) => {
@@ -189,17 +227,23 @@ test.describe('Assert validation on qty removed from receiving bin', () => {
     await test.step('Open new tab and edit qty to 0 in receiving bin on stock card', async () => {
       const newPage = await browser.newPage();
       const newProductShowPage = new ProductShowPage(newPage);
-      const newNavbar = new Navbar(newPage);
       await newProductShowPage.goToPage(product.id);
       await newProductShowPage.recordStockButton.click();
       await newProductShowPage.recordStock.lineItemsTable
-        .row(1)
+        .getRowByBinLocation(receivingBin)
         .newQuantity.getByRole('textbox')
         .fill('0');
       await newProductShowPage.recordStock.lineItemsTable.saveButton.click();
-      await newNavbar.profileButton.click();
-      await newNavbar.refreshCachesButton.click();
       await newPage.close();
+    });
+
+    await test.step('Wait for the recorded qty change to settle', async () => {
+      await waitForQuantityAvailable({
+        putawayService,
+        orderId: PUTAWAY_ORDER_IDS[0],
+        productId: product.id,
+        expectedQuantity: 0,
+      });
     });
 
     await test.step('Try to complete putaway and assert error message', async () => {
@@ -245,12 +289,18 @@ test.describe('Assert validation on qty removed from receiving bin', () => {
       await productShowPage.goToPage(product2.id);
       await productShowPage.recordStockButton.click();
       await productShowPage.recordStock.lineItemsTable
-        .row(2)
+        .getRowByBinLocation(receivingBin)
         .newQuantity.getByRole('textbox')
         .fill('5');
       await productShowPage.recordStock.lineItemsTable.saveButton.click();
-      await RefreshCachesUtils.refreshCaches({
-        navbar,
+    });
+
+    await test.step('Wait for the recorded qty change to settle', async () => {
+      await waitForQuantityAvailable({
+        putawayService,
+        orderId: PUTAWAY_ORDER_IDS[0],
+        productId: product2.id,
+        expectedQuantity: 5,
       });
     });
 

@@ -38,6 +38,10 @@ class LineItemsTable extends BasePageModel {
   getRowByLot(lot: string) {
     return this.table.locator(`tr:has-text("${lot}")`);
   }
+
+  getRowByBinLocation(binLocation: string) {
+    return new Row(this.page, this.rows.filter({ hasText: binLocation }));
+  }
 }
 
 class Row extends BasePageModel {
