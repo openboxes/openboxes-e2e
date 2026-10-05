@@ -32,21 +32,24 @@ class CheckStep extends BasePageModel {
   }
 
   get originField() {
-    return this.shimpentInformation.locator(
-      '.item-details__field:has-text("Origin:") .item-details__value'
-    );
+    return this.shimpentInformation
+      .locator('.item-details__field')
+      .filter({ hasText: 'Origin:' })
+      .locator('.item-details__value');
   }
 
   get destinationField() {
-    return this.shimpentInformation.locator(
-      '.item-details__field:has-text("Destination:") .item-details__value'
-    );
+    return this.shimpentInformation
+      .locator('.item-details__field')
+      .filter({ hasText: 'Destination:' })
+      .locator('.item-details__value');
   }
 
   get shippedOnField() {
-    return this.shimpentInformation.locator(
-      '.item-details__field:has-text("Shipped on:") .item-details__value'
-    );
+    return this.shimpentInformation
+      .locator('.item-details__field')
+      .filter({ hasText: 'Shipped on:' })
+      .locator('.item-details__value');
   }
 
   get cancelAllRemainingButton() {
