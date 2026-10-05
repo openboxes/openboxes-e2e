@@ -53,6 +53,15 @@ class ReceivingStep extends BasePageModel {
     return this.confirmReceivingDialog.getByRole('button', { name: 'Yes' });
   }
 
+  get showPutawaySwitch() {
+    return this.page.getByTestId('show-putaway-switch');
+  }
+
+  async enableShowPutaway() {
+    await this.showPutawaySwitch.locator('.slider').click();
+    await expect(this.showPutawaySwitch.getByRole('checkbox')).toBeChecked();
+  }
+
   get saveAndExitButton() {
     return this.page.getByRole('button', { name: 'Save & Exit' });
   }

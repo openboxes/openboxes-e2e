@@ -6,7 +6,7 @@ import { StockMovementResponse } from '@/types';
 import BinLocationUtils from '@/utils/BinLocationUtils';
 import { deleteShipment } from '@/utils/shipmentUtils';
 
-test.describe.skip('Assert bin location not clearable', () => {
+test.describe('Assert bin location not clearable', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
 
   test.beforeEach(
@@ -39,11 +39,7 @@ test.describe.skip('Assert bin location not clearable', () => {
   );
 
   test.afterEach(
-    async ({
-      stockMovementService,
-      locationService,
-      mainLocationService,
-    }) => {
+    async ({ stockMovementService, locationService, mainLocationService }) => {
       await deleteShipment({ stockMovementService, STOCK_MOVEMENT });
       const receivingBin =
         AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
@@ -59,6 +55,9 @@ test.describe.skip('Assert bin location not clearable', () => {
     stockMovementShowPage,
     receivingPage,
   }) => {
+    const receivingBin =
+      AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
+
     await test.step('Go to stock movement show page', async () => {
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
       await stockMovementShowPage.isLoaded();
@@ -69,11 +68,16 @@ test.describe.skip('Assert bin location not clearable', () => {
       await receivingPage.receivingStep.isLoaded();
     });
 
+    await test.step('Show putaway location column', async () => {
+      await receivingPage.receivingStep.enableShowPutaway();
+    });
+
     await test.step('Assert bin location cant be cleared', async () => {
+      const binLocationSelect =
+        receivingPage.receivingStep.table.row(1).binLocationSelect;
+      await expect(binLocationSelect).toHaveText(receivingBin);
       await expect(
-        receivingPage.receivingStep.table
-          .row(1)
-          .binLocationSelect.locator('.react-select__clear-indicator')
+        binLocationSelect.locator('.react-select__clear-indicator')
       ).toBeHidden();
     });
 
@@ -83,32 +87,47 @@ test.describe.skip('Assert bin location not clearable', () => {
       await receivingPage.receivingStep.editModal.addLineButton.click();
       await receivingPage.receivingStep.editModal.table
         .row(1)
-        .quantityShippedField.numberbox.fill('5');
+        .receivingNowField.numberbox.fill('5');
       await receivingPage.receivingStep.editModal.table
-        .row(0)
-        .quantityShippedField.numberbox.fill('5');
+        .row(2)
+        .lotNumberField.textbox.fill('E2E-split-lot');
+      await receivingPage.receivingStep.editModal.table
+        .row(2)
+        .receivingNowField.numberbox.fill('5');
+    });
+
+    await test.step('Assert bin location field content in edit modal', async () => {
+      for (const row of [1, 2]) {
+        const binLocationSelect =
+          receivingPage.receivingStep.editModal.table.row(
+            row
+          ).binLocationSelect;
+        await expect(binLocationSelect).toHaveText(receivingBin);
+        await expect(
+          binLocationSelect.locator('.react-select__clear-indicator')
+        ).toBeHidden();
+      }
+    });
+
+    await test.step('Save split lines', async () => {
       await receivingPage.receivingStep.editModal.saveButton.click();
+      await expect(receivingPage.receivingStep.editModal.modal).toBeHidden();
     });
 
     await test.step('Assert bin location field content after split line', async () => {
-      const receivingBin =
-        AppConfig.instance.receivingBinPrefix + STOCK_MOVEMENT.identifier;
+      // After a split, the table shows the replaced row (1), the changes
+      // toggle row (2) and the split lines (3 and 4)
       await expect(
         receivingPage.receivingStep.table.row(1).binLocationSelect
       ).toHaveText(receivingBin);
-      await expect(
-        receivingPage.receivingStep.table.row(2).binLocationSelect
-      ).toHaveText(receivingBin);
-      await expect(
-        receivingPage.receivingStep.table
-          .row(1)
-          .binLocationSelect.locator('.react-select__clear-indicator')
-      ).toBeHidden();
-      await expect(
-        receivingPage.receivingStep.table
-          .row(2)
-          .binLocationSelect.locator('.react-select__clear-indicator')
-      ).toBeHidden();
+      for (const row of [3, 4]) {
+        const binLocationSelect =
+          receivingPage.receivingStep.table.row(row).binLocationSelect;
+        await expect(binLocationSelect).toHaveText(receivingBin);
+        await expect(
+          binLocationSelect.locator('.react-select__clear-indicator')
+        ).toBeHidden();
+      }
     });
   });
 });

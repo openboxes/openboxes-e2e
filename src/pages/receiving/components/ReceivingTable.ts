@@ -52,6 +52,11 @@ class Row extends BasePageModel {
     return this.row.getByRole('button', { name: 'Comment' });
   }
 
+  // visible only when the "Show Putaway" switch is on
+  get binLocationSelect() {
+    return this.row.locator('[aria-label="Location"]');
+  }
+
   getItem(name: string) {
     return this.row.locator('[aria-label="Product"]').getByText(name);
   }
