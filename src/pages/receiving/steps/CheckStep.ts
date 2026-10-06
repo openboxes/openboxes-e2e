@@ -63,7 +63,9 @@ class CheckStep extends BasePageModel {
   }
 
   get backToEditButton() {
-    return this.page.getByRole('button', { name: 'Back to edit' });
+    return this.page
+      .locator('.submit-buttons')
+      .getByRole('button', { name: 'Back to Receive' });
   }
 }
 
