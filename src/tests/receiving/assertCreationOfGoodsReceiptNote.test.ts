@@ -8,7 +8,7 @@ import { pageContainsValues } from '@/utils/pageUtils';
 import { deleteShipment } from '@/utils/shipmentUtils';
 import { captureRowValues } from '@/utils/tableUtils';
 
-test.describe.skip('Assert Goods Receipt Note is created and opened', () => {
+test.describe('Assert Goods Receipt Note is created and opened', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
 
   test.beforeEach(
@@ -86,15 +86,14 @@ test.describe.skip('Assert Goods Receipt Note is created and opened', () => {
       await receivingPage.receivingStep.isLoaded();
       await receivingPage.receivingStep.table
         .row(1)
-        .receivingNowField.textbox.fill('10');
+        .receivingNowField.numberbox.fill('10');
       await receivingPage.receivingStep.table
         .row(2)
-        .receivingNowField.textbox.fill('10');
+        .receivingNowField.numberbox.fill('10');
     });
 
     await test.step('Go to check page and finish receipt', async () => {
       await receivingPage.nextButton.click();
-      await receivingPage.checkStep.isLoaded();
       await receivingPage.checkStep.isLoaded();
       const rowCount = await receivingPage.checkStep.table.itemRows.count();
       expect(rowCount).toBeGreaterThan(0);
@@ -133,12 +132,11 @@ test.describe.skip('Assert Goods Receipt Note is created and opened', () => {
       await receivingPage.receivingStep.isLoaded();
       await receivingPage.receivingStep.table
         .row(1)
-        .receivingNowField.textbox.fill('10');
+        .receivingNowField.numberbox.fill('10');
     });
 
     await test.step('Go to check page and finish 2nd receipt', async () => {
       await receivingPage.nextButton.click();
-      await receivingPage.checkStep.isLoaded();
       await receivingPage.checkStep.isLoaded();
       await receivingPage.checkStep.receiveShipmentButton.click();
       await stockMovementShowPage.isLoaded();
@@ -164,6 +162,8 @@ test.describe.skip('Assert Goods Receipt Note is created and opened', () => {
     await test.step('Rollback shipment received in 2 receipts', async () => {
       await stockMovementShowPage.isLoaded();
       await stockMovementShowPage.rollbackLastReceiptButton.click();
+      await stockMovementShowPage.isLoaded();
+      await expect(stockMovementShowPage.statusTag).toHaveText('Receiving');
     });
   });
 });
