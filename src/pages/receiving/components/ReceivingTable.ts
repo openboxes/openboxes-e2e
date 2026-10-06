@@ -32,6 +32,31 @@ class ReceivingTable extends BasePageModel {
   getCellValue(row: number, column: string) {
     return this.rows.nth(row - 1).locator(`[aria-label="${column}"]`);
   }
+
+  // "Autofill" select in the Location column header (visible only when the
+  // "Show Putaway" switch is on)
+  get locationAutofillSelect() {
+    return this.table.getByTestId('location-autofill');
+  }
+
+  // shown when the autofill would overwrite a location the user has changed
+  get autofillLocationConfirmDialog() {
+    return this.page.locator('.react-confirm-alert');
+  }
+
+  get acceptAutofillLocationConfirmDialog() {
+    return this.autofillLocationConfirmDialog.getByRole('button', {
+      name: 'Yes',
+    });
+  }
+
+  async autofillLocation(option: string) {
+    await this.locationAutofillSelect.click();
+    await this.page
+      .getByTestId('custom-select-dropdown-menu')
+      .getByText(option, { exact: true })
+      .click();
+  }
 }
 
 class Row extends BasePageModel {
@@ -55,6 +80,24 @@ class Row extends BasePageModel {
   // visible only when the "Show Putaway" switch is on
   get binLocationSelect() {
     return this.row.locator('[aria-label="Location"]');
+  }
+
+  // the selected value only, without the screen reader text react-select
+  // renders next to it while focused
+  get selectedBinLocation() {
+    return this.binLocationSelect.locator('.react-select__single-value');
+  }
+
+  getBinLocation(binLocation: string) {
+    return this.page
+      .getByTestId('custom-select-dropdown-menu')
+      .getByText(binLocation, { exact: true });
+  }
+
+  async selectBinLocation(binLocation: string) {
+    await this.binLocationSelect.click();
+    await this.page.keyboard.type(binLocation);
+    await this.getBinLocation(binLocation).click();
   }
 
   getItem(name: string) {
