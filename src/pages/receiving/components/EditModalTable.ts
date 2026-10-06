@@ -35,7 +35,7 @@ class Row extends BasePageModel {
     super(page);
     this.row = row;
     this.lotNumberField = new TextField(page, 'Lot/SN', row);
-    this.expiryDatePickerField = new DatePicker(page, 'Exp. Date', row);
+    this.expiryDatePickerField = new DatePicker(page, 'Exp Date', row);
     this.receivingNowField = new TextField(page, 'Receiving now', row);
   }
 
