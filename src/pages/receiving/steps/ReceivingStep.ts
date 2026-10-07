@@ -21,7 +21,7 @@ class ReceivingStep extends BasePageModel {
     super(page);
     this.table = new ReceivingTable(page);
     this.editModal = new EditModal(page);
-    this.updateExpiryDatePopup = new NewAlertPopup(page);
+    this.updateExpiryDatePopup = new NewAlertPopup(page, 'Ok', 'Cancel');
     this.fileHandler = new FileHandler(page);
     this.autosaveStatus = new AutosaveStatus(page);
   }
@@ -94,6 +94,10 @@ class ReceivingStep extends BasePageModel {
       .getByText(
         'You can only import the Receiving Now and the Comment fields. To make other changes, please use the edit line feature. You can then export and import the template again.'
       );
+  }
+
+  get resetSortingButton() {
+    return this.page.getByRole('button', { name: 'Reset sorting' });
   }
 
   get orderSelect() {

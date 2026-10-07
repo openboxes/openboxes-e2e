@@ -7,7 +7,7 @@ import BinLocationUtils from '@/utils/BinLocationUtils';
 import { deleteShipment } from '@/utils/shipmentUtils';
 import UniqueIdentifier from '@/utils/UniqueIdentifier';
 
-test.describe.skip('Receive item into hold bin', () => {
+test.describe('Receive item into hold bin', () => {
   test.describe.configure({ timeout: 60000 });
   //timeout has been added for this test to make sure that the content on bin location tab will load as it can include a lot of data
   let STOCK_MOVEMENT: StockMovementResponse;
@@ -99,15 +99,16 @@ test.describe.skip('Receive item into hold bin', () => {
     });
 
     await test.step('Edit bin when receive item', async () => {
-      await receivingPage.receivingStep.isLoaded();
-      await receivingPage.receivingStep.table.row(1).binLocationSelect.click();
+      await receivingPage.receivingStep.enableShowPutaway();
       await receivingPage.receivingStep.table
         .row(1)
-        .getBinLocation(holdBinLocationName)
-        .click();
+        .selectBinLocation(holdBinLocationName);
+      await expect(
+        receivingPage.receivingStep.table.row(1).selectedBinLocation
+      ).toHaveText(holdBinLocationName);
       await receivingPage.receivingStep.table
         .row(1)
-        .receivingNowField.textbox.fill('10');
+        .receivingNowField.numberbox.fill('10');
     });
 
     await test.step('Go to check page', async () => {
@@ -115,8 +116,10 @@ test.describe.skip('Receive item into hold bin', () => {
       await receivingPage.checkStep.isLoaded();
     });
 
-    await test.step('Finish receipt of item', async () => {
-      await receivingPage.checkStep.isLoaded();
+    await test.step('Assert hold bin on check page and finish receipt of item', async () => {
+      await expect(
+        receivingPage.checkStep.table.getCellValue(1, 'Location')
+      ).toHaveText(holdBinLocationName);
       await receivingPage.checkStep.receiveShipmentButton.click();
       await stockMovementShowPage.isLoaded();
     });
@@ -132,15 +135,18 @@ test.describe.skip('Receive item into hold bin', () => {
       await stockMovementShowPage.packingListTable.row(1).product.click();
       await productShowPage.inStockTab.click();
       await productShowPage.inStockTabSection.isLoaded();
-      await expect(
-        productShowPage.inStockTabSection.row(2).binLocation
-      ).toHaveText(holdBinLocationName);
-      await expect(
-        productShowPage.inStockTabSection.row(2).row
-      ).toHaveAttribute('title', 'This bin has been restricted');
-      await expect(
-        productShowPage.inStockTabSection.row(2).inventoryInformation
-      ).toHaveText('Hold');
+      // the product has stock in other bins too, so the row order isn't fixed
+      const rowIndex =
+        await productShowPage.inStockTabSection.getRowIndexByBinLocation(
+          holdBinLocationName
+        );
+      const row = productShowPage.inStockTabSection.row(rowIndex);
+      await expect(row.binLocation).toHaveText(holdBinLocationName);
+      await expect(row.row).toHaveAttribute(
+        'title',
+        'This bin has been restricted'
+      );
+      await expect(row.inventoryInformation).toHaveText('Hold');
     });
   });
 });
