@@ -43,12 +43,16 @@ class Row extends BasePageModel {
     return this.row.locator('[aria-label="Location"]');
   }
 
+  get productSelect() {
+    return this.row.locator('[aria-label="Product"]');
+  }
+
   get clearProductSelect() {
-    return this.row.locator('.react-select__clear-indicator');
+    return this.productSelect.locator('.react-select__clear-indicator');
   }
 
   async getProductSelect(name: string) {
-    await this.row
+    await this.productSelect
       .getByTestId('custom-select-element')
       .getByRole('textbox')
       .fill(name);

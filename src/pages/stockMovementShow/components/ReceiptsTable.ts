@@ -26,6 +26,10 @@ class ReceiptsListTable extends BasePageModel {
   row(index: number) {
     return new Row(this.page, this.rows.nth(index));
   }
+
+  getRowByText(text: string) {
+    return new Row(this.page, this.rows.filter({ hasText: text }));
+  }
 }
 
 class Row extends BasePageModel {
