@@ -8,6 +8,8 @@ import { deleteShipment } from '@/utils/shipmentUtils';
 
 test.describe('Cancel qty in the middle of receipt', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
+  let PRODUCT_ONE_CODE: string;
+  let PRODUCT_TWO_CODE: string;
 
   test.beforeEach(
     async ({
@@ -18,6 +20,8 @@ test.describe('Cancel qty in the middle of receipt', () => {
       const supplierLocation = await supplierLocationService.getLocation();
       const PRODUCT_ONE = await productService.getProduct(Product.ONE);
       const PRODUCT_TWO = await productService.getProduct(Product.TWO);
+      PRODUCT_ONE_CODE = PRODUCT_ONE.productCode;
+      PRODUCT_TWO_CODE = PRODUCT_TWO.productCode;
 
       STOCK_MOVEMENT = await stockMovementService.createInbound({
         originId: supplierLocation.id,
@@ -85,25 +89,28 @@ test.describe('Cancel qty in the middle of receipt', () => {
       await receivingPage.nextButton.click();
       await receivingPage.checkStep.isLoaded();
       await expect(
-        receivingPage.checkStep.table.getCellValue(1, 'Status')
+        receivingPage.checkStep.table.rowByProductCode(PRODUCT_ONE_CODE).status
       ).toHaveText('50 remaining');
       await expect(
-        receivingPage.checkStep.table.getCellValue(2, 'Status')
+        receivingPage.checkStep.table.rowByProductCode(PRODUCT_TWO_CODE).status
       ).toHaveText('Complete');
       await expect(
-        receivingPage.checkStep.table.row(1).cancelRemainingCheckbox
+        receivingPage.checkStep.table.rowByProductCode(PRODUCT_ONE_CODE)
+          .cancelRemainingCheckbox
       ).toBeEnabled();
       await expect(
-        receivingPage.checkStep.table.row(2).cancelRemainingCheckbox
+        receivingPage.checkStep.table.rowByProductCode(PRODUCT_TWO_CODE)
+          .cancelRemainingCheckbox
       ).toBeHidden();
     });
 
     await test.step('Select cancel remaining qty checkbox and receive shipment', async () => {
       await receivingPage.checkStep.table
-        .row(1)
+        .rowByProductCode(PRODUCT_ONE_CODE)
         .cancelRemainingCheckbox.check();
       await expect(
-        receivingPage.checkStep.table.row(1).cancelRemainingCheckbox
+        receivingPage.checkStep.table.rowByProductCode(PRODUCT_ONE_CODE)
+          .cancelRemainingCheckbox
       ).toBeChecked();
       await receivingPage.checkStep.receiveShipmentButton.click();
       await stockMovementShowPage.isLoaded();
@@ -152,10 +159,11 @@ test.describe('Cancel qty in the middle of receipt', () => {
       await receivingPage.nextButton.click();
       await receivingPage.checkStep.isLoaded();
       await expect(
-        receivingPage.checkStep.table.getCellValue(1, 'Status')
+        receivingPage.checkStep.table.rowByProductCode(PRODUCT_ONE_CODE).status
       ).toHaveText('50 remaining');
       await expect(
-        receivingPage.checkStep.table.row(1).cancelRemainingCheckbox
+        receivingPage.checkStep.table.rowByProductCode(PRODUCT_ONE_CODE)
+          .cancelRemainingCheckbox
       ).toBeEnabled();
       await receivingPage.checkStep.receiveShipmentButton.click();
       await stockMovementShowPage.isLoaded();
@@ -188,31 +196,35 @@ test.describe('Cancel qty in the middle of receipt', () => {
       await receivingPage.nextButton.click();
       await receivingPage.checkStep.isLoaded();
       await expect(
-        receivingPage.checkStep.table.getCellValue(1, 'Status')
+        receivingPage.checkStep.table.rowByProductCode(PRODUCT_ONE_CODE).status
       ).toHaveText('25 remaining');
       await expect(
-        receivingPage.checkStep.table.getCellValue(2, 'Status')
+        receivingPage.checkStep.table.rowByProductCode(PRODUCT_TWO_CODE).status
       ).toHaveText('10 remaining');
       await expect(
-        receivingPage.checkStep.table.row(1).cancelRemainingCheckbox
+        receivingPage.checkStep.table.rowByProductCode(PRODUCT_ONE_CODE)
+          .cancelRemainingCheckbox
       ).toBeEnabled();
       await expect(
-        receivingPage.checkStep.table.row(2).cancelRemainingCheckbox
+        receivingPage.checkStep.table.rowByProductCode(PRODUCT_TWO_CODE)
+          .cancelRemainingCheckbox
       ).toBeEnabled();
     });
 
     await test.step('Select cancel remaining qty checkbox and receive shipment', async () => {
       await receivingPage.checkStep.table
-        .row(1)
+        .rowByProductCode(PRODUCT_ONE_CODE)
         .cancelRemainingCheckbox.check();
       await receivingPage.checkStep.table
-        .row(2)
+        .rowByProductCode(PRODUCT_TWO_CODE)
         .cancelRemainingCheckbox.check();
       await expect(
-        receivingPage.checkStep.table.row(1).cancelRemainingCheckbox
+        receivingPage.checkStep.table.rowByProductCode(PRODUCT_ONE_CODE)
+          .cancelRemainingCheckbox
       ).toBeChecked();
       await expect(
-        receivingPage.checkStep.table.row(2).cancelRemainingCheckbox
+        receivingPage.checkStep.table.rowByProductCode(PRODUCT_TWO_CODE)
+          .cancelRemainingCheckbox
       ).toBeChecked();
       await receivingPage.checkStep.receiveShipmentButton.click();
       await stockMovementShowPage.isLoaded();
@@ -241,7 +253,9 @@ test.describe('Cancel qty in the middle of receipt', () => {
       await stockMovementShowPage.isLoaded();
       await stockMovementShowPage.rollbackLastReceiptButton.click();
       // wait for the rollback to finish, so it doesn't race with the cleanup
-      await stockMovementShowPage.isLoaded();
+      await expect(
+        stockMovementShowPage.rollbackReceiptInformationMessage
+      ).toContainText('Successfully rolled back last receipt');
       await expect(stockMovementShowPage.statusTag).toHaveText('Receiving');
     });
   });
@@ -274,16 +288,18 @@ test.describe('Cancel qty in the middle of receipt', () => {
       await receivingPage.nextButton.click();
       await receivingPage.checkStep.isLoaded();
       await expect(
-        receivingPage.checkStep.table.getCellValue(1, 'Status')
+        receivingPage.checkStep.table.rowByProductCode(PRODUCT_ONE_CODE).status
       ).toHaveText('100 over');
       await expect(
-        receivingPage.checkStep.table.getCellValue(2, 'Status')
+        receivingPage.checkStep.table.rowByProductCode(PRODUCT_TWO_CODE).status
       ).toHaveText('90 over');
       await expect(
-        receivingPage.checkStep.table.row(1).cancelRemainingCheckbox
+        receivingPage.checkStep.table.rowByProductCode(PRODUCT_ONE_CODE)
+          .cancelRemainingCheckbox
       ).toBeHidden();
       await expect(
-        receivingPage.checkStep.table.row(2).cancelRemainingCheckbox
+        receivingPage.checkStep.table.rowByProductCode(PRODUCT_TWO_CODE)
+          .cancelRemainingCheckbox
       ).toBeHidden();
     });
 
@@ -338,26 +354,30 @@ test.describe('Cancel qty in the middle of receipt', () => {
       await receivingPage.nextButton.click();
       await receivingPage.checkStep.isLoaded();
       await expect(
-        receivingPage.checkStep.table.getCellValue(1, 'Status')
+        receivingPage.checkStep.table.rowByProductCode(PRODUCT_ONE_CODE).status
       ).toHaveText('50 remaining');
       await expect(
-        receivingPage.checkStep.table.getCellValue(2, 'Status')
+        receivingPage.checkStep.table.rowByProductCode(PRODUCT_TWO_CODE).status
       ).toHaveText('5 remaining');
       await expect(
-        receivingPage.checkStep.table.row(1).cancelRemainingCheckbox
+        receivingPage.checkStep.table.rowByProductCode(PRODUCT_ONE_CODE)
+          .cancelRemainingCheckbox
       ).toBeEnabled();
       await expect(
-        receivingPage.checkStep.table.row(2).cancelRemainingCheckbox
+        receivingPage.checkStep.table.rowByProductCode(PRODUCT_TWO_CODE)
+          .cancelRemainingCheckbox
       ).toBeEnabled();
     });
 
     await test.step('Select cancel all remaining button', async () => {
       await receivingPage.checkStep.cancelAllRemainingButton.click();
       await expect(
-        receivingPage.checkStep.table.row(1).cancelRemainingCheckbox
+        receivingPage.checkStep.table.rowByProductCode(PRODUCT_ONE_CODE)
+          .cancelRemainingCheckbox
       ).toBeChecked();
       await expect(
-        receivingPage.checkStep.table.row(2).cancelRemainingCheckbox
+        receivingPage.checkStep.table.rowByProductCode(PRODUCT_TWO_CODE)
+          .cancelRemainingCheckbox
       ).toBeChecked();
       await receivingPage.checkStep.receiveShipmentButton.click();
       await stockMovementShowPage.isLoaded();
@@ -494,7 +514,10 @@ test.describe('Cancel qty in the middle of receipt', () => {
     await test.step('Rollback shipment received in 2 receipts', async () => {
       await stockMovementShowPage.isLoaded();
       await stockMovementShowPage.rollbackLastReceiptButton.click();
-      await stockMovementShowPage.isLoaded();
+      // wait for the rollback to finish, so it doesn't race with the cleanup
+      await expect(
+        stockMovementShowPage.rollbackReceiptInformationMessage
+      ).toContainText('Successfully rolled back last receipt');
     });
   });
 });

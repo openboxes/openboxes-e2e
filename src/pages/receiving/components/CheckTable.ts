@@ -35,6 +35,19 @@ class CheckTable extends BasePageModel {
     return new Row(this.page, this.itemRows.nth(index));
   }
 
+  // the order of the items isn't guaranteed to match the receiving step, so
+  // find the row by its product code instead of its position
+  rowByProductCode(productCode: string) {
+    return new Row(
+      this.page,
+      this.rows.filter({
+        has: this.page
+          .locator('[aria-label="Code"]')
+          .getByText(productCode, { exact: true }),
+      })
+    );
+  }
+
   getColumnHeader(columnName: string) {
     return this.table
       .locator('.rt-thead')
@@ -60,6 +73,10 @@ class Row extends BasePageModel {
 
   get code() {
     return this.row.locator('[aria-label="Code"]');
+  }
+
+  get status() {
+    return this.row.locator('[aria-label="Status"]');
   }
 
   get cancelRemainingCheckbox() {

@@ -162,7 +162,10 @@ test.describe('Assert Goods Receipt Note is created and opened', () => {
     await test.step('Rollback shipment received in 2 receipts', async () => {
       await stockMovementShowPage.isLoaded();
       await stockMovementShowPage.rollbackLastReceiptButton.click();
-      await stockMovementShowPage.isLoaded();
+      // wait for the rollback to finish, so it doesn't race with the cleanup
+      await expect(
+        stockMovementShowPage.rollbackReceiptInformationMessage
+      ).toContainText('Successfully rolled back last receipt');
       await expect(stockMovementShowPage.statusTag).toHaveText('Receiving');
     });
   });

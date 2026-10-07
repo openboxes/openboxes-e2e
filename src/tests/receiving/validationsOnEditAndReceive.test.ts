@@ -204,7 +204,9 @@ test.describe('Validations on edit and receive inbound stock movement', () => {
       await stockMovementShowPage.isLoaded();
       await stockMovementShowPage.rollbackLastReceiptButton.click();
       // wait for the rollback to finish, so it doesn't race with the cleanup
-      await stockMovementShowPage.isLoaded();
+      await expect(
+        stockMovementShowPage.rollbackReceiptInformationMessage
+      ).toContainText('Successfully rolled back last receipt');
       await expect(stockMovementShowPage.statusTag).toHaveText('Receiving');
     });
   });
