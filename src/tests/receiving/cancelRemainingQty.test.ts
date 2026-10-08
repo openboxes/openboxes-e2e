@@ -233,19 +233,20 @@ test.describe('Cancel qty in the middle of receipt', () => {
     await test.step('Assert canceled qty on stock movement show page', async () => {
       await expect(stockMovementShowPage.statusTag).toHaveText('Received');
       await stockMovementShowPage.openReceiptsTab();
-      // the 1st receipt holds a line for every item (rows 1-2), so the
-      // 2nd receipt lines are rows 3-4
+      // lines with nothing received or canceled are not listed, so the 1st
+      // receipt shows only the 1st item (row 1) and the 2nd receipt lines are
+      // rows 2-3
+      await expect(
+        stockMovementShowPage.receiptListTable.row(2).quantityCanceled
+      ).toHaveText('25');
+      await expect(
+        stockMovementShowPage.receiptListTable.row(2).quantityReceived
+      ).toHaveText('25');
       await expect(
         stockMovementShowPage.receiptListTable.row(3).quantityCanceled
-      ).toHaveText('25');
-      await expect(
-        stockMovementShowPage.receiptListTable.row(3).quantityReceived
-      ).toHaveText('25');
-      await expect(
-        stockMovementShowPage.receiptListTable.row(4).quantityCanceled
       ).toHaveText('10');
       await expect(
-        stockMovementShowPage.receiptListTable.row(4).quantityReceived
+        stockMovementShowPage.receiptListTable.row(3).quantityReceived
       ).toHaveText('0');
     });
 

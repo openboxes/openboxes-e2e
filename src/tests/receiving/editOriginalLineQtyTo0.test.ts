@@ -170,10 +170,13 @@ test.describe('Edit qty of original line to 0', () => {
 
     await test.step('Assert nothing was received with lot on Receipt tab', async () => {
       await stockMovementShowPage.openReceiptsTab();
+      // lines with nothing received or canceled are not listed
       await expect(
-        stockMovementShowPage.receiptListTable.getRowByText(lot)
-          .quantityReceived
-      ).toHaveText('0');
+        stockMovementShowPage.receiptListTable.row(1).row
+      ).toBeVisible();
+      await expect(
+        stockMovementShowPage.receiptListTable.getRowByText(lot).row
+      ).toBeHidden();
     });
 
     await test.step('Assert received lines on Packing list', async () => {
