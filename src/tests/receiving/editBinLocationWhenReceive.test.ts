@@ -533,7 +533,9 @@ test.describe('Edit Bin Location when receive for all lines', () => {
     });
 
     await test.step('Autofill qty and go to check page', async () => {
-      await receivingPage.receivingStep.autofillQuantitiesButton.click();
+      await receivingPage.receivingStep.autofillQuantitiesButton.click({
+        force: true,
+      });
       await receivingPage.nextButton.click();
       await receivingPage.checkStep.isLoaded();
     });

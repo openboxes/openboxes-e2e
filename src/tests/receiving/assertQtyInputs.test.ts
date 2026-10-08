@@ -83,7 +83,9 @@ test.describe('Assert if quantity inputs remain when split lines', () => {
     });
 
     await test.step('Autofill receiving quantity', async () => {
-      await receivingPage.receivingStep.autofillQuantitiesButton.click();
+      await receivingPage.receivingStep.autofillQuantitiesButton.click({
+        force: true,
+      });
       await expect(
         receivingPage.receivingStep.table.row(1).receivingNowField.numberbox
       ).toHaveValue('50');
@@ -141,7 +143,9 @@ test.describe('Assert if quantity inputs remain when split lines', () => {
     });
 
     await test.step('Autofill quantity after split line does not override inputs', async () => {
-      await receivingPage.receivingStep.autofillQuantitiesButton.click();
+      await receivingPage.receivingStep.autofillQuantitiesButton.click({
+        force: true,
+      });
       await expect(
         receivingPage.receivingStep.table.row(1).receivingNowField.numberbox
       ).toHaveValue('50');
@@ -229,7 +233,9 @@ test.describe('Assert if quantity inputs remain when split lines', () => {
       await receivingPage.receivingStep.table
         .row(3)
         .receivingNowField.numberbox.fill('200');
-      await receivingPage.receivingStep.saveAndExitButton.click();
+      await receivingPage.receivingStep.saveAndExitButton.click({
+        force: true,
+      });
       await stockMovementShowPage.isLoaded();
     });
 
@@ -297,7 +303,9 @@ test.describe('Assert if quantity inputs remain when split lines', () => {
     });
 
     await test.step('Autofill quantity after split line does not override inputs', async () => {
-      await receivingPage.receivingStep.autofillQuantitiesButton.click();
+      await receivingPage.receivingStep.autofillQuantitiesButton.click({
+        force: true,
+      });
       await expect(
         receivingPage.receivingStep.table.row(3).receivingNowField.numberbox
       ).toHaveValue('25');

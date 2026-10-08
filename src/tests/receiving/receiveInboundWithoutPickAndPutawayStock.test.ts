@@ -91,7 +91,9 @@ test.describe('Receive inbound stock movement in location without pick and putaw
 
     await test.step('Autofill receiving qty', async () => {
       await receivingPage.receivingStep.isLoaded();
-      await receivingPage.receivingStep.autofillQuantitiesButton.click();
+      await receivingPage.receivingStep.autofillQuantitiesButton.click({
+        force: true,
+      });
     });
 
     await test.step('Go to and assert checking page is visible', async () => {

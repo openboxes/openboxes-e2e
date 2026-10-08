@@ -37,6 +37,8 @@ class ReceivingStep extends BasePageModel {
     await this.page.waitForResponse(PARTIAL_RECEIVING_API_PATTERN);
   }
 
+  // the button is wrapped in a tooltip, which can intercept the click once the
+  // tooltip is shown, so the tests click it with { force: true }
   get autofillQuantitiesButton() {
     return this.page.getByRole('button', { name: 'Autofill quantities' });
   }
@@ -62,6 +64,8 @@ class ReceivingStep extends BasePageModel {
     await expect(this.showPutawaySwitch.getByRole('checkbox')).toBeChecked();
   }
 
+  // the button is wrapped in a tooltip, which can intercept the click once the
+  // tooltip is shown, so the tests click it with { force: true }
   get saveAndExitButton() {
     return this.page.getByRole('button', { name: 'Save & Exit' });
   }
@@ -96,6 +100,8 @@ class ReceivingStep extends BasePageModel {
       );
   }
 
+  // the button is wrapped in a tooltip, which can intercept the click once the
+  // tooltip is shown, so the tests click it with { force: true }
   get resetSortingButton() {
     return this.page.getByRole('button', { name: 'Reset sorting' });
   }

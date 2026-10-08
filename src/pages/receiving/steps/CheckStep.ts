@@ -52,6 +52,8 @@ class CheckStep extends BasePageModel {
       .locator('.item-details__value');
   }
 
+  // the button is wrapped in a tooltip, which can intercept the click once the
+  // tooltip is shown, so the tests click it with { force: true }
   get cancelAllRemainingButton() {
     return this.page.getByRole('button', { name: 'Cancel All Remaining' });
   }
@@ -62,6 +64,8 @@ class CheckStep extends BasePageModel {
       .getByText('Must occur on or after Actual Shipping Date');
   }
 
+  // the button is wrapped in a tooltip, which can intercept the click once the
+  // tooltip is shown, so the tests click it with { force: true }
   get backToEditButton() {
     return this.page
       .locator('.submit-buttons')

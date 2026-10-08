@@ -121,7 +121,7 @@ test.describe.skip('Assert recipient field when receive', () => {
 
     await test.step('Go backward and assert recipient field', async () => {
       const USER = await mainUserService.getUser();
-      await receivingPage.checkStep.backToEditButton.click();
+      await receivingPage.checkStep.backToEditButton.click({ force: true });
       await receivingPage.receivingStep.isLoaded();
       await expect(
         receivingPage.receivingStep.table.getCellValue(1, 'Recipient')

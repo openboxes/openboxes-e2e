@@ -371,7 +371,9 @@ test.describe('Cancel qty in the middle of receipt', () => {
     });
 
     await test.step('Select cancel all remaining button', async () => {
-      await receivingPage.checkStep.cancelAllRemainingButton.click();
+      await receivingPage.checkStep.cancelAllRemainingButton.click({
+        force: true,
+      });
       await expect(
         receivingPage.checkStep.table.rowByProductCode(PRODUCT_ONE_CODE)
           .cancelRemainingCheckbox
@@ -432,7 +434,7 @@ test.describe('Cancel qty in the middle of receipt', () => {
     });
 
     await test.step('Go to backward to receiving page and forward again', async () => {
-      await receivingPage.checkStep.backToEditButton.click();
+      await receivingPage.checkStep.backToEditButton.click({ force: true });
       await receivingPage.nextButton.click();
       await receivingPage.checkStep.isLoaded();
       await expect(
@@ -487,7 +489,7 @@ test.describe('Cancel qty in the middle of receipt', () => {
     });
 
     await test.step('Go to backward to receiving page and forward again', async () => {
-      await receivingPage.checkStep.backToEditButton.click();
+      await receivingPage.checkStep.backToEditButton.click({ force: true });
       await receivingPage.nextButton.click();
       await receivingPage.checkStep.isLoaded();
       await expect(

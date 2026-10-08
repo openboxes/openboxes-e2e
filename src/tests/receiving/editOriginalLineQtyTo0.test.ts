@@ -147,7 +147,7 @@ test.describe('Edit qty of original line to 0', () => {
     });
 
     await test.step('Return to receiving step and assert original line is not visible', async () => {
-      await receivingPage.checkStep.backToEditButton.click();
+      await receivingPage.checkStep.backToEditButton.click({ force: true });
       await receivingPage.receivingStep.isLoaded();
       await expect(receivingPage.receivingStep.table.rows).toHaveCount(8);
       await expect(

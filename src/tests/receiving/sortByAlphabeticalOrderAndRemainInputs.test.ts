@@ -164,9 +164,11 @@ test.describe('Apply sorting by alphabetical order and remain inputs', () => {
 
     await test.step('Go back to receive page and reset sorting to shipment order', async () => {
       const PRODUCT_FIVE = await productService.getProduct(Product.FIVE);
-      await receivingPage.checkStep.backToEditButton.click();
+      await receivingPage.checkStep.backToEditButton.click({ force: true });
       await receivingPage.receivingStep.isLoaded();
-      await receivingPage.receivingStep.resetSortingButton.click();
+      await receivingPage.receivingStep.resetSortingButton.click({
+        force: true,
+      });
       await expect(
         receivingPage.receivingStep.table.row(3).getItem(PRODUCT_FIVE.name)
       ).toBeVisible();
