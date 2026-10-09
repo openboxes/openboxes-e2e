@@ -51,12 +51,6 @@ class CheckStep extends BasePageModel {
     return this.page.getByRole('button', { name: 'Cancel All Remaining' });
   }
 
-  get validationOnDeliveredOnPastDatePopup() {
-    return this.page
-      .getByTestId('notification')
-      .getByText('Must occur on or after Actual Shipping Date');
-  }
-
   get backToEditButton() {
     return this.wizardButtons.getByRole('button', { name: 'Back to Receive' });
   }
