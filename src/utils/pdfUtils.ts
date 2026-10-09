@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import path from 'node:path';
 
 import { getDocument } from 'pdfjs-dist/legacy/build/pdf.js';
 import type {
@@ -51,9 +52,19 @@ const MAX_ROW_GAP = 25;
 */
 const MAX_CELL_LINE_GAP = 12;
 
+/**
+  The PDFs use standard fonts that aren't embedded, so pdf.js needs its own
+  font data to substitute them (otherwise it warns on every document).
+*/
+const STANDARD_FONT_DATA_URL = `${path.join(
+  path.dirname(require.resolve('pdfjs-dist/package.json')),
+  'standard_fonts'
+)}${path.sep}`;
+
 const loadPdfDocument = (filePath: string): Promise<PDFDocumentProxy> => {
   const data = new Uint8Array(fs.readFileSync(filePath));
-  return getDocument({ data }).promise;
+  return getDocument({ data, standardFontDataUrl: STANDARD_FONT_DATA_URL })
+    .promise;
 };
 
 const getPageNumbers = (doc: PDFDocumentProxy): number[] =>
