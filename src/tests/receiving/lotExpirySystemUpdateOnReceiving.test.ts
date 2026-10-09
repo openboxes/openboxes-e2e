@@ -9,7 +9,7 @@ import { formatDate, getDateByOffset, getToday } from '@/utils/DateUtils';
 import { deleteShipment } from '@/utils/shipmentUtils';
 import UniqueIdentifier from '@/utils/UniqueIdentifier';
 
-test.describe.skip('Lot number system expiry date modification on receiving workflow', () => {
+test.describe('Lot number system expiry date modification on receiving workflow', () => {
   const STOCK_MOVEMENTS: StockMovementResponse[] = [];
 
   test.afterEach(
@@ -118,9 +118,16 @@ test.describe.skip('Lot number system expiry date modification on receiving work
     });
 
     await test.step('Update expiration date of selected item lot', async () => {
+      // receiving now is required in the edit modal
       await receivingPage.receivingStep.editModal.table
-        .row(0)
-        .expiryDatePickerField.fill(UPDATED_EXPIRY_DATE_NEW_LOT);
+        .row(1)
+        .receivingNowField.numberbox.fill('10');
+      await receivingPage.receivingStep.editModal.table
+        .row(1)
+        .expiryDatePickerField.fillWithFormat(
+          UPDATED_EXPIRY_DATE_NEW_LOT,
+          DateFormat.DISPLAY
+        );
 
       await receivingPage.receivingStep.editModal.saveButton.click();
     });
@@ -168,7 +175,7 @@ test.describe.skip('Lot number system expiry date modification on receiving work
     });
   });
 
-  test.describe.skip('Update existing lot', () => {
+  test.describe('Update existing lot', () => {
     const TEST_INPUT_STOCK_EXISTING_LOT = {
       lotNumber: 'lot',
       expirationDate: getDateByOffset(getToday(), 3),
@@ -328,9 +335,16 @@ test.describe.skip('Lot number system expiry date modification on receiving work
       });
 
       await test.step('Update expiration date of selected item lot', async () => {
+        // receiving now is required in the edit modal
         await receivingPage.receivingStep.editModal.table
-          .row(0)
-          .expiryDatePickerField.fill(UPDATED_EXPIRY_DATE);
+          .row(1)
+          .receivingNowField.numberbox.fill('10');
+        await receivingPage.receivingStep.editModal.table
+          .row(1)
+          .expiryDatePickerField.fillWithFormat(
+            UPDATED_EXPIRY_DATE,
+            DateFormat.DISPLAY
+          );
 
         await receivingPage.receivingStep.editModal.saveButton.click();
       });
@@ -342,10 +356,15 @@ test.describe.skip('Lot number system expiry date modification on receiving work
       });
 
       await test.step('Cancel update expiry date popup', async () => {
-        await receivingPage.receivingStep.updateExpiryDatePopup.noButton.click();
+        await receivingPage.receivingStep.updateExpiryDatePopup.cancelButton.click();
         await expect(
           receivingPage.receivingStep.updateExpiryDatePopup.tableDialog
         ).toBeHidden();
+      });
+
+      await test.step('Close edit modal left open after canceling popup', async () => {
+        await receivingPage.receivingStep.editModal.cancelButton.click();
+        await expect(receivingPage.receivingStep.editModal.modal).toBeHidden();
       });
 
       await test.step('Autofill all quantities of receving items', async () => {
@@ -442,9 +461,16 @@ test.describe.skip('Lot number system expiry date modification on receiving work
       });
 
       await test.step('Update expiration date of selected item lot', async () => {
+        // receiving now is required in the edit modal
         await receivingPage.receivingStep.editModal.table
-          .row(0)
-          .expiryDatePickerField.fill(UPDATED_EXPIRY_DATE);
+          .row(1)
+          .receivingNowField.numberbox.fill('10');
+        await receivingPage.receivingStep.editModal.table
+          .row(1)
+          .expiryDatePickerField.fillWithFormat(
+            UPDATED_EXPIRY_DATE,
+            DateFormat.DISPLAY
+          );
 
         await receivingPage.receivingStep.editModal.saveButton.click();
       });
@@ -456,10 +482,11 @@ test.describe.skip('Lot number system expiry date modification on receiving work
       });
 
       await test.step('Confirm update expiry date popup', async () => {
-        await receivingPage.receivingStep.updateExpiryDatePopup.yesButton.click();
+        await receivingPage.receivingStep.updateExpiryDatePopup.confirmButton.click();
         await expect(
           receivingPage.receivingStep.updateExpiryDatePopup.tableDialog
         ).toBeHidden();
+        await expect(receivingPage.receivingStep.editModal.modal).toBeHidden();
       });
 
       await test.step('Autofill all quantities of receving items', async () => {

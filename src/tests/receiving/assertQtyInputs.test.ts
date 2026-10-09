@@ -8,7 +8,7 @@ import BinLocationUtils from '@/utils/BinLocationUtils';
 import { formatDate, getDateByOffset } from '@/utils/DateUtils';
 import { deleteShipment } from '@/utils/shipmentUtils';
 
-test.describe.skip('Assert if quantity inputs remain when split lines', () => {
+test.describe('Assert if quantity inputs remain when split lines', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
 
   test.beforeEach(
@@ -62,11 +62,14 @@ test.describe.skip('Assert if quantity inputs remain when split lines', () => {
     }
   );
 
+  // After a split, the receiving table shows the replaced row (sum of the
+  // split lines, read-only), the changes toggle row and the split lines
+  // (original line first) right below the edited item.
   test('Assert quantity input after split line', async ({
     stockMovementShowPage,
     receivingPage,
   }) => {
-    const lot = 'add-lot-test';
+    const lot = `E2E-lot-${STOCK_MOVEMENT.identifier}`;
     const expDate = getDateByOffset(new Date(), 5);
 
     await test.step('Go to stock movement show page', async () => {
@@ -80,112 +83,133 @@ test.describe.skip('Assert if quantity inputs remain when split lines', () => {
     });
 
     await test.step('Autofill receiving quantity', async () => {
-      await receivingPage.receivingStep.isLoaded();
       await receivingPage.receivingStep.autofillQuantitiesButton.click();
+      await expect(
+        receivingPage.receivingStep.table.row(1).receivingNowField.numberbox
+      ).toHaveValue('50');
+      await expect(
+        receivingPage.receivingStep.table.row(2).receivingNowField.numberbox
+      ).toHaveValue('100');
+      await expect(
+        receivingPage.receivingStep.table.row(3).receivingNowField.numberbox
+      ).toHaveValue('200');
     });
 
     await test.step('Open edit modal for item and split line', async () => {
       await receivingPage.receivingStep.table.row(2).editButton.click();
       await receivingPage.receivingStep.editModal.isLoaded();
-      await receivingPage.receivingStep.editModal.addLineButton.click();
-      await receivingPage.receivingStep.editModal.table
-        .row(0)
-        .quantityShippedField.numberbox.fill('100');
-      await receivingPage.receivingStep.editModal.table
-        .row(0)
-        .lotNumberField.textbox.fill(lot);
-      await receivingPage.receivingStep.editModal.table
-        .row(0)
-        .expiryDatePickerField.fill(expDate);
       await receivingPage.receivingStep.editModal.table
         .row(1)
-        .quantityShippedField.numberbox.fill('50');
+        .receivingNowField.numberbox.fill('50');
       await receivingPage.receivingStep.editModal.addLineButton.click();
       await receivingPage.receivingStep.editModal.table
         .row(2)
-        .quantityShippedField.numberbox.fill('50');
-      await receivingPage.receivingStep.editModal.saveButton.click();
-      await receivingPage.receivingStep.isLoaded();
-    });
-
-    await test.step('Assert quantity input before split line', async () => {
-      await expect(
-        receivingPage.receivingStep.table.row(1).receivingNowField.textbox
-      ).toHaveValue('50');
-      await expect(
-        receivingPage.receivingStep.table.row(2).receivingNowField.textbox
-      ).toBeEmpty();
-      await expect(
-        receivingPage.receivingStep.table.row(3).receivingNowField.textbox
-      ).toBeEmpty();
-      await expect(
-        receivingPage.receivingStep.table.row(4).receivingNowField.textbox
-      ).toBeEmpty();
-      await expect(
-        receivingPage.receivingStep.table.row(5).receivingNowField.textbox
-      ).toHaveValue('100');
-      await expect(
-        receivingPage.receivingStep.table.getCellValue(2, 'Lot/Serial No.')
-      ).toContainText(lot);
-      await expect(
-        receivingPage.receivingStep.table.getCellValue(2, 'Expiration date')
-      ).toContainText(formatDate(expDate, DateFormat.DEFAULT));
-    });
-
-    await test.step('Autofill quantity after split line', async () => {
-      await receivingPage.receivingStep.isLoaded();
-      await receivingPage.receivingStep.autofillQuantitiesButton.click();
-      await expect(
-        receivingPage.receivingStep.table.row(2).receivingNowField.textbox
-      ).toHaveValue('100');
-      await expect(
-        receivingPage.receivingStep.table.row(3).receivingNowField.textbox
-      ).toHaveValue('50');
-      await expect(
-        receivingPage.receivingStep.table.row(4).receivingNowField.textbox
-      ).toHaveValue('50');
-    });
-
-    await test.step('Edit another line', async () => {
-      await receivingPage.receivingStep.table.row(5).editButton.click();
-      await receivingPage.receivingStep.editModal.isLoaded();
-      await receivingPage.receivingStep.editModal.table
-        .row(0)
         .lotNumberField.textbox.fill(lot);
       await receivingPage.receivingStep.editModal.table
-        .row(0)
-        .expiryDatePickerField.fill(expDate);
+        .row(2)
+        .expiryDatePickerField.fillWithFormat(expDate, DateFormat.DISPLAY);
+      await receivingPage.receivingStep.editModal.table
+        .row(2)
+        .receivingNowField.numberbox.fill('50');
       await receivingPage.receivingStep.editModal.saveButton.click();
+      await expect(receivingPage.receivingStep.editModal.modal).toBeHidden();
       await receivingPage.receivingStep.isLoaded();
+    });
+
+    await test.step('Assert quantity inputs after split line', async () => {
       await expect(
-        receivingPage.receivingStep.table.row(1).receivingNowField.textbox
+        receivingPage.receivingStep.table.row(1).receivingNowField.numberbox
       ).toHaveValue('50');
       await expect(
-        receivingPage.receivingStep.table.row(2).receivingNowField.textbox
-      ).toHaveValue('100');
+        receivingPage.receivingStep.table.getCellValue(2, 'Receiving now')
+      ).toHaveText('100');
       await expect(
-        receivingPage.receivingStep.table.row(3).receivingNowField.textbox
+        receivingPage.receivingStep.table.row(4).receivingNowField.numberbox
       ).toHaveValue('50');
       await expect(
-        receivingPage.receivingStep.table.row(4).receivingNowField.textbox
+        receivingPage.receivingStep.table.row(5).receivingNowField.numberbox
       ).toHaveValue('50');
       await expect(
-        receivingPage.receivingStep.table.row(5).receivingNowField.textbox
-      ).toBeEmpty();
-      await expect(
-        receivingPage.receivingStep.table.getCellValue(5, 'Lot/Serial No.')
+        receivingPage.receivingStep.table.getCellValue(5, 'Lot/SN')
       ).toContainText(lot);
       await expect(
-        receivingPage.receivingStep.table.getCellValue(5, 'Expiration date')
-      ).toContainText(formatDate(expDate, DateFormat.DEFAULT));
+        receivingPage.receivingStep.table.getCellValue(5, 'Exp Date')
+      ).toContainText(formatDate(expDate, DateFormat.DISPLAY));
+      await expect(
+        receivingPage.receivingStep.table.row(6).receivingNowField.numberbox
+      ).toHaveValue('200');
+    });
+
+    await test.step('Autofill quantity after split line does not override inputs', async () => {
+      await receivingPage.receivingStep.autofillQuantitiesButton.click();
+      await expect(
+        receivingPage.receivingStep.table.row(1).receivingNowField.numberbox
+      ).toHaveValue('50');
+      await expect(
+        receivingPage.receivingStep.table.row(4).receivingNowField.numberbox
+      ).toHaveValue('50');
+      await expect(
+        receivingPage.receivingStep.table.row(5).receivingNowField.numberbox
+      ).toHaveValue('50');
+      await expect(
+        receivingPage.receivingStep.table.row(6).receivingNowField.numberbox
+      ).toHaveValue('200');
+    });
+
+    await test.step('Split another line', async () => {
+      await receivingPage.receivingStep.table.row(6).editButton.click();
+      await receivingPage.receivingStep.editModal.isLoaded();
+      await receivingPage.receivingStep.editModal.table
+        .row(1)
+        .receivingNowField.numberbox.fill('150');
+      await receivingPage.receivingStep.editModal.addLineButton.click();
+      await receivingPage.receivingStep.editModal.table
+        .row(2)
+        .lotNumberField.textbox.fill(lot);
+      await receivingPage.receivingStep.editModal.table
+        .row(2)
+        .expiryDatePickerField.fillWithFormat(expDate, DateFormat.DISPLAY);
+      await receivingPage.receivingStep.editModal.table
+        .row(2)
+        .receivingNowField.numberbox.fill('50');
+      await receivingPage.receivingStep.editModal.saveButton.click();
+      await expect(receivingPage.receivingStep.editModal.modal).toBeHidden();
+      await receivingPage.receivingStep.isLoaded();
+    });
+
+    await test.step('Assert quantity inputs after splitting another line', async () => {
+      await expect(
+        receivingPage.receivingStep.table.row(1).receivingNowField.numberbox
+      ).toHaveValue('50');
+      await expect(
+        receivingPage.receivingStep.table.getCellValue(2, 'Receiving now')
+      ).toHaveText('100');
+      await expect(
+        receivingPage.receivingStep.table.row(4).receivingNowField.numberbox
+      ).toHaveValue('50');
+      await expect(
+        receivingPage.receivingStep.table.row(5).receivingNowField.numberbox
+      ).toHaveValue('50');
+      await expect(
+        receivingPage.receivingStep.table.getCellValue(6, 'Receiving now')
+      ).toHaveText('200');
+      await expect(
+        receivingPage.receivingStep.table.row(8).receivingNowField.numberbox
+      ).toHaveValue('150');
+      await expect(
+        receivingPage.receivingStep.table.row(9).receivingNowField.numberbox
+      ).toHaveValue('50');
+      await expect(
+        receivingPage.receivingStep.table.getCellValue(9, 'Lot/SN')
+      ).toContainText(lot);
     });
   });
 
-  test('Assert quantity input after split line whe use save and exit', async ({
+  test('Assert quantity input after split line when use save and exit', async ({
     stockMovementShowPage,
     receivingPage,
   }) => {
-    const lot = 'add-lot-test';
+    const lot = `E2E-lot-${STOCK_MOVEMENT.identifier}`;
     const expDate = getDateByOffset(new Date(), 5);
 
     await test.step('Go to stock movement show page', async () => {
@@ -198,81 +222,94 @@ test.describe.skip('Assert if quantity inputs remain when split lines', () => {
       await receivingPage.receivingStep.isLoaded();
     });
 
-    await test.step('Autofill quantity for items', async () => {
-      await receivingPage.receivingStep.isLoaded();
+    await test.step('Fill quantity for items and save and exit', async () => {
       await receivingPage.receivingStep.table
         .row(2)
-        .receivingNowField.textbox.fill('200');
+        .receivingNowField.numberbox.fill('100');
       await receivingPage.receivingStep.table
         .row(3)
-        .receivingNowField.textbox.fill('100');
+        .receivingNowField.numberbox.fill('200');
       await receivingPage.receivingStep.saveAndExitButton.click();
+      await stockMovementShowPage.isLoaded();
     });
 
     await test.step('Return to receipt', async () => {
       await stockMovementShowPage.receiveButton.click();
       await receivingPage.receivingStep.isLoaded();
       await expect(
-        receivingPage.receivingStep.table.row(1).receivingNowField.textbox
+        receivingPage.receivingStep.table.row(1).receivingNowField.numberbox
       ).toBeEmpty();
       await expect(
-        receivingPage.receivingStep.table.row(2).receivingNowField.textbox
-      ).toHaveValue('200');
-      await expect(
-        receivingPage.receivingStep.table.row(3).receivingNowField.textbox
+        receivingPage.receivingStep.table.row(2).receivingNowField.numberbox
       ).toHaveValue('100');
+      await expect(
+        receivingPage.receivingStep.table.row(3).receivingNowField.numberbox
+      ).toHaveValue('200');
     });
 
-    await test.step('Open edit modal for item without quantity input', async () => {
+    await test.step('Open edit modal for item without quantity input and split line', async () => {
       await receivingPage.receivingStep.table.row(1).editButton.click();
       await receivingPage.receivingStep.editModal.isLoaded();
-      await receivingPage.receivingStep.editModal.addLineButton.click();
-      await receivingPage.receivingStep.editModal.table
-        .row(0)
-        .quantityShippedField.numberbox.fill('25');
-      await receivingPage.receivingStep.editModal.table
-        .row(0)
-        .lotNumberField.textbox.fill(lot);
-      await receivingPage.receivingStep.editModal.table
-        .row(0)
-        .expiryDatePickerField.fill(expDate);
+      await expect(
+        receivingPage.receivingStep.editModal.table.row(1).receivingNowField
+          .numberbox
+      ).toBeEmpty();
       await receivingPage.receivingStep.editModal.table
         .row(1)
-        .quantityShippedField.numberbox.fill('25');
+        .receivingNowField.numberbox.fill('25');
+      await receivingPage.receivingStep.editModal.addLineButton.click();
+      await receivingPage.receivingStep.editModal.table
+        .row(2)
+        .lotNumberField.textbox.fill(lot);
+      await receivingPage.receivingStep.editModal.table
+        .row(2)
+        .expiryDatePickerField.fillWithFormat(expDate, DateFormat.DISPLAY);
+      await receivingPage.receivingStep.editModal.table
+        .row(2)
+        .receivingNowField.numberbox.fill('25');
       await receivingPage.receivingStep.editModal.saveButton.click();
+      await expect(receivingPage.receivingStep.editModal.modal).toBeHidden();
       await receivingPage.receivingStep.isLoaded();
     });
 
-    await test.step('Assert quantity input after split line', async () => {
+    await test.step('Assert quantity inputs after split line', async () => {
       await expect(
-        receivingPage.receivingStep.table.row(1).receivingNowField.textbox
-      ).toBeEmpty();
+        receivingPage.receivingStep.table.getCellValue(1, 'Receiving now')
+      ).toHaveText('50');
       await expect(
-        receivingPage.receivingStep.table.row(2).receivingNowField.textbox
-      ).toBeEmpty();
+        receivingPage.receivingStep.table.row(3).receivingNowField.numberbox
+      ).toHaveValue('25');
       await expect(
-        receivingPage.receivingStep.table.row(3).receivingNowField.textbox
-      ).toHaveValue('200');
+        receivingPage.receivingStep.table.row(4).receivingNowField.numberbox
+      ).toHaveValue('25');
       await expect(
-        receivingPage.receivingStep.table.row(4).receivingNowField.textbox
-      ).toHaveValue('100');
-      await expect(
-        receivingPage.receivingStep.table.getCellValue(1, 'Lot/Serial No.')
+        receivingPage.receivingStep.table.getCellValue(4, 'Lot/SN')
       ).toContainText(lot);
       await expect(
-        receivingPage.receivingStep.table.getCellValue(1, 'Expiration date')
-      ).toContainText(formatDate(expDate, DateFormat.DEFAULT));
+        receivingPage.receivingStep.table.getCellValue(4, 'Exp Date')
+      ).toContainText(formatDate(expDate, DateFormat.DISPLAY));
+      await expect(
+        receivingPage.receivingStep.table.row(5).receivingNowField.numberbox
+      ).toHaveValue('100');
+      await expect(
+        receivingPage.receivingStep.table.row(6).receivingNowField.numberbox
+      ).toHaveValue('200');
     });
 
-    await test.step('Autofill quantity after split line', async () => {
-      await receivingPage.receivingStep.isLoaded();
+    await test.step('Autofill quantity after split line does not override inputs', async () => {
       await receivingPage.receivingStep.autofillQuantitiesButton.click();
       await expect(
-        receivingPage.receivingStep.table.row(1).receivingNowField.textbox
+        receivingPage.receivingStep.table.row(3).receivingNowField.numberbox
       ).toHaveValue('25');
       await expect(
-        receivingPage.receivingStep.table.row(2).receivingNowField.textbox
+        receivingPage.receivingStep.table.row(4).receivingNowField.numberbox
       ).toHaveValue('25');
+      await expect(
+        receivingPage.receivingStep.table.row(5).receivingNowField.numberbox
+      ).toHaveValue('100');
+      await expect(
+        receivingPage.receivingStep.table.row(6).receivingNowField.numberbox
+      ).toHaveValue('200');
     });
   });
 });

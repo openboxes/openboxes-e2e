@@ -8,7 +8,7 @@ import { getDateByOffset } from '@/utils/DateUtils';
 import { deleteShipment } from '@/utils/shipmentUtils';
 import UniqueIdentifier from '@/utils/UniqueIdentifier';
 
-test.describe.skip('Edit qty of original line to 0', () => {
+test.describe('Edit qty of original line to 0', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
   const uniqueIdentifier = new UniqueIdentifier();
   const lot = uniqueIdentifier.generateUniqueString('lot');
@@ -88,97 +88,77 @@ test.describe.skip('Edit qty of original line to 0', () => {
       await receivingPage.receivingStep.isLoaded();
     });
 
-    await test.step('Open edit modal for item with lot', async () => {
-      await receivingPage.receivingStep.table.row(5).checkbox.check();
-      await receivingPage.receivingStep.table.row(5).editButton.click();
+    await test.step('Open edit modal for item with lot and move its qty to a line without lot', async () => {
+      await receivingPage.receivingStep.table.row(3).editButton.click();
       await receivingPage.receivingStep.editModal.isLoaded();
-      await receivingPage.receivingStep.editModal.addLineButton.click();
-      await receivingPage.receivingStep.editModal.table
-        .row(0)
-        .quantityShippedField.numberbox.fill('0');
       await receivingPage.receivingStep.editModal.table
         .row(1)
-        .quantityShippedField.numberbox.fill('200');
+        .receivingNowField.numberbox.fill('0');
+      await receivingPage.receivingStep.editModal.addLineButton.click();
+      await receivingPage.receivingStep.editModal.table
+        .row(2)
+        .receivingNowField.numberbox.fill('200');
       await receivingPage.receivingStep.editModal.saveButton.click();
+      await expect(receivingPage.receivingStep.editModal.modal).toBeHidden();
       await receivingPage.receivingStep.isLoaded();
     });
 
-    await test.step('Assert line with qty 0 is disabled', async () => {
-      await expect(
-        receivingPage.receivingStep.table.getCellValue(5, 'Shipped')
-      ).toContainText('0');
-      await expect(
-        receivingPage.receivingStep.table.getCellValue(5, 'Received')
-      ).toContainText('0');
-      await expect(
-        receivingPage.receivingStep.table.getCellValue(5, 'To receive')
-      ).toContainText('0');
-      await expect(
-        receivingPage.receivingStep.table.row(5).receivingNowField.textbox
-      ).toBeDisabled();
-      await expect(
-        receivingPage.receivingStep.table.getCellValue(6, 'To receive')
-      ).toContainText('200');
+    // The original line received with 0 is not listed among the changes, so
+    // the item with lot shows the replaced row (3), the changes toggle row (4)
+    // and only the new line without lot (5).
+    await test.step('Assert original line with qty 0 is not visible', async () => {
       await expect(receivingPage.receivingStep.table.rows).toHaveCount(8);
-    });
-
-    await test.step('Select items to receive using checkboxes', async () => {
-      await receivingPage.receivingStep.isLoaded();
-      await receivingPage.receivingStep.table.row(4).checkbox.check();
-      await receivingPage.receivingStep.table.row(6).checkbox.check();
       await expect(
-        receivingPage.receivingStep.table.row(4).receivingNowField.textbox
-      ).toHaveValue('50');
+        receivingPage.receivingStep.table.getCellValue(3, 'Lot/SN')
+      ).toContainText(lot);
       await expect(
-        receivingPage.receivingStep.table.row(6).receivingNowField.textbox
+        receivingPage.receivingStep.table.getCellValue(3, 'Receiving now')
+      ).toHaveText('200');
+      await expect(
+        receivingPage.receivingStep.table.row(5).receivingNowField.numberbox
       ).toHaveValue('200');
+      await expect(
+        receivingPage.receivingStep.table.getCellValue(5, 'Lot/SN')
+      ).toBeEmpty();
     });
 
-    await test.step('Assert lot and exp date on rows', async () => {
+    await test.step('Input receiving qty for item without lot', async () => {
+      await receivingPage.receivingStep.table
+        .row(6)
+        .receivingNowField.numberbox.fill('50');
+    });
+
+    await test.step('Assert lot on check step', async () => {
       await receivingPage.nextButton.click();
       await receivingPage.checkStep.isLoaded();
+      await expect(receivingPage.checkStep.table.rows).toHaveCount(4);
       await expect(
-        receivingPage.checkStep.table.getCellValue(1, 'Lot/Serial No.')
+        receivingPage.checkStep.table.getCellValue(3, 'Receiving now')
+      ).toHaveText('200');
+      await expect(
+        receivingPage.checkStep.table.getCellValue(3, 'Lot/SN')
       ).toBeEmpty();
       await expect(
-        receivingPage.checkStep.table.getCellValue(1, 'Expiration date')
-      ).toBeEmpty();
+        receivingPage.checkStep.table.getCellValue(4, 'Receiving now')
+      ).toHaveText('50');
       await expect(
-        receivingPage.checkStep.table.getCellValue(2, 'Lot/Serial No.')
-      ).toBeEmpty();
-      await expect(
-        receivingPage.checkStep.table.getCellValue(2, 'Expiration date')
+        receivingPage.checkStep.table.getCellValue(4, 'Lot/SN')
       ).toBeEmpty();
     });
 
-    await test.step('Return to receiving step and assert orininal line is not visible', async () => {
+    await test.step('Return to receiving step and assert original line is not visible', async () => {
       await receivingPage.checkStep.backToEditButton.click();
       await receivingPage.receivingStep.isLoaded();
-      await expect(receivingPage.receivingStep.table.rows).toHaveCount(7);
+      await expect(receivingPage.receivingStep.table.rows).toHaveCount(8);
       await expect(
-        receivingPage.receivingStep.table.row(5).checkbox
-      ).toBeChecked();
-      await expect(
-        receivingPage.receivingStep.table.row(6).checkbox
-      ).toBeChecked();
-      await expect(
-        receivingPage.receivingStep.table.row(5).receivingNowField.textbox
-      ).toHaveValue('50');
-      await expect(
-        receivingPage.receivingStep.table.row(6).receivingNowField.textbox
+        receivingPage.receivingStep.table.row(5).receivingNowField.numberbox
       ).toHaveValue('200');
       await expect(
-        receivingPage.receivingStep.table.getCellValue(5, 'Lot/Serial No.')
+        receivingPage.receivingStep.table.getCellValue(5, 'Lot/SN')
       ).toBeEmpty();
       await expect(
-        receivingPage.receivingStep.table.getCellValue(5, 'Expiration date')
-      ).toBeEmpty();
-      await expect(
-        receivingPage.receivingStep.table.getCellValue(6, 'Lot/Serial No.')
-      ).toBeEmpty();
-      await expect(
-        receivingPage.receivingStep.table.getCellValue(6, 'Expiration date')
-      ).toBeEmpty();
+        receivingPage.receivingStep.table.row(6).receivingNowField.numberbox
+      ).toHaveValue('50');
     });
 
     await test.step('Receive shipment', async () => {
@@ -188,30 +168,27 @@ test.describe.skip('Edit qty of original line to 0', () => {
       await stockMovementShowPage.isLoaded();
     });
 
-    await test.step('Assert received lines on Receipt tab', async () => {
+    await test.step('Assert nothing was received with lot on Receipt tab', async () => {
       await stockMovementShowPage.openReceiptsTab();
-      await expect(stockMovementShowPage.receiptListTable.rows).toHaveCount(3);
+      // lines with nothing received or canceled are not listed
       await expect(
-        stockMovementShowPage.receiptListTable.row(1).serialLotNumber
-      ).not.toHaveText(lot);
+        stockMovementShowPage.receiptListTable.row(1).row
+      ).toBeVisible();
       await expect(
-        stockMovementShowPage.receiptListTable.row(2).serialLotNumber
-      ).not.toHaveText(lot);
+        stockMovementShowPage.receiptListTable.getRowByText(lot).row
+      ).toBeHidden();
     });
 
     await test.step('Assert received lines on Packing list', async () => {
       await stockMovementShowPage.openPackingListTab();
       await expect(
-        stockMovementShowPage.packingListTable.row(1).lotNumber
-      ).not.toHaveText(lot);
-      await expect(
-        stockMovementShowPage.packingListTable.row(2).lotNumber
-      ).not.toHaveText(lot);
+        stockMovementShowPage.packingListTable.rows.filter({ hasText: lot })
+      ).toHaveCount(0);
     });
   });
 });
 
-test.describe.skip('Edit original line to other product in the middle of receipt', () => {
+test.describe('Edit original line to other product in the middle of receipt', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
 
   test.beforeEach(
@@ -270,65 +247,43 @@ test.describe.skip('Edit original line to other product in the middle of receipt
       await receivingPage.receivingStep.isLoaded();
     });
 
-    await test.step('Open edit modal for item', async () => {
+    await test.step('Open edit modal for item and change product of new line', async () => {
       const PRODUCT_FIVE = await productService.getProduct(Product.FIVE);
       await receivingPage.receivingStep.table.row(1).editButton.click();
       await receivingPage.receivingStep.editModal.isLoaded();
+      await receivingPage.receivingStep.editModal.table
+        .row(1)
+        .receivingNowField.numberbox.fill('0');
       await receivingPage.receivingStep.editModal.addLineButton.click();
       await receivingPage.receivingStep.editModal.table
-        .row(0)
-        .quantityShippedField.numberbox.fill('0');
-      await receivingPage.receivingStep.editModal.table
-        .row(1)
+        .row(2)
         .clearProductSelect.click();
       await receivingPage.receivingStep.editModal.table
-        .row(1)
-        .quantityShippedField.numberbox.fill('10');
-      await receivingPage.receivingStep.editModal.table
-        .row(1)
+        .row(2)
         .getProductSelect(PRODUCT_FIVE.name);
+      await receivingPage.receivingStep.editModal.table
+        .row(2)
+        .receivingNowField.numberbox.fill('10');
       await receivingPage.receivingStep.editModal.saveButton.click();
+      await expect(receivingPage.receivingStep.editModal.modal).toBeHidden();
       await receivingPage.receivingStep.isLoaded();
     });
 
-    await test.step('Assert line with qty 0 is disabled', async () => {
+    await test.step('Assert original line is replaced by line with other product', async () => {
       const PRODUCT_FOUR = await productService.getProduct(Product.FOUR);
       const PRODUCT_FIVE = await productService.getProduct(Product.FIVE);
-      await expect(
-        receivingPage.receivingStep.table.row(1).checkbox
-      ).toBeDisabled();
+      await expect(receivingPage.receivingStep.table.rows).toHaveCount(3);
       await expect(
         receivingPage.receivingStep.table.getCellValue(1, 'Product')
-      ).toHaveText(PRODUCT_FOUR.name);
+      ).toContainText(PRODUCT_FOUR.name);
       await expect(
-        receivingPage.receivingStep.table.getCellValue(1, 'Shipped')
-      ).toContainText('0');
+        receivingPage.receivingStep.table.getCellValue(1, 'Receiving now')
+      ).toHaveText('10');
       await expect(
-        receivingPage.receivingStep.table.getCellValue(1, 'Received')
-      ).toContainText('0');
+        receivingPage.receivingStep.table.getCellValue(3, 'Product')
+      ).toContainText(PRODUCT_FIVE.name);
       await expect(
-        receivingPage.receivingStep.table.getCellValue(1, 'To receive')
-      ).toContainText('0');
-      await expect(
-        receivingPage.receivingStep.table.row(1).receivingNowField.textbox
-      ).toBeDisabled();
-      await expect(
-        receivingPage.receivingStep.table.row(1).commentField.textbox
-      ).toBeDisabled();
-      await expect(
-        receivingPage.receivingStep.table.getCellValue(2, 'Product')
-      ).toHaveText(PRODUCT_FIVE.name);
-      await expect(
-        receivingPage.receivingStep.table.getCellValue(2, 'To receive')
-      ).toContainText('10');
-      await expect(receivingPage.receivingStep.table.rows).toHaveCount(3);
-    });
-
-    await test.step('Select item to receive using checkboxes', async () => {
-      await receivingPage.receivingStep.isLoaded();
-      await receivingPage.receivingStep.table.row(2).checkbox.check();
-      await expect(
-        receivingPage.receivingStep.table.row(2).receivingNowField.textbox
+        receivingPage.receivingStep.table.row(3).receivingNowField.numberbox
       ).toHaveValue('10');
     });
 
@@ -337,9 +292,11 @@ test.describe.skip('Edit original line to other product in the middle of receipt
       await receivingPage.nextButton.click();
       await receivingPage.checkStep.isLoaded();
       await expect(
-        receivingPage.checkStep.table.getCellValue(1, 'Product')
-      ).toHaveText(PRODUCT_FIVE.name);
-      await expect(receivingPage.receivingStep.table.rows).toHaveCount(2);
+        receivingPage.checkStep.table.getCellValue(3, 'Product')
+      ).toContainText(PRODUCT_FIVE.name);
+      await expect(
+        receivingPage.checkStep.table.getCellValue(3, 'Receiving now')
+      ).toHaveText('10');
     });
 
     await test.step('Receive shipment', async () => {
@@ -356,10 +313,8 @@ test.describe.skip('Edit original line to other product in the middle of receipt
       ).toHaveText(PRODUCT_FOUR.name);
       await stockMovementShowPage.openReceiptsTab();
       await expect(
-        stockMovementShowPage.receiptListTable.row(1).product
-      ).toHaveText(PRODUCT_FIVE.name);
-      await expect(
-        stockMovementShowPage.receiptListTable.row(1).quantityReceived
+        stockMovementShowPage.receiptListTable.getRowByText(PRODUCT_FIVE.name)
+          .quantityReceived
       ).toHaveText('10');
     });
   });

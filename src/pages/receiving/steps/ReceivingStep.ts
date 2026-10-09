@@ -21,7 +21,7 @@ class ReceivingStep extends BasePageModel {
     super(page);
     this.table = new ReceivingTable(page);
     this.editModal = new EditModal(page);
-    this.updateExpiryDatePopup = new NewAlertPopup(page);
+    this.updateExpiryDatePopup = new NewAlertPopup(page, 'Ok', 'Cancel');
     this.fileHandler = new FileHandler(page);
     this.autosaveStatus = new AutosaveStatus(page);
   }
@@ -53,6 +53,15 @@ class ReceivingStep extends BasePageModel {
     return this.confirmReceivingDialog.getByRole('button', { name: 'Yes' });
   }
 
+  get showPutawaySwitch() {
+    return this.page.getByTestId('show-putaway-switch');
+  }
+
+  async enableShowPutaway() {
+    await this.showPutawaySwitch.getByTestId('switch-toggle').click();
+    await expect(this.showPutawaySwitch.getByRole('checkbox')).toBeChecked();
+  }
+
   get saveAndExitButton() {
     return this.page.getByRole('button', { name: 'Save & Exit' });
   }
@@ -81,10 +90,14 @@ class ReceivingStep extends BasePageModel {
 
   get validationOnEditFieldsThroughImport() {
     return this.page
-      .locator('.s-alert-box-inner')
+      .getByTestId('notification')
       .getByText(
         'You can only import the Receiving Now and the Comment fields. To make other changes, please use the edit line feature. You can then export and import the template again.'
       );
+  }
+
+  get resetSortingButton() {
+    return this.page.getByRole('button', { name: 'Reset sorting' });
   }
 
   get orderSelect() {

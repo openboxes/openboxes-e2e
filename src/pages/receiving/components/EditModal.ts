@@ -12,7 +12,7 @@ class EditModal extends BasePageModel {
   }
 
   get modal() {
-    return this.page.locator('.ReactModal__Content');
+    return this.page.getByTestId('receiving-edit-line-item-modal');
   }
 
   async isLoaded() {
@@ -20,7 +20,7 @@ class EditModal extends BasePageModel {
   }
 
   get saveButton() {
-    return this.modal.getByRole('button', { name: 'Save' });
+    return this.modal.getByRole('button', { name: 'Save', exact: true });
   }
 
   get cancelButton() {
@@ -28,15 +28,7 @@ class EditModal extends BasePageModel {
   }
 
   get addLineButton() {
-    return this.modal.getByRole('button', { name: 'Add line' });
-  }
-
-  get informationAboutEditedQtyNotMatchingShippedQty() {
-    return this.modal
-      .locator('.font-weight-bold font-red-ob')
-      .getByText(
-        'The total edited quantity does not match the original quantity shipped.'
-      );
+    return this.modal.getByTestId('add-new-record');
   }
 }
 

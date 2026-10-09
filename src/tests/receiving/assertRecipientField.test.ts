@@ -6,8 +6,11 @@ import { StockMovementResponse } from '@/types';
 import BinLocationUtils from '@/utils/BinLocationUtils';
 import { deleteShipment } from '@/utils/shipmentUtils';
 
-test.describe.skip('Assert recipient field when receive', () => {
+test.describe('Assert recipient field when receive', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
+  let PRODUCT_FOUR_CODE: string;
+  let PRODUCT_FIVE_CODE: string;
+  let USER_NAME: string;
 
   test.beforeEach(
     async ({
@@ -20,6 +23,9 @@ test.describe.skip('Assert recipient field when receive', () => {
       const PRODUCT_FOUR = await productService.getProduct(Product.FOUR);
       const PRODUCT_FIVE = await productService.getProduct(Product.FIVE);
       const USER = await mainUserService.getUser();
+      PRODUCT_FOUR_CODE = PRODUCT_FOUR.productCode;
+      PRODUCT_FIVE_CODE = PRODUCT_FIVE.productCode;
+      USER_NAME = USER.name;
 
       STOCK_MOVEMENT = await stockMovementService.createInbound({
         originId: supplierLocation.id,
@@ -64,11 +70,27 @@ test.describe.skip('Assert recipient field when receive', () => {
     }
   );
 
-  test('Assert recipient field filled and disabled', async ({
+  test('Assert recipient field filled and read-only', async ({
     stockMovementShowPage,
     receivingPage,
-    mainUserService,
   }) => {
+    // the recipient is shown as plain text in the receiving table, it can be
+    // changed only in the edit modal
+    const assertRecipientsOnReceivingStep = async () => {
+      const table = receivingPage.receivingStep.table;
+      await expect(
+        table.rowByProductCode(PRODUCT_FOUR_CODE).recipient
+      ).toHaveText(USER_NAME);
+      await expect(
+        table.rowByProductCode(PRODUCT_FIVE_CODE).recipient
+      ).toBeEmpty();
+      await expect(
+        table
+          .rowByProductCode(PRODUCT_FOUR_CODE)
+          .recipient.getByTestId('custom-select-element')
+      ).toBeHidden();
+    };
+
     await test.step('Go to stock movement show page', async () => {
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
       await stockMovementShowPage.isLoaded();
@@ -79,64 +101,39 @@ test.describe.skip('Assert recipient field when receive', () => {
       await receivingPage.receivingStep.isLoaded();
     });
 
-    await test.step('Assert recipient field disabled and filled', async () => {
-      const USER = await mainUserService.getUser();
-      await expect(
-        receivingPage.receivingStep.table.getCellValue(1, 'Recipient')
-      ).toBeEmpty();
-      await receivingPage.receivingStep.table
-        .row(1)
-        .recipientField.isDisabled();
-      await expect(
-        receivingPage.receivingStep.table.getCellValue(2, 'Recipient')
-      ).toHaveText(USER.name);
-      await receivingPage.receivingStep.table.row(2).recipientField.click();
-      await receivingPage.receivingStep.table
-        .row(2)
-        .recipientField.getByTestId('custom-select-dropdown-menu')
-        .isHidden();
+    await test.step('Assert recipient field on receiving step', async () => {
+      await receivingPage.assertColumnHeaderIsVisibleOnReceivingStep(
+        'Recipient'
+      );
+      await assertRecipientsOnReceivingStep();
     });
 
     await test.step('Fill partial qty for items', async () => {
       await receivingPage.receivingStep.table
-        .row(1)
-        .receivingNowField.textbox.fill('5');
+        .rowByProductCode(PRODUCT_FOUR_CODE)
+        .receivingNowField.numberbox.fill('5');
       await receivingPage.receivingStep.table
-        .row(2)
-        .receivingNowField.textbox.fill('5');
+        .rowByProductCode(PRODUCT_FIVE_CODE)
+        .receivingNowField.numberbox.fill('5');
       await receivingPage.nextButton.click();
       await receivingPage.checkStep.isLoaded();
     });
 
-    await test.step('Fill partial qty for items', async () => {
-      const USER = await mainUserService.getUser();
-      await receivingPage.checkStep.isLoaded();
+    await test.step('Assert recipient field on check step', async () => {
       await expect(
-        receivingPage.checkStep.table.getCellValue(1, 'Recipient')
+        receivingPage.checkStep.table.rowByProductCode(PRODUCT_FOUR_CODE)
+          .recipient
+      ).toHaveText(USER_NAME);
+      await expect(
+        receivingPage.checkStep.table.rowByProductCode(PRODUCT_FIVE_CODE)
+          .recipient
       ).toBeEmpty();
-      await expect(
-        receivingPage.checkStep.table.getCellValue(2, 'Recipient')
-      ).toHaveText(USER.name);
     });
 
     await test.step('Go backward and assert recipient field', async () => {
-      const USER = await mainUserService.getUser();
       await receivingPage.checkStep.backToEditButton.click();
       await receivingPage.receivingStep.isLoaded();
-      await expect(
-        receivingPage.receivingStep.table.getCellValue(1, 'Recipient')
-      ).toBeEmpty();
-      await receivingPage.receivingStep.table
-        .row(1)
-        .recipientField.isDisabled();
-      await expect(
-        receivingPage.receivingStep.table.getCellValue(2, 'Recipient')
-      ).toHaveText(USER.name);
-      await receivingPage.receivingStep.table.row(2).recipientField.click();
-      await receivingPage.receivingStep.table
-        .row(2)
-        .recipientField.getByTestId('custom-select-dropdown-menu')
-        .isHidden();
+      await assertRecipientsOnReceivingStep();
     });
 
     await test.step('Finish 1st receipt', async () => {
@@ -147,23 +144,9 @@ test.describe.skip('Assert recipient field when receive', () => {
     });
 
     await test.step('Start 2nd receipt and assert recipient field', async () => {
-      const USER = await mainUserService.getUser();
       await stockMovementShowPage.receiveButton.click();
       await receivingPage.receivingStep.isLoaded();
-      await expect(
-        receivingPage.receivingStep.table.getCellValue(1, 'Recipient')
-      ).toBeEmpty();
-      await receivingPage.receivingStep.table
-        .row(1)
-        .recipientField.isDisabled();
-      await expect(
-        receivingPage.receivingStep.table.getCellValue(2, 'Recipient')
-      ).toHaveText(USER.name);
-      await receivingPage.receivingStep.table.row(2).recipientField.click();
-      await receivingPage.receivingStep.table
-        .row(2)
-        .recipientField.getByTestId('custom-select-dropdown-menu')
-        .isHidden();
+      await assertRecipientsOnReceivingStep();
     });
   });
 });

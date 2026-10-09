@@ -1,5 +1,6 @@
 import { expect } from '@playwright/test';
 
+import InventoryService from '@/api/InventoryService';
 import PutawayService from '@/api/PutawayService';
 import ReceivingService from '@/api/ReceivingService';
 import StockMovementService from '@/api/StockMovementService';
@@ -78,15 +79,18 @@ export async function deleteShipment({
   await stockMovementService.deleteStockMovement(STOCK_MOVEMENT.id);
 
   // The server clears receiving-bin stock asynchronously after the stock
-  // movement is deleted, so a putaway candidate from this shipment can stay
-  // visible for a while; wait until it is gone so the next test (or the
+  // movement is deleted (a queued job that falls behind when many tests run
+  // one after another), so a putaway candidate from this shipment can stay
+  // visible for over a minute. Refresh the availability of the location right
+  // away and then wait until the candidate is gone, so the next test (or the
   // clean-state validation) does not see a phantom row.
-  const putawayService = new PutawayService(
-    stockMovementService.getRequestContext()
-  );
+  const request = stockMovementService.getRequestContext();
+  const putawayService = new PutawayService(request);
+  const inventoryService = new InventoryService(request);
   const destinationId =
     STOCK_MOVEMENT.destination?.id ??
     AppConfig.instance.locations.main.readId();
+  await inventoryService.refreshProductAvailability(destinationId);
   await expect
     .poll(
       async () => {

@@ -40,7 +40,8 @@ class FormField extends BasePageModel {
   }
 
   async assertHasError() {
-    expect(await this.hasError()).toBeTruthy();
+    // the error can show up a moment after the value is entered, so retry
+    await expect.poll(() => this.hasError()).toBeTruthy();
   }
 
   async assertFieldWithErrorIsVisible(error: string) {

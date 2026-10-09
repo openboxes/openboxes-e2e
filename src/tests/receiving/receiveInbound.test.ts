@@ -188,7 +188,8 @@ test.describe('Receive inbound stock movement', () => {
       await expect(receivingPage.checkStep.destinationField).toHaveText(
         destinationName
       );
-      await expect(receivingPage.checkStep.shippedOnField).toHaveText(
+      // shown with the time of shipping, which the test doesn't control
+      await expect(receivingPage.checkStep.shippedOnField).toContainText(
         formatDate(TODAY, DateFormat.DISPLAY)
       );
     });

@@ -8,7 +8,7 @@ import BinLocationUtils from '@/utils/BinLocationUtils';
 import { deleteShipment } from '@/utils/shipmentUtils';
 import UniqueIdentifier from '@/utils/UniqueIdentifier';
 
-test.describe.skip('Edit Bin Location when receive inbound stock movement', () => {
+test.describe('Edit Bin Location when receive inbound stock movement', () => {
   test.describe.configure({ timeout: 60000 });
   //timeout has been added for this test to make sure that the content on bin location tab will load as it can include a lot of data
   let STOCK_MOVEMENT: StockMovementResponse;
@@ -130,15 +130,16 @@ test.describe.skip('Edit Bin Location when receive inbound stock movement', () =
     });
 
     await test.step('Edit bin when receive item', async () => {
-      await receivingPage.receivingStep.isLoaded();
-      await receivingPage.receivingStep.table.row(1).binLocationSelect.click();
+      await receivingPage.receivingStep.enableShowPutaway();
       await receivingPage.receivingStep.table
         .row(1)
-        .getBinLocation(binLocationName)
-        .click();
+        .selectBinLocation(binLocationName);
+      await expect(
+        receivingPage.receivingStep.table.row(1).selectedBinLocation
+      ).toHaveText(binLocationName);
       await receivingPage.receivingStep.table
         .row(1)
-        .receivingNowField.textbox.fill('10');
+        .receivingNowField.numberbox.fill('10');
     });
 
     await test.step('Go to check page', async () => {
@@ -146,8 +147,10 @@ test.describe.skip('Edit Bin Location when receive inbound stock movement', () =
       await receivingPage.checkStep.isLoaded();
     });
 
-    await test.step('Finish receipt of item', async () => {
-      await receivingPage.checkStep.isLoaded();
+    await test.step('Assert bin on check page and finish receipt of item', async () => {
+      await expect(
+        receivingPage.checkStep.table.getCellValue(1, 'Location')
+      ).toHaveText(binLocationName);
       await receivingPage.checkStep.receiveShipmentButton.click();
       await stockMovementShowPage.isLoaded();
     });
@@ -162,14 +165,19 @@ test.describe.skip('Edit Bin Location when receive inbound stock movement', () =
       await stockMovementShowPage.packingListTable.row(1).product.click();
       await productShowPage.inStockTab.click();
       await productShowPage.inStockTabSection.isLoaded();
+      // the product has stock in other bins too, so the row order isn't fixed
+      const rowIndex =
+        await productShowPage.inStockTabSection.getRowIndexByBinLocation(
+          binLocationName
+        );
       await expect(
-        productShowPage.inStockTabSection.row(2).binLocation
+        productShowPage.inStockTabSection.row(rowIndex).binLocation
       ).toHaveText(binLocationName);
     });
   });
 });
 
-test.describe.skip('Edit Bin Location to bin with zone when receive inbound stock movement', () => {
+test.describe('Edit Bin Location to bin with zone when receive inbound stock movement', () => {
   test.describe.configure({ timeout: 60000 });
   //timeout has been added for this test to make sure that the content on bin location tab will load as it can include a lot of data
   let STOCK_MOVEMENT: StockMovementResponse;
@@ -333,19 +341,16 @@ test.describe.skip('Edit Bin Location to bin with zone when receive inbound stoc
     });
 
     await test.step('Edit bin when receive item', async () => {
-      await receivingPage.receivingStep.isLoaded();
-      await receivingPage.receivingStep.table.row(1).binLocationSelect.click();
+      await receivingPage.receivingStep.enableShowPutaway();
       await receivingPage.receivingStep.table
         .row(1)
-        .getZoneLocation(zoneLocationName)
-        .isVisible();
+        .selectBinLocation(binLocationName);
+      await expect(
+        receivingPage.receivingStep.table.row(1).selectedBinLocation
+      ).toHaveText(binLocationName);
       await receivingPage.receivingStep.table
         .row(1)
-        .getBinLocation(binLocationName)
-        .click();
-      await receivingPage.receivingStep.table
-        .row(1)
-        .receivingNowField.textbox.fill('10');
+        .receivingNowField.numberbox.fill('10');
     });
 
     await test.step('Go to check page', async () => {
@@ -353,12 +358,10 @@ test.describe.skip('Edit Bin Location to bin with zone when receive inbound stoc
       await receivingPage.checkStep.isLoaded();
     });
 
-    await test.step('Assert zone and bin on check page and finish receipt of item', async () => {
-      await receivingPage.checkStep.isLoaded();
-      const zoneAndBin = `${zoneLocationName}: ${binLocationName}`;
+    await test.step('Assert bin on check page and finish receipt of item', async () => {
       await expect(
-        receivingPage.checkStep.table.getCellValue(1, 'Bin Location')
-      ).toHaveText(zoneAndBin);
+        receivingPage.checkStep.table.getCellValue(1, 'Location')
+      ).toHaveText(binLocationName);
       await receivingPage.checkStep.receiveShipmentButton.click();
       await stockMovementShowPage.isLoaded();
     });
@@ -374,17 +377,22 @@ test.describe.skip('Edit Bin Location to bin with zone when receive inbound stoc
       await stockMovementShowPage.packingListTable.row(1).product.click();
       await productShowPage.inStockTab.click();
       await productShowPage.inStockTabSection.isLoaded();
+      // the product has stock in other bins too, so the row order isn't fixed
+      const rowIndex =
+        await productShowPage.inStockTabSection.getRowIndexByBinLocation(
+          binLocationName
+        );
       await expect(
-        productShowPage.inStockTabSection.row(2).zoneLocation
+        productShowPage.inStockTabSection.row(rowIndex).zoneLocation
       ).toHaveText(zoneLocationName);
       await expect(
-        productShowPage.inStockTabSection.row(2).binLocation
+        productShowPage.inStockTabSection.row(rowIndex).binLocation
       ).toHaveText(binLocationName);
     });
   });
 });
 
-test.describe.skip('Edit Bin Location when receive for all lines', () => {
+test.describe('Edit Bin Location when receive for all lines', () => {
   test.describe.configure({ timeout: 60000 });
   //timeout has been added for this test to make sure that the content on bin location tab will load as it can include a lot of data
   let STOCK_MOVEMENT: StockMovementResponse;
@@ -504,18 +512,23 @@ test.describe.skip('Edit Bin Location when receive for all lines', () => {
       await receivingPage.receivingStep.isLoaded();
     });
 
-    await test.step('Edit bin when receive item', async () => {
-      await receivingPage.receivingStep.isLoaded();
-      await receivingPage.receivingStep.table.row(0).binLocationSelect.click();
+    await test.step('Edit bin for the first line and fill it down to all lines', async () => {
+      await receivingPage.receivingStep.enableShowPutaway();
       await receivingPage.receivingStep.table
-        .row(0)
-        .getBinLocation(binLocationName)
-        .click();
+        .row(1)
+        .selectBinLocation(binLocationName);
+      await receivingPage.receivingStep.table.autofillLocation(
+        'Fill down from top row'
+      );
       await expect(
-        receivingPage.receivingStep.table.row(1).binLocationSelect
+        receivingPage.receivingStep.table.autofillLocationConfirmDialog
+      ).toBeVisible();
+      await receivingPage.receivingStep.table.acceptAutofillLocationConfirmDialog.click();
+      await expect(
+        receivingPage.receivingStep.table.row(1).selectedBinLocation
       ).toHaveText(binLocationName);
       await expect(
-        receivingPage.receivingStep.table.row(2).binLocationSelect
+        receivingPage.receivingStep.table.row(2).selectedBinLocation
       ).toHaveText(binLocationName);
     });
 
@@ -526,12 +539,11 @@ test.describe.skip('Edit Bin Location when receive for all lines', () => {
     });
 
     await test.step('Finish receipt of item', async () => {
-      await receivingPage.checkStep.isLoaded();
       await expect(
-        receivingPage.checkStep.table.getCellValue(1, 'Bin Location')
+        receivingPage.checkStep.table.getCellValue(1, 'Location')
       ).toHaveText(binLocationName);
       await expect(
-        receivingPage.checkStep.table.getCellValue(2, 'Bin Location')
+        receivingPage.checkStep.table.getCellValue(2, 'Location')
       ).toHaveText(binLocationName);
       await receivingPage.checkStep.receiveShipmentButton.click();
       await stockMovementShowPage.isLoaded();

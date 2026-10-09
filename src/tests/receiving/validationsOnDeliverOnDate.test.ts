@@ -4,10 +4,10 @@ import { expect, test } from '@/fixtures/fixtures';
 import { Product } from '@/generated/ProductCodes.generated';
 import { StockMovementResponse } from '@/types';
 import BinLocationUtils from '@/utils/BinLocationUtils';
-import { formatDate, getDateByOffset } from '@/utils/DateUtils';
+import { getDateByOffset } from '@/utils/DateUtils';
 import { deleteShipment } from '@/utils/shipmentUtils';
 
-test.describe.skip('Validations on edit Deliver On Date when receiving shipment', () => {
+test.describe('Validations on edit Deliver On Date when receiving shipment', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
 
   test.beforeEach(
@@ -68,22 +68,29 @@ test.describe.skip('Validations on edit Deliver On Date when receiving shipment'
     await test.step('Autofill qty and go to check page', async () => {
       await receivingPage.receivingStep.autofillQuantitiesButton.click();
       await receivingPage.nextButton.click();
+      await receivingPage.checkStep.isLoaded();
     });
 
     await test.step('Edit Delivered on Date on check page to future date', async () => {
-      await receivingPage.checkStep.isLoaded();
-      await receivingPage.checkStep.deliveredOnDateField.fillWithFormat(
-        getDateByOffset(new Date(), 1),
-        'MM/DD/YYYY HH:mm:ss Z'
+      await receivingPage.checkStep.deliveredOnDateField.selectDate(
+        getDateByOffset(new Date(), 1)
       );
       await receivingPage.checkStep.deliveredOnDateField.assertHasError();
+      await receivingPage.checkStep.deliveredOnDateField.assertErrorTooltip(
+        'Delivery date cannot be in the future'
+      );
       await expect(
-        receivingPage.checkStep.deliveredOnDateField.errorMessage
-      ).toContainText('The date cannot be in the future');
+        receivingPage.checkStep.receiveShipmentButton
+      ).toBeDisabled();
+    });
+
+    await test.step('Change Delivered on Date back to today', async () => {
+      await receivingPage.checkStep.deliveredOnDateField.selectDate(new Date());
+      await expect(receivingPage.checkStep.receiveShipmentButton).toBeEnabled();
     });
   });
 
-  test.skip('Assert validation on try to edit Delivered on Date to past date', async ({
+  test('Assert validation on try to edit Delivered on Date to date before shipped date', async ({
     stockMovementShowPage,
     receivingPage,
   }) => {
@@ -100,29 +107,21 @@ test.describe.skip('Validations on edit Deliver On Date when receiving shipment'
     await test.step('Autofill qty and go to check page', async () => {
       await receivingPage.receivingStep.autofillQuantitiesButton.click();
       await receivingPage.nextButton.click();
+      await receivingPage.checkStep.isLoaded();
     });
 
-    await test.step('Edit Delivered on Date on check page to past date', async () => {
-      const pastDate = getDateByOffset(new Date(), -1);
-      // the date picker re-renders the committed value with seconds zeroed,
-      // so fill with :00 to make the value comparable after the commit
-      pastDate.setSeconds(0, 0);
-      await receivingPage.checkStep.isLoaded();
-      await receivingPage.checkStep.deliveredOnDateField.fillWithFormat(
-        pastDate,
-        'MM/DD/YYYY HH:mm:ss Z'
+    await test.step('Edit Delivered on Date on check page to date before shipped date', async () => {
+      // the shipment was shipped today, when the test data was created
+      await receivingPage.checkStep.deliveredOnDateField.selectDate(
+        getDateByOffset(new Date(), -1)
       );
-      // when the receive request fires before the date picker commits the
-      // value, the shipment gets received with the original valid date and
-      // the expected validation never appears
+      await receivingPage.checkStep.deliveredOnDateField.assertHasError();
+      await receivingPage.checkStep.deliveredOnDateField.assertErrorTooltip(
+        'Delivery date cannot be before the shipped date'
+      );
       await expect(
-        receivingPage.checkStep.deliveredOnDateField.textbox
-      ).toHaveValue(formatDate(pastDate, 'MM/DD/YYYY HH:mm:ss Z'));
-      await receivingPage.checkStep.isLoaded();
-      await receivingPage.checkStep.receiveShipmentButton.click();
-      await expect(
-        receivingPage.checkStep.validationOnDeliveredOnPastDatePopup
-      ).toBeVisible();
+        receivingPage.checkStep.receiveShipmentButton
+      ).toBeDisabled();
     });
   });
 });

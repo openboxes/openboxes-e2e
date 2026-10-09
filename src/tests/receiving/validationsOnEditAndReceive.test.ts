@@ -7,7 +7,7 @@ import BinLocationUtils from '@/utils/BinLocationUtils';
 import { getToday } from '@/utils/DateUtils';
 import { deleteShipment } from '@/utils/shipmentUtils';
 
-test.describe.skip('Assert validation on try to receive not yet shipped inbound', () => {
+test.describe('Assert validation on try to receive not yet shipped inbound', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
   const description = 'some description';
   const dateRequested = getToday();
@@ -65,7 +65,7 @@ test.describe.skip('Assert validation on try to receive not yet shipped inbound'
   });
 });
 
-test.describe.skip('Validations on edit and receive inbound stock movement', () => {
+test.describe('Validations on edit and receive inbound stock movement', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
   const description = 'some description';
   const dateRequested = getToday();
@@ -141,7 +141,7 @@ test.describe.skip('Validations on edit and receive inbound stock movement', () 
       await receivingPage.receivingStep.isLoaded();
       await receivingPage.receivingStep.table
         .row(1)
-        .receivingNowField.textbox.fill('5');
+        .receivingNowField.numberbox.fill('5');
     });
 
     await test.step('Go to Check page', async () => {
@@ -175,7 +175,7 @@ test.describe.skip('Validations on edit and receive inbound stock movement', () 
       await receivingPage.receivingStep.isLoaded();
       await receivingPage.receivingStep.table
         .row(1)
-        .receivingNowField.textbox.fill('5');
+        .receivingNowField.numberbox.fill('5');
     });
 
     await test.step('Go to Check page', async () => {
@@ -203,6 +203,11 @@ test.describe.skip('Validations on edit and receive inbound stock movement', () 
     await test.step('Rollback shipment received in 2 receipts', async () => {
       await stockMovementShowPage.isLoaded();
       await stockMovementShowPage.rollbackLastReceiptButton.click();
+      // wait for the rollback to finish, so it doesn't race with the cleanup
+      await expect(
+        stockMovementShowPage.rollbackReceiptInformationMessage
+      ).toContainText('Successfully rolled back last receipt');
+      await expect(stockMovementShowPage.statusTag).toHaveText('Receiving');
     });
   });
 
@@ -224,7 +229,7 @@ test.describe.skip('Validations on edit and receive inbound stock movement', () 
       await receivingPage.receivingStep.isLoaded();
       await receivingPage.receivingStep.table
         .row(1)
-        .receivingNowField.textbox.fill('10');
+        .receivingNowField.numberbox.fill('10');
     });
 
     await test.step('Go to Check page', async () => {

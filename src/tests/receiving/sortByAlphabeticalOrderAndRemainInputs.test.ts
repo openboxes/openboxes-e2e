@@ -6,7 +6,7 @@ import BinLocationUtils from '@/utils/BinLocationUtils';
 import { getDateByOffset, getToday } from '@/utils/DateUtils';
 import { deleteShipment } from '@/utils/shipmentUtils';
 
-test.describe.skip('Apply sorting by alphabetical order and remain inputs', () => {
+test.describe('Apply sorting by alphabetical order and remain inputs', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
   const TODAY = getToday();
   const EXPECTED_DELIVERY_DATE = getDateByOffset(TODAY, 1);
@@ -115,56 +115,64 @@ test.describe.skip('Apply sorting by alphabetical order and remain inputs', () =
     await test.step('Input receiving qty for all lines', async () => {
       await receivingPage.receivingStep.table
         .row(1)
-        .receivingNowField.textbox.fill('50');
+        .receivingNowField.numberbox.fill('50');
       await receivingPage.receivingStep.table
         .row(2)
-        .receivingNowField.textbox.fill('50');
+        .receivingNowField.numberbox.fill('150');
       await receivingPage.receivingStep.table
         .row(3)
-        .receivingNowField.textbox.fill('50');
+        .receivingNowField.numberbox.fill('100');
+      await receivingPage.receivingStep.autosaveStatus.isSaved();
     });
 
-    await test.step('Change ordering to alphabetical and assert order', async () => {
-      const item = await productService.getProduct(Product.FIVE);
-      await receivingPage.receivingStep.table.row(3).getItem(item.name).hover();
-      await expect(receivingPage.tooltip).toContainText(item.name);
-      await expect(receivingPage.receivingStep.orderSelect).toBeVisible();
+    // sorting by product name ascending reverses the shipment order:
+    // E2E-product-five, E2E-product-four, E2E-product-three
+    await test.step('Sort by product name and assert order and inputs', async () => {
+      const PRODUCT_THREE = await productService.getProduct(Product.THREE);
+      const PRODUCT_FIVE = await productService.getProduct(Product.FIVE);
       await expect(
-        receivingPage.receivingStep.orderSelect.locator(
-          '.react-select__clear-indicator'
-        )
-      ).toBeHidden();
-      await receivingPage.receivingStep.orderSelect.click();
-      await receivingPage.receivingStep.getOrder('Alphabetical Order').click();
-      await receivingPage.receivingStep.table.row(1).getItem(item.name).hover();
-      await expect(receivingPage.tooltip).toContainText(item.name);
+        receivingPage.receivingStep.table.row(3).getItem(PRODUCT_FIVE.name)
+      ).toBeVisible();
+      await receivingPage.receivingStep.table
+        .getColumnHeader('Product')
+        .click();
       await expect(
-        receivingPage.receivingStep.table.row(1).receivingNowField.textbox
-      ).toHaveValue('50');
+        receivingPage.receivingStep.table.row(1).getItem(PRODUCT_FIVE.name)
+      ).toBeVisible();
       await expect(
-        receivingPage.receivingStep.table.row(2).receivingNowField.textbox
-      ).toHaveValue('50');
+        receivingPage.receivingStep.table.row(3).getItem(PRODUCT_THREE.name)
+      ).toBeVisible();
       await expect(
-        receivingPage.receivingStep.table.row(3).receivingNowField.textbox
+        receivingPage.receivingStep.table.row(1).receivingNowField.numberbox
+      ).toHaveValue('100');
+      await expect(
+        receivingPage.receivingStep.table.row(2).receivingNowField.numberbox
+      ).toHaveValue('150');
+      await expect(
+        receivingPage.receivingStep.table.row(3).receivingNowField.numberbox
       ).toHaveValue('50');
     });
 
     await test.step('Go to check page and assert applied order', async () => {
-      const item = await productService.getProduct(Product.FIVE);
+      const PRODUCT_FIVE = await productService.getProduct(Product.FIVE);
       await receivingPage.nextButton.click();
       await receivingPage.checkStep.isLoaded();
-      await receivingPage.checkStep.table.row(1).getItem(item.name).hover();
-      await expect(receivingPage.tooltip).toContainText(item.name);
+      await expect(
+        receivingPage.checkStep.table.row(1).getItem(PRODUCT_FIVE.name)
+      ).toBeVisible();
     });
 
-    await test.step('Go back to receive page and change order to shipment', async () => {
-      const item = await productService.getProduct(Product.FIVE);
+    await test.step('Go back to receive page and reset sorting to shipment order', async () => {
+      const PRODUCT_FIVE = await productService.getProduct(Product.FIVE);
       await receivingPage.checkStep.backToEditButton.click();
       await receivingPage.receivingStep.isLoaded();
-      await receivingPage.receivingStep.orderSelect.click();
-      await receivingPage.receivingStep.getOrder('Shipment Order').click();
-      await receivingPage.receivingStep.table.row(3).getItem(item.name).hover();
-      await expect(receivingPage.tooltip).toContainText(item.name);
+      await receivingPage.receivingStep.resetSortingButton.click();
+      await expect(
+        receivingPage.receivingStep.table.row(3).getItem(PRODUCT_FIVE.name)
+      ).toBeVisible();
+      await expect(
+        receivingPage.receivingStep.table.row(3).receivingNowField.numberbox
+      ).toHaveValue('100');
     });
 
     await test.step('Receive shipment', async () => {
