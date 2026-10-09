@@ -79,6 +79,10 @@ class Row extends BasePageModel {
     return this.row.locator('[aria-label="Status"]');
   }
 
+  get recipient() {
+    return this.row.locator('[aria-label="Recipient"]');
+  }
+
   get cancelRemainingCheckbox() {
     return this.row
       .locator('[data-column-id="cancelRemaining"]')

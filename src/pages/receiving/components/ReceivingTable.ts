@@ -23,6 +23,19 @@ class ReceivingTable extends BasePageModel {
     return new Row(this.page, this.rows.nth(index - 1));
   }
 
+  // the order of the items depends on the sorting, so find the row by its
+  // product code instead of its position
+  rowByProductCode(productCode: string) {
+    return new Row(
+      this.page,
+      this.rows.filter({
+        has: this.page
+          .locator('[aria-label="Code"]')
+          .getByText(productCode, { exact: true }),
+      })
+    );
+  }
+
   getColumnHeader(columnName: string) {
     return this.table
       .getByTestId('table-header')
@@ -106,6 +119,12 @@ class Row extends BasePageModel {
 
   getItem(name: string) {
     return this.row.locator('[aria-label="Product"]').getByText(name);
+  }
+
+  // shown only when at least one item has a recipient, and read-only (it can
+  // only be changed in the edit modal)
+  get recipient() {
+    return this.row.locator('[aria-label="Recipient"]');
   }
 }
 
