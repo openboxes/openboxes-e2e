@@ -161,9 +161,7 @@ test.describe('Rollback last receipt behavior when putaway created', () => {
     await test.step('Receive sm', async () => {
       await stockMovementShowPage.receiveButton.click();
       await receivingPage.receivingStep.isLoaded();
-      await receivingPage.receivingStep.autofillQuantitiesButton.click({
-        force: true,
-      });
+      await receivingPage.receivingStep.autofillQuantitiesButton.click();
       await receivingPage.nextButton.click();
       await receivingPage.checkStep.isLoaded();
       await receivingPage.checkStep.receiveShipmentButton.click();

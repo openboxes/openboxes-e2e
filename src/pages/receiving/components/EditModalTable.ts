@@ -43,12 +43,16 @@ class Row extends BasePageModel {
     return this.row.locator('[aria-label="Location"]');
   }
 
+  get clearBinLocationButton() {
+    return this.binLocationSelect.getByTestId('custom-select-clear');
+  }
+
   get productSelect() {
     return this.row.locator('[aria-label="Product"]');
   }
 
   get clearProductSelect() {
-    return this.productSelect.locator('.react-select__clear-indicator');
+    return this.productSelect.getByTestId('custom-select-clear');
   }
 
   async getProductSelect(name: string) {
@@ -58,8 +62,8 @@ class Row extends BasePageModel {
       .fill(name);
     await this.page
       .getByTestId('custom-select-dropdown-menu')
-      .locator('.react-select__option')
-      .nth(0)
+      .getByText(name)
+      .first()
       .click();
   }
 }

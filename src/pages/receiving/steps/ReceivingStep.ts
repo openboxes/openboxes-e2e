@@ -37,8 +37,6 @@ class ReceivingStep extends BasePageModel {
     await this.page.waitForResponse(PARTIAL_RECEIVING_API_PATTERN);
   }
 
-  // the button is wrapped in a tooltip, which can intercept the click once the
-  // tooltip is shown, so the tests click it with { force: true }
   get autofillQuantitiesButton() {
     return this.page.getByRole('button', { name: 'Autofill quantities' });
   }
@@ -60,12 +58,10 @@ class ReceivingStep extends BasePageModel {
   }
 
   async enableShowPutaway() {
-    await this.showPutawaySwitch.locator('.slider').click();
+    await this.showPutawaySwitch.getByTestId('switch-toggle').click();
     await expect(this.showPutawaySwitch.getByRole('checkbox')).toBeChecked();
   }
 
-  // the button is wrapped in a tooltip, which can intercept the click once the
-  // tooltip is shown, so the tests click it with { force: true }
   get saveAndExitButton() {
     return this.page.getByRole('button', { name: 'Save & Exit' });
   }
@@ -94,14 +90,12 @@ class ReceivingStep extends BasePageModel {
 
   get validationOnEditFieldsThroughImport() {
     return this.page
-      .locator('.s-alert-box-inner')
+      .getByTestId('notification')
       .getByText(
         'You can only import the Receiving Now and the Comment fields. To make other changes, please use the edit line feature. You can then export and import the template again.'
       );
   }
 
-  // the button is wrapped in a tooltip, which can intercept the click once the
-  // tooltip is shown, so the tests click it with { force: true }
   get resetSortingButton() {
     return this.page.getByRole('button', { name: 'Reset sorting' });
   }

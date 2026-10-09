@@ -73,12 +73,9 @@ test.describe('Assert bin location not clearable', () => {
     });
 
     await test.step('Assert bin location cant be cleared', async () => {
-      const binLocationSelect =
-        receivingPage.receivingStep.table.row(1).binLocationSelect;
-      await expect(binLocationSelect).toHaveText(receivingBin);
-      await expect(
-        binLocationSelect.locator('.react-select__clear-indicator')
-      ).toBeHidden();
+      const row = receivingPage.receivingStep.table.row(1);
+      await expect(row.binLocationSelect).toHaveText(receivingBin);
+      await expect(row.clearBinLocationButton).toBeHidden();
     });
 
     await test.step('Split lines', async () => {
@@ -98,14 +95,10 @@ test.describe('Assert bin location not clearable', () => {
 
     await test.step('Assert bin location field content in edit modal', async () => {
       for (const row of [1, 2]) {
-        const binLocationSelect =
-          receivingPage.receivingStep.editModal.table.row(
-            row
-          ).binLocationSelect;
-        await expect(binLocationSelect).toHaveText(receivingBin);
-        await expect(
-          binLocationSelect.locator('.react-select__clear-indicator')
-        ).toBeHidden();
+        const editModalRow =
+          receivingPage.receivingStep.editModal.table.row(row);
+        await expect(editModalRow.binLocationSelect).toHaveText(receivingBin);
+        await expect(editModalRow.clearBinLocationButton).toBeHidden();
       }
     });
 
@@ -121,12 +114,9 @@ test.describe('Assert bin location not clearable', () => {
         receivingPage.receivingStep.table.row(1).binLocationSelect
       ).toHaveText(receivingBin);
       for (const row of [3, 4]) {
-        const binLocationSelect =
-          receivingPage.receivingStep.table.row(row).binLocationSelect;
-        await expect(binLocationSelect).toHaveText(receivingBin);
-        await expect(
-          binLocationSelect.locator('.react-select__clear-indicator')
-        ).toBeHidden();
+        const tableRow = receivingPage.receivingStep.table.row(row);
+        await expect(tableRow.binLocationSelect).toHaveText(receivingBin);
+        await expect(tableRow.clearBinLocationButton).toBeHidden();
       }
     });
   });

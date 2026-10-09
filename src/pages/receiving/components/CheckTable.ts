@@ -50,7 +50,7 @@ class CheckTable extends BasePageModel {
 
   getColumnHeader(columnName: string) {
     return this.table
-      .locator('.rt-thead')
+      .getByTestId('table-header')
       .getByText(columnName, { exact: true });
   }
 

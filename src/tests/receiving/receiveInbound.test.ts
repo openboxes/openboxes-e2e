@@ -118,9 +118,7 @@ test.describe('Receive inbound stock movement', () => {
 
     await test.step('Select all items to receive', async () => {
       await receivingPage.receivingStep.isLoaded();
-      await receivingPage.receivingStep.autofillQuantitiesButton.click({
-        force: true,
-      });
+      await receivingPage.receivingStep.autofillQuantitiesButton.click();
     });
 
     await test.step('Go to Check page', async () => {
@@ -302,9 +300,7 @@ test.describe('Receive inbound stock movement', () => {
     });
 
     await test.step('Click on Save and Exit button', async () => {
-      await receivingPage.receivingStep.saveAndExitButton.click({
-        force: true,
-      });
+      await receivingPage.receivingStep.saveAndExitButton.click();
       await stockMovementShowPage.isLoaded();
     });
 

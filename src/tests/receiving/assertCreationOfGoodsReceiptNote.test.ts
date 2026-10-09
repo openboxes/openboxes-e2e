@@ -118,7 +118,7 @@ test.describe('Assert Goods Receipt Note is created and opened', () => {
         .row(7)
         .downloadButton.click();
       const popup = await popupPromise;
-      await expect(popup.locator('.title')).toHaveText('Goods Receipt Note');
+      await expect(popup.getByTestId('document-title')).toHaveText('Goods Receipt Note');
       expect(await pageContainsValues(popup, expectedValues)).toBeTruthy();
       await popup.close();
     });
@@ -154,7 +154,7 @@ test.describe('Assert Goods Receipt Note is created and opened', () => {
         .row(7)
         .downloadButton.click();
       const popup = await popupPromise;
-      await expect(popup.locator('.title')).toHaveText('Goods Receipt Note');
+      await expect(popup.getByTestId('document-title')).toHaveText('Goods Receipt Note');
       expect(await pageContainsValues(popup, expectedValues)).toBeTruthy();
       await popup.close();
     });

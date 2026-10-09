@@ -143,9 +143,7 @@ test.describe('Lot number system expiry date modification on receiving workflow'
     });
 
     await test.step('Autofill all quantities of receving items', async () => {
-      await receivingPage.receivingStep.autofillQuantitiesButton.click({
-        force: true,
-      });
+      await receivingPage.receivingStep.autofillQuantitiesButton.click();
     });
 
     await test.step('Go to next step', async () => {
@@ -254,9 +252,7 @@ test.describe('Lot number system expiry date modification on receiving workflow'
         });
 
         await test.step('Autofill all quantities of receving items', async () => {
-          await receivingPage.receivingStep.autofillQuantitiesButton.click({
-            force: true,
-          });
+          await receivingPage.receivingStep.autofillQuantitiesButton.click();
         });
 
         await test.step('Go to next step', async () => {
@@ -372,9 +368,7 @@ test.describe('Lot number system expiry date modification on receiving workflow'
       });
 
       await test.step('Autofill all quantities of receving items', async () => {
-        await receivingPage.receivingStep.autofillQuantitiesButton.click({
-          force: true,
-        });
+        await receivingPage.receivingStep.autofillQuantitiesButton.click();
       });
 
       await test.step('Go to next step', async () => {
@@ -496,9 +490,7 @@ test.describe('Lot number system expiry date modification on receiving workflow'
       });
 
       await test.step('Autofill all quantities of receving items', async () => {
-        await receivingPage.receivingStep.autofillQuantitiesButton.click({
-          force: true,
-        });
+        await receivingPage.receivingStep.autofillQuantitiesButton.click();
       });
 
       await test.step('Go to next step', async () => {

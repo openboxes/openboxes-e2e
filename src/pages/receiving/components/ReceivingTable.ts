@@ -25,7 +25,7 @@ class ReceivingTable extends BasePageModel {
 
   getColumnHeader(columnName: string) {
     return this.table
-      .locator('.rt-thead')
+      .getByTestId('table-header')
       .getByText(columnName, { exact: true });
   }
 
@@ -41,7 +41,7 @@ class ReceivingTable extends BasePageModel {
 
   // shown when the autofill would overwrite a location the user has changed
   get autofillLocationConfirmDialog() {
-    return this.page.locator('.react-confirm-alert');
+    return this.page.getByTestId('confirm-modal');
   }
 
   get acceptAutofillLocationConfirmDialog() {
@@ -85,7 +85,11 @@ class Row extends BasePageModel {
   // the selected value only, without the screen reader text react-select
   // renders next to it while focused
   get selectedBinLocation() {
-    return this.binLocationSelect.locator('.react-select__single-value');
+    return this.binLocationSelect.getByTestId('custom-select-value');
+  }
+
+  get clearBinLocationButton() {
+    return this.binLocationSelect.getByTestId('custom-select-clear');
   }
 
   getBinLocation(binLocation: string) {

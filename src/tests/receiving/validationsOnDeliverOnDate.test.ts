@@ -66,9 +66,7 @@ test.describe.skip('Validations on edit Deliver On Date when receiving shipment'
     });
 
     await test.step('Autofill qty and go to check page', async () => {
-      await receivingPage.receivingStep.autofillQuantitiesButton.click({
-        force: true,
-      });
+      await receivingPage.receivingStep.autofillQuantitiesButton.click();
       await receivingPage.nextButton.click();
     });
 
@@ -100,9 +98,7 @@ test.describe.skip('Validations on edit Deliver On Date when receiving shipment'
     });
 
     await test.step('Autofill qty and go to check page', async () => {
-      await receivingPage.receivingStep.autofillQuantitiesButton.click({
-        force: true,
-      });
+      await receivingPage.receivingStep.autofillQuantitiesButton.click();
       await receivingPage.nextButton.click();
     });
 

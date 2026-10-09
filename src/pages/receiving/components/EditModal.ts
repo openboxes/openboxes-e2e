@@ -30,14 +30,6 @@ class EditModal extends BasePageModel {
   get addLineButton() {
     return this.modal.getByTestId('add-new-record');
   }
-
-  get informationAboutEditedQtyNotMatchingShippedQty() {
-    return this.modal
-      .locator('.font-weight-bold font-red-ob')
-      .getByText(
-        'The total edited quantity does not match the original quantity shipped.'
-      );
-  }
 }
 
 export default EditModal;

@@ -21,10 +21,14 @@ class CheckStep extends BasePageModel {
     });
   }
 
+  // the buttons are shown both above the table and at the bottom of the page,
+  // so use the ones at the bottom
+  get wizardButtons() {
+    return this.page.getByTestId('wizard-page-buttons');
+  }
+
   get receiveShipmentButton() {
-    return this.page
-      .locator('.submit-buttons')
-      .getByRole('button', { name: 'Complete Receipt' });
+    return this.wizardButtons.getByRole('button', { name: 'Complete Receipt' });
   }
 
   get shimpentInformation() {
@@ -32,44 +36,29 @@ class CheckStep extends BasePageModel {
   }
 
   get originField() {
-    return this.shimpentInformation
-      .locator('.item-details__field')
-      .filter({ hasText: 'Origin:' })
-      .locator('.item-details__value');
+    return this.shimpentInformation.getByTestId('confirm-receipt-origin');
   }
 
   get destinationField() {
-    return this.shimpentInformation
-      .locator('.item-details__field')
-      .filter({ hasText: 'Destination:' })
-      .locator('.item-details__value');
+    return this.shimpentInformation.getByTestId('confirm-receipt-destination');
   }
 
   get shippedOnField() {
-    return this.shimpentInformation
-      .locator('.item-details__field')
-      .filter({ hasText: 'Shipped on:' })
-      .locator('.item-details__value');
+    return this.shimpentInformation.getByTestId('confirm-receipt-shipped-on');
   }
 
-  // the button is wrapped in a tooltip, which can intercept the click once the
-  // tooltip is shown, so the tests click it with { force: true }
   get cancelAllRemainingButton() {
     return this.page.getByRole('button', { name: 'Cancel All Remaining' });
   }
 
   get validationOnDeliveredOnPastDatePopup() {
     return this.page
-      .locator('.s-alert-box-inner')
+      .getByTestId('notification')
       .getByText('Must occur on or after Actual Shipping Date');
   }
 
-  // the button is wrapped in a tooltip, which can intercept the click once the
-  // tooltip is shown, so the tests click it with { force: true }
   get backToEditButton() {
-    return this.page
-      .locator('.submit-buttons')
-      .getByRole('button', { name: 'Back to Receive' });
+    return this.wizardButtons.getByRole('button', { name: 'Back to Receive' });
   }
 }
 
