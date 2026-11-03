@@ -45,6 +45,41 @@ class TransactionService extends BaseServiceModel {
     location — the API counterpart of deleting the top rows on the
     transaction list page one by one.
   */
+  /**
+    Deletes every recent transaction that belongs to one of the given orders
+    (e.g. putaway numbers like "P-887NMH"). Completing a putaway creates a
+    Transfer Out + Transfer In pair per line, and how many pairs depends on
+    the putaway lines, so counting "the N newest" rows is fragile; the
+    transaction details page names its order, which lets us match exactly.
+
+    Deleting one side of a local transfer can remove its pair as well, so a
+    transaction that no longer shows its order number is simply skipped.
+  */
+  async deleteTransactionsForOrders(
+    orderNumbers: string[],
+    scanCount = 30
+  ): Promise<void> {
+    if (orderNumbers.length === 0) {
+      return;
+    }
+    const transactionIds = await this.getRecentTransactionIds(scanCount);
+    for (const transactionId of transactionIds) {
+      const response = await this.request.get(
+        INVENTORY_URL.showTransaction(transactionId)
+      );
+      if (!response.ok()) {
+        continue;
+      }
+      const html = await response.text();
+      const belongsToOrder = orderNumbers.some((orderNumber) =>
+        new RegExp(`\\b${orderNumber}\\b`).test(html)
+      );
+      if (belongsToOrder) {
+        await this.deleteTransaction(transactionId);
+      }
+    }
+  }
+
   async deleteRecentTransactions(count: number): Promise<void> {
     const transactionIds = await this.getRecentTransactionIds(count);
     if (transactionIds.length < count) {
