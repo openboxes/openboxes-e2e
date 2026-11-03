@@ -21,6 +21,9 @@ import { byNameAsc } from '@/utils/sortUtils';
 test.describe('Putaway to preferred bin and default bin', () => {
   let STOCK_MOVEMENT: StockMovementResponse;
   let PUTAWAY_ORDER_IDS: string[] = [];
+  // every completed putaway line creates a Transfer Out + Transfer In pair,
+  // so each test sets how many transactions its putaway leaves behind
+  let PUTAWAY_TRANSACTIONS_COUNT = 0;
   let product: ProductResponse;
   let product2: ProductResponse;
   const downloadedFilePaths: string[] = [];
@@ -36,6 +39,7 @@ test.describe('Putaway to preferred bin and default bin', () => {
       internalLocationService,
     }) => {
       PUTAWAY_ORDER_IDS = [];
+      PUTAWAY_TRANSACTIONS_COUNT = 0;
       const supplierLocation = await supplierLocationService.getLocation();
       STOCK_MOVEMENT = await stockMovementService.createInbound({
         originId: supplierLocation.id,
@@ -116,7 +120,9 @@ test.describe('Putaway to preferred bin and default bin', () => {
       });
 
       if (allPutawaysCompleted) {
-        await transactionService.deleteRecentTransactions(2);
+        await transactionService.deleteRecentTransactions(
+          PUTAWAY_TRANSACTIONS_COUNT
+        );
       }
       await deleteShipment({ stockMovementService, STOCK_MOVEMENT });
 
@@ -178,6 +184,9 @@ test.describe('Putaway to preferred bin and default bin', () => {
       await createPutawayPage.table.row(1).checkbox.click();
       await createPutawayPage.table.row(2).checkbox.click();
       PUTAWAY_ORDER_IDS.push(await createPutawayPage.startPutaway());
+      // 2 lines: product without preferred bin goes to the default (no) bin,
+      // product with preferred bin goes to it - 2 transfer pairs in total
+      PUTAWAY_TRANSACTIONS_COUNT = 4;
       await createPutawayPage.startStep.isLoaded();
     });
 
@@ -304,6 +313,7 @@ test.describe('Putaway to preferred bin and default bin', () => {
         .click();
       await createPutawayPage.table.row(2).checkbox.click();
       PUTAWAY_ORDER_IDS.push(await createPutawayPage.startPutaway());
+      PUTAWAY_TRANSACTIONS_COUNT = 2;
       await createPutawayPage.startStep.isLoaded();
     });
 
