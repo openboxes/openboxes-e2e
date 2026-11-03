@@ -35,6 +35,8 @@ const INVENTORY_URL = {
   base: './inventory',
   listTransactions: (params: { max: number }) =>
     `${INVENTORY_URL.base}/listTransactions?max=${params.max}`,
+  showTransaction: (id: string) =>
+    `${INVENTORY_URL.base}/showTransaction/${id}`,
   deleteTransaction: (id: string) =>
     `${INVENTORY_URL.base}/deleteTransaction/${id}`,
 };

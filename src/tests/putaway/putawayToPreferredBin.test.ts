@@ -109,15 +109,15 @@ test.describe('Putaway to preferred bin and default bin', () => {
       },
       testInfo
     ) => {
-      const { allPutawaysCompleted } = await cleanupPendingPutaways({
+      const { completedPutawayNumbers } = await cleanupPendingPutaways({
         putawayService,
         putawayOrderIds: PUTAWAY_ORDER_IDS,
         testInfo,
       });
 
-      if (allPutawaysCompleted) {
-        await transactionService.deleteRecentTransactions(2);
-      }
+      await transactionService.deleteTransactionsForOrders(
+        completedPutawayNumbers
+      );
       await deleteShipment({ stockMovementService, STOCK_MOVEMENT });
 
       const product2 = await productService.getProduct(Product.FOUR);

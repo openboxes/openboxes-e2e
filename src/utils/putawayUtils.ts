@@ -3,20 +3,23 @@ import { TestInfo } from '@playwright/test';
 import PutawayService from '@/api/PutawayService';
 
 /**
-  Deletes the putaway order if it is still in PENDING status. Returns true
-  when a pending putaway was deleted, false when there was nothing to delete
-  (the order was completed or no longer exists).
+  Deletes the putaway order if it is still in PENDING status. Returns whether
+  a pending putaway was deleted, and the putaway number of an order that was
+  not pending (completed), so its transactions can be cleaned up.
 */
 async function deletePutawayOrderIfPending(
   putawayService: PutawayService,
   putawayOrderId: string
-): Promise<boolean> {
+): Promise<{ wasPending: boolean; completedPutawayNumber: string | null }> {
   const putaway = await putawayService.getPutaway(putawayOrderId);
   if (putaway?.data?.putawayStatus !== 'PENDING') {
-    return false;
+    return {
+      wasPending: false,
+      completedPutawayNumber: putaway?.data?.putawayNumber ?? null,
+    };
   }
   await putawayService.deletePutawayOrder(putawayOrderId);
-  return true;
+  return { wasPending: true, completedPutawayNumber: null };
 }
 
 /**
@@ -39,11 +42,15 @@ export async function cleanupPendingPutaways({
 }) {
   testInfo.setTimeout(testInfo.timeout + 60_000);
 
-  const deletedPendingPutaways = [];
+  const deletedPendingPutaways: boolean[] = [];
+  const completedPutawayNumbers: string[] = [];
   for (const putawayOrderId of putawayOrderIds) {
-    deletedPendingPutaways.push(
-      await deletePutawayOrderIfPending(putawayService, putawayOrderId)
-    );
+    const { wasPending, completedPutawayNumber } =
+      await deletePutawayOrderIfPending(putawayService, putawayOrderId);
+    deletedPendingPutaways.push(wasPending);
+    if (completedPutawayNumber) {
+      completedPutawayNumbers.push(completedPutawayNumber);
+    }
   }
 
   return {
@@ -53,5 +60,8 @@ export async function cleanupPendingPutaways({
     anyPutawayCompleted: deletedPendingPutaways.some(
       (wasPending) => !wasPending
     ),
+    // pass to transactionService.deleteTransactionsForOrders to remove the
+    // transfer transactions those completed putaways created
+    completedPutawayNumbers,
   };
 }

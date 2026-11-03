@@ -83,7 +83,7 @@ test.describe('Assert if quantity inputs remain when split lines', () => {
     });
 
     await test.step('Autofill receiving quantity', async () => {
-      await receivingPage.receivingStep.autofillQuantitiesButton.click();
+      await receivingPage.receivingStep.autofillQuantities();
       await expect(
         receivingPage.receivingStep.table.row(1).receivingNowField.numberbox
       ).toHaveValue('50');

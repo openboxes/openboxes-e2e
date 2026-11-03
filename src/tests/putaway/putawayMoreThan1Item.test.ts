@@ -85,15 +85,15 @@ test.describe('Create putaway for more than 1 item, separate putaways', () => {
       },
       testInfo
     ) => {
-      const { allPutawaysCompleted } = await cleanupPendingPutaways({
+      const { completedPutawayNumbers } = await cleanupPendingPutaways({
         putawayService,
         putawayOrderIds: PUTAWAY_ORDER_IDS,
         testInfo,
       });
 
-      if (allPutawaysCompleted) {
-        await transactionService.deleteRecentTransactions(3);
-      }
+      await transactionService.deleteTransactionsForOrders(
+        completedPutawayNumbers
+      );
       await deleteShipment({ stockMovementService, STOCK_MOVEMENT });
 
       const receivingBin =
@@ -345,15 +345,15 @@ test.describe('Putaway 2 items in the same putaway', () => {
       },
       testInfo
     ) => {
-      const { allPutawaysCompleted } = await cleanupPendingPutaways({
+      const { completedPutawayNumbers } = await cleanupPendingPutaways({
         putawayService,
         putawayOrderIds: PUTAWAY_ORDER_IDS,
         testInfo,
       });
 
-      if (allPutawaysCompleted) {
-        await transactionService.deleteRecentTransactions(2);
-      }
+      await transactionService.deleteTransactionsForOrders(
+        completedPutawayNumbers
+      );
       await stockMovementShowPage.goToPage(STOCK_MOVEMENT.id);
       await stockMovementShowPage.detailsListTable.oldViewShipmentPage.click();
       await oldViewShipmentPage.undoStatusChangeButton.click();

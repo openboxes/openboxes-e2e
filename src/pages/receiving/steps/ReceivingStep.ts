@@ -31,6 +31,19 @@ class ReceivingStep extends BasePageModel {
     await expect(this.table.table.getByText('Loading...')).toBeHidden({
       timeout: 20_000,
     });
+
+    // eslint-disable-next-line playwright/no-networkidle
+    await this.page.waitForLoadState('networkidle');
+  }
+
+  async autofillQuantities() {
+    const autosaveResponse = this.page.waitForResponse(
+      (response) =>
+        response.url().includes('/items/batch') &&
+        response.request().method() === 'POST'
+    );
+    await this.autofillQuantitiesButton.click();
+    await autosaveResponse;
   }
 
   async waitForData() {
