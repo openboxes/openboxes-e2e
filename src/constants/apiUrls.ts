@@ -68,3 +68,5 @@ export const INVENTORY_IMPORT = (facilityId: string) =>
 // CYCLE COUNT
 export const CYCLE_COUNT_BY_ID = (facilityId: string, cycleCountId: string) =>
   `${API}/facilities/${facilityId}/cycle-counts/${cycleCountId}`;
+export const CYCLE_COUNT_REQUESTS_BATCH = (facilityId: string) =>
+  `${API}/facilities/${facilityId}/cycle-counts/requests/batch`;
