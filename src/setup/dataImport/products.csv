@@ -8,4 +8,5 @@ Id,Active,ProductCode,ProductType,Name,ProductFamily,Category,GLAccount,Descript
 ,true,7,Default,CC-product-one,,Anesteshia,,,,,,,,,,,,,,,,,,,,,
 ,true,8,Default,CC-product-two,,Anesteshia,,,,,,,,,,,,,,,,,,,,,
 ,true,9,Default,CC-product-three,,ARVS,,,,,,,,,,,,,,,,,,,,,
+,true,10,Default,CC-product-four,,Anesteshia,,,,,,,,,,,,,,,,,,,,,
 
