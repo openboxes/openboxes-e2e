@@ -45,6 +45,7 @@ test.describe('Lot number system expiry date modification on receiving workflow'
   );
 
   test('Edit lot expiration date on a new lot does not render a confirmation modal', async ({
+    page,
     stockMovementShowPage,
     receivingPage,
     stockMovementService,
@@ -122,6 +123,10 @@ test.describe('Lot number system expiry date modification on receiving workflow'
       await receivingPage.receivingStep.editModal.table
         .row(1)
         .receivingNowField.numberbox.fill('10');
+      // the quantity cell only commits its typed value to form state on
+      // blur, so it must be blurred before the date field is touched, or
+      // the uncommitted value is lost
+      await page.keyboard.press('Tab');
       await receivingPage.receivingStep.editModal.table
         .row(1)
         .expiryDatePickerField.fillWithFormat(
@@ -276,6 +281,7 @@ test.describe('Lot number system expiry date modification on receiving workflow'
     );
 
     test('Should not update expiration date on an existing lot when canceling popup', async ({
+      page,
       stockMovementShowPage,
       receivingPage,
       stockMovementService,
@@ -339,6 +345,10 @@ test.describe('Lot number system expiry date modification on receiving workflow'
         await receivingPage.receivingStep.editModal.table
           .row(1)
           .receivingNowField.numberbox.fill('10');
+        // the quantity cell only commits its typed value to form state on
+        // blur, so it must be blurred before the date field is touched, or
+        // the uncommitted value is lost
+        await page.keyboard.press('Tab');
         await receivingPage.receivingStep.editModal.table
           .row(1)
           .expiryDatePickerField.fillWithFormat(
@@ -402,6 +412,7 @@ test.describe('Lot number system expiry date modification on receiving workflow'
     });
 
     test('Should update expiration date on an existing lot when confirming popup', async ({
+      page,
       stockMovementShowPage,
       receivingPage,
       stockMovementService,
@@ -465,6 +476,10 @@ test.describe('Lot number system expiry date modification on receiving workflow'
         await receivingPage.receivingStep.editModal.table
           .row(1)
           .receivingNowField.numberbox.fill('10');
+        // the quantity cell only commits its typed value to form state on
+        // blur, so it must be blurred before the date field is touched, or
+        // the uncommitted value is lost
+        await page.keyboard.press('Tab');
         await receivingPage.receivingStep.editModal.table
           .row(1)
           .expiryDatePickerField.fillWithFormat(
