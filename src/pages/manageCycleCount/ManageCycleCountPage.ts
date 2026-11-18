@@ -96,6 +96,38 @@ class ManageCycleCountPage extends BasePageModel {
     return this.page.locator(`#${describedBy}`);
   }
 
+  get binLocationFilterGroup() {
+    return this.page.locator('.filter-group', {
+      has: this.page.locator('label[for="internalLocations"]'),
+    });
+  }
+
+  get binLocationSelect() {
+    return this.binLocationFilterGroup.getByTestId('custom-select-element');
+  }
+
+  get binLocationSelectDropdown() {
+    return this.page.getByTestId('custom-select-dropdown-menu');
+  }
+
+  get binLocationSelectHasValue() {
+    return this.binLocationSelect.locator('.filter-select-has-value');
+  }
+
+  getBinLocationOption(binLocationName: string) {
+    return this.binLocationSelectDropdown
+      .getByRole('listitem')
+      .filter({ hasText: binLocationName });
+  }
+
+  // selects the option but doesn't submit the filter - call filterButton
+  // afterwards to apply it, same as the other filters on this page
+  async selectBinLocationFilter(binLocationName: string) {
+    await this.binLocationSelect.click();
+    await this.binLocationSelect.getByRole('textbox').fill(binLocationName);
+    await this.getBinLocationOption(binLocationName).click({ timeout: 5_000 });
+  }
+
   // ACTIONS
   get markAsToCountButton() {
     return this.page.getByRole('button', { name: 'Mark as To Count' });
